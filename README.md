@@ -69,6 +69,9 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
   --add "Vortex|PC-64 LED S|Default|0|301|PAR Extra" \
   --set-address "25=1:1" --rename "0=Wash Frontal 1" --remove 26
 
+# find out what each DMX channel of an undocumented fixture does, on site
+.venv/bin/qlctool probe "../../QLC+ Setups/DeluxeEventos2.qxw" 25 --base "1=255" --buttons
+
 # add Virtual Console buttons for everything that has a UI folder
 .venv/bin/qlctool layout "../../QLC+ Setups/DeluxeEventos2.qxw"
 
@@ -107,7 +110,7 @@ Engine's child order. Edit or add fragment files, then `compose` to rebuild.
   re-address / rename / remove operations
 - `functions/` - Scene, Chaser, RGBMatrix and EFX element builders
 - `generate/` - the mass generators (colour scene, colour palette, matrix
-  effects, movement EFX, Virtual Console layout)
+  effects, movement EFX, Virtual Console layout, channel probe)
 - `palette.py`, `ids.py`, `cli.py` - palette data, ID allocation, command line
 - `library/system/` - QLC+ system fixture defs the patch needs, bundled from the Mac
 
