@@ -1,7 +1,7 @@
 # qlctool
 
 Programmatic editing of QLC+ workspaces (`.qxw`) for the Vibra Eventos lighting
-show. Generates scenes, chasers and RGBMatrix effects (EFX soon) in bulk instead of
+show. Generates scenes, chasers, RGBMatrix effects and movement EFX in bulk instead of
 clicking them one by one in QLC+.
 
 ## Why
@@ -46,6 +46,9 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
 .venv/bin/qlctool matrix "../../QLC+ Setups/DeluxeEventos2.qxw" \
   --group 0 --algorithms "Strobe,Waves,solid"
 
+# generate one movement EFX per shape across every moving head
+.venv/bin/qlctool movement "../../QLC+ Setups/DeluxeEventos2.qxw"
+
 # split a show into a git-diffable fragment tree (one file per function)
 .venv/bin/qlctool decompose "../../QLC+ Setups/DeluxeEventos2.qxw" tree/
 
@@ -64,8 +67,10 @@ Engine's child order. Edit or add fragment files, then `compose` to rebuild.
 - `library.py`, `definition.py`, `roles.py` - fixture definitions and channel roles
 - `fixture.py`, `capability.py`, `capabilities_of.py` - the patch and its capabilities
 - `fixture_group.py`, `argb.py`, `matrix_algorithms.py` - RGBMatrix inputs
-- `functions/` - Scene, Chaser and RGBMatrix element builders
-- `generate/` - the mass generators (colour scene, colour palette, matrix effects)
+- `efx_algorithms.py` - EFX shapes and their Spanish show names
+- `functions/` - Scene, Chaser, RGBMatrix and EFX element builders
+- `generate/` - the mass generators (colour scene, colour palette, matrix
+  effects, movement EFX)
 - `palette.py`, `ids.py`, `cli.py` - palette data, ID allocation, command line
 - `library/system/` - QLC+ system fixture defs the patch needs, bundled from the Mac
 

@@ -12,9 +12,11 @@ from .capabilities_of import capabilities_of
 from .compose import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
+from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_group import fixture_groups
 from .generate.color_palette import generate_color_palette
 from .generate.matrix_effects import generate_matrix_effects
+from .generate.movement_efx import generate_movement_efx
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .library import FixtureLibrary
 from .workspace import Workspace
@@ -87,6 +89,32 @@ def cmd_matrix(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_movement(args: argparse.Namespace) -> int:
+    src = Path(args.workspace)
+    out = Path(args.out) if args.out else _default_out(src)
+
+    algorithms = (
+        [a for a in args.algorithms.split(",") if a]
+        if args.algorithms else list(EFX_ALGORITHMS)
+    )
+
+    ws = Workspace.load(src)
+    result = generate_movement_efx(
+        ws,
+        FixtureLibrary.load(),
+        algorithms=algorithms,
+        propagation_mode=args.propagation,
+        make_chaser=not args.no_chaser,
+    )
+    ws.save(out)
+
+    print(f"Generated {len(result.efx_ids)} movement EFX"
+          + ("" if result.chaser_id is None else " + 1 cycle chaser"))
+    print(f"Wrote {out}")
+    print("Open it in QLC+ to verify before using it in a show.")
+    return 0
+
+
 def cmd_decompose(args: argparse.Namespace) -> int:
     decompose_workspace(args.workspace, args.out_dir)
     print(f"Decomposed {args.workspace} -> {args.out_dir}/ "
@@ -129,6 +157,20 @@ def build_parser() -> argparse.ArgumentParser:
     p_mat.add_argument("--no-chaser", action="store_true",
                        help="matrices only, skip the cycle chaser")
     p_mat.set_defaults(func=cmd_matrix)
+
+    p_mov = sub.add_parser(
+        "movement", help="generate movement EFX across every moving head"
+    )
+    p_mov.add_argument("workspace")
+    p_mov.add_argument("--algorithms",
+                       help="comma-separated EFX algorithms "
+                            f"(default: {','.join(EFX_ALGORITHMS)})")
+    p_mov.add_argument("--propagation", default="Parallel",
+                       choices=["Parallel", "Serial", "Asymmetric"])
+    p_mov.add_argument("--out", help="output file (default: <name>-generado.qxw)")
+    p_mov.add_argument("--no-chaser", action="store_true",
+                       help="EFX only, skip the cycle chaser")
+    p_mov.set_defaults(func=cmd_movement)
 
     p_dec = sub.add_parser(
         "decompose", help="split a workspace into a git-diffable fragment tree"
