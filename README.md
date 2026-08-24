@@ -38,7 +38,18 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
 
 # generate 12 colour scenes + a cycle chaser into a new file
 .venv/bin/qlctool palette "../../QLC+ Setups/DeluxeEventos2.qxw"
+
+# split a show into a git-diffable fragment tree (one file per function)
+.venv/bin/qlctool decompose "../../QLC+ Setups/DeluxeEventos2.qxw" tree/
+
+# rebuild a show from a fragment tree (semantically identical to the original)
+.venv/bin/qlctool compose tree/ rebuilt.qxw
 ```
+
+`decompose` writes `skeleton.qxw` (everything but the functions), one
+`functions/NNNNN-Type-slug.xml` per function, and `manifest.json` recording the
+Engine's child order. Edit or add fragment files, then `compose` to rebuild.
+`decompose -> compose` is a verified lossless round trip.
 
 ## Layout
 

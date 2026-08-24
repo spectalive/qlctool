@@ -9,6 +9,8 @@ import argparse
 from pathlib import Path
 
 from .capabilities_of import capabilities_of
+from .compose import compose_workspace
+from .decompose import decompose_workspace
 from .generate.color_palette import generate_color_palette
 from .library import FixtureLibrary
 from .workspace import Workspace
@@ -47,6 +49,20 @@ def cmd_palette(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_decompose(args: argparse.Namespace) -> int:
+    decompose_workspace(args.workspace, args.out_dir)
+    print(f"Decomposed {args.workspace} -> {args.out_dir}/ "
+          "(skeleton.qxw, functions/, manifest.json)")
+    return 0
+
+
+def cmd_compose(args: argparse.Namespace) -> int:
+    compose_workspace(args.src_dir, args.out)
+    print(f"Composed {args.src_dir}/ -> {args.out}")
+    print("Open it in QLC+ to verify before using it in a show.")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="qlctool", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -61,6 +77,20 @@ def build_parser() -> argparse.ArgumentParser:
     p_pal.add_argument("--no-chaser", action="store_true",
                        help="scenes only, skip the cycle chaser")
     p_pal.set_defaults(func=cmd_palette)
+
+    p_dec = sub.add_parser(
+        "decompose", help="split a workspace into a git-diffable fragment tree"
+    )
+    p_dec.add_argument("workspace")
+    p_dec.add_argument("out_dir")
+    p_dec.set_defaults(func=cmd_decompose)
+
+    p_com = sub.add_parser(
+        "compose", help="rebuild a workspace from a fragment tree"
+    )
+    p_com.add_argument("src_dir")
+    p_com.add_argument("out")
+    p_com.set_defaults(func=cmd_compose)
 
     return parser
 
