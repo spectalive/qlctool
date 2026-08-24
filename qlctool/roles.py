@@ -22,6 +22,9 @@ TILT = "tilt"
 TILT_FINE = "tilt_fine"
 STROBE = "strobe"
 COLOR_MACRO = "color_macro"
+GOBO = "gobo"
+PRISM = "prism"
+EFFECT = "effect"
 
 _INTENSITY_PRESETS = {
     "IntensityRed": RED,
@@ -52,10 +55,20 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
         return STROBE
     if p == "ColorMacro":
         return COLOR_MACRO
+    if p.startswith("GoboMacro") or p.startswith("GoboWheel"):
+        return GOBO
+    if p.startswith("PrismEffect"):
+        return PRISM
 
     # Fallback: no usable preset, read the group and the human name.
     g = (group or "").lower()
     n = (name or "").lower()
+    if g == "gobo":
+        return GOBO
+    if g == "prism":
+        return PRISM
+    if g == "effect":
+        return EFFECT
     if g == "colour" or "macro" in n and "color" in n or "colour" in n:
         return COLOR_MACRO
     if g == "shutter" or "strob" in n:

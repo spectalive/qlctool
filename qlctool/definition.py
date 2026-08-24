@@ -15,9 +15,24 @@ from .xmlutil import find_local, findall_local, iter_local
 
 
 @dataclass(frozen=True)
+class Capability:
+    """One labelled DMX range of a channel - a gobo, a colour, prism on/off."""
+
+    minimum: int
+    maximum: int
+    name: str
+
+    @property
+    def middle(self) -> int:
+        """A value safely inside the range, which is what a scene should send."""
+        return (self.minimum + self.maximum) // 2
+
+
+@dataclass(frozen=True)
 class Channel:
     name: str
     role: str | None
+    capabilities: tuple[Capability, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -32,6 +47,10 @@ class FixtureDefinition:
     def mode_roles(self, mode: str) -> list[str | None]:
         """Roles in channel order for a mode, index-aligned with DMX offset."""
         return [self.channels[c].role for c in self.modes[mode]]
+
+    def mode_capabilities(self, mode: str) -> list[tuple[Capability, ...]]:
+        """Each offset's labelled ranges, index-aligned with mode_roles."""
+        return [self.channels[c].capabilities for c in self.modes[mode]]
 
 
 def load_definition(path: str | Path) -> FixtureDefinition:
@@ -48,7 +67,16 @@ def load_definition(path: str | Path) -> FixtureDefinition:
         group_el = find_local(ch, "Group")
         group = group_el.text if group_el is not None else None
         role = role_of(ch.attrib.get("Preset"), group, name)
-        channels[name] = Channel(name=name, role=role)
+        capabilities = tuple(
+            Capability(
+                minimum=int(cap.attrib["Min"]),
+                maximum=int(cap.attrib["Max"]),
+                name=(cap.text or "").strip(),
+            )
+            for cap in findall_local(ch, "Capability")
+            if "Min" in cap.attrib and "Max" in cap.attrib
+        )
+        channels[name] = Channel(name=name, role=role, capabilities=capabilities)
 
     modes: dict[str, list[str]] = {}
     for mode in iter_local(root, "Mode"):

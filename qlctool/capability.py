@@ -8,7 +8,7 @@ offsets carry role X on this fixture?" A role can map to several offsets - an
 
 from dataclasses import dataclass
 
-from .definition import FixtureDefinition
+from .definition import Capability, FixtureDefinition
 from .fixture import PatchedFixture
 
 
@@ -17,6 +17,8 @@ class FixtureCapabilities:
     fixture: PatchedFixture
     # channel offset (0-based, within the fixture) -> role or None
     roles_by_offset: list[str | None]
+    # the same offsets -> that channel's labelled ranges (gobos, prism, colours)
+    capabilities_by_offset: list[tuple[Capability, ...]]
 
     @classmethod
     def resolve(
@@ -28,13 +30,24 @@ class FixtureCapabilities:
                 f"not in definition {definition.manufacturer}/{definition.model} "
                 f"(modes: {sorted(definition.modes)})"
             )
-        return cls(fixture=fixture, roles_by_offset=definition.mode_roles(fixture.mode))
+        return cls(
+            fixture=fixture,
+            roles_by_offset=definition.mode_roles(fixture.mode),
+            capabilities_by_offset=definition.mode_capabilities(fixture.mode),
+        )
 
     def offsets_for_role(self, role: str) -> list[int]:
         return [i for i, r in enumerate(self.roles_by_offset) if r == role]
 
     def has_role(self, role: str) -> bool:
         return role in self.roles_by_offset
+
+    def capabilities_for_role(self, role: str) -> list[tuple[int, tuple[Capability, ...]]]:
+        """(offset, ranges) for every channel carrying this role."""
+        return [
+            (offset, self.capabilities_by_offset[offset])
+            for offset in self.offsets_for_role(role)
+        ]
 
     @property
     def roles(self) -> set[str]:

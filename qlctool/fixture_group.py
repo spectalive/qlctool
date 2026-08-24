@@ -20,6 +20,7 @@ class DefinedFixtureGroup:
     width: int
     height: int
     head_count: int
+    fixture_ids: tuple[int, ...]  # in grid order, each fixture once
 
 
 def fixture_groups(root: etree._Element) -> list[DefinedFixtureGroup]:
@@ -31,13 +32,20 @@ def fixture_groups(root: etree._Element) -> list[DefinedFixtureGroup]:
             continue
         size = find_local(element, "Size")
         name = find_local(element, "Name")
+        heads = findall_local(element, "Head")
+        ordered: list[int] = []
+        for head in heads:
+            fixture_id = int(head.attrib["Fixture"])
+            if fixture_id not in ordered:
+                ordered.append(fixture_id)
         result.append(
             DefinedFixtureGroup(
                 group_id=int(element.attrib["ID"]),
                 name=(name.text or "").strip() if name is not None else "",
                 width=int(size.attrib.get("X", "0")) if size is not None else 0,
                 height=int(size.attrib.get("Y", "0")) if size is not None else 0,
-                head_count=len(findall_local(element, "Head")),
+                head_count=len(heads),
+                fixture_ids=tuple(ordered),
             )
         )
     return result
