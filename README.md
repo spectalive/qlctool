@@ -1,8 +1,8 @@
 # qlctool
 
 Programmatic editing of QLC+ workspaces (`.qxw`) for the Vibra Eventos lighting
-show. Generates scenes, chasers, RGBMatrix effects and movement EFX in bulk instead of
-clicking them one by one in QLC+.
+show. Generates scenes, chasers, RGBMatrix effects, movement EFX and the Virtual
+Console buttons for them, in bulk instead of clicking them one by one in QLC+.
 
 ## Why
 
@@ -25,7 +25,9 @@ addresses, a function it could not build. Commands never overwrite the input -
 they write a new `<name>-generado.qxw`.
 
 Validation needs QLC+ installed; it looks in `/Applications/QLC+.app` and on
-`PATH`, and `QLCTOOL_QLCPLUS` overrides both. A missing QLC+ raises rather than
+`PATH`, and `QLCTOOL_QLCPLUS` overrides both. The 4.x build (`qlcplus`) is
+preferred because `--nogui` loads with no window at all; with only the 5.x QML
+build (`qlcplus-qml`) validation still works but a window opens for a second. A missing QLC+ raises rather than
 passing quietly. Custom fixture definitions must be installed in the QLC+ user
 folder or every fixture in this rig reports "No fixture definition found" -
 QLC+ 4 reads `~/Library/Application Support/QLC+/Fixtures` and QLC+ 5 reads
@@ -67,6 +69,12 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
   --add "Vortex|PC-64 LED S|Default|0|301|PAR Extra" \
   --set-address "25=1:1" --rename "0=Wash Frontal 1" --remove 26
 
+# add Virtual Console buttons for everything that has a UI folder
+.venv/bin/qlctool layout "../../QLC+ Setups/DeluxeEventos2.qxw"
+
+# or generate and lay out in one run, then have QLC+ check the result
+.venv/bin/qlctool palette "../../QLC+ Setups/DeluxeEventos2.qxw" --buttons --validate
+
 # load a workspace in headless QLC+ and report what it complains about
 .venv/bin/qlctool validate "../../QLC+ Setups/DeluxeEventos2.qxw"
 
@@ -89,6 +97,7 @@ Engine's child order. Edit or add fragment files, then `compose` to rebuild.
 
 - `workspace.py`, `xmlsemantics.py`, `xmlutil.py` - load/save + the round-trip net
 - `validate.py` - headless QLC+ load, the second safety net
+- `vc/` - Virtual Console widget builders (button, solo frame, appearance)
 - `library.py`, `definition.py`, `roles.py` - fixture definitions and channel roles
 - `fixture.py`, `capability.py`, `capabilities_of.py` - the patch and its capabilities
 - `fixture_group.py`, `argb.py`, `matrix_algorithms.py` - RGBMatrix inputs
@@ -98,7 +107,7 @@ Engine's child order. Edit or add fragment files, then `compose` to rebuild.
   re-address / rename / remove operations
 - `functions/` - Scene, Chaser, RGBMatrix and EFX element builders
 - `generate/` - the mass generators (colour scene, colour palette, matrix
-  effects, movement EFX)
+  effects, movement EFX, Virtual Console layout)
 - `palette.py`, `ids.py`, `cli.py` - palette data, ID allocation, command line
 - `library/system/` - QLC+ system fixture defs the patch needs, bundled from the Mac
 

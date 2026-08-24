@@ -7,9 +7,14 @@ workspace and logs every problem it finds - a fixture whose definition is
 missing, two fixtures overlapping, a function it could not build.
 
 QLC+ has no "load and exit" mode: it starts its engine and stays up. So it is
-launched, watched until its output goes quiet - which is when loading has
-finished - then killed, and the verdict comes from the log rather than the exit
-code.
+launched, watched until loading is done, then killed, and the verdict comes from
+the log rather than the exit code.
+
+Two builds behave differently. The 4.x widgets build (`qlcplus`) takes
+`--nogui`, loads with no window at all, and then falls silent - that is the one
+to prefer. The 5.x QML build (`qlcplus-qml`) has no headless mode: it opens a
+window and keeps logging while it renders, so loading is considered finished once
+its end-of-load markers appear and the log settles.
 """
 
 import os
@@ -21,10 +26,19 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 DEFAULT_BINARIES = (
+    # 4.x first: it is the only build that loads with no GUI at all.
+    "/Applications/QLC+ 4.app/Contents/MacOS/qlcplus",
     "/Applications/QLC+.app/Contents/MacOS/qlcplus",
     "/usr/bin/qlcplus",
     "/usr/local/bin/qlcplus",
+    "/Applications/QLC+.app/Contents/MacOS/qlcplus-qml",
+    "/usr/bin/qlcplus-qml",
+    "/usr/local/bin/qlcplus-qml",
 )
+
+# The QML build logs these once the workspace is on screen; it never goes quiet
+# on its own, so they are what "loading finished" means there.
+QML_LOADED_MARKERS = ("renderPage", "MasterTimer", "Time is late")
 
 # Lines that mean the workspace itself is wrong.
 ERROR_MARKERS = (
@@ -66,7 +80,7 @@ def qlcplus_binary() -> str | None:
     for candidate in DEFAULT_BINARIES:
         if Path(candidate).exists():
             return candidate
-    return shutil.which("qlcplus")
+    return shutil.which("qlcplus") or shutil.which("qlcplus-qml")
 
 
 def validate_workspace(
@@ -86,13 +100,19 @@ def validate_workspace(
             "no QLC+ executable found; set QLCTOOL_QLCPLUS to its path"
         )
 
+    qml = Path(executable).name.endswith("-qml")
+    # The QML build has no --nogui and takes -d without a level.
+    arguments = (
+        [executable, "-d", "-m", "-o", str(path)] if qml
+        else [executable, "--nowm", "--nogui", "-d", "1", "-o", str(path)]
+    )
     process = subprocess.Popen(
-        [executable, "--nowm", "--nogui", "-d", "1", "-o", str(path)],
+        arguments,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
     )
-    output = _read_until_quiet(process, timeout, quiet_period)
+    output = _read_until_loaded(process, timeout, quiet_period, qml)
 
     errors = [
         line.strip()
@@ -103,23 +123,31 @@ def validate_workspace(
     return ValidationResult(ok=not errors, errors=errors, log=output or "")
 
 
-def _read_until_quiet(
-    process: subprocess.Popen, timeout: float, quiet_period: float
+def _read_until_loaded(
+    process: subprocess.Popen, timeout: float, quiet_period: float, qml: bool
 ) -> str:
-    """Collect output until QLC+ stops talking, then kill it.
+    """Collect output until QLC+ has finished loading, then kill it.
 
-    Loading is done when the log goes quiet; waiting the full timeout on every
-    file would make validation useless in a test suite.
+    For the 4.x build that means the log going quiet. The QML build keeps
+    logging as it renders, so it is stopped a moment after its first
+    end-of-load marker; waiting the full timeout on every file would make
+    validation useless in a test suite.
     """
     deadline = time.monotonic() + timeout
     last_line_at = time.monotonic()
+    loaded_at: float | None = None
     lines: list[str] = []
     while True:
         if process.poll() is not None:
             lines.extend(process.stdout.readlines())
             break
         now = time.monotonic()
-        if now > deadline or now - last_line_at > quiet_period:
+        settled = (
+            loaded_at is not None and now - loaded_at > quiet_period
+            if qml
+            else now - last_line_at > quiet_period
+        )
+        if now > deadline or settled:
             process.kill()
             process.wait()
             lines.extend(process.stdout.readlines())
@@ -130,5 +158,9 @@ def _read_until_quiet(
             if line:
                 lines.append(line)
                 last_line_at = time.monotonic()
+                if loaded_at is None and any(
+                    marker in line for marker in QML_LOADED_MARKERS
+                ):
+                    loaded_at = last_line_at
     process.stdout.close()
     return "".join(lines)

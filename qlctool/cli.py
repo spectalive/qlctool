@@ -17,6 +17,7 @@ from .fixture_group import fixture_groups
 from .generate.color_palette import generate_color_palette
 from .generate.matrix_effects import generate_matrix_effects
 from .generate.movement_efx import generate_movement_efx
+from .generate.vc_layout import generate_vc_layout
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .library import FixtureLibrary
 from .patch_conflicts import patch_conflicts
@@ -30,6 +31,15 @@ from .workspace import Workspace
 
 def _default_out(src: Path) -> Path:
     return src.with_name(f"{src.stem}-generado{src.suffix}")
+
+
+def _lay_out(ws: Workspace, function_ids: list[int], wanted: bool) -> None:
+    """Add Virtual Console buttons for functions we just created, on request."""
+    if not wanted or not function_ids:
+        return
+    layout = generate_vc_layout(ws, function_ids=function_ids)
+    print(f"Laid out {len(layout.button_ids)} Virtual Console buttons "
+          f"in {len(layout.frame_ids)} frame(s)")
 
 
 def _finish(out: Path, validate: bool) -> int:
@@ -73,6 +83,8 @@ def cmd_palette(args: argparse.Namespace) -> int:
     ws = Workspace.load(src)
     library = FixtureLibrary.load()
     result = generate_color_palette(ws, library, make_chaser=not args.no_chaser)
+    created = result.scene_ids + ([] if result.chaser_id is None else [result.chaser_id])
+    _lay_out(ws, created, args.buttons)
     ws.save(out)
 
     print(f"Generated {len(result.scene_ids)} colour scenes"
@@ -100,6 +112,8 @@ def cmd_matrix(args: argparse.Namespace) -> int:
         algorithms=algorithms,
         make_chaser=not args.no_chaser,
     )
+    created = result.matrix_ids + ([] if result.chaser_id is None else [result.chaser_id])
+    _lay_out(ws, created, args.buttons)
     ws.save(out)
 
     print(f"Generated {len(result.matrix_ids)} RGBMatrix functions"
@@ -124,6 +138,8 @@ def cmd_movement(args: argparse.Namespace) -> int:
         propagation_mode=args.propagation,
         make_chaser=not args.no_chaser,
     )
+    created = result.efx_ids + ([] if result.chaser_id is None else [result.chaser_id])
+    _lay_out(ws, created, args.buttons)
     ws.save(out)
 
     print(f"Generated {len(result.efx_ids)} movement EFX"
@@ -190,6 +206,19 @@ def cmd_patch(args: argparse.Namespace) -> int:
     return _finish(out, args.validate)
 
 
+def cmd_layout(args: argparse.Namespace) -> int:
+    src = Path(args.workspace)
+    out = Path(args.out) if args.out else _default_out(src)
+
+    ws = Workspace.load(src)
+    layout = generate_vc_layout(ws, columns=args.columns)
+    ws.save(out)
+
+    print(f"Laid out {len(layout.button_ids)} buttons "
+          f"in {len(layout.frame_ids)} frame(s)")
+    return _finish(out, args.validate)
+
+
 def cmd_validate(args: argparse.Namespace) -> int:
     result = validate_workspace(args.workspace)
     if result.ok:
@@ -227,6 +256,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_pal.add_argument("--out", help="output file (default: <name>-generado.qxw)")
     p_pal.add_argument("--no-chaser", action="store_true",
                        help="scenes only, skip the cycle chaser")
+    p_pal.add_argument("--buttons", action="store_true",
+                       help="also add Virtual Console buttons for what was "
+                            "generated")
     p_pal.add_argument("--validate", action="store_true",
                        help="load the result in headless QLC+ and fail on "
                             "any problem it reports")
@@ -244,6 +276,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_mat.add_argument("--out", help="output file (default: <name>-generado.qxw)")
     p_mat.add_argument("--no-chaser", action="store_true",
                        help="matrices only, skip the cycle chaser")
+    p_mat.add_argument("--buttons", action="store_true",
+                       help="also add Virtual Console buttons for what was "
+                            "generated")
     p_mat.add_argument("--validate", action="store_true",
                        help="load the result in headless QLC+ and fail on "
                             "any problem it reports")
@@ -261,6 +296,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_mov.add_argument("--out", help="output file (default: <name>-generado.qxw)")
     p_mov.add_argument("--no-chaser", action="store_true",
                        help="EFX only, skip the cycle chaser")
+    p_mov.add_argument("--buttons", action="store_true",
+                       help="also add Virtual Console buttons for what was "
+                            "generated")
     p_mov.add_argument("--validate", action="store_true",
                        help="load the result in headless QLC+ and fail on "
                             "any problem it reports")
@@ -286,6 +324,18 @@ def build_parser() -> argparse.ArgumentParser:
                        help="load the result in headless QLC+ and fail on "
                             "any problem it reports")
     p_patch.set_defaults(func=cmd_patch)
+
+    p_lay = sub.add_parser(
+        "layout",
+        help="add Virtual Console buttons for every function that has a folder",
+    )
+    p_lay.add_argument("workspace")
+    p_lay.add_argument("--columns", type=int, default=6,
+                       help="buttons per row (default 6)")
+    p_lay.add_argument("--out", help="output file (default: <name>-generado.qxw)")
+    p_lay.add_argument("--validate", action="store_true",
+                       help="load the result in QLC+ and fail on any problem")
+    p_lay.set_defaults(func=cmd_layout)
 
     p_val = sub.add_parser(
         "validate", help="load a workspace in headless QLC+ and report problems"
