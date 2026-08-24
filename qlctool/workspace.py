@@ -15,6 +15,7 @@ from pathlib import Path
 from lxml import etree
 
 from .constants import DOCTYPE, XML_DECLARATION
+from .xmlutil import find_local
 
 
 class Workspace:
@@ -32,6 +33,17 @@ class Workspace:
     @property
     def root(self) -> etree._Element:
         return self._tree.getroot()
+
+    @property
+    def engine(self) -> etree._Element:
+        engine = find_local(self.root, "Engine")
+        if engine is None:
+            raise ValueError("workspace has no <Engine> element")
+        return engine
+
+    def add_function(self, function: etree._Element) -> None:
+        """Append a generated Function into the Engine, where QLC+ keeps them."""
+        self.engine.append(function)
 
     def to_bytes(self) -> bytes:
         # Serialize the root element, not the tree: tostring(tree) would re-emit
