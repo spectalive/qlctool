@@ -39,12 +39,16 @@ def generate_vc_layout(
     columns: int = 6,
     color_by_name: bool = True,
     action: str = "Toggle",
+    keys: dict[int, str] | None = None,
+    actions: dict[int, str] | None = None,
 ) -> GeneratedLayout:
     """Add one solo frame per function group, with a button per function.
 
     function_ids selects what to expose; by default every function that has a
     Path (the UI folder QLC+ shows), which is exactly what the generators tag.
     Functions are grouped by that Path and ordered by name inside each group.
+    keys and actions override the keyboard shortcut and the Toggle/Flash mode
+    per function - the show's flash buttons live on Space and ".".
     """
     engine = workspace.engine
     functions = [f for f in engine if localname(f) == "Function"]
@@ -90,7 +94,8 @@ def generate_vc_layout(
                 y=HEADER + row * (BUTTON_HEIGHT + PADDING),
                 width=BUTTON_WIDTH,
                 height=BUTTON_HEIGHT,
-                action=action,
+                action=(actions or {}).get(int(function.attrib["ID"]), action),
+                key=(keys or {}).get(int(function.attrib["ID"])),
                 background=_background_for(function, color_by_name),
             )
             button_ids.append(button_id)

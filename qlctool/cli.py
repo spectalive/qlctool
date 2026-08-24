@@ -218,9 +218,12 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     )
     ws.save(out)
 
-    print(f"Built a fresh show on the same patch: {len(show.scene_ids)} colour "
-          f"scenes, {len(show.matrix_ids)} matrices, {len(show.efx_ids)} EFX, "
-          f"{len(show.chaser_ids)} chasers, {len(show.button_ids)} buttons")
+    colors = sum(len(b.scene_ids) + len(b.split_ids) for b in show.banks)
+    print(f"Built a self-running show on the same patch: {show.function_count} "
+          f"functions ({colors} colour scenes across {len(show.banks)} groups, "
+          f"{len(show.matrix_ids)} matrices, {len(show.efx_ids)} EFX, "
+          f"{len(show.gobo_ids)} gobos, {len(show.prism_ids)} prism), "
+          f"{len(show.button_ids)} console buttons. Press AUTO (key Q).")
     return _finish(out, args.validate)
 
 

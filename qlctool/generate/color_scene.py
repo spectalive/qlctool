@@ -29,6 +29,8 @@ def color_scene_values(
     for caps in capabilities:
         if wanted is not None and caps.fixture.fixture_id not in wanted:
             continue
+        if caps.is_smoke:
+            continue
         if not (
             caps.has_role(roles.RED)
             or caps.has_role(roles.GREEN)

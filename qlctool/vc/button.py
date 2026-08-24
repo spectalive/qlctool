@@ -22,10 +22,14 @@ def build_button(
     width: int,
     height: int,
     action: str = "Toggle",
+    key: str | None = None,
     background: str = DEFAULT,
     intensity: int = 100,
 ) -> etree._Element:
-    """Append a <Button> to parent and return it."""
+    """Append a <Button> to parent and return it.
+
+    key is a QLC+ keyboard shortcut as it writes them - "Space", "1", "Q", ".".
+    """
     button = etree.SubElement(parent, f"{{{QLC_NS}}}Button")
     button.set("Caption", caption)
     button.set("ID", str(widget_id))
@@ -37,7 +41,9 @@ def build_button(
     function = etree.SubElement(button, f"{{{QLC_NS}}}Function")
     function.set("ID", str(function_id))
     etree.SubElement(button, f"{{{QLC_NS}}}Action").text = action
-    etree.SubElement(button, f"{{{QLC_NS}}}Key")
+    shortcut = etree.SubElement(button, f"{{{QLC_NS}}}Key")
+    if key is not None:
+        shortcut.text = key
     level = etree.SubElement(button, f"{{{QLC_NS}}}Intensity")
     level.set("Adjust", "False")
     level.text = str(intensity)

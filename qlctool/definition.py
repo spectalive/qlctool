@@ -39,6 +39,9 @@ class Channel:
 class FixtureDefinition:
     manufacturer: str
     model: str
+    # <Type>: Moving Head, Color Changer, Smoke, ... - a smoke machine must
+    # never be swept up in a "all dimmers to full" scene.
+    fixture_type: str
     # channel name -> Channel
     channels: dict[str, Channel]
     # mode name -> ordered list of channel names
@@ -58,6 +61,7 @@ def load_definition(path: str | Path) -> FixtureDefinition:
 
     manufacturer = _text(find_local(root, "Manufacturer"))
     model = _text(find_local(root, "Model"))
+    fixture_type = _text(find_local(root, "Type"))
 
     channels: dict[str, Channel] = {}
     for ch in iter_local(root, "Channel"):
@@ -92,6 +96,7 @@ def load_definition(path: str | Path) -> FixtureDefinition:
     return FixtureDefinition(
         manufacturer=manufacturer,
         model=model,
+        fixture_type=fixture_type,
         channels=channels,
         modes=modes,
     )

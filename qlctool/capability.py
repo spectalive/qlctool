@@ -19,6 +19,7 @@ class FixtureCapabilities:
     roles_by_offset: list[str | None]
     # the same offsets -> that channel's labelled ranges (gobos, prism, colours)
     capabilities_by_offset: list[tuple[Capability, ...]]
+    fixture_type: str = ""
 
     @classmethod
     def resolve(
@@ -34,7 +35,12 @@ class FixtureCapabilities:
             fixture=fixture,
             roles_by_offset=definition.mode_roles(fixture.mode),
             capabilities_by_offset=definition.mode_capabilities(fixture.mode),
+            fixture_type=definition.fixture_type,
         )
+
+    @property
+    def is_smoke(self) -> bool:
+        return self.fixture_type.lower() == "smoke"
 
     def offsets_for_role(self, role: str) -> list[int]:
         return [i for i, r in enumerate(self.roles_by_offset) if r == role]

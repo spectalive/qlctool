@@ -51,6 +51,7 @@ def generate_movement_efx(
     propagation_mode: str = "Parallel",
     duration: int = 6848,
     chaser_hold: int = 4000,
+    chaser_run_order: str = "Loop",
 ) -> GeneratedMovements:
     """Create one EFX per algorithm over the moving heads.
 
@@ -91,7 +92,12 @@ def generate_movement_efx(
         chaser_id = next_function_id(workspace.root)
         workspace.add_function(
             build_chaser(
-                chaser_id, "Ciclo Movimiento", efx_ids, hold=chaser_hold, path=path
+                chaser_id,
+                "Movimientos Cabezas",
+                efx_ids,
+                hold=chaser_hold,
+                run_order=chaser_run_order,
+                path=path,
             )
         )
 
