@@ -9,6 +9,7 @@ byte-comparable with a hand-built one.
 from lxml import etree
 
 from ..argb import RGB, argb_from_rgb
+from ..color_format import INDEXED, LEGACY
 from ..constants import ALL_FIXTURES_GROUP, QLC_NS
 
 
@@ -26,6 +27,7 @@ def build_rgbmatrix(
     fade_out: int = 0,
     duration: int = 478,
     properties: dict[str, str] | None = None,
+    color_format: str = LEGACY,
     path: str | None = None,
 ) -> etree._Element:
     """Return a `<Function Type="RGBMatrix">` element.
@@ -59,11 +61,18 @@ def build_rgbmatrix(
         algo.set("Type", "Script")
         algo.text = algorithm
 
-    mono = etree.SubElement(function, f"{{{QLC_NS}}}MonoColor")
-    mono.text = str(argb_from_rgb(mono_color))
-    if end_color is not None:
-        end = etree.SubElement(function, f"{{{QLC_NS}}}EndColor")
-        end.text = str(argb_from_rgb(end_color))
+    colors = [mono_color] + ([] if end_color is None else [end_color])
+    if color_format == INDEXED:
+        for index, color in enumerate(colors):
+            element = etree.SubElement(function, f"{{{QLC_NS}}}Color")
+            element.set("Index", str(index))
+            element.text = str(argb_from_rgb(color))
+    else:
+        mono = etree.SubElement(function, f"{{{QLC_NS}}}MonoColor")
+        mono.text = str(argb_from_rgb(mono_color))
+        if end_color is not None:
+            end = etree.SubElement(function, f"{{{QLC_NS}}}EndColor")
+            end.text = str(argb_from_rgb(end_color))
 
     etree.SubElement(function, f"{{{QLC_NS}}}ControlMode").text = control_mode
     etree.SubElement(function, f"{{{QLC_NS}}}FixtureGroup").text = str(group_id)

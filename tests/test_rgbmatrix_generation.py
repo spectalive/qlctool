@@ -11,6 +11,7 @@ from pathlib import Path
 import pytest
 
 from qlctool.argb import argb_from_rgb, rgb_from_argb
+from qlctool.color_format import INDEXED, LEGACY, color_format_of
 from qlctool.constants import ALL_FIXTURES_GROUP
 from qlctool.fixture_group import fixture_groups
 from qlctool.functions.rgbmatrix import build_rgbmatrix
@@ -22,6 +23,14 @@ from qlctool.xmlutil import find_local, findall_local, iter_local
 
 REPO = Path(__file__).resolve().parents[3]
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
+# The same show as saved by three QLC+ versions: 4.13.1 (SHOW), 4.14.3 and
+# 5.2.2. Each writes the schema slightly differently, and the builders must
+# reproduce all of them.
+ALL_FORMATS = [
+    SHOW,
+    REPO / "QLC+ Setups" / "DeluxeEventos2_qlc4143.qxw",
+    REPO / "QLC+ Setups" / "DeluxeEventos2_qlcv5.qxw",
+]
 
 
 def _matrices(root):
@@ -44,8 +53,9 @@ def test_argb_round_trip():
     assert rgb_from_argb(4278190335) == (0, 0, 255)
 
 
-def test_builder_reproduces_every_real_matrix():
-    root = Workspace.load(SHOW).root
+@pytest.mark.parametrize("show", ALL_FORMATS, ids=lambda p: p.stem)
+def test_builder_reproduces_every_real_matrix(show):
+    root = Workspace.load(show).root
     originals = _matrices(root)
     assert len(originals) == 122
 
@@ -56,12 +66,20 @@ def test_builder_reproduces_every_real_matrix():
             None if algorithm_element.attrib["Type"] == "Plain"
             else (algorithm_element.text or "").strip()
         )
-        end_color = _text_of(original, "EndColor")
+        indexed = [c for c in original if c.tag.endswith("}Color")]
+        if indexed:
+            mono_text = (indexed[0].text or "").strip()
+            end_color = (
+                (indexed[1].text or "").strip() if len(indexed) > 1 else None
+            )
+        else:
+            mono_text = _text_of(original, "MonoColor")
+            end_color = _text_of(original, "EndColor")
         rebuilt = build_rgbmatrix(
             int(original.attrib["ID"]),
             original.attrib["Name"],
             algorithm=algorithm,
-            mono_color=rgb_from_argb(int(_text_of(original, "MonoColor"))),
+            mono_color=rgb_from_argb(int(mono_text)),
             group_id=int(_text_of(original, "FixtureGroup")),
             end_color=None if end_color is None else rgb_from_argb(int(end_color)),
             control_mode=_text_of(original, "ControlMode"),
@@ -74,6 +92,7 @@ def test_builder_reproduces_every_real_matrix():
                 p.attrib["Name"]: p.attrib["Value"]
                 for p in findall_local(original, "Property")
             },
+            color_format=INDEXED if indexed else LEGACY,
             path=original.attrib.get("Path"),
         )
         diff = first_difference(original, rebuilt)
@@ -151,3 +170,33 @@ def test_generate_rejects_unknown_group():
     ws = Workspace.load(SHOW)
     with pytest.raises(ValueError, match="no fixture group 99"):
         generate_matrix_effects(ws, group_id=99, algorithms=["Fill"])
+
+
+@pytest.mark.parametrize(
+    "show,expected",
+    [(ALL_FORMATS[0], LEGACY), (ALL_FORMATS[1], INDEXED), (ALL_FORMATS[2], INDEXED)],
+    ids=lambda value: getattr(value, "stem", value),
+)
+def test_colour_format_is_detected_per_show(show, expected):
+    assert color_format_of(Workspace.load(show).root) == expected
+
+
+def test_generation_matches_the_target_show_colour_shape(tmp_path):
+    """A matrix generated into a 4.14+ show must use <Color Index>, not
+    <MonoColor> - QLC+ still reads the old shape, but a file that mixes both is
+    a trap for the next reader."""
+    ws = Workspace.load(ALL_FORMATS[2])  # saved by QLC+ 5.2.2
+    result = generate_matrix_effects(
+        ws, group_id=0, algorithms=["Strobe"], palette={"Rojo": (255, 0, 0)}
+    )
+    out = tmp_path / "out.qxw"
+    ws.save(out)
+
+    generated = next(
+        f for f in _matrices(Workspace.load(out).root)
+        if int(f.attrib["ID"]) == result.matrix_ids[0]
+    )
+    colors = [c for c in generated if c.tag.endswith("}Color")]
+    assert [c.attrib["Index"] for c in colors] == ["0"]
+    assert colors[0].text == str(argb_from_rgb((255, 0, 0)))
+    assert find_local(generated, "MonoColor") is None

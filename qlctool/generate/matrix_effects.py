@@ -10,6 +10,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 from ..argb import RGB
+from ..color_format import color_format_of
 from ..constants import ALL_FIXTURES_GROUP
 from ..fixture_group import fixture_groups
 from ..functions.chaser import build_chaser
@@ -46,6 +47,8 @@ def generate_matrix_effects(
     """
     colors = palette if palette is not None else PALETTE
     group_name = _group_name(workspace, group_id)
+    # Write the colour shape this show already uses (4.13 vs 4.14+).
+    color_format = color_format_of(workspace.root)
 
     matrix_ids: list[int] = []
     for algorithm in algorithms:
@@ -59,6 +62,7 @@ def generate_matrix_effects(
                     algorithm=algorithm,
                     mono_color=rgb,
                     group_id=group_id,
+                    color_format=color_format,
                     duration=duration,
                     direction=direction,
                     path=path,

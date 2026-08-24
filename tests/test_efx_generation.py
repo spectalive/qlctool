@@ -24,6 +24,14 @@ from qlctool.xmlutil import find_local, findall_local, iter_local
 
 REPO = Path(__file__).resolve().parents[3]
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
+# The same show as saved by three QLC+ versions: 4.13.1 (SHOW), 4.14.3 and
+# 5.2.2. Each writes the schema slightly differently, and the builders must
+# reproduce all of them.
+ALL_FORMATS = [
+    SHOW,
+    REPO / "QLC+ Setups" / "DeluxeEventos2_qlc4143.qxw",
+    REPO / "QLC+ Setups" / "DeluxeEventos2_qlcv5.qxw",
+]
 
 
 def _efx(root):
@@ -48,8 +56,9 @@ def _axis(function, name):
     raise AssertionError(f"no {name} axis")
 
 
-def test_builder_reproduces_every_real_efx():
-    root = Workspace.load(SHOW).root
+@pytest.mark.parametrize("show", ALL_FORMATS, ids=lambda p: p.stem)
+def test_builder_reproduces_every_real_efx(show):
+    root = Workspace.load(show).root
     originals = _efx(root)
     assert len(originals) == 30
 
