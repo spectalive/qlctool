@@ -41,6 +41,7 @@ KEYS = {
     "Rueda Mezcla": "E",
     "Movimientos Cabezas": "A",
     "Gobo Animacion": "G",
+    "Color Beam Animacion": "C",
     "Prisma Animacion": "P",
     "Humo Auto": "J",
     "Luces ON": "X",
@@ -118,6 +119,20 @@ def build_canonical_show(
     )
     if gobos.chaser_id is not None:
         master["Gobo Animacion"] = gobos.chaser_id
+    # The beams' own colour wheel: restricted to the fixtures that have gobos,
+    # so a MiN Wash's Color Macro channel is not driven with beam positions.
+    beams = [
+        c.fixture.fixture_id
+        for c in capabilities_of(workspace.root, library)
+        if c.has_role(roles.GOBO)
+    ]
+    beam_colors = generate_wheel_scenes(
+        workspace, library, role=roles.COLOR_MACRO, label="Color Beam",
+        fixture_ids=beams, hold=6000, path="Color Beam",
+    )
+    if beam_colors.chaser_id is not None:
+        master["Color Beam Animacion"] = beam_colors.chaser_id
+
     prisms = generate_wheel_scenes(
         workspace, library, role=roles.PRISM, label="Prisma", run_order="Loop",
         hold=8000, path="Prisma",
@@ -140,7 +155,8 @@ def build_canonical_show(
     master["AUTO"] = _collection(
         workspace, "AUTO",
         [master["Rueda Colores"], master["Movimientos Cabezas"],
-         master["Gobo Animacion"], master["Humo Auto"], *matrix_chasers],
+         master["Gobo Animacion"], master["Color Beam Animacion"],
+         master["Humo Auto"], *matrix_chasers],
     )
 
     button_ids: list[int] = []
@@ -154,7 +170,7 @@ def build_canonical_show(
         banks=banks,
         matrix_ids=matrix_ids,
         efx_ids=movement.efx_ids,
-        gobo_ids=gobos.scene_ids,
+        gobo_ids=gobos.scene_ids + beam_colors.scene_ids,
         prism_ids=prisms.scene_ids,
         master_ids=master,
         button_ids=button_ids,
