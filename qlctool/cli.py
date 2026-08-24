@@ -14,6 +14,7 @@ from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
 from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_group import fixture_groups
+from .generate.canonical_show import build_canonical_show
 from .generate.channel_probe import generate_channel_probe
 from .generate.color_palette import generate_color_palette
 from .generate.matrix_effects import generate_matrix_effects
@@ -207,6 +208,22 @@ def cmd_patch(args: argparse.Namespace) -> int:
     return _finish(out, args.validate)
 
 
+def cmd_newshow(args: argparse.Namespace) -> int:
+    src = Path(args.workspace)
+    out = Path(args.out) if args.out else src.with_name("Vibra.qxw")
+
+    ws = Workspace.load(src)
+    show = build_canonical_show(
+        ws, FixtureLibrary.load(), with_layout=not args.no_buttons
+    )
+    ws.save(out)
+
+    print(f"Built a fresh show on the same patch: {len(show.scene_ids)} colour "
+          f"scenes, {len(show.matrix_ids)} matrices, {len(show.efx_ids)} EFX, "
+          f"{len(show.chaser_ids)} chasers, {len(show.button_ids)} buttons")
+    return _finish(out, args.validate)
+
+
 def cmd_probe(args: argparse.Namespace) -> int:
     src = Path(args.workspace)
     out = Path(args.out) if args.out else _default_out(src)
@@ -348,6 +365,19 @@ def build_parser() -> argparse.ArgumentParser:
                        help="load the result in headless QLC+ and fail on "
                             "any problem it reports")
     p_patch.set_defaults(func=cmd_patch)
+
+    p_new = sub.add_parser(
+        "newshow",
+        help="build a fresh show on an existing patch: strip the functions, "
+             "generate palette + matrices + movement + console",
+    )
+    p_new.add_argument("workspace", help="the show to take the patch from")
+    p_new.add_argument("--out", help="output file (default: Vibra.qxw beside it)")
+    p_new.add_argument("--no-buttons", action="store_true",
+                       help="skip the Virtual Console layout")
+    p_new.add_argument("--validate", action="store_true",
+                       help="load the result in QLC+ and fail on any problem")
+    p_new.set_defaults(func=cmd_newshow)
 
     p_prb = sub.add_parser(
         "probe",

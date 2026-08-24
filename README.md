@@ -69,6 +69,10 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
   --add "Vortex|PC-64 LED S|Default|0|301|PAR Extra" \
   --set-address "25=1:1" --rename "0=Wash Frontal 1" --remove 26
 
+# build a fresh show on the same rig: patch kept, content regenerated
+.venv/bin/qlctool newshow "../../QLC+ Setups/DeluxeEventos2.qxw" \
+  --out "../../QLC+ Setups/Vibra.qxw" --validate
+
 # find out what each DMX channel of an undocumented fixture does, on site
 .venv/bin/qlctool probe "../../QLC+ Setups/DeluxeEventos2.qxw" 25 --base "1=255" --buttons
 
@@ -100,6 +104,7 @@ Engine's child order. Edit or add fragment files, then `compose` to rebuild.
 
 - `workspace.py`, `xmlsemantics.py`, `xmlutil.py` - load/save + the round-trip net
 - `validate.py` - headless QLC+ load, the second safety net
+- `skeleton.py` - strip a show back to its patch, for a fresh build
 - `vc/` - Virtual Console widget builders (button, solo frame, appearance)
 - `library.py`, `definition.py`, `roles.py` - fixture definitions and channel roles
 - `fixture.py`, `capability.py`, `capabilities_of.py` - the patch and its capabilities
