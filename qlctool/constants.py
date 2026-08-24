@@ -24,3 +24,7 @@ FUNCTION_TYPES = (
     "Video",
     "Script",
 )
+
+# <FixtureGroup> value an RGBMatrix uses to mean "every fixture in the show"
+# (0xFFFFFFFF, QLC+'s invalid-ID sentinel).
+ALL_FIXTURES_GROUP = 4294967295

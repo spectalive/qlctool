@@ -10,8 +10,12 @@ from pathlib import Path
 
 from .capabilities_of import capabilities_of
 from .compose import compose_workspace
+from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
+from .fixture_group import fixture_groups
 from .generate.color_palette import generate_color_palette
+from .generate.matrix_effects import generate_matrix_effects
+from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .library import FixtureLibrary
 from .workspace import Workspace
 
@@ -30,6 +34,11 @@ def cmd_info(args: argparse.Namespace) -> int:
         role_summary = ", ".join(sorted(c.roles)) or "(no driven roles)"
         print(f"  [{f.fixture_id:>3}] U{f.universe} @{f.address + 1:<4} "
               f"{f.manufacturer}/{f.model} <{f.mode}>: {role_summary}")
+    groups = fixture_groups(ws.root)
+    print(f"{len(groups)} fixture groups (RGBMatrix targets):")
+    for g in groups:
+        print(f"  [{g.group_id}] {g.name}: {g.width}x{g.height} grid, "
+              f"{g.head_count} heads")
     return 0
 
 
@@ -43,6 +52,35 @@ def cmd_palette(args: argparse.Namespace) -> int:
     ws.save(out)
 
     print(f"Generated {len(result.scene_ids)} colour scenes"
+          + ("" if result.chaser_id is None else " + 1 cycle chaser"))
+    print(f"Wrote {out}")
+    print("Open it in QLC+ to verify before using it in a show.")
+    return 0
+
+
+def cmd_matrix(args: argparse.Namespace) -> int:
+    src = Path(args.workspace)
+    out = Path(args.out) if args.out else _default_out(src)
+
+    algorithms: list[str | None] = (
+        [None if a.lower() == "solid" else a
+         for a in args.algorithms.split(",") if a]
+        if args.algorithms else list(SCRIPT_ALGORITHMS)
+    )
+    group_id = (
+        ALL_FIXTURES_GROUP if args.group.lower() == "all" else int(args.group)
+    )
+
+    ws = Workspace.load(src)
+    result = generate_matrix_effects(
+        ws,
+        group_id=group_id,
+        algorithms=algorithms,
+        make_chaser=not args.no_chaser,
+    )
+    ws.save(out)
+
+    print(f"Generated {len(result.matrix_ids)} RGBMatrix functions"
           + ("" if result.chaser_id is None else " + 1 cycle chaser"))
     print(f"Wrote {out}")
     print("Open it in QLC+ to verify before using it in a show.")
@@ -77,6 +115,20 @@ def build_parser() -> argparse.ArgumentParser:
     p_pal.add_argument("--no-chaser", action="store_true",
                        help="scenes only, skip the cycle chaser")
     p_pal.set_defaults(func=cmd_palette)
+
+    p_mat = sub.add_parser(
+        "matrix", help="generate RGBMatrix effects (algorithm x colour)"
+    )
+    p_mat.add_argument("workspace")
+    p_mat.add_argument("--group", default="all",
+                       help="fixture group ID to paint, or 'all' (default)")
+    p_mat.add_argument("--algorithms",
+                       help="comma-separated RGB script names, 'solid' for a "
+                            "plain colour matrix (default: all known scripts)")
+    p_mat.add_argument("--out", help="output file (default: <name>-generado.qxw)")
+    p_mat.add_argument("--no-chaser", action="store_true",
+                       help="matrices only, skip the cycle chaser")
+    p_mat.set_defaults(func=cmd_matrix)
 
     p_dec = sub.add_parser(
         "decompose", help="split a workspace into a git-diffable fragment tree"
