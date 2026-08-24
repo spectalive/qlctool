@@ -24,11 +24,28 @@ from .repatch.add import add_fixture
 from .repatch.address import set_fixture_address
 from .repatch.remove import remove_fixture
 from .repatch.rename import rename_fixture
+from .validate import validate_workspace
 from .workspace import Workspace
 
 
 def _default_out(src: Path) -> Path:
     return src.with_name(f"{src.stem}-generado{src.suffix}")
+
+
+def _finish(out: Path, validate: bool) -> int:
+    """Report where the file went and, on request, that QLC+ accepts it."""
+    print(f"Wrote {out}")
+    if not validate:
+        print("Open it in QLC+ to verify before using it in a show.")
+        return 0
+    result = validate_workspace(out)
+    if result.ok:
+        print("Validated: QLC+ loaded it with no complaints")
+        return 0
+    print("QLC+ reported problems loading it:")
+    for error in result.errors:
+        print(f"  {error}")
+    return 1
 
 
 def cmd_info(args: argparse.Namespace) -> int:
@@ -60,9 +77,7 @@ def cmd_palette(args: argparse.Namespace) -> int:
 
     print(f"Generated {len(result.scene_ids)} colour scenes"
           + ("" if result.chaser_id is None else " + 1 cycle chaser"))
-    print(f"Wrote {out}")
-    print("Open it in QLC+ to verify before using it in a show.")
-    return 0
+    return _finish(out, args.validate)
 
 
 def cmd_matrix(args: argparse.Namespace) -> int:
@@ -89,9 +104,7 @@ def cmd_matrix(args: argparse.Namespace) -> int:
 
     print(f"Generated {len(result.matrix_ids)} RGBMatrix functions"
           + ("" if result.chaser_id is None else " + 1 cycle chaser"))
-    print(f"Wrote {out}")
-    print("Open it in QLC+ to verify before using it in a show.")
-    return 0
+    return _finish(out, args.validate)
 
 
 def cmd_movement(args: argparse.Namespace) -> int:
@@ -115,9 +128,7 @@ def cmd_movement(args: argparse.Namespace) -> int:
 
     print(f"Generated {len(result.efx_ids)} movement EFX"
           + ("" if result.chaser_id is None else " + 1 cycle chaser"))
-    print(f"Wrote {out}")
-    print("Open it in QLC+ to verify before using it in a show.")
-    return 0
+    return _finish(out, args.validate)
 
 
 def cmd_patch(args: argparse.Namespace) -> int:
@@ -176,9 +187,18 @@ def cmd_patch(args: argparse.Namespace) -> int:
 
     out = Path(args.out) if args.out else _default_out(src)
     ws.save(out)
-    print(f"Wrote {out}")
-    print("Open it in QLC+ to verify before using it in a show.")
-    return 0
+    return _finish(out, args.validate)
+
+
+def cmd_validate(args: argparse.Namespace) -> int:
+    result = validate_workspace(args.workspace)
+    if result.ok:
+        print(f"{args.workspace}: QLC+ loaded it with no complaints")
+        return 0
+    print(f"{args.workspace}: QLC+ reported {len(result.errors)} problem(s)")
+    for error in result.errors:
+        print(f"  {error}")
+    return 1
 
 
 def cmd_decompose(args: argparse.Namespace) -> int:
@@ -191,8 +211,7 @@ def cmd_decompose(args: argparse.Namespace) -> int:
 def cmd_compose(args: argparse.Namespace) -> int:
     compose_workspace(args.src_dir, args.out)
     print(f"Composed {args.src_dir}/ -> {args.out}")
-    print("Open it in QLC+ to verify before using it in a show.")
-    return 0
+    return _finish(Path(args.out), args.validate)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -208,6 +227,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_pal.add_argument("--out", help="output file (default: <name>-generado.qxw)")
     p_pal.add_argument("--no-chaser", action="store_true",
                        help="scenes only, skip the cycle chaser")
+    p_pal.add_argument("--validate", action="store_true",
+                       help="load the result in headless QLC+ and fail on "
+                            "any problem it reports")
     p_pal.set_defaults(func=cmd_palette)
 
     p_mat = sub.add_parser(
@@ -222,6 +244,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_mat.add_argument("--out", help="output file (default: <name>-generado.qxw)")
     p_mat.add_argument("--no-chaser", action="store_true",
                        help="matrices only, skip the cycle chaser")
+    p_mat.add_argument("--validate", action="store_true",
+                       help="load the result in headless QLC+ and fail on "
+                            "any problem it reports")
     p_mat.set_defaults(func=cmd_matrix)
 
     p_mov = sub.add_parser(
@@ -236,6 +261,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_mov.add_argument("--out", help="output file (default: <name>-generado.qxw)")
     p_mov.add_argument("--no-chaser", action="store_true",
                        help="EFX only, skip the cycle chaser")
+    p_mov.add_argument("--validate", action="store_true",
+                       help="load the result in headless QLC+ and fail on "
+                            "any problem it reports")
     p_mov.set_defaults(func=cmd_movement)
 
     p_patch = sub.add_parser(
@@ -254,7 +282,16 @@ def build_parser() -> argparse.ArgumentParser:
     p_patch.add_argument("--remove", action="append", type=int, metavar="ID",
                          help="unpatch fixture ID and clear every reference")
     p_patch.add_argument("--out", help="output file (default: <name>-generado.qxw)")
+    p_patch.add_argument("--validate", action="store_true",
+                       help="load the result in headless QLC+ and fail on "
+                            "any problem it reports")
     p_patch.set_defaults(func=cmd_patch)
+
+    p_val = sub.add_parser(
+        "validate", help="load a workspace in headless QLC+ and report problems"
+    )
+    p_val.add_argument("workspace")
+    p_val.set_defaults(func=cmd_validate)
 
     p_dec = sub.add_parser(
         "decompose", help="split a workspace into a git-diffable fragment tree"
@@ -268,6 +305,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_com.add_argument("src_dir")
     p_com.add_argument("out")
+    p_com.add_argument("--validate", action="store_true",
+                       help="load the result in headless QLC+ and fail on "
+                            "any problem it reports")
     p_com.set_defaults(func=cmd_compose)
 
     return parser

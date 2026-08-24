@@ -15,11 +15,21 @@ added.
 
 ## Safety
 
-The master guarantee is a **semantic round-trip**: load then save never changes
-what QLC+ reads (verified against all three production workspaces in the test
-suite). So a generator can only change the nodes it adds. Commands never
-overwrite the input - they write a new `<name>-generado.qxw`. Always open a
-generated file in QLC+ to confirm before using it in a show.
+Two nets. The first is a **semantic round-trip**: load then save never changes
+what QLC+ reads (verified against the production workspaces in the test suite),
+so a generator can only change the nodes it adds. The second is **headless
+validation**: `qlctool validate` (or `--validate` on any command that writes)
+loads the result in a real QLC+ with `--nowm --nogui` and fails on anything the
+application complains about - a missing fixture definition, overlapping
+addresses, a function it could not build. Commands never overwrite the input -
+they write a new `<name>-generado.qxw`.
+
+Validation needs QLC+ installed; it looks in `/Applications/QLC+.app` and on
+`PATH`, and `QLCTOOL_QLCPLUS` overrides both. A missing QLC+ raises rather than
+passing quietly. Custom fixture definitions must be installed in the QLC+ user
+folder or every fixture in this rig reports "No fixture definition found" -
+QLC+ 4 reads `~/Library/Application Support/QLC+/Fixtures` and QLC+ 5 reads
+`~/Library/Application Support/QLC+ 5/Fixtures`.
 
 ## Setup
 
@@ -57,6 +67,12 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
   --add "Vortex|PC-64 LED S|Default|0|301|PAR Extra" \
   --set-address "25=1:1" --rename "0=Wash Frontal 1" --remove 26
 
+# load a workspace in headless QLC+ and report what it complains about
+.venv/bin/qlctool validate "../../QLC+ Setups/DeluxeEventos2.qxw"
+
+# any command that writes a file can validate it in the same run
+.venv/bin/qlctool movement "../../QLC+ Setups/DeluxeEventos2.qxw" --validate
+
 # split a show into a git-diffable fragment tree (one file per function)
 .venv/bin/qlctool decompose "../../QLC+ Setups/DeluxeEventos2.qxw" tree/
 
@@ -72,6 +88,7 @@ Engine's child order. Edit or add fragment files, then `compose` to rebuild.
 ## Layout
 
 - `workspace.py`, `xmlsemantics.py`, `xmlutil.py` - load/save + the round-trip net
+- `validate.py` - headless QLC+ load, the second safety net
 - `library.py`, `definition.py`, `roles.py` - fixture definitions and channel roles
 - `fixture.py`, `capability.py`, `capabilities_of.py` - the patch and its capabilities
 - `fixture_group.py`, `argb.py`, `matrix_algorithms.py` - RGBMatrix inputs
