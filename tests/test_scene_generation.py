@@ -13,7 +13,7 @@ from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.functions.scene import build_scene
 from qlctool.generate.color_scene import color_scene_values
-from qlctool.ids import next_function_id
+from qlctool.ids import existing_function_ids, next_function_id
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 
@@ -70,3 +70,17 @@ def test_inject_scene_keeps_show_valid(tmp_path):
     # A blue FixtureVal carries blue at full, red/green at zero.
     vals = [v for v in scene if v.attrib.get("ID") == str(caps[0].fixture.fixture_id)]
     assert vals and vals[0].text
+
+
+def test_next_id_ignores_virtual_console_references():
+    """A VC button with no function assigned carries ID 4294967295.
+
+    Counting it as an existing function made every generated ID overflow the
+    32-bit range QLC+ stores (found 2026-08-24 while building a demo file).
+    """
+    ws = Workspace.load(SHOW)
+    ids = existing_function_ids(ws.root)
+
+    assert 4294967295 not in ids
+    assert max(ids) == 376  # the highest real function in DeluxeEventos2
+    assert next_function_id(ws.root) == 377
