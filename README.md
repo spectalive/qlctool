@@ -49,6 +49,14 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
 # generate one movement EFX per shape across every moving head
 .venv/bin/qlctool movement "../../QLC+ Setups/DeluxeEventos2.qxw"
 
+# check the patch for DMX address overlaps (exit 1 when it finds any)
+.venv/bin/qlctool patch "../../QLC+ Setups/DeluxeEventos2.qxw"
+
+# edit the patch: add / re-address / rename / unpatch (addresses 1-based)
+.venv/bin/qlctool patch "../../QLC+ Setups/DeluxeEventos2.qxw" \
+  --add "Vortex|PC-64 LED S|Default|0|301|PAR Extra" \
+  --set-address "25=1:1" --rename "0=Wash Frontal 1" --remove 26
+
 # split a show into a git-diffable fragment tree (one file per function)
 .venv/bin/qlctool decompose "../../QLC+ Setups/DeluxeEventos2.qxw" tree/
 
@@ -68,6 +76,9 @@ Engine's child order. Edit or add fragment files, then `compose` to rebuild.
 - `fixture.py`, `capability.py`, `capabilities_of.py` - the patch and its capabilities
 - `fixture_group.py`, `argb.py`, `matrix_algorithms.py` - RGBMatrix inputs
 - `efx_algorithms.py` - EFX shapes and their Spanish show names
+- `patch_conflicts.py`, `fixture_references.py`, `repatch/` - the patch layer:
+  overlap detection, every node that points at a fixture, and the add /
+  re-address / rename / remove operations
 - `functions/` - Scene, Chaser, RGBMatrix and EFX element builders
 - `generate/` - the mass generators (colour scene, colour palette, matrix
   effects, movement EFX)

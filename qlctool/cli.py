@@ -19,6 +19,11 @@ from .generate.matrix_effects import generate_matrix_effects
 from .generate.movement_efx import generate_movement_efx
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .library import FixtureLibrary
+from .patch_conflicts import patch_conflicts
+from .repatch.add import add_fixture
+from .repatch.address import set_fixture_address
+from .repatch.remove import remove_fixture
+from .repatch.rename import rename_fixture
 from .workspace import Workspace
 
 
@@ -115,6 +120,67 @@ def cmd_movement(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_patch(args: argparse.Namespace) -> int:
+    """Inspect or edit the patch. Addresses on the command line are 1-based,
+    the way QLC+ shows them; the file stores them 0-based."""
+    src = Path(args.workspace)
+    ws = Workspace.load(src)
+
+    edits = args.add or args.set_address or args.rename or args.remove
+    if not edits:
+        conflicts = patch_conflicts(ws.root)
+        if not conflicts:
+            print(f"{src}: patch is clean, no address overlaps")
+            return 0
+        print(f"{src}: {len(conflicts)} address overlap(s)")
+        for conflict in conflicts:
+            print(f"  {conflict.describe()}")
+        return 1
+
+    library = FixtureLibrary.load()
+    for spec in args.add or []:
+        parts = spec.split("|")
+        if len(parts) not in (5, 6):
+            raise SystemExit(
+                "--add takes Manufacturer|Model|Mode|universe|address[|name]"
+            )
+        manufacturer, model, mode, universe, address = parts[:5]
+        name = parts[5] if len(parts) == 6 else None
+        fixture_id = add_fixture(
+            ws.root, library, manufacturer, model, mode,
+            universe=int(universe), address=int(address) - 1, name=name,
+        )
+        print(f"added [{fixture_id}] {manufacturer}/{model} <{mode}> "
+              f"at U{universe} @{address}")
+
+    for spec in args.set_address or []:
+        target, placement = spec.split("=", 1)
+        universe, address = placement.split(":", 1)
+        set_fixture_address(
+            ws.root, int(target), int(address) - 1, universe=int(universe)
+        )
+        print(f"re-addressed [{target}] to U{universe} @{address}")
+
+    for spec in args.rename or []:
+        target, name = spec.split("=", 1)
+        previous = rename_fixture(ws.root, int(target), name)
+        print(f"renamed [{target}] {previous!r} -> {name!r}")
+
+    for target in args.remove or []:
+        cleared = remove_fixture(ws.root, target)
+        print(f"removed [{target}] and {cleared} reference(s) to it")
+
+    remaining = patch_conflicts(ws.root)
+    for conflict in remaining:
+        print(f"WARNING overlap: {conflict.describe()}")
+
+    out = Path(args.out) if args.out else _default_out(src)
+    ws.save(out)
+    print(f"Wrote {out}")
+    print("Open it in QLC+ to verify before using it in a show.")
+    return 0
+
+
 def cmd_decompose(args: argparse.Namespace) -> int:
     decompose_workspace(args.workspace, args.out_dir)
     print(f"Decomposed {args.workspace} -> {args.out_dir}/ "
@@ -171,6 +237,24 @@ def build_parser() -> argparse.ArgumentParser:
     p_mov.add_argument("--no-chaser", action="store_true",
                        help="EFX only, skip the cycle chaser")
     p_mov.set_defaults(func=cmd_movement)
+
+    p_patch = sub.add_parser(
+        "patch",
+        help="check the patch for address overlaps, or edit it "
+             "(add/re-address/rename/remove)",
+    )
+    p_patch.add_argument("workspace")
+    p_patch.add_argument("--add", action="append", metavar="SPEC",
+                         help="Manufacturer|Model|Mode|universe|address[|name], "
+                              "address 1-based")
+    p_patch.add_argument("--set-address", action="append", metavar="ID=U:A",
+                         help="move fixture ID to universe U, address A "
+                              "(1-based)")
+    p_patch.add_argument("--rename", action="append", metavar="ID=NAME")
+    p_patch.add_argument("--remove", action="append", type=int, metavar="ID",
+                         help="unpatch fixture ID and clear every reference")
+    p_patch.add_argument("--out", help="output file (default: <name>-generado.qxw)")
+    p_patch.set_defaults(func=cmd_patch)
 
     p_dec = sub.add_parser(
         "decompose", help="split a workspace into a git-diffable fragment tree"
