@@ -1,0 +1,71 @@
+# The QLC+ environment
+
+## Versions in play
+
+- The workspaces in `QLC+ Setups/` are saved in **4.13.1** format; one copy each
+  in 4.14.3 and 5.2.2 is kept as test material.
+- The show machine runs **QLC+ 5.2.2** (`qlcplus-qml`, the QML build).
+- QLC+ 5 opens 4.x workspaces on load.
+
+## Custom fixture definitions must be installed
+
+The seven `.qxf` in `QLC+ Fixtures/` are not part of QLC+'s library. Until they
+are copied into the QLC+ **user fixture folder**, opening a show reports
+`No fixture definition found` for every fixture that uses them - except
+CromoWash100, which QLC+ 5 ships itself.
+
+| Platform / version | Folder |
+| --- | --- |
+| macOS, QLC+ 4 | `~/Library/Application Support/QLC+/Fixtures` |
+| macOS, QLC+ 5 | `~/Library/Application Support/QLC+/Fixtures` (a `QLC+ 5` folder also exists on some installs; copying to both is harmless) |
+| Bundled library | `/Applications/QLC+.app/Contents/Resources/Fixtures/<Manufacturer>/` |
+
+QLC+ caches the library at start, so **restart it** after copying definitions in.
+A definition present in both the user folder and the bundled library logs
+`Cache already contains "<name>"`, which is harmless.
+
+## Headless validation
+
+QLC+ itself is the strongest check available, and it can be driven from a
+script.
+
+```bash
+# 4.x widgets build: loads with no window at all
+qlcplus --nowm --nogui -d 1 -o show.qxw
+
+# 5.x QML build: no headless mode - a window opens for a moment
+qlcplus-qml -d -m -o show.qxw
+```
+
+Neither exits on its own: QLC+ loads the workspace, starts its engine and stays
+up. So the verdict comes from the log, not from the exit code, and the process
+is killed once loading is done - the 4.x build falls silent, the QML build keeps
+logging as it renders and is stopped shortly after its end-of-load markers.
+
+Lines that mean the workspace is wrong:
+
+```
+No fixture definition found for <model>
+bool Doc::addFixture(...) fixture 13 overlapping with fixture 0 @ channel 0
+static bool Fixture::loader(...) Fixture "CromoWash100 #3" cannot be created.
+<n> channels of fixture <name> are out of bounds
+```
+
+`qlctool validate <file>` does all of this, and `--validate` on any command that
+writes a workspace does it to the result. It looks for QLC+ in
+`/Applications/QLC+.app` and on `PATH`; `QLCTOOL_QLCPLUS` overrides both. **A
+missing QLC+ raises rather than passing**, so an uninstalled validator can never
+be mistaken for a clean run.
+
+## Machines
+
+Two Macs are involved: a workstation where the toolkit is developed, and the
+show laptop at the venue. Their addresses, accounts and access live in the
+owner's private notes, not in this public repository.
+
+One trap worth recording without those details: the show laptop has no Xcode
+Command Line Tools, so Apple's `/usr/bin/git` (and `strings`, and friends) fail
+with `xcrun: error: invalid active developer path`. Homebrew's git is installed
+and comes first on the interactive PATH, so a normal terminal session is fine -
+only non-interactive remote commands hit the broken shim, and they need the
+Homebrew prefix put on PATH first.

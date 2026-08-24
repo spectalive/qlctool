@@ -4,6 +4,9 @@ Programmatic editing of QLC+ workspaces (`.qxw`) for the Vibra Eventos lighting
 show. Generates scenes, chasers, RGBMatrix effects, movement EFX and the Virtual
 Console buttons for them, in bulk instead of clicking them one by one in QLC+.
 
+Background, the file format and the rig are documented in
+[`docs/`](../../docs/README.md).
+
 ## Why
 
 The show has hundreds of hand-built functions. Repetitive work - a scene per
