@@ -14,6 +14,7 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.generate.dimmer_chases import MODE_DIMMER, generate_dimmer_chases
 from qlctool.generate.strobe_effects import generate_strobe_effects
 from qlctool.library import FixtureLibrary
+from qlctool.shutter_open import shutter_open_pairs
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
@@ -73,22 +74,63 @@ def test_the_dimmer_chase_leaves_the_smoke_machines_alone(library):
 
 
 def test_the_ping_pong_scenes_are_complements(library):
+    """Compared per channel, not by position: the lit half of each scene also
+    opens the shutters of the fixtures that have one, so the two scenes no
+    longer carry the same number of values."""
     ws = Workspace.load(SHOW)
     generated = generate_dimmer_chases(ws, library)
     functions = _functions(ws.root)
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, library)}
 
-    def lit(scene_id):
-        values = {}
+    def values_of(scene_id):
+        result = {}
         for element in findall_local(functions[scene_id], "FixtureVal"):
             numbers = [int(n) for n in (element.text or "").split(",") if n != ""]
-            values[int(element.attrib["ID"])] = numbers[1::2]
-        return values
+            result[int(element.attrib["ID"])] = dict(
+                zip(numbers[::2], numbers[1::2])
+            )
+        return result
 
-    first, second = (lit(i) for i in generated.scene_ids)
+    first, second = (values_of(i) for i in generated.scene_ids)
     assert first.keys() == second.keys()
-    for fixture_id, levels in first.items():
-        for a, b in zip(levels, second[fixture_id]):
-            assert {a, b} == {0, 255}
+    for fixture_id, pairs in first.items():
+        capability = caps[fixture_id]
+        for offset in capability.offsets_for_role(roles.DIMMER):
+            assert {pairs[offset], second[fixture_id][offset]} == {0, 255}
+
+
+def test_the_lit_half_of_the_ping_pong_opens_its_shutter(library):
+    """A beam at full dimmer behind a closed shutter shows nothing."""
+    ws = Workspace.load(SHOW)
+    generated = generate_dimmer_chases(ws, library)
+    functions = _functions(ws.root)
+    beams = [
+        c for c in capabilities_of(ws.root, library)
+        if c.fixture.model == "BEAM 230W 7R"
+    ]
+    assert beams
+
+    seen_lit = False
+    for scene_id in generated.scene_ids:
+        pairs = {
+            int(v.attrib["ID"]): dict(
+                zip(
+                    [int(n) for n in (v.text or "").split(",")][::2],
+                    [int(n) for n in (v.text or "").split(",")][1::2],
+                )
+            )
+            for v in findall_local(functions[scene_id], "FixtureVal")
+        }
+        for beam in beams:
+            values = pairs[beam.fixture.fixture_id]
+            dimmer = beam.offsets_for_role(roles.DIMMER)[0]
+            shutter, opening = shutter_open_pairs(beam)[0]
+            if values[dimmer] == 255:
+                seen_lit = True
+                assert values[shutter] == opening
+            else:
+                assert shutter not in values
+    assert seen_lit
 
 
 def test_a_strobe_value_only_comes_from_a_labelled_range(library):

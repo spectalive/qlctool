@@ -23,6 +23,7 @@ from ..functions.efx import EFXFixture, build_efx
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
 from .movement_efx import spread_offsets
 
@@ -90,14 +91,23 @@ def generate_dimmer_chases(
 
 
 def _half_lit(workspace: Workspace, dimmable, remainder: int, path: str) -> int:
-    """Every other fixture at full, the rest at zero."""
-    values = {
-        capability.fixture.fixture_id: [
-            (offset, 255 if index % 2 == remainder else 0)
+    """Every other fixture at full, the rest at zero.
+
+    The lit half opens its shutter too - a beam at full dimmer behind a closed
+    shutter shows nothing. The dark half is left alone: its dimmer at zero is
+    already black, and closing the shutter as well only adds a second thing to
+    reopen.
+    """
+    values = {}
+    for index, capability in enumerate(dimmable):
+        lit = index % 2 == remainder
+        pairs = [
+            (offset, 255 if lit else 0)
             for offset in capability.offsets_for_role(roles.DIMMER)
         ]
-        for index, capability in enumerate(dimmable)
-    }
+        if lit:
+            pairs += shutter_open_pairs(capability)
+        values[capability.fixture.fixture_id] = pairs
     function_id = next_function_id(workspace.root)
     name = "Dimmer Impares" if remainder else "Dimmer Pares"
     workspace.add_function(build_scene(function_id, name, values, path=path))

@@ -21,6 +21,11 @@ class Capability:
     minimum: int
     maximum: int
     name: str
+    # The QLC+ capability preset, "" when the range carries none. This is how a
+    # definition states what a range *is* rather than what it is called, which
+    # matters for the ranges a generator has to find on its own: which value
+    # opens a mechanical shutter, above all.
+    preset: str = ""
 
     @property
     def middle(self) -> int:
@@ -76,6 +81,7 @@ def load_definition(path: str | Path) -> FixtureDefinition:
                 minimum=int(cap.attrib["Min"]),
                 maximum=int(cap.attrib["Max"]),
                 name=(cap.text or "").strip(),
+                preset=cap.attrib.get("Preset", ""),
             )
             for cap in findall_local(ch, "Capability")
             if "Min" in cap.attrib and "Max" in cap.attrib

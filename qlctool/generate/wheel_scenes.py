@@ -16,6 +16,7 @@ from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
 
 
@@ -40,8 +41,10 @@ def generate_wheel_scenes(
 ) -> GeneratedWheel:
     """One scene per wheel position, driven on every fixture that has the wheel.
 
-    dimmer_full opens those fixtures' dimmers in each scene - a gobo nobody can
-    see is not a check of anything. Raises when no fixture carries the role.
+    dimmer_full opens those fixtures' dimmers *and their shutters* in each
+    scene - a gobo nobody can see is not a check of anything, and a beam with a
+    mechanical shutter shows nothing on dimmer alone. Raises when no fixture
+    carries the role.
     """
     wanted = None if fixture_ids is None else set(fixture_ids)
     caps = [
@@ -68,6 +71,7 @@ def generate_wheel_scenes(
                     (offset, 255)
                     for offset in capability.offsets_for_role(roles.DIMMER)
                 ]
+                pairs += shutter_open_pairs(capability)
             values[capability.fixture.fixture_id] = pairs
 
         function_id = next_function_id(workspace.root)

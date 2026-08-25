@@ -66,6 +66,10 @@ Commands never overwrite their input; they write a new file.
 - **Addresses are 0-based in the library and in the file, 1-based on the command
   line** - the same way QLC+ shows them.
 - **Smoke machines are excluded everywhere** except the smoke generator.
+- **A dimmer at full is not a light that is on.** A fixture with a mechanical
+  shutter needs it opened as well, and the value comes from the definition's own
+  `ShutterOpen` range. Every generator that raises a dimmer calls
+  `shutter_open_pairs`.
 - **A role can land on two channels of one fixture, and only one of them is the
   wheel.** The colour wheel and the continuous half-colour channel beside it are
   both in the Colour group. Wheel scenes drive
