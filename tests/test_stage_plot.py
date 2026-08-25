@@ -91,20 +91,21 @@ def test_the_audience_is_at_large_z(workspace):
 
 
 def test_nothing_that_should_light_the_room_is_aimed_at_the_back_wall(workspace):
-    """Light leaves along (0,-1,0) and x_rot turns it, so the direction is
-    (0, -cos, -sin): negative leans out over the audience, positive back over
-    the stage. The truss PARs lean out to colour, the panels and bars face
-    straight out, and the two downstage grids lean back at the DJ."""
+    """QLC+ turns a fixture by *minus* the stored angle, so light leaving along
+    (0,-1,0) ends up going (0, -cos, +sin): positive leans out over the
+    audience, negative back over the stage. This test asserted the opposite
+    until 2026-08-25, which is how the whole back truss came to light the rear
+    wall while every check here passed."""
     plot = load_stage_plot(PLOT, workspace.root)
     aim = {i.fixture_id: i.x_rot for i in plot.items}
 
     for par in (6, 7, 8, 9, 10, 11):
-        assert -90 < aim[par] < 0, "a truss PAR leans out, it does not point flat"
-        assert aim[par] <= -50, "and far enough to clear the DJ"
+        assert 0 < aim[par] < 90, "a truss PAR leans out, it does not point flat"
+        assert aim[par] >= 50, "and far enough to clear the DJ"
     for out in (24, 25, 27, 28, 2, 3):
-        assert aim[out] == -90, "panels and bars face the room"
+        assert aim[out] == 90, "panels and bars face the room"
     for grid in (4, 5):
-        assert aim[grid] > 0, "the downstage grids look back at the stage"
+        assert aim[grid] < 0, "the downstage grids look back at the stage"
     for beam in (22, 23):
         assert aim[beam] == 180, "the floor beams stand upright"
 

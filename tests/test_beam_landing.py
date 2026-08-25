@@ -56,10 +56,11 @@ def test_a_moving_head_is_mounted_never_aimed(rig):
 def test_the_truss_pars_pass_over_the_dj_and_land_past_the_deck(rig):
     """Past the deck, not necessarily past the stage.
 
-    The angle is measured on the real truss - 50 degrees - and at 50 the PARs
-    land at z=6417: nearly two metres beyond the DJ deck and still on the
-    stage. The check is that they clear him, which is what went wrong at 35;
-    how far out they throw is the rig's business, not this test's.
+    The angle is measured on the real truss - 50 degrees, positive, which is
+    what leans a fixture out over the audience - and at 50 the PARs land at
+    z=6417: nearly two metres beyond the DJ deck and still on the stage. The
+    check is that they clear him, which is what went wrong at 35; how far out
+    they throw is the rig's business, not this test's.
     """
     plot, caps = rig
     pars = [
@@ -78,7 +79,7 @@ def test_the_truss_pars_pass_over_the_dj_and_land_past_the_deck(rig):
         )
         # Height of the beam as it goes over him: 2084 mm at 50 degrees, a good
         # 350 mm over his head. At 35 it was in his face.
-        drop = (DJ_Z - par.z) / math.tan(math.radians(-par.x_rot))
+        drop = (DJ_Z - par.z) / math.tan(math.radians(par.x_rot))
         assert par.y - drop > DJ_HEAD_TOP + 250, "it would be in the DJ's face"
 
 

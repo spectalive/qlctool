@@ -7,8 +7,17 @@ vertical, which from four metres up lands them at z=4485 - the DJ deck is at
 few. So the plot is checked with arithmetic instead.
 
 QLC+ sends light along `(0, -1, 0)` and `x_rot` turns it about the horizontal
-axis, giving `(0, -cos, -sin)`. Depth grows towards the audience, so a negative
-angle leans out over them and a positive one leans back over the stage.
+axis - **by minus the stored angle**. `MonitorProperties::fixtureRotationMatrix`
+builds it as `QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), -rot.x())`,
+matching what `Qt3DCore::QTransform::fromAxesAndAngles` does in the 3D view, so
+the direction is `(0, -cos, +sin)`. Depth grows towards the audience: a
+**positive** angle leans out over them and a negative one leans back over the
+stage.
+
+This file had the sign the other way round until 2026-08-25, and the arithmetic
+agreed with itself while the rig pointed at the back wall - the owner found it
+in the 3D view, not here. A convention read off a rendering is worth less than
+one read off the renderer.
 
 **A moving head cannot be aimed this way and must not be.** Its rotation is how
 the body is *mounted* - hanging (0) or standing on the floor (180) - and where
@@ -44,7 +53,7 @@ def beam_landing(item: MonitorItem, capabilities: FixtureCapabilities) -> Landin
         return Landing(item.fixture_id, None, "smoke machine: no beam")
 
     angle = math.radians(item.x_rot)
-    down, out = -math.cos(angle), -math.sin(angle)
+    down, out = -math.cos(angle), math.sin(angle)
     # cos(90 degrees) is 6e-17 rather than 0 in floating point, and dividing by
     # it sends the landing to the far side of the solar system.
     if down > -1e-6:
