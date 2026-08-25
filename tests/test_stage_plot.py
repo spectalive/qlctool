@@ -59,7 +59,7 @@ def test_the_dj_beams_stand_on_their_flightcases_aimed_up(workspace):
     case_top = cases[0].centre[1] + cases[0].size[1] / 2
     for beam in beams:
         assert beam.y == case_top
-        assert beam.x_rot == -135
+        assert beam.x_rot == 180
 
 
 def test_the_audience_is_at_large_z(workspace):
@@ -83,12 +83,13 @@ def test_nothing_that_should_light_the_room_is_aimed_at_the_back_wall(workspace)
 
     for par in (6, 7, 8, 9, 10, 11):
         assert -90 < aim[par] < 0, "a truss PAR leans out, it does not point flat"
+        assert aim[par] <= -50, "and far enough to clear the DJ"
     for out in (24, 25, 27, 28, 2, 3):
         assert aim[out] == -90, "panels and bars face the room"
     for grid in (4, 5):
         assert aim[grid] > 0, "the downstage grids look back at the stage"
     for beam in (22, 23):
-        assert -180 < aim[beam] < -90, "the floor beams look up and out"
+        assert aim[beam] == 180, "the floor beams stand upright"
 
 
 def test_the_booth_stands_on_the_floor(workspace):

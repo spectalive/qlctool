@@ -20,6 +20,8 @@ from .generate.color_palette import generate_color_palette
 from .generate.matrix_effects import generate_matrix_effects
 from .generate.movement_efx import generate_movement_efx
 from .generate.stage_layout import DEFAULT_STAGE, generate_stage_layout
+from .beam_landing import beam_landing
+from .capabilities_of import capabilities_of
 from .generate.stage_plot_layout import apply_stage_plot
 from .monitor_node import POINTS_OF_VIEW
 from .stage_plot import load_stage_plot
@@ -312,8 +314,20 @@ def cmd_stage(args: argparse.Namespace) -> int:
               f"{len(plot.spare)} spare and hidden, on a "
               f"{plot.stage[0]}x{plot.stage[1]}x{plot.stage[2]} m stage seen "
               f"from the {plot.point_of_view}.")
-        for fixture_id in plot.rigged:
-            print(f"  [{fixture_id:>2}] {plot.places[fixture_id]}")
+        # Where each beam ends up, because an angle that looks right in the
+        # preview can still be putting the light on the DJ's face.
+        caps = {
+            c.fixture.fixture_id: c
+            for c in capabilities_of(ws.root, FixtureLibrary.load())
+        }
+        for item in sorted(plot.items, key=lambda i: i.fixture_id):
+            if item.hidden or item.fixture_id not in caps:
+                continue
+            landing = beam_landing(item, caps[item.fixture_id])
+            where = (f"floor at z={landing.z:.0f}" if landing.z is not None
+                     else landing.reason)
+            print(f"  [{item.fixture_id:>2}] {plot.places[item.fixture_id]}"
+                  f"\n       {where}")
         return _finish(out, args.validate)
 
     stage = generate_stage_layout(

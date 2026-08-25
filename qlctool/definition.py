@@ -41,6 +41,15 @@ class Channel:
 
 
 @dataclass(frozen=True)
+class Dimensions:
+    """The fixture's own size in millimetres, as QLC+ draws it."""
+
+    width: float
+    height: float
+    depth: float
+
+
+@dataclass(frozen=True)
 class FixtureDefinition:
     manufacturer: str
     model: str
@@ -51,6 +60,7 @@ class FixtureDefinition:
     channels: dict[str, Channel]
     # mode name -> ordered list of channel names
     modes: dict[str, list[str]]
+    dimensions: Dimensions | None = None
 
     def mode_roles(self, mode: str) -> list[str | None]:
         """Roles in channel order for a mode, index-aligned with DMX offset."""
@@ -99,10 +109,19 @@ def load_definition(path: str | Path) -> FixtureDefinition:
         )
         modes[mode.attrib["Name"]] = [name for _, name in ordered]
 
+    physical = find_local(root, "Physical")
+    size = find_local(physical, "Dimensions") if physical is not None else None
+    dimensions = Dimensions(
+        width=float(size.attrib.get("Width", 0)),
+        height=float(size.attrib.get("Height", 0)),
+        depth=float(size.attrib.get("Depth", 0)),
+    ) if size is not None else None
+
     return FixtureDefinition(
         manufacturer=manufacturer,
         model=model,
         fixture_type=fixture_type,
+        dimensions=dimensions,
         channels=channels,
         modes=modes,
     )

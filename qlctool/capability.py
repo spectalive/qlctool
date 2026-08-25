@@ -8,7 +8,7 @@ offsets carry role X on this fixture?" A role can map to several offsets - an
 
 from dataclasses import dataclass
 
-from .definition import Capability, FixtureDefinition
+from .definition import Capability, Dimensions, FixtureDefinition
 from .fixture import PatchedFixture
 
 
@@ -20,6 +20,7 @@ class FixtureCapabilities:
     # the same offsets -> that channel's labelled ranges (gobos, prism, colours)
     capabilities_by_offset: list[tuple[Capability, ...]]
     fixture_type: str = ""
+    dimensions: Dimensions | None = None
 
     @classmethod
     def resolve(
@@ -36,6 +37,7 @@ class FixtureCapabilities:
             roles_by_offset=definition.mode_roles(fixture.mode),
             capabilities_by_offset=definition.mode_capabilities(fixture.mode),
             fixture_type=definition.fixture_type,
+            dimensions=definition.dimensions,
         )
 
     @property
