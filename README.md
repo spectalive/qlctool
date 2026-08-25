@@ -72,6 +72,9 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
   --add "Vortex|PC-64 LED S|Default|0|301|PAR Extra" \
   --set-address "25=1:1" --rename "0=Wash Frontal 1" --remove 26
 
+# place every fixture in the 2D/3D view (newshow does this by itself)
+.venv/bin/qlctool stage "../../QLC+ Setups/Vibra.qxw" --stage 12x6x8 --pov front
+
 # build a fresh show on the same rig: patch kept, content regenerated
 .venv/bin/qlctool newshow "../../QLC+ Setups/DeluxeEventos2.qxw" \
   --out "../../QLC+ Setups/Vibra.qxw" --validate

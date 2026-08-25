@@ -42,6 +42,7 @@ Commands never overwrite their input; they write a new file.
 | `probe` | One scene per DMX channel of a fixture - how an undocumented fixture gets settled on site |
 | `patch` | Check the patch for address overlaps, or edit it: add, re-address, rename, unpatch |
 | `layout` | Virtual Console buttons for every function, grouped by its UI folder |
+| `stage` | A position for every fixture in the 2D/3D view: a row per band, spread across the stage |
 | `newshow` | A whole self-running show built on an existing patch, plus the one-screen live console |
 | | (colour banks and mixes, matrices, movement, gobos, beam colour, prism, smoke, dimmer chase and ping-pong, shutter and flash strobes) |
 | `validate` | Load a workspace in headless QLC+ and report what it complains about |
@@ -59,3 +60,6 @@ Commands never overwrite their input; they write a new file.
 - **Addresses are 0-based in the library and in the file, 1-based on the command
   line** - the same way QLC+ shows them.
 - **Smoke machines are excluded everywhere** except the smoke generator.
+- **The 2D/3D plot is generated from capability too**: gobo wheel means beam
+  and hangs upstage, pan+tilt without one means wash and hangs downstage, a
+  bar lies on the floor at the back, everything else stands at the front.

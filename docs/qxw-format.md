@@ -178,6 +178,48 @@ Other widgets, as this repo's shows use them:
   speed mode**. A "speed" slider is either a Level slider on a real DMX channel
   or it does nothing at all.
 
+## `<Monitor>` - where the 2D and 3D views draw the rig
+
+Everything the preview knows about *where the lights are* lives in this one
+Engine child. `MonitorProperties::saveXML` writes it in a fixed order: `Font`,
+`ChannelStyle`, `ValueStyle`, optional background, `Grid`, `StageItem` (QLC+ 5
+only), then one `<FxItem>` per fixture.
+
+```xml
+<Monitor DisplayMode="0" ShowLabels="1">
+  <Font>Arial,12,-1,5,50,0,0,0,0,0</Font>
+  <ChannelStyle>1</ChannelStyle>
+  <ValueStyle>1</ValueStyle>
+  <Grid Width="12" Height="6" Depth="8" Units="0" POV="2"/>
+  <StageItem>0</StageItem>
+  <FxItem ID="0" XPos="1200" YPos="4800" ZPos="1600"/>
+</Monitor>
+```
+
+- **The grid is in metres, the positions are in millimetres.** `Units` is 0 for
+  metres, 1 for feet.
+- **A position is the fixture's near corner, not its centre.** QLC+ adds half
+  the mesh extents when it draws
+  (`MainView3D::updateFixturePosition`), so `YPos="0"` means standing on the
+  floor and `XPos` close to the grid width leaves a wide fixture hanging over
+  the edge.
+- **`POV` on `<Grid>` is not optional in practice.** It is
+  `MonitorProperties::PointOfView`: 1 top, 2 front, 3 right, 4 left, absent
+  meaning undefined. With it absent, the 2D view asks for one on first open and
+  then **converts every stored position** into it - a layout that was right is
+  silently rewritten.
+- **A fixture with no `<FxItem>` is drawn at the origin.** A show whose Monitor
+  names four of twenty-seven fixtures therefore stacks the other twenty-three on
+  the same spot, which is what "the 3D view looks broken" turns out to mean.
+- Optional per-item attributes worth knowing: `XRot`/`YRot`/`ZRot` (`Rotation`
+  is the legacy Y-only form), `GelColor`, `Head`/`Linked` for multi-head items,
+  and the flags `Hidden`, `Locked`, `InvertedPan`, `InvertedTilt`.
+- The 3D **model** is not stored here at all: it comes from the fixture
+  definition's `<Type>` (`FixtureUtils::fixtureLightResource` maps Moving Head,
+  Color Changer/Dimmer, Scanner, Strobe, Hazer and Smoke onto a mesh; LED bars
+  are drawn procedurally from their `<Physical>` layout). A definition with an
+  unmapped type gets no mesh.
+
 ## Version differences seen in this repo
 
 The same show exists saved by three versions, all in `QLC+ Setups/`:

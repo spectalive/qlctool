@@ -19,6 +19,11 @@ from .generate.channel_probe import generate_channel_probe
 from .generate.color_palette import generate_color_palette
 from .generate.matrix_effects import generate_matrix_effects
 from .generate.movement_efx import generate_movement_efx
+from .generate.stage_layout import (
+    DEFAULT_STAGE,
+    POINTS_OF_VIEW,
+    generate_stage_layout,
+)
 from .generate.vc_layout import generate_vc_layout
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .library import FixtureLibrary
@@ -58,6 +63,17 @@ def _finish(out: Path, validate: bool) -> int:
     for error in result.errors:
         print(f"  {error}")
     return 1
+
+
+def _stage_size(spec: str | None) -> tuple[int, int, int]:
+    """Parse a WxHxD stage in metres, e.g. '12x6x8'."""
+    if not spec:
+        return DEFAULT_STAGE
+    parts = spec.lower().split("x")
+    if len(parts) != 3:
+        raise SystemExit("--stage takes WIDTHxHEIGHTxDEPTH in metres, e.g. 12x6x8")
+    width, height, depth = (int(p) for p in parts)
+    return width, height, depth
 
 
 def cmd_info(args: argparse.Namespace) -> int:
@@ -224,7 +240,8 @@ def cmd_newshow(args: argparse.Namespace) -> int:
           f"{len(show.matrix_ids)} matrices, {len(show.efx_ids)} movement EFX, "
           f"{len(show.gobo_ids)} gobos, {len(show.prism_ids)} prism, plus "
           f"dimmer chase, ping-pong and strobes), "
-          f"{len(show.button_ids)} console buttons on one 1440x900 screen. "
+          f"{len(show.button_ids)} console buttons on one 1440x900 screen, "
+          f"{show.stage_placed} fixtures placed in the 2D/3D view. "
           f"Press AUTO (key Q).")
     return _finish(out, args.validate)
 
@@ -262,6 +279,25 @@ def cmd_layout(args: argparse.Namespace) -> int:
 
     print(f"Laid out {len(layout.button_ids)} buttons "
           f"in {len(layout.frame_ids)} frame(s)")
+    return _finish(out, args.validate)
+
+
+def cmd_stage(args: argparse.Namespace) -> int:
+    src = Path(args.workspace)
+    out = Path(args.out) if args.out else _default_out(src)
+
+    ws = Workspace.load(src)
+    stage = generate_stage_layout(
+        ws, FixtureLibrary.load(), stage=_stage_size(args.stage),
+        point_of_view=args.pov,
+    )
+    ws.save(out)
+
+    print(f"Placed {stage.placed} fixtures on a "
+          f"{stage.stage[0]}x{stage.stage[1]}x{stage.stage[2]} m stage, "
+          f"seen from the {stage.point_of_view}:")
+    for band, fixture_ids in stage.rows.items():
+        print(f"  {band:<7} {len(fixture_ids)}: {fixture_ids}")
     return _finish(out, args.validate)
 
 
@@ -416,6 +452,23 @@ def build_parser() -> argparse.ArgumentParser:
     p_lay.add_argument("--validate", action="store_true",
                        help="load the result in QLC+ and fail on any problem")
     p_lay.set_defaults(func=cmd_layout)
+
+    p_stage = sub.add_parser(
+        "stage",
+        help="place every fixture in the 2D/3D view: a row per band, spread "
+             "across the stage",
+    )
+    p_stage.add_argument("workspace")
+    p_stage.add_argument("--stage", metavar="WxHxD",
+                         help="stage size in metres (default "
+                              f"{DEFAULT_STAGE[0]}x{DEFAULT_STAGE[1]}x{DEFAULT_STAGE[2]})")
+    p_stage.add_argument("--pov", default="front",
+                         choices=sorted(POINTS_OF_VIEW),
+                         help="point of view the 2D view opens in (default front)")
+    p_stage.add_argument("--out", help="output file (default: <name>-generado.qxw)")
+    p_stage.add_argument("--validate", action="store_true",
+                         help="load the result in QLC+ and fail on any problem")
+    p_stage.set_defaults(func=cmd_stage)
 
     p_val = sub.add_parser(
         "validate", help="load a workspace in headless QLC+ and report problems"

@@ -29,6 +29,7 @@ from .live_console import generate_live_console
 from .matrix_effects import GeneratedMatrices, generate_matrix_effects
 from .movement_efx import generate_movement_efx, moving_head_ids
 from .smoke_auto import generate_smoke_auto
+from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .strobe_effects import generate_strobe_effects
 from .wheel_scenes import generate_wheel_scenes
 
@@ -73,6 +74,7 @@ class CanonicalShow:
     master_ids: dict[str, int] = field(default_factory=dict)
     button_ids: list[int] = field(default_factory=list)
     function_count: int = 0
+    stage_placed: int = 0
 
 
 def build_canonical_show(
@@ -84,6 +86,14 @@ def build_canonical_show(
 ) -> CanonicalShow:
     """Strip the workspace to its patch and generate a self-running show on it."""
     strip_to_skeleton(workspace)
+    # The patch carries the rig, not where any of it stands: give the 2D and 3D
+    # views a plot to draw, or they stack every fixture on one spot. A workspace
+    # whose Monitor already places everything was positioned by hand in QLC+ -
+    # leave it alone, a generated plot is a starting point, not an improvement
+    # on a measured one.
+    stage_placed = 0
+    if unplaced_fixtures(workspace):
+        stage_placed = generate_stage_layout(workspace, library).placed
     caps = capabilities_of(workspace.root, library)
     master: dict[str, int] = {}
 
@@ -215,6 +225,7 @@ def build_canonical_show(
         master_ids=master,
         button_ids=button_ids,
         function_count=len(functions),
+        stage_placed=stage_placed,
     )
 
 
