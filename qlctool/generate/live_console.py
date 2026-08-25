@@ -124,14 +124,16 @@ def generate_live_console(
         return element
 
     # --- left column: master, effects, colour banks, mixes ------------------
+    # Ten buttons on five columns rather than eight on four: the energy cycle
+    # and its three levels belong beside AUTO, and the frame keeps its height.
     show_names = [
-        "AUTO", "Rueda Colores", "Rueda Mezcla", "Luces ON", "Todo Blanco",
-        "Todo Negro",
+        "AUTO", "Ciclo Energia", "Nivel Ambiente", "Nivel Fiesta", "Nivel Peak",
+        "Rueda Colores", "Rueda Mezcla", "Luces ON", "Todo Blanco", "Todo Negro",
     ]
     _button_grid(
         frame("Show", LEFT_X, 8, LEFT_WIDTH, 130),
         [(master[n], n) for n in show_names if n in master],
-        button, columns=4, width=122, height=44, keys=keys,
+        button, columns=5, width=97, height=44, keys=keys,
         flash={n for n in flash_functions}, names=names,
     )
 

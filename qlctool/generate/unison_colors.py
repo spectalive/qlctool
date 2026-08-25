@@ -1,0 +1,167 @@
+"""One colour across the whole rig at once, and the wheel that cycles it.
+
+The per-group banks give each group its own Random wheel, and three Random
+wheels running unattended never agree: the heads sit on magenta while the PARs
+sit on green, which is not a look, it is three shows in one room. What the owner
+asks for is the rig reading as *one* colour on most steps - white, amber, red
+everywhere at the same time - with the two-colour contrast as the exception
+rather than the rule.
+
+So this builds the wheel that AUTO actually runs: a scene per colour over every
+colour-capable fixture in the patch, plus a handful of heads-against-the-rest
+contrasts for variety. Fixtures are picked by capability, not by group, which is
+also why the two CLB2.4 grids - in no fixture group, and therefore in no colour
+bank and no matrix - are lit by it at all, and why the four beams, whose colour
+is a wheel rather than three channels, are put on the nearest position that
+wheel carries instead of being left out.
+"""
+
+from collections.abc import Sequence
+from dataclasses import dataclass, field
+
+from .. import roles
+from ..capabilities_of import capabilities_of
+from ..capability import FixtureCapabilities
+from ..color_wheel_match import color_wheel_pairs
+from ..functions.chaser import build_chaser
+from ..functions.scene import build_scene
+from ..ids import next_function_id
+from ..library import FixtureLibrary
+from ..palette import PALETTE, PRIMARY_COLORS
+from ..shutter_open import shutter_open_pairs
+from ..workspace import Workspace
+from .color_scene import color_scene_values
+
+PATH = "Colores Rig"
+
+# The moving heads against everything else. Two colours the room can tell apart
+# at a glance, which a neighbouring pair of the palette cannot.
+CONTRAST_PAIRS: tuple[tuple[str, str], ...] = (
+    ("Rojo", "Azul"),
+    ("Azul", "Ambar"),
+    ("Magenta", "Cyan"),
+    ("Amarillo", "UltraVioleta"),
+    ("Blanco", "Rojo"),
+)
+
+
+@dataclass(frozen=True)
+class GeneratedUnison:
+    scene_ids: list[int] = field(default_factory=list)
+    contrast_ids: list[int] = field(default_factory=list)
+    wheel_id: int | None = None
+
+
+def generate_unison_colors(
+    workspace: Workspace,
+    library: FixtureLibrary,
+    colors: Sequence[str] = PRIMARY_COLORS,
+    contrasts: Sequence[tuple[str, str]] = CONTRAST_PAIRS,
+    hold: int = 2500,
+    fade: int = 800,
+) -> GeneratedUnison:
+    """Rig-wide colour scenes and one Random wheel over them.
+
+    Slower than a per-group wheel on purpose: a whole-room colour change every
+    1,5 s reads as flicker, where one group changing that often reads as motion.
+    """
+    caps = capabilities_of(workspace.root, library)
+
+    scene_ids: list[int] = []
+    for name in colors:
+        values = color_scene_values(caps, PALETTE[name])
+        values.update(_wheel_values(caps, name))
+        if not values:
+            continue
+        scene_ids.append(_scene(workspace, f"Rig {name}", values))
+
+    head_ids = [
+        c.fixture.fixture_id
+        for c in caps
+        if c.has_role(roles.PAN) and c.has_role(roles.TILT)
+    ]
+    rest_ids = [c.fixture.fixture_id for c in caps if c.fixture.fixture_id not in head_ids]
+
+    contrast_ids: list[int] = []
+    for heads_color, rest_color in contrasts:
+        values = _contrast_values(caps, head_ids, rest_ids, heads_color, rest_color)
+        if len(values) < 2:
+            continue
+        contrast_ids.append(
+            _scene(
+                workspace,
+                f"Cabezas {heads_color} / Resto {rest_color}",
+                values,
+            )
+        )
+
+    steps = scene_ids + contrast_ids
+    wheel_id: int | None = None
+    if steps:
+        wheel_id = next_function_id(workspace.root)
+        workspace.add_function(
+            build_chaser(
+                wheel_id,
+                "Rueda Colores",
+                steps,
+                fade_in=fade,
+                hold=hold,
+                fade_out=fade,
+                run_order="Random",
+                path=PATH,
+            )
+        )
+
+    return GeneratedUnison(
+        scene_ids=scene_ids, contrast_ids=contrast_ids, wheel_id=wheel_id
+    )
+
+
+def _contrast_values(
+    caps: list[FixtureCapabilities],
+    head_ids: Sequence[int],
+    rest_ids: Sequence[int],
+    heads_color: str,
+    rest_color: str,
+) -> dict[int, list[tuple[int, int]]]:
+    """The movers on one colour, everything else on the other."""
+    values = color_scene_values(caps, PALETTE[heads_color], fixture_ids=head_ids)
+    values.update(color_scene_values(caps, PALETTE[rest_color], fixture_ids=rest_ids))
+    values.update(_wheel_values(caps, heads_color, fixture_ids=head_ids))
+    values.update(_wheel_values(caps, rest_color, fixture_ids=rest_ids))
+    return values
+
+
+def _wheel_values(
+    caps: list[FixtureCapabilities],
+    color_name: str,
+    fixture_ids: Sequence[int] | None = None,
+) -> dict[int, list[tuple[int, int]]]:
+    """The same colour on the fixtures whose colour is a wheel: the beams.
+
+    They have no RGB, so a colour scene never reached them and they sat on
+    whatever the beam colour animation last picked - the one part of the rig
+    that never matched the rest. Their dimmer and shutter come along, or the
+    colour is on a wheel nobody can see. A colour the wheel does not carry
+    leaves the fixture out rather than parking it on something else.
+    """
+    wanted = None if fixture_ids is None else set(fixture_ids)
+    values: dict[int, list[tuple[int, int]]] = {}
+    for capability in caps:
+        if wanted is not None and capability.fixture.fixture_id not in wanted:
+            continue
+        if capability.is_smoke:
+            continue
+        pairs = color_wheel_pairs(capability, color_name)
+        if not pairs:
+            continue
+        pairs += [(o, 255) for o in capability.offsets_for_role(roles.DIMMER)]
+        pairs += shutter_open_pairs(capability)
+        values[capability.fixture.fixture_id] = pairs
+    return values
+
+
+def _scene(workspace: Workspace, name: str, values) -> int:
+    function_id = next_function_id(workspace.root)
+    workspace.add_function(build_scene(function_id, name, values, path=PATH))
+    return function_id

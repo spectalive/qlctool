@@ -250,7 +250,7 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     ws = Workspace.load(src)
     show = build_canonical_show(
         ws, FixtureLibrary.load(), with_layout=not args.no_buttons,
-        plot_path=args.plot,
+        plot_path=args.plot, beats=args.beats,
     )
     ws.save(out)
 
@@ -263,6 +263,9 @@ def cmd_newshow(args: argparse.Namespace) -> int:
           f"{len(show.button_ids)} console buttons on one 1440x900 screen, "
           f"{show.stage_placed} fixtures placed in the 2D/3D view. "
           f"Press AUTO (key Q).")
+    if args.beats:
+        print("Chases are on Beats tempo and the beat generator is the audio "
+              "input: pick one under QLC+ Configuration, or nothing advances.")
     return _finish(out, args.validate)
 
 
@@ -469,6 +472,10 @@ def build_parser() -> argparse.ArgumentParser:
                             "generated band layout")
     p_new.add_argument("--no-buttons", action="store_true",
                        help="skip the Virtual Console layout")
+    p_new.add_argument("--beats", action="store_true",
+                       help="run the chases on the music's beat: Beats tempo "
+                            "plus the audio input as beat generator (needs an "
+                            "audio input picked in QLC+, or nothing advances)")
     p_new.add_argument("--validate", action="store_true",
                        help="load the result in QLC+ and fail on any problem")
     p_new.set_defaults(func=cmd_newshow)

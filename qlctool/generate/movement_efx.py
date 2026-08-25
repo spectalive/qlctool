@@ -58,11 +58,20 @@ def generate_movement_efx(
     duration: int = 6848,
     chaser_hold: int = 4000,
     chaser_run_order: str = "Loop",
+    chaser_name: str = "Movimientos Cabezas",
+    label_prefix: str = "Movimiento",
+    mirrored_ids: Sequence[int] = (),
 ) -> GeneratedMovements:
     """Create one EFX per algorithm over the moving heads.
 
     fixture_ids overrides the automatic pan+tilt selection. Raises when no
     fixture can move - an EFX with no fixtures loads but does nothing.
+
+    mirrored_ids run the path backwards, which is how a rig gets symmetry: with
+    every head going the same way round, the room sweeps in parallel, and with
+    one side reversed the pairs open and close together. Pass the fixtures on
+    one side of the centre line - `house_right_fixture_ids` reads them off the
+    plot.
     """
     ids = list(fixture_ids) if fixture_ids is not None else moving_head_ids(
         workspace, library
@@ -83,9 +92,15 @@ def generate_movement_efx(
         groups[True if caps is None else keeps_16bit(caps, PAN_TILT_PAIRS)].append(fid)
     parts = [(paired, members) for paired, members in groups.items() if members]
 
+    mirrored = set(mirrored_ids)
+
     def _members(fixture_ids: list[int]) -> list[EFXFixture]:
         return [
-            EFXFixture(fixture_id=fid, start_offset=offset)
+            EFXFixture(
+                fixture_id=fid,
+                start_offset=offset,
+                direction="Backward" if fid in mirrored else "Forward",
+            )
             for fid, offset in zip(fixture_ids, spread_offsets(len(fixture_ids)))
         ]
 
@@ -103,7 +118,7 @@ def generate_movement_efx(
             workspace.add_function(
                 build_efx(
                     fid,
-                    f"Movimiento {label}{suffix}",
+                    f"{label_prefix} {label}{suffix}",
                     _members(fixture_ids),
                     algorithm=algorithm,
                     propagation_mode=propagation_mode,
@@ -122,7 +137,7 @@ def generate_movement_efx(
         collection_id = next_function_id(workspace.root)
         workspace.add_function(
             build_collection(
-                collection_id, f"Movimiento {label}", shape_parts, path=path
+                collection_id, f"{label_prefix} {label}", shape_parts, path=path
             )
         )
         efx_ids.append(collection_id)
@@ -133,7 +148,7 @@ def generate_movement_efx(
         workspace.add_function(
             build_chaser(
                 chaser_id,
-                "Movimientos Cabezas",
+                chaser_name,
                 efx_ids,
                 hold=chaser_hold,
                 run_order=chaser_run_order,

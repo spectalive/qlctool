@@ -48,20 +48,72 @@ def test_the_rig_survives_and_the_old_content_does_not(built):
     assert [b.group_name for b in show.banks] == ["BarrasLed", "Cabezas", "PAR"]
 
 
-def test_auto_starts_everything_at_once(built):
+def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
+    """The colour and the haze run under everything; the level rides on top.
+
+    Keeping the bed outside the cycle is what stops a level change from
+    blacking the room out, and the effects that read as "peak" - fast movement,
+    prism, the dimmer chase - are reachable only through the level that is one.
+    """
     show, out = built
     functions = _functions(Workspace.load(out).root)
 
     auto = functions[str(show.master_ids["AUTO"])]
     assert auto.attrib["Type"] == "Collection"
     members = {step.text for step in findall_local(auto, "Step")}
-    for name in ("Rueda Colores", "Movimientos Cabezas", "Gobo Animacion",
-                 "Humo Auto"):
-        assert str(show.master_ids[name]) in members
-    # And the colour wheel is itself a collection of the per-group wheels.
+    assert members == {
+        str(show.master_ids[name])
+        for name in ("Rueda Colores", "Humo Auto", "Ciclo Energia")
+    }
+
+    cycle = functions[str(show.master_ids["Ciclo Energia"])]
+    assert cycle.attrib["Type"] == "Chaser"
+    # A wave, not a ramp: it comes back down through the middle level.
+    assert [functions[s.text].attrib["Name"] for s in findall_local(cycle, "Step")] == [
+        "Nivel Ambiente", "Nivel Fiesta", "Nivel Peak", "Nivel Fiesta",
+    ]
+
+    party = functions[str(show.master_ids["Nivel Fiesta"])]
+    party_members = {step.text for step in findall_local(party, "Step")}
+    assert str(show.master_ids["Movimientos Cabezas"]) in party_members
+    assert str(show.master_ids["Gobo Animacion"]) in party_members
+
+    peak = functions[str(show.master_ids["Nivel Peak"])]
+    peak_members = {step.text for step in findall_local(peak, "Step")}
+    assert str(show.master_ids["Movimientos Rapidos"]) in peak_members
+    assert str(show.master_ids["Dimmer Chase"]) in peak_members
+    # Held back for the peak, not running all night.
+    assert str(show.master_ids["Dimmer Chase"]) not in party_members
+    # And the colour wheel is one wheel over the whole rig, not one per group:
+    # three Random wheels never agree, and the heads and the PARs have to.
     wheel = functions[str(show.master_ids["Rueda Colores"])]
-    assert wheel.attrib["Type"] == "Collection"
-    assert len(findall_local(wheel, "Step")) == len(show.banks)
+    assert wheel.attrib["Type"] == "Chaser"
+    assert wheel.attrib["Name"] == "Rueda Colores"
+
+
+def test_only_a_pixel_group_cycles_matrices_under_auto(built):
+    """A matrix paints its own group's colour, so a cycle per group desyncs it.
+
+    The bars and panels have cells to draw across and keep theirs; the heads
+    and the PARs take their colour from the rig-wide wheel instead, which is
+    the only way they land on white together.
+    """
+    show, out = built
+    root = Workspace.load(out).root
+    functions = _functions(root)
+
+    # Reached through the energy levels now, which is where every effect that
+    # is not the colour bed or the haze lives.
+    running = set()
+    for level in ("Nivel Ambiente", "Nivel Fiesta", "Nivel Peak"):
+        collection = functions[str(show.master_ids[level])]
+        running |= {step.text for step in findall_local(collection, "Step")}
+    cycles = {
+        functions[m].attrib["Name"]
+        for m in running
+        if functions[m].attrib["Name"].startswith("Ciclo Matrices")
+    }
+    assert cycles == {"Ciclo Matrices BarrasLed"}
 
 
 def test_the_console_carries_the_old_keyboard_shortcuts(built):

@@ -84,6 +84,12 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
   --plot "../../QLC+ Setups/vibra-stage-plot.json" \
   --out "../../QLC+ Setups/Vibra.qxw" --validate
 
+# ...the same show with the chases on the music's beat (needs an audio input
+# picked in QLC+'s Configuration, or nothing advances)
+.venv/bin/qlctool newshow "../../QLC+ Setups/Vibra.qxw" --beats \
+  --plot "../../QLC+ Setups/vibra-stage-plot.json" \
+  --out "../../QLC+ Setups/Vibra-beats.qxw" --validate
+
 # find out what each DMX channel of an undocumented fixture does, on site
 .venv/bin/qlctool probe "../../QLC+ Setups/DeluxeEventos2.qxw" 25 --base "1=255" --buttons
 
