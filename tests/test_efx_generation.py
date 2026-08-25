@@ -150,24 +150,36 @@ def test_generate_movement_into_real_show(tmp_path):
     ws.save(out)
     reloaded = Workspace.load(out).root
 
+    # This rig holds both kinds of mover, so each shape is a Collection over two
+    # EFX - see test_pan_tilt_pairing for why they cannot share one.
     functions = _efx(reloaded)
-    assert len(functions) == before_count + len(result.efx_ids)
+    assert len(functions) == before_count + len(result.part_ids)
 
-    generated = {
+    by_name = {
         f.attrib["Name"]: f
         for f in functions
-        if int(f.attrib["ID"]) in set(result.efx_ids)
+        if int(f.attrib["ID"]) in set(result.part_ids)
     }
-    assert "Movimiento Circulo" in generated
-    assert "Movimiento Cuadrado" in generated
+    assert "Movimiento Circulo (16 bit)" in by_name
+    assert "Movimiento Circulo (8 bit)" in by_name
 
-    circle = generated["Movimiento Circulo"]
-    members = findall_local(circle, "Fixture")
-    assert len(members) == 12
+    paired = by_name["Movimiento Circulo (16 bit)"]
+    unpaired = by_name["Movimiento Circulo (8 bit)"]
+    members = findall_local(paired, "Fixture")
+    assert len(members) == 8
+    assert len(findall_local(unpaired, "Fixture")) == 4
     offsets = [int(_text_of(m, "StartOffset")) for m in members]
-    assert offsets == [30 * step for step in range(12)]
-    assert _text_of(circle, "PropagationMode") == "Parallel"
-    assert circle.attrib["Path"] == "Movimiento (generado)"
+    assert offsets == [45 * step for step in range(8)]
+    assert _text_of(paired, "PropagationMode") == "Parallel"
+    assert paired.attrib["Path"] == "Movimiento (generado)/Partes"
+
+    # What the console and the chaser see is still one function per shape.
+    collection = next(
+        f for f in iter_local(reloaded, "Function")
+        if f.attrib.get("Name") == "Movimiento Circulo"
+        and f.attrib.get("Type") == "Collection"
+    )
+    assert int(collection.attrib["ID"]) in set(result.efx_ids)
 
     chaser = next(
         f for f in iter_local(reloaded, "Function")

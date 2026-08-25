@@ -68,6 +68,10 @@ Commands never overwrite their input; they write a new file.
 - **Smoke machines are excluded everywhere** except the smoke generator.
 - **A fixture in no group gets almost nothing.** Colour banks and matrices
   are both built per group, so patching a fixture is only half of adding it.
+- **One EFX cannot hold two kinds of moving head.** A fixture whose fine
+  channels are not adjacent to their coarse ones turns 16-bit off for the
+  whole EFX, because the flag lives on the EFX's fader rather than on the
+  fixture. Movement is generated per group and run from a Collection.
 - **A dimmer at full is not a light that is on.** A fixture with a mechanical
   shutter needs it opened as well, and the value comes from the definition's own
   `ShutterOpen` range. Every generator that raises a dimmer calls

@@ -7,7 +7,7 @@ does not invalidate the generator.
 """
 
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
@@ -15,14 +15,20 @@ from ..efx_algorithms import EFX_ALGORITHMS, SPANISH_LABELS
 from ..functions.chaser import build_chaser
 from ..functions.efx import EFXFixture, build_efx
 from ..ids import next_function_id
+from ..functions.collection import build_collection
 from ..library import FixtureLibrary
+from ..pan_tilt_pairing import pairs_16bit
 from ..workspace import Workspace
 
 
 @dataclass(frozen=True)
 class GeneratedMovements:
+    # What the console and the chaser see: one function per shape. When the
+    # movers had to be split it is a Collection running both halves at once.
     efx_ids: list[int]
     chaser_id: int | None
+    # The EFX underneath, when a split happened. Empty when there was none.
+    part_ids: list[int] = field(default_factory=list)
 
 
 def moving_head_ids(workspace: Workspace, library: FixtureLibrary) -> list[int]:
@@ -64,28 +70,62 @@ def generate_movement_efx(
     if not ids:
         raise ValueError("no fixture in this workspace has both pan and tilt")
 
-    offsets = spread_offsets(len(ids))
-    members = [
-        EFXFixture(fixture_id=fid, start_offset=offset)
-        for fid, offset in zip(ids, offsets)
-    ]
+    # One EFX cannot hold both kinds of mover: a fixture whose fine channels are
+    # not adjacent turns 16-bit off for the whole EFX, and the ones that *do*
+    # pair then lose their coarse channels entirely. See `pan_tilt_pairing`.
+    by_id = {
+        caps.fixture.fixture_id: caps
+        for caps in capabilities_of(workspace.root, library)
+    }
+    groups: dict[bool, list[int]] = {True: [], False: []}
+    for fid in ids:
+        caps = by_id.get(fid)
+        groups[True if caps is None else pairs_16bit(caps)].append(fid)
+    parts = [(paired, members) for paired, members in groups.items() if members]
+
+    def _members(fixture_ids: list[int]) -> list[EFXFixture]:
+        return [
+            EFXFixture(fixture_id=fid, start_offset=offset)
+            for fid, offset in zip(fixture_ids, spread_offsets(len(fixture_ids)))
+        ]
 
     efx_ids: list[int] = []
+    part_ids: list[int] = []
+    split = len(parts) > 1
+    part_path = f"{path}/Partes" if split else path
+
     for algorithm in algorithms:
-        fid = next_function_id(workspace.root)
         label = SPANISH_LABELS.get(algorithm, algorithm)
+        shape_parts: list[int] = []
+        for paired, fixture_ids in parts:
+            fid = next_function_id(workspace.root)
+            suffix = f" ({'16 bit' if paired else '8 bit'})" if split else ""
+            workspace.add_function(
+                build_efx(
+                    fid,
+                    f"Movimiento {label}{suffix}",
+                    _members(fixture_ids),
+                    algorithm=algorithm,
+                    propagation_mode=propagation_mode,
+                    duration=duration,
+                    path=part_path if split else path,
+                )
+            )
+            shape_parts.append(fid)
+
+        if not split:
+            efx_ids.append(shape_parts[0])
+            continue
+
+        # One button, one chaser step, both halves moving together.
+        part_ids.extend(shape_parts)
+        collection_id = next_function_id(workspace.root)
         workspace.add_function(
-            build_efx(
-                fid,
-                f"Movimiento {label}",
-                members,
-                algorithm=algorithm,
-                propagation_mode=propagation_mode,
-                duration=duration,
-                path=path,
+            build_collection(
+                collection_id, f"Movimiento {label}", shape_parts, path=path
             )
         )
-        efx_ids.append(fid)
+        efx_ids.append(collection_id)
 
     chaser_id: int | None = None
     if make_chaser and efx_ids:
@@ -101,4 +141,6 @@ def generate_movement_efx(
             )
         )
 
-    return GeneratedMovements(efx_ids=efx_ids, chaser_id=chaser_id)
+    return GeneratedMovements(
+        efx_ids=efx_ids, chaser_id=chaser_id, part_ids=part_ids
+    )
