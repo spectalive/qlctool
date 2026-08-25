@@ -81,6 +81,15 @@ started are killed afterwards, so a QLC+ you have open yourself survives.
 back to the foreground launch rather than reporting a false pass. Set
 `QLCTOOL_FOREGROUND=1` to always use the foreground path.
 
+**A QLC+ you already have open does the same thing more quietly.** `open -g`
+activates that instance instead of starting one, returns 0, and writes nothing
+to the log file - so the validator had a way to come back
+`ok=True, errors=[], log=''` from a run that never happened, which is the exact
+failure the whole net exists to prevent. Two guards now: the background path
+gives up and falls back when it never sees an end-of-load marker, and an empty
+log raises instead of passing. QLC+ prints its banner before it does anything,
+so a real run is never silent.
+
 ### Reading the source
 
 QLC+ is open source and the answer to "what does this tag actually do" is in it.

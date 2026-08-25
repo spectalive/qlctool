@@ -131,6 +131,13 @@ def validate_workspace(
 
 
 def _verdict(output: str) -> ValidationResult:
+    if not (output or "").strip():
+        # QLC+ prints its banner before it does anything else, so an empty log
+        # means it never ran. Reporting that as "no complaints" is the one
+        # failure this whole safety net exists to avoid.
+        raise RuntimeError(
+            "QLC+ produced no output; the workspace was never actually loaded"
+        )
     errors = [
         line.strip()
         for line in (output or "").splitlines()
@@ -190,12 +197,27 @@ def _run_in_background(
     started = _running_pids(executable) - before
     for pid in started:
         _terminate(pid)
-    # Let them actually go: `open` answers -600 if asked to launch the bundle
-    # again while a copy is still shutting down.
+    if loaded_at is None:
+        # Nothing ever reported a finished load. The usual reason is a QLC+ the
+        # owner already has open: `open -g` activates that instance instead of
+        # starting one, returns 0, and nothing is written to the log file. Hand
+        # the run to the foreground path, which owns its own process, rather
+        # than reading an empty log as a clean workspace.
+        _wait_for_exit(started, executable)
+        return None
+    _wait_for_exit(started, executable)
+    return QML_LOG_FILE.read_text(errors="replace")
+
+
+def _wait_for_exit(started: set[int], executable: str) -> None:
+    """Let the processes this call started actually go.
+
+    `open` answers -600 if asked to launch the bundle again while a copy is
+    still shutting down.
+    """
     gone_by = time.monotonic() + 5.0
     while started & _running_pids(executable) and time.monotonic() < gone_by:
         time.sleep(0.1)
-    return QML_LOG_FILE.read_text(errors="replace")
 
 
 def _running_pids(executable: str) -> set[int]:
