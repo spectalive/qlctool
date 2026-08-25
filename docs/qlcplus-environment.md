@@ -20,6 +20,23 @@ CromoWash100, which QLC+ 5 ships itself.
 | macOS, QLC+ 5 | `~/Library/Application Support/QLC+/Fixtures` (a `QLC+ 5` folder also exists on some installs; copying to both is harmless) |
 | Bundled library | `/Applications/QLC+.app/Contents/Resources/Fixtures/<Manufacturer>/` |
 
+## Gobo images have to be installed too
+
+A definition's gobo thumbnails are a `Res1` path per capability. An **absolute**
+path is used as it stands - which is why `~/Desktop/Gobos/...` worked on one
+machine and nowhere else. A **relative** path is resolved against QLC+'s own
+Gobos folder, and there is no user-level equivalent
+(`QLCCapability::loadXML` -> `QLCFile::systemDirectory(GOBODIR)`), so the images
+go inside the bundle:
+
+```bash
+cp -R "QLC+ Setups/Gobos/BEAM-LIGHT-230W-7R" \
+  "/Applications/QLC+.app/Contents/Resources/Gobos/BEAM-230W-7R"
+```
+
+Redo it after a QLC+ upgrade - upgrading replaces the bundle. A missing file
+costs a thumbnail and nothing else; QLC+ does not complain.
+
 QLC+ caches the library at start, so **restart it** after copying definitions in.
 A definition present in both the user folder and the bundled library logs
 `Cache already contains "<name>"`, which is harmless.
