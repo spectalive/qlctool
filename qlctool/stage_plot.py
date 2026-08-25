@@ -17,7 +17,7 @@ from pathlib import Path
 from lxml import etree
 
 from .fixture import patched_fixtures
-from .monitor_node import MonitorItem
+from .monitor_node import MonitorItem, PropItem
 
 
 @dataclass(frozen=True)
@@ -26,6 +26,9 @@ class StagePlot:
     stage: tuple[int, int, int]
     point_of_view: str
     items: list[MonitorItem]
+    # The scenery: a booth, its flightcases, a stand-in for the DJ. None of it
+    # is a fixture; it is there so the preview looks like the room.
+    props: list[PropItem]
     # fixture id -> the human description of where it hangs
     places: dict[int, str]
 
@@ -83,6 +86,19 @@ def load_stage_plot(path: str | Path, root: etree._Element) -> StagePlot:
                 z_rot=float(entry.get("z_rot", 0)),
             )
             for entry in entries
+        ],
+        props=[
+            PropItem(
+                item_id=int(prop["id"]),
+                resource=prop["mesh"],
+                name=prop.get("name", ""),
+                centre=(float(prop["cx"]), float(prop["cy"]), float(prop["cz"])),
+                size=(float(prop["w"]), float(prop["h"]), float(prop["d"])),
+                x_rot=float(prop.get("x_rot", 0)),
+                y_rot=float(prop.get("y_rot", 0)),
+                z_rot=float(prop.get("z_rot", 0)),
+            )
+            for prop in document.get("props", [])
         ],
         places={int(entry["id"]): entry.get("place", "") for entry in entries},
     )

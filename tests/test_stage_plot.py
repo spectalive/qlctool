@@ -50,13 +50,35 @@ def test_the_front_truss_reads_left_to_right(workspace):
     assert [item.fixture_id for item in front] == [4, 24, 25, 2, 27, 28, 5]
 
 
-def test_the_dj_beams_are_aimed_up(workspace):
+def test_the_dj_beams_stand_on_their_flightcases_aimed_up(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
     beams = [item for item in plot.items if item.fixture_id in (22, 23)]
     assert len(beams) == 2
+    cases = [p for p in plot.props if "Flightcase" in p.name]
+    assert len(cases) == 2
+    case_top = cases[0].centre[1] + cases[0].size[1] / 2
     for beam in beams:
-        assert beam.y == 0
+        assert beam.y == case_top
         assert beam.x_rot == 180
+
+
+def test_everything_that_faces_the_audience_is_turned_to_face_it(workspace):
+    """0 is straight down, which is how QLC+'s meshes and its bars start. The
+    truss PARs, the pixel panels and both LED bars all point out instead."""
+    plot = load_stage_plot(PLOT, workspace.root)
+    facing = {item.fixture_id for item in plot.items if item.x_rot == 90}
+    pars = {6, 7, 8, 9, 10, 11}
+    pixels = {24, 25, 27, 28}
+    bars = {2, 3}
+    assert facing == pars | pixels | bars
+
+
+def test_the_booth_stands_on_the_floor(workspace):
+    plot = load_stage_plot(PLOT, workspace.root)
+    assert plot.props
+    for prop in plot.props:
+        bottom = prop.centre[1] - prop.size[1] / 2
+        assert bottom >= -1, f"{prop.name} starts below the floor at {bottom}"
 
 
 def test_the_back_truss_reads_left_to_right(workspace):

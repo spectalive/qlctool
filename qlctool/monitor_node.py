@@ -34,6 +34,32 @@ _DEFAULTS = {
 
 
 @dataclass(frozen=True)
+class PropItem:
+    """A piece of scenery in the 3D view - QLC+ calls it a MeshItem.
+
+    Given in world terms: the centre of the box, in millimetres above the floor,
+    and how big it is. QLC+ stores something less friendly - it positions a
+    generic mesh by a corner *and* adds half the raw mesh's extents, which for
+    its own primitives is a fixed metre whatever the scale, so the stored
+    position is the wanted centre minus 1000 on every axis. That conversion
+    lives in `write_monitor` rather than in whoever writes a plot.
+    """
+
+    item_id: int
+    resource: str
+    name: str
+    centre: tuple[float, float, float]
+    size: tuple[float, float, float]
+    x_rot: float = 0.0
+    y_rot: float = 0.0
+    z_rot: float = 0.0
+
+
+# QLC+'s bundled primitives all span -1..1, so two metres across before scaling.
+PRIMITIVE_SIZE = 2000.0
+
+
+@dataclass(frozen=True)
 class MonitorItem:
     """One fixture's spot on the plot, in millimetres.
 
@@ -59,6 +85,7 @@ def write_monitor(
     stage: tuple[int, int, int],
     point_of_view: str,
     items: list[MonitorItem],
+    props: list[PropItem] | None = None,
 ) -> None:
     """Replace the Monitor node, keeping the DMX-monitor display settings."""
     if point_of_view not in POINTS_OF_VIEW:
@@ -112,6 +139,26 @@ def write_monitor(
         if item.hidden:
             # Presence is what QLC+ checks; the value is cosmetic.
             element.set("Hidden", "True")
+
+    for prop in sorted(props or [], key=lambda p: p.item_id):
+        element = etree.SubElement(monitor, f"{{{QLC_NS}}}MeshItem")
+        element.set("ID", str(prop.item_id))
+        element.set("Res", prop.resource)
+        element.set("Name", prop.name)
+        for attribute, value in zip(
+            ("XPos", "YPos", "ZPos"),
+            (c - PRIMITIVE_SIZE / 2 for c in prop.centre),
+        ):
+            element.set(attribute, str(round(value)))
+        for attribute, wanted in zip(
+            ("XScale", "YScale", "ZScale"), prop.size
+        ):
+            element.set(attribute, f"{wanted / PRIMITIVE_SIZE:g}")
+        for attribute, degrees in (
+            ("XRot", prop.x_rot), ("YRot", prop.y_rot), ("ZRot", prop.z_rot)
+        ):
+            if degrees:
+                element.set(attribute, str(round(degrees)))
 
     if existing is not None:
         engine.replace(existing, monitor)
