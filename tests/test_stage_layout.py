@@ -57,12 +57,14 @@ def test_no_two_fixtures_share_a_spot(laid_out):
 def test_bands_hold_the_fixtures_their_capabilities_say(laid_out):
     _, result = laid_out
     # The rig: 4 BEAM 230W have a gobo wheel, the other eight movers do not,
-    # two LED bars, two smoke machines, the rest are plain colour fixtures.
+    # two LED bars plus the two pixel panels - both declare an LED Bar type and
+    # both lie flat, so the band is theirs too - two smoke machines, and the
+    # rest are plain colour fixtures.
     assert len(result.rows[BEAMS]) == 4
     assert len(result.rows[WASHES]) == 8
-    assert len(result.rows[BARS]) == 2
+    assert len(result.rows[BARS]) == 4
     assert len(result.rows[SMOKE]) == 2
-    assert len(result.rows[PARS]) == 11
+    assert len(result.rows[PARS]) == 9
 
 
 def test_a_row_shares_one_height_and_depth(laid_out):

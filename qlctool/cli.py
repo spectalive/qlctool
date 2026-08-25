@@ -29,6 +29,8 @@ from .library import FixtureLibrary
 from .patch_conflicts import patch_conflicts
 from .repatch.add import add_fixture
 from .repatch.address import set_fixture_address
+from .repatch.group_head import add_group_head
+from .repatch.group_size import set_group_size
 from .repatch.remove import remove_fixture
 from .repatch.rename import rename_fixture
 from .validate import validate_workspace
@@ -170,7 +172,8 @@ def cmd_patch(args: argparse.Namespace) -> int:
     src = Path(args.workspace)
     ws = Workspace.load(src)
 
-    edits = args.add or args.set_address or args.rename or args.remove
+    edits = (args.add or args.set_address or args.rename or args.remove
+             or args.group_size or args.group_add)
     if not edits:
         conflicts = patch_conflicts(ws.root)
         if not conflicts:
@@ -213,6 +216,21 @@ def cmd_patch(args: argparse.Namespace) -> int:
     for target in args.remove or []:
         cleared = remove_fixture(ws.root, target)
         print(f"removed [{target}] and {cleared} reference(s) to it")
+
+    # Grid before members: a cell outside the declared size is a head no effect
+    # can reach, so add_group_head refuses it.
+    for spec in args.group_size or []:
+        group, size = spec.split("=", 1)
+        width, height = size.lower().split("x", 1)
+        set_group_size(ws.root, int(group), int(width), int(height))
+        print(f"group {group} grid is now {width}x{height}")
+
+    for spec in args.group_add or []:
+        group, placement = spec.split("=", 1)
+        fixture, cell = placement.split("@", 1)
+        x, y = cell.split(",", 1)
+        add_group_head(ws.root, int(group), int(fixture), int(x), int(y))
+        print(f"group {group} cell ({x},{y}) now holds fixture {fixture}")
 
     remaining = patch_conflicts(ws.root)
     for conflict in remaining:
@@ -412,6 +430,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_patch.add_argument("--rename", action="append", metavar="ID=NAME")
     p_patch.add_argument("--remove", action="append", type=int, metavar="ID",
                          help="unpatch fixture ID and clear every reference")
+    p_patch.add_argument("--group-size", action="append", metavar="GROUP=WxH",
+                         help="resize a fixture group's grid; refuses a size "
+                              "that would leave its own heads unreachable")
+    p_patch.add_argument("--group-add", action="append",
+                         metavar="GROUP=FIXTURE@X,Y",
+                         help="put a fixture's head in a group cell - without "
+                              "it a fixture gets no colour bank and no matrix")
     p_patch.add_argument("--out", help="output file (default: <name>-generado.qxw)")
     p_patch.add_argument("--validate", action="store_true",
                        help="load the result in headless QLC+ and fail on "

@@ -46,7 +46,7 @@ Commands never overwrite their input; they write a new file.
 | `matrix` | RGBMatrix effects, algorithm x colour, for one fixture group |
 | `movement` | One EFX per shape across every moving head, phases spread |
 | `probe` | One scene per DMX channel of a fixture - how an undocumented fixture gets settled on site |
-| `patch` | Check the patch for address overlaps, or edit it: add, re-address, rename, unpatch |
+| `patch` | Check the patch for address overlaps, or edit it: add, re-address, rename, unpatch, and put fixtures in a group or resize its grid |
 | `layout` | Virtual Console buttons for every function, grouped by its UI folder |
 | `stage` | A position for every fixture in the 2D/3D view - `--plot` applies the real montage, without it the layout is generated from what each fixture can do |
 | `newshow` | A whole self-running show built on an existing patch, plus the one-screen live console |
@@ -66,6 +66,8 @@ Commands never overwrite their input; they write a new file.
 - **Addresses are 0-based in the library and in the file, 1-based on the command
   line** - the same way QLC+ shows them.
 - **Smoke machines are excluded everywhere** except the smoke generator.
+- **A fixture in no group gets almost nothing.** Colour banks and matrices
+  are both built per group, so patching a fixture is only half of adding it.
 - **A dimmer at full is not a light that is on.** A fixture with a mechanical
   shutter needs it opened as well, and the value comes from the definition's own
   `ShutterOpen` range. Every generator that raises a dimmer calls

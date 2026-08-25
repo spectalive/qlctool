@@ -18,7 +18,11 @@ from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
 REPO = Path(__file__).resolve().parents[3]
-SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
+# The plot is bound to the patch it describes, and the patch grew past the
+# hand-built original when the other two pixel panels were added: Vibra.qxw is
+# the current rig, DeluxeEventos2.qxw is kept as the reference the builders are
+# tested against.
+SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 PLOT = REPO / "QLC+ Setups" / "vibra-stage-plot.json"
 
 
@@ -29,11 +33,30 @@ def workspace():
 
 def test_the_standard_plot_matches_the_patch(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
-    assert len(plot.items) == 27
-    # 10 on the back truss, 2 beams at the DJ booth, 2 bars over it, 2 grids
-    # downstage, 2 pixel panels facing the audience, 1 smoke machine.
-    assert len(plot.rigged) == 19
+    assert len(plot.items) == 29
+    # 10 on the back truss, 7 on the front truss, 2 beams beside the DJ table,
+    # 1 bar over the booth, 1 smoke machine.
+    assert len(plot.rigged) == 21
     assert len(plot.spare) == 8
+
+
+def test_the_front_truss_reads_left_to_right(workspace):
+    plot = load_stage_plot(PLOT, workspace.root)
+    front = sorted(
+        (item for item in plot.items if item.y == 3000 and item.z == 1200),
+        key=lambda item: item.x,
+    )
+    # grid, pixel, pixel, bar, pixel, pixel, grid - the bar dead centre.
+    assert [item.fixture_id for item in front] == [4, 24, 25, 2, 27, 28, 5]
+
+
+def test_the_dj_beams_are_aimed_up(workspace):
+    plot = load_stage_plot(PLOT, workspace.root)
+    beams = [item for item in plot.items if item.fixture_id in (22, 23)]
+    assert len(beams) == 2
+    for beam in beams:
+        assert beam.y == 0
+        assert beam.x_rot == 180
 
 
 def test_the_back_truss_reads_left_to_right(workspace):

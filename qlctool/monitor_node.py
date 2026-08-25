@@ -46,6 +46,12 @@ class MonitorItem:
     y: float
     z: float
     hidden: bool = False
+    # Degrees about each axis. A fixture standing on the floor and aimed at the
+    # ceiling is x_rot=180: QLC+'s meshes all point down by default, because
+    # that is how a light hangs.
+    x_rot: float = 0.0
+    y_rot: float = 0.0
+    z_rot: float = 0.0
 
 
 def write_monitor(
@@ -98,6 +104,11 @@ def write_monitor(
         element.set("XPos", str(round(item.x)))
         element.set("YPos", str(round(item.y)))
         element.set("ZPos", str(round(item.z)))
+        for attribute, degrees in (
+            ("XRot", item.x_rot), ("YRot", item.y_rot), ("ZRot", item.z_rot)
+        ):
+            if degrees:
+                element.set(attribute, str(round(degrees)))
         if item.hidden:
             # Presence is what QLC+ checks; the value is cosmetic.
             element.set("Hidden", "True")

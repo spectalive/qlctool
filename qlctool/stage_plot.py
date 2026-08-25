@@ -78,6 +78,9 @@ def load_stage_plot(path: str | Path, root: etree._Element) -> StagePlot:
                 y=float(entry["y"]),
                 z=float(entry["z"]),
                 hidden=bool(entry.get("hidden", False)),
+                x_rot=float(entry.get("x_rot", 0)),
+                y_rot=float(entry.get("y_rot", 0)),
+                z_rot=float(entry.get("z_rot", 0)),
             )
             for entry in entries
         ],
