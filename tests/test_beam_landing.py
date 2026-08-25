@@ -11,6 +11,7 @@ from pathlib import Path
 import pytest
 
 from qlctool.beam_landing import HANGING, STANDING, beam_landing
+from qlctool.monitor_node import MonitorItem
 from qlctool.capabilities_of import capabilities_of
 from qlctool.library import FixtureLibrary
 from qlctool.stage_plot import load_stage_plot
@@ -105,3 +106,25 @@ def test_a_smoke_machine_has_no_beam(rig):
     plot, caps = rig
     item = next(i for i in plot.items if i.fixture_id == 17)
     assert beam_landing(item, caps[17]).reason == "smoke machine: no beam"
+
+def test_the_same_angle_points_a_par_and_a_pixel_bar_opposite_ways(rig):
+    """The one thing two flips in an afternoon taught, pinned.
+
+    A meshed fixture emits down and one QLC+ draws itself emits from its top
+    face, so the same stored angle sends them to opposite sides of the room.
+    Reading the sign off the 3D view fixes whichever fixture is on screen and
+    breaks the other kind.
+    """
+    _, caps = rig
+    par = MonitorItem(fixture_id=6, x=0, y=4000, z=0, x_rot=50)
+    panel = MonitorItem(fixture_id=24, x=0, y=3000, z=0, x_rot=50)
+
+    par_landing = beam_landing(par, caps[6])
+    panel_landing = beam_landing(panel, caps[24])
+
+    assert caps[6].fixture_type == "Color Changer"
+    assert caps[24].fixture_type == "LED Bar (Pixels)"
+    # The PAR throws towards the audience; the panel at the same angle is aimed
+    # up and over the back of the stage, and never reaches the floor at all.
+    assert par_landing.z is not None and par_landing.z > 0
+    assert panel_landing.z is None
