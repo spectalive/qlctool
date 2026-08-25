@@ -19,18 +19,13 @@ which silently rewrites a layout that was already right.
 
 from dataclasses import dataclass
 
-from lxml import etree
-
 from ..capabilities_of import capabilities_of
-from ..constants import QLC_NS
 from ..fixture import patched_fixtures
 from ..library import FixtureLibrary
+from ..monitor_node import POINTS_OF_VIEW, MonitorItem, write_monitor
 from ..stage_band import BANDS, PARS, band_of
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
-
-# MonitorProperties::PointOfView in the QLC+ source, by name.
-POINTS_OF_VIEW = {"top": 1, "front": 2, "right": 3, "left": 4}
 
 # Grid in metres (width, height, depth): a small-venue stage with a truss over
 # it. QLC+ writes these as integers.
@@ -100,12 +95,6 @@ def generate_stage_layout(
     point_of_view: str = "front",
 ) -> GeneratedStage:
     """Rewrite `<Monitor>` with a position for every patched fixture."""
-    if point_of_view not in POINTS_OF_VIEW:
-        raise ValueError(
-            f"unknown point of view {point_of_view!r} "
-            f"(known: {', '.join(sorted(POINTS_OF_VIEW))})"
-        )
-
     band_by_id = {
         c.fixture.fixture_id: band_of(c)
         for c in capabilities_of(workspace.root, library)
@@ -128,64 +117,15 @@ def generate_stage_layout(
         ):
             positions[fixture_id] = (round(x), y, z)
 
-    _write_monitor(workspace, stage, POINTS_OF_VIEW[point_of_view], positions)
+    write_monitor(
+        workspace,
+        stage,
+        point_of_view,
+        [MonitorItem(fixture_id=fid, x=x, y=y, z=z)
+         for fid, (x, y, z) in positions.items()],
+    )
     return GeneratedStage(
         stage=stage,
         point_of_view=point_of_view,
         rows={band: ids for band, ids in rows.items() if ids},
     )
-
-
-def _write_monitor(
-    workspace: Workspace,
-    stage: tuple[int, int, int],
-    point_of_view: int,
-    positions: dict[int, tuple[float, float, float]],
-) -> None:
-    """Replace the Monitor node, keeping the DMX-monitor display settings.
-
-    Child order follows MonitorProperties::saveXML: Font, ChannelStyle,
-    ValueStyle, Grid, StageItem, then the fixture items.
-    """
-    engine = workspace.engine
-    existing = find_local(engine, "Monitor")
-    kept = {
-        name: find_local(existing, name)
-        for name in ("Font", "ChannelStyle", "ValueStyle")
-    } if existing is not None else {}
-
-    monitor = etree.Element(f"{{{QLC_NS}}}Monitor")
-    monitor.set("DisplayMode", existing.get("DisplayMode", "0") if existing is not None else "0")
-    monitor.set("ShowLabels", existing.get("ShowLabels", "1") if existing is not None else "1")
-
-    defaults = {
-        "Font": "Arial,12,-1,5,50,0,0,0,0,0",
-        "ChannelStyle": "1",
-        "ValueStyle": "1",
-    }
-    for name, fallback in defaults.items():
-        element = etree.SubElement(monitor, f"{{{QLC_NS}}}{name}")
-        source = kept.get(name)
-        element.text = source.text if source is not None else fallback
-
-    width, height, depth = stage
-    grid = etree.SubElement(monitor, f"{{{QLC_NS}}}Grid")
-    grid.set("Width", str(width))
-    grid.set("Height", str(height))
-    grid.set("Depth", str(depth))
-    grid.set("Units", "0")  # metres
-    grid.set("POV", str(point_of_view))
-
-    etree.SubElement(monitor, f"{{{QLC_NS}}}StageItem").text = "0"
-
-    for fixture_id, (x, y, z) in sorted(positions.items()):
-        item = etree.SubElement(monitor, f"{{{QLC_NS}}}FxItem")
-        item.set("ID", str(fixture_id))
-        item.set("XPos", str(x))
-        item.set("YPos", str(y))
-        item.set("ZPos", str(z))
-
-    if existing is not None:
-        engine.replace(existing, monitor)
-    else:
-        engine.append(monitor)

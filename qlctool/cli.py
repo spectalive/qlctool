@@ -19,11 +19,10 @@ from .generate.channel_probe import generate_channel_probe
 from .generate.color_palette import generate_color_palette
 from .generate.matrix_effects import generate_matrix_effects
 from .generate.movement_efx import generate_movement_efx
-from .generate.stage_layout import (
-    DEFAULT_STAGE,
-    POINTS_OF_VIEW,
-    generate_stage_layout,
-)
+from .generate.stage_layout import DEFAULT_STAGE, generate_stage_layout
+from .generate.stage_plot_layout import apply_stage_plot
+from .monitor_node import POINTS_OF_VIEW
+from .stage_plot import load_stage_plot
 from .generate.vc_layout import generate_vc_layout
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .library import FixtureLibrary
@@ -230,7 +229,8 @@ def cmd_newshow(args: argparse.Namespace) -> int:
 
     ws = Workspace.load(src)
     show = build_canonical_show(
-        ws, FixtureLibrary.load(), with_layout=not args.no_buttons
+        ws, FixtureLibrary.load(), with_layout=not args.no_buttons,
+        plot_path=args.plot,
     )
     ws.save(out)
 
@@ -287,6 +287,17 @@ def cmd_stage(args: argparse.Namespace) -> int:
     out = Path(args.out) if args.out else _default_out(src)
 
     ws = Workspace.load(src)
+    if args.plot:
+        plot = apply_stage_plot(ws, load_stage_plot(args.plot, ws.root))
+        ws.save(out)
+        print(f"Applied {plot.name!r}: {len(plot.rigged)} fixtures rigged, "
+              f"{len(plot.spare)} spare and hidden, on a "
+              f"{plot.stage[0]}x{plot.stage[1]}x{plot.stage[2]} m stage seen "
+              f"from the {plot.point_of_view}.")
+        for fixture_id in plot.rigged:
+            print(f"  [{fixture_id:>2}] {plot.places[fixture_id]}")
+        return _finish(out, args.validate)
+
     stage = generate_stage_layout(
         ws, FixtureLibrary.load(), stage=_stage_size(args.stage),
         point_of_view=args.pov,
@@ -414,6 +425,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_new.add_argument("workspace", help="the show to take the patch from")
     p_new.add_argument("--out", help="output file (default: Vibra.qxw beside it)")
+    p_new.add_argument("--plot", metavar="FILE",
+                       help="stage plot to place the rig with, instead of the "
+                            "generated band layout")
     p_new.add_argument("--no-buttons", action="store_true",
                        help="skip the Virtual Console layout")
     p_new.add_argument("--validate", action="store_true",
@@ -459,6 +473,11 @@ def build_parser() -> argparse.ArgumentParser:
              "across the stage",
     )
     p_stage.add_argument("workspace")
+    p_stage.add_argument("--plot", metavar="FILE",
+                         help="a written stage plot to apply verbatim "
+                              "(QLC+ Setups/vibra-stage-plot.json is the rig "
+                              "we always build); without it the layout is "
+                              "generated from what each fixture can do")
     p_stage.add_argument("--stage", metavar="WxHxD",
                          help="stage size in metres (default "
                               f"{DEFAULT_STAGE[0]}x{DEFAULT_STAGE[1]}x{DEFAULT_STAGE[2]})")

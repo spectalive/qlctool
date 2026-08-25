@@ -48,7 +48,7 @@ Commands never overwrite their input; they write a new file.
 | `probe` | One scene per DMX channel of a fixture - how an undocumented fixture gets settled on site |
 | `patch` | Check the patch for address overlaps, or edit it: add, re-address, rename, unpatch |
 | `layout` | Virtual Console buttons for every function, grouped by its UI folder |
-| `stage` | A position for every fixture in the 2D/3D view: a row per band, spread across the stage |
+| `stage` | A position for every fixture in the 2D/3D view - `--plot` applies the real montage, without it the layout is generated from what each fixture can do |
 | `newshow` | A whole self-running show built on an existing patch, plus the one-screen live console |
 | | (colour banks and mixes, matrices, movement, gobos, beam colour, prism, smoke, dimmer chase and ping-pong, shutter and flash strobes) |
 | `validate` | Load a workspace in headless QLC+ and report what it complains about |

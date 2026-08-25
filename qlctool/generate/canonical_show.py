@@ -21,6 +21,7 @@ from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..palette import PALETTE
 from ..skeleton import strip_to_skeleton
+from ..stage_plot import load_stage_plot
 from ..workspace import Workspace
 from .color_banks import GeneratedBank, generate_color_banks
 from .color_scene import color_scene_values
@@ -30,6 +31,7 @@ from .matrix_effects import GeneratedMatrices, generate_matrix_effects
 from .movement_efx import generate_movement_efx, moving_head_ids
 from .smoke_auto import generate_smoke_auto
 from .stage_layout import generate_stage_layout, unplaced_fixtures
+from .stage_plot_layout import apply_stage_plot
 from .strobe_effects import generate_strobe_effects
 from .wheel_scenes import generate_wheel_scenes
 
@@ -83,6 +85,7 @@ def build_canonical_show(
     algorithms: Sequence[str | None] = MATRIX_ALGORITHMS,
     matrix_colors: Sequence[str] = MATRIX_COLORS,
     with_layout: bool = True,
+    plot_path: str | None = None,
 ) -> CanonicalShow:
     """Strip the workspace to its patch and generate a self-running show on it."""
     strip_to_skeleton(workspace)
@@ -92,7 +95,11 @@ def build_canonical_show(
     # leave it alone, a generated plot is a starting point, not an improvement
     # on a measured one.
     stage_placed = 0
-    if unplaced_fixtures(workspace):
+    if plot_path:
+        stage_placed = len(apply_stage_plot(
+            workspace, load_stage_plot(plot_path, workspace.root)
+        ).rigged)
+    elif unplaced_fixtures(workspace):
         stage_placed = generate_stage_layout(workspace, library).placed
     caps = capabilities_of(workspace.root, library)
     master: dict[str, int] = {}
