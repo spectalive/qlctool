@@ -77,6 +77,11 @@ TITLE_FONT = console_font(15)
 HUGE_FONT = console_font(28)
 BIG_FONT = console_font(15)
 HELP_FONT = console_font(11, bold=False)
+# A colour bank button is 48px wide and a mix button carries two names: at the
+# console's own size the caption is cut off, and a cut-off caption is what the
+# blank buttons it replaces were.
+SMALL_FONT = console_font(9)
+TINY_FONT = console_font(8)
 
 # Keys 1-0 across a colour bank, as the hand-built console has them. Every
 # widget sees every key press - on any page, visible or not - so one key lights
@@ -90,6 +95,11 @@ SHORT_COLOR = {
 }
 # ...and a two-colour mix carries two of them, so those go to two letters. One
 # letter is what made "R/A" mean both Rojo/Azul and Rojo/Amarillo.
+# Two wheel positions carry a sentence for a name and no button is that wide.
+LONG_WHEEL_NAME = {
+    "Rainbow effect fast to slow": "Arcoiris +",
+    "Rainbow effect reverse slow to fast": "Arcoiris -",
+}
 MIX_CODE = {
     "Rojo": "Ro", "Verde": "Ve", "Azul": "Az", "Amarillo": "Am", "Cyan": "Cy",
     "Magenta": "Ma", "Blanco": "Bl", "Naranja": "Na", "Rosa": "Rs",
@@ -145,6 +155,29 @@ HELP_LINES = (
         "3 = librería de colores, mezclas, matrices y gobos. Las teclas "
         "funcionan desde cualquier página."
     ),
+)
+
+# The two dials are the only widgets on the console whose effect is invisible
+# until something is already running.
+DIAL_LINES = (
+    "Velocidad de las ruedas de color",
+    "y del movimiento de las cabezas.",
+    "Solo se nota con la rueda o el",
+    "movimiento encendidos.",
+)
+
+# Page 3 says what it is for, because a page of 180 buttons otherwise reads as
+# something somebody is supposed to be using.
+LIBRARY_LINES = (
+    "Esta página es el almacén: los 90 pares de colores y las 90 matrices",
+    "que el show usa por dentro. Están aquí para mirarlos y para construir",
+    "AUTO con ellos, no para pulsarlos con la sala llena.",
+    "· · ·",
+    "Las flechas de la cabecera de cada marco cambian de grupo: barras,",
+    "cabezas y PAR tienen cada uno sus 30 mezclas y sus 30 matrices.",
+    "· · ·",
+    "Las ruedas por grupo pintan los mismos fixtures que la rueda general.",
+    "Encender las dos a la vez suma los dos colores: sale blanco.",
 )
 
 # The five spectrum bands, and which look each one presses. Only one is bound:
@@ -252,18 +285,18 @@ def generate_live_console(
     _page_show(outer, button, master_button, frame, label)
     _page_manual(
         outer, button, master_button, frame, label, ids, console, names,
-        banks, movement, mover_fixture_ids,
+        banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
     )
     _page_library(
         outer, button, frame, label, ids, console, names,
-        banks, matrices, gobos, beam_colors, prisms, matrix_algorithms,
+        banks, matrices, matrix_algorithms,
     )
 
     # Last, because a band presses a button and needs its widget ID.
     triggers_id = ids.take()
     triggers = build_audio_triggers(
         outer, triggers_id, "Audio (hay que elegir entrada en Configuración)",
-        RIGHT_X, 690, RIGHT_WIDTH, 100,
+        RIGHT_X, 330, RIGHT_WIDTH, 110,
         bars=[
             (name, widget_of.get(master.get(target)) if target else None)
             for name, target in AUDIO_BANDS
@@ -333,7 +366,7 @@ def _page_show(outer, button, master_button, frame, label) -> None:
 
 def _page_manual(
     outer, button, master_button, frame, label, ids, console, names,
-    banks, movement, mover_fixture_ids,
+    banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
 ) -> None:
     """Page 2: the layers, for somebody who wants to drive it by hand."""
     label(
@@ -371,9 +404,9 @@ def _page_manual(
             name = names.get(function_id, "")
             button(
                 element, function_id, _bank_caption(name),
-                x=GAP + index * 50, y=HEADER, w=44, h=44,
+                x=GAP + index * 51, y=HEADER, w=48, h=44,
                 key=BANK_KEYS[index],
-                background=_swatch(name),
+                background=_swatch(name), font=SMALL_FONT,
             )
         y += 128
 
@@ -403,13 +436,31 @@ def _page_manual(
             x=GAP + index * 88, y=HEADER, w=82, h=44,
         )
 
+    # The beams' wheels are a live decision, not library material: somebody
+    # picks a gobo while the show runs. They sit beside the movement shapes.
+    _wheel_frame(
+        outer, button, frame, names, gobos.scene_ids,
+        "Gobos — solo los 4 BEAM", "Gobo - ",
+        MIDDLE_X, 156, MIDDLE_WIDTH, 150, PAGE_MANUAL, columns=12,
+    )
+    _wheel_frame(
+        outer, button, frame, names, beam_colors.scene_ids,
+        "Color de los BEAM — su rueda, no RGB", "Color Beam - ",
+        MIDDLE_X, 314, MIDDLE_WIDTH, 150, PAGE_MANUAL, columns=12,
+    )
+    _wheel_frame(
+        outer, button, frame, names, prisms.scene_ids,
+        "Prisma — solo los 4 BEAM", "Prisma - ",
+        MIDDLE_X, 472, MIDDLE_WIDTH, 92, PAGE_MANUAL, columns=12,
+    )
+
     label(
-        outer, "Apunta las 12 cabezas a mano", RIGHT_X, 68, RIGHT_WIDTH, 20,
-        page=PAGE_MANUAL, font=HELP_FONT,
+        outer, "Apunta las 12 cabezas a mano — arrastra dentro del cuadro",
+        MIDDLE_X, 574, MIDDLE_WIDTH, 20, page=PAGE_MANUAL, font=HELP_FONT,
     )
     pad_id = ids.take()
     pad = build_xy_pad(
-        outer, pad_id, "Cabezas", RIGHT_X, 92, RIGHT_WIDTH, 230,
+        outer, pad_id, "Cabezas", MIDDLE_X, 598, MIDDLE_WIDTH, 280,
         fixture_ids=list(mover_fixture_ids),
     )
     _on_page(pad, PAGE_MANUAL)
@@ -430,23 +481,22 @@ def _page_manual(
         dial_id = ids.take()
         dial = build_speed_dial(
             outer, dial_id, caption,
-            RIGHT_X + index * 132, 330, 124, 150,
+            RIGHT_X + index * 132, 68, 124, 150,
             function_ids=function_ids, time_ms=time_ms,
         )
         _on_page(dial, PAGE_MANUAL)
         console.widget_ids.append(dial_id)
 
-    label(
-        outer,
-        "Los dos mandos de arriba cambian la velocidad de las ruedas de color "
-        "y del movimiento.",
-        RIGHT_X, 486, RIGHT_WIDTH, 40, page=PAGE_MANUAL, font=HELP_FONT,
-    )
+    for index, line in enumerate(DIAL_LINES):
+        label(
+            outer, line, RIGHT_X, 228 + index * 22, RIGHT_WIDTH, 20,
+            page=PAGE_MANUAL, font=HELP_FONT,
+        )
 
 
 def _page_library(
     outer, button, frame, label, ids, console, names,
-    banks, matrices, gobos, beam_colors, prisms, matrix_algorithms,
+    banks, matrices, matrix_algorithms,
 ) -> None:
     """Page 3: the material the show is built from, not buttons for a set."""
     label(
@@ -457,7 +507,7 @@ def _page_library(
     )
 
     mixes = frame(
-        outer, "Mezclas de dos colores", LEFT_X, 68, LEFT_WIDTH, 234,
+        outer, "Mezclas de dos colores", LEFT_X, 68, LEFT_WIDTH, 230,
         page=PAGE_LIBRARY, solo=True, pages=len(banks) or 1, font=TITLE_FONT,
     )
     for page, bank in enumerate(banks):
@@ -471,26 +521,13 @@ def _page_library(
             _on_page(
                 button(
                     mixes, function_id, _mix_caption(name),
-                    x=GAP + column * 50, y=HEADER + 24 + row * 50, w=44, h=44,
+                    x=GAP + column * 51, y=HEADER + 24 + row * 51, w=48, h=45,
                     background=_swatch(name),
                     foreground=_swatch(name, second=True),
+                    font=TINY_FONT,
                 ),
                 page,
             )
-
-    _wheel_frame(
-        outer, button, frame, names, gobos.scene_ids,
-        "Gobos — solo los 4 BEAM", "Gobo - ", LEFT_X, 310, 150,
-    )
-    _wheel_frame(
-        outer, button, frame, names, beam_colors.scene_ids,
-        "Color de los BEAM — su rueda, no RGB", "Color Beam - ",
-        LEFT_X, 468, 150,
-    )
-    _wheel_frame(
-        outer, button, frame, names, prisms.scene_ids,
-        "Prisma — solo los 4 BEAM", "Prisma - ", LEFT_X, 626, 92,
-    )
 
     matrix_frame = frame(
         outer, "Matrices — dibujos sobre las barras y los paneles",
@@ -510,6 +547,7 @@ def _page_library(
                     matrix_frame, function_id,
                     _after(names.get(function_id, ""), " - "),
                     x=GAP + column * 102, y=HEADER + 24 + row * 46, w=96, h=40,
+                    font=SMALL_FONT,
                 ),
                 page,
             )
@@ -533,6 +571,7 @@ def _page_library(
         button(
             cycles, function_id, caption,
             x=GAP + column * 122, y=HEADER + row * 50, w=116, h=44,
+            font=SMALL_FONT,
         )
 
     if matrices and matrices[0].matrix_ids:
@@ -546,22 +585,32 @@ def _page_library(
         _on_page(control, PAGE_LIBRARY)
         console.widget_ids.append(matrix_widget_id)
 
+    for index, line in enumerate(LIBRARY_LINES):
+        label(
+            outer, line, LEFT_X, 310 + index * 26, LEFT_WIDTH, 24,
+            page=PAGE_LIBRARY, font=HELP_FONT,
+        )
+
 
 def _wheel_frame(
-    outer, button, frame, names, scene_ids, caption, marker, x, y, height
+    outer, button, frame, names, scene_ids, caption, marker, x, y, width,
+    height, page, columns,
 ) -> None:
     """A solo frame of wheel positions - gobos, beam colours, prism."""
     if not scene_ids:
         return
     element = frame(
-        outer, caption, x, y, LEFT_WIDTH, height, page=PAGE_LIBRARY, solo=True,
+        outer, caption, x, y, width, height, page=page, solo=True,
         font=TITLE_FONT,
     )
+    step = (width - GAP * 2) // columns
     for index, function_id in enumerate(scene_ids):
-        column, row = index % 10, index // 10
+        column, row = index % columns, index // columns
+        caption = _after(names.get(function_id, ""), marker)
         button(
-            element, function_id, _after(names.get(function_id, ""), marker),
-            x=GAP + column * 51, y=HEADER + row * 52, w=45, h=46,
+            element, function_id, LONG_WHEEL_NAME.get(caption, caption),
+            x=GAP + column * step, y=HEADER + row * 52, w=step - 4, h=46,
+            font=TINY_FONT,
         )
 
 
