@@ -74,7 +74,7 @@ def _shutter_values(workspace: Workspace, library: FixtureLibrary):
         # definition marks `ShutterOpen`, read by shutter_open_pairs.
         reopen = dict(shutter_open_pairs(capability))
         for offset, ranges in capability.capabilities_for_role(roles.STROBE):
-            strobe = _named(ranges, "strobe")
+            strobe = _strobe_range(ranges)
             if strobe is None:
                 continue
             strobing.append((offset, strobe.middle))
@@ -84,9 +84,27 @@ def _shutter_values(workspace: Workspace, library: FixtureLibrary):
     return result
 
 
-def _named(ranges, needle: str):
+# QLC+ names every strobing preset "Strobe..." - StrobeSlowToFast,
+# StrobeFastToSlow, StrobeRandom..., and so on.
+STROBE_PRESET_PREFIX = "Strobe"
+SHUTTER_PRESETS = ("ShutterOpen", "ShutterClose")
+
+
+def _strobe_range(ranges):
+    """The range that actually strobes, preset first and name only as a fallback.
+
+    Reading the name alone picks "No strobe" out of a channel that labels its
+    open position that way - which is how a split CLB2.4 came out with
+    `Strobo ON` sending 0, the one value that guarantees no strobe at all. A
+    preset is what the definition means; a name is what it happens to say.
+    """
     for capability in ranges:
-        if needle in capability.name.lower():
+        if (capability.preset or "").startswith(STROBE_PRESET_PREFIX):
+            return capability
+    for capability in ranges:
+        if (capability.preset or "") in SHUTTER_PRESETS:
+            continue
+        if "strobe" in capability.name.lower() and "no strobe" not in capability.name.lower():
             return capability
     return None
 

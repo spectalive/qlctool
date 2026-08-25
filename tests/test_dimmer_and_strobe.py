@@ -173,3 +173,25 @@ def test_the_flash_strobes_step_the_looks_they_were_given(library):
         assert [s.text for s in steps] == ["42", "43"]
         assert all(int(s.attrib["Hold"]) == expected_hold for s in steps)
         assert find_local(chaser, "SpeedModes").attrib["Duration"] == "Common"
+
+def test_a_channel_that_labels_its_open_position_no_strobe_is_not_read_as_one(library):
+    """The name is a fallback, the preset is the meaning.
+
+    The split CLB2.4 definition calls DMX 0 "No strobe" and marks it
+    ShutterOpen, with the strobe itself on 1-255. Picking a range by name alone
+    matched the first one and sent `Strobo ON` a zero - the single value that
+    guarantees no strobe at all.
+    """
+    from qlctool.generate.strobe_effects import _strobe_range
+    from qlctool.definition import Capability
+
+    ranges = (
+        Capability(minimum=0, maximum=0, name="No strobe", preset="ShutterOpen"),
+        Capability(minimum=1, maximum=255, name="Strobe, slow to fast",
+                   preset="StrobeSlowToFast"),
+    )
+
+    chosen = _strobe_range(ranges)
+
+    assert chosen is not None and chosen.minimum == 1
+
