@@ -80,3 +80,46 @@ def test_qlcplus_loads_wheel_scenes(tmp_path):
     ws.save(out)
 
     assert validate_workspace(out).ok
+
+
+def test_a_wheel_scene_drives_the_wheel_and_not_its_neighbour():
+    """The BEAM 230W 7R has two Colour-group channels: the wheel at offset 7,
+    with 17 named positions, and the continuous half-colour channel at offset 8.
+    Both resolve to the colour-macro role. Sending the wheel's value to offset 8
+    as well parks the wheel between two colours, which is what the show did
+    before `wheel_for_role` existed."""
+    from qlctool import roles
+    from qlctool.capabilities_of import capabilities_of
+    from qlctool.generate.wheel_scenes import generate_wheel_scenes
+    from qlctool.library import FixtureLibrary
+    from qlctool.workspace import Workspace
+    from qlctool.xmlutil import findall_local, find_local, localname
+
+    ws = Workspace.load(SHOW)
+    library = FixtureLibrary.load()
+    beams = [
+        c.fixture.fixture_id
+        for c in capabilities_of(ws.root, library)
+        if c.has_role(roles.GOBO)
+    ]
+    assert beams
+
+    beam = next(c for c in capabilities_of(ws.root, library)
+                if c.fixture.fixture_id == beams[0])
+    assert beam.offsets_for_role(roles.COLOR_MACRO) == [7, 8]
+    assert beam.wheel_for_role(roles.COLOR_MACRO)[0] == 7
+
+    result = generate_wheel_scenes(
+        ws, library, role=roles.COLOR_MACRO, label="Color Beam",
+        fixture_ids=beams, path="Color Beam",
+    )
+    scenes = {
+        f.attrib["ID"]: f
+        for f in find_local(ws.root, "Engine")
+        if localname(f) == "Function" and f.attrib.get("ID")
+    }
+    for scene_id in result.scene_ids:
+        for values in findall_local(scenes[str(scene_id)], "FixtureVal"):
+            offsets = [int(v) for v in (values.text or "").split(",")[::2]]
+            assert 8 not in offsets, f"scene {scene_id} still writes offset 8"
+            assert 7 in offsets

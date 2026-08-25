@@ -66,6 +66,11 @@ Commands never overwrite their input; they write a new file.
 - **Addresses are 0-based in the library and in the file, 1-based on the command
   line** - the same way QLC+ shows them.
 - **Smoke machines are excluded everywhere** except the smoke generator.
+- **A role can land on two channels of one fixture, and only one of them is the
+  wheel.** The colour wheel and the continuous half-colour channel beside it are
+  both in the Colour group. Wheel scenes drive
+  `wheel_for_role` - the channel that actually carries the labelled positions -
+  never every channel that shares the role.
 - **The 2D/3D plot is generated from capability too**: gobo wheel means beam
   and hangs upstage, pan+tilt without one means wash and hangs downstage, a
   bar lies on the floor at the back, everything else stands at the front.

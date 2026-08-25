@@ -55,6 +55,25 @@ class FixtureCapabilities:
             for offset in self.offsets_for_role(role)
         ]
 
+    def wheel_for_role(self, role: str) -> tuple[int, tuple[Capability, ...]] | None:
+        """The one channel whose labelled ranges *are* this role's positions.
+
+        A role can land on more than one channel of the same fixture - a colour
+        wheel and the continuous half-colour channel beside it are both in the
+        Colour group, a gobo wheel and its shake channel are both Gobo. Only one
+        of them is the wheel: the one with the positions on it. Sending a wheel
+        position to the others parks the wheel off its detent, or drives an
+        unrelated effect with a number that means nothing there.
+
+        Returns None when the fixture has no channel for the role at all.
+        """
+        channels = self.capabilities_for_role(role)
+        if not channels:
+            return None
+        # Ties go to the lower offset, which is where a wheel sits relative to
+        # the fine/shake channel that follows it.
+        return max(channels, key=lambda item: (len(item[1]), -item[0]))
+
     @property
     def roles(self) -> set[str]:
         return {r for r in self.roles_by_offset if r is not None}

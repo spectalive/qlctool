@@ -53,16 +53,16 @@ def generate_wheel_scenes(
 
     folder = path if path is not None else f"{label} (generado)"
     # Position names come from the first fixture: they share the wheel.
-    _, positions = caps[0].capabilities_for_role(role)[0]
+    _, positions = caps[0].wheel_for_role(role)
 
     scene_ids: list[int] = []
     for index, position in enumerate(positions):
         values: dict[int, list[tuple[int, int]]] = {}
         for capability in caps:
-            pairs = [
-                (offset, position.middle)
-                for offset, _ in capability.capabilities_for_role(role)
-            ]
+            # Only the wheel itself. Every other channel that happens to share
+            # the role stays where it is - see wheel_for_role.
+            offset, _ = capability.wheel_for_role(role)
+            pairs = [(offset, position.middle)]
             if dimmer_full:
                 pairs += [
                     (offset, 255)
