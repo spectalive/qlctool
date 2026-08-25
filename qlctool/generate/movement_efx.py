@@ -17,7 +17,7 @@ from ..functions.efx import EFXFixture, build_efx
 from ..ids import next_function_id
 from ..functions.collection import build_collection
 from ..library import FixtureLibrary
-from ..pan_tilt_pairing import pairs_16bit
+from ..efx_16bit import PAN_TILT_PAIRS, keeps_16bit
 from ..workspace import Workspace
 
 
@@ -72,7 +72,7 @@ def generate_movement_efx(
 
     # One EFX cannot hold both kinds of mover: a fixture whose fine channels are
     # not adjacent turns 16-bit off for the whole EFX, and the ones that *do*
-    # pair then lose their coarse channels entirely. See `pan_tilt_pairing`.
+    # pair then lose their coarse channels entirely. See `efx_16bit`.
     by_id = {
         caps.fixture.fixture_id: caps
         for caps in capabilities_of(workspace.root, library)
@@ -80,7 +80,7 @@ def generate_movement_efx(
     groups: dict[bool, list[int]] = {True: [], False: []}
     for fid in ids:
         caps = by_id.get(fid)
-        groups[True if caps is None else pairs_16bit(caps)].append(fid)
+        groups[True if caps is None else keeps_16bit(caps, PAN_TILT_PAIRS)].append(fid)
     parts = [(paired, members) for paired, members in groups.items() if members]
 
     def _members(fixture_ids: list[int]) -> list[EFXFixture]:

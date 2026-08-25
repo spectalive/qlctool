@@ -20,7 +20,7 @@ from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.generate.movement_efx import generate_movement_efx
 from qlctool.library import FixtureLibrary
-from qlctool.pan_tilt_pairing import pairs_16bit
+from qlctool.efx_16bit import INTENSITY_PAIRS, PAN_TILT_PAIRS, keeps_16bit
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, localname
 
@@ -46,7 +46,7 @@ def test_the_rig_really_does_have_both_kinds(library):
     """If it ever stops having both, the split stops being exercised."""
     caps = capabilities_of(Workspace.load(SHOW).root, library)
     movers = [c for c in caps if c.has_role(roles.PAN) and c.has_role(roles.TILT)]
-    kinds = {pairs_16bit(c) for c in movers}
+    kinds = {keeps_16bit(c, PAN_TILT_PAIRS) for c in movers}
     assert kinds == {True, False}
 
 
@@ -54,12 +54,12 @@ def test_a_fixture_with_no_fine_channels_never_splits_the_efx(library):
     caps = capabilities_of(Workspace.load(SHOW).root, library)
     mini = next(c for c in caps if c.fixture.model == "Mini Led Moving Head")
     assert not mini.has_role(roles.PAN_FINE)
-    assert pairs_16bit(mini)
+    assert keeps_16bit(mini, PAN_TILT_PAIRS)
 
 
-# EFXFixture::Mode - the pan/tilt hazard is only in the first one. The Dimmer
-# mode has the identical check on the *intensity* channels, but nothing in this
-# rig has a 16-bit dimmer, so its EFX may hold anything.
+# EFXFixture::Mode. The Dimmer mode runs the identical check on the *intensity*
+# channels, and `generate_dimmer_chases` splits on that too - but nothing in this
+# rig has a 16-bit dimmer, so there is nothing for it to split.
 MODE_PAN_TILT = "0"
 
 
@@ -85,7 +85,7 @@ def test_no_generated_efx_mixes_the_two(library):
         if not members:
             continue
         efx_seen += 1
-        kinds = {pairs_16bit(caps[m]) for m in members if m in caps}
+        kinds = {keeps_16bit(caps[m], PAN_TILT_PAIRS) for m in members if m in caps}
         assert len(kinds) == 1, (
             f"{function.attrib['Name']!r} mixes 16-bit and 8-bit movers, which "
             "leaves the 16-bit ones with their coarse channels stuck at zero"
@@ -103,3 +103,36 @@ def test_the_console_still_sees_one_function_per_shape(library):
     names = {f.attrib["ID"]: f.attrib["Name"] for f in _functions(ws.root)}
     for function_id in result.efx_ids:
         assert "(" not in names[str(function_id)]
+
+
+def test_the_dimmer_efx_is_guarded_too(library):
+    """Same trap, intensity channels instead. No fixture here has a 16-bit
+    dimmer, so nothing is split - the guard is there for the day one is
+    patched."""
+    from qlctool.generate.dimmer_chases import generate_dimmer_chases
+
+    ws = Workspace.load(SHOW)
+    caps = capabilities_of(ws.root, library)
+    assert all(keeps_16bit(c, INTENSITY_PAIRS) for c in caps)
+
+    result = generate_dimmer_chases(ws, library)
+    assert result.part_ids == []
+    names = {f.attrib["ID"]: f.attrib["Name"] for f in _functions(ws.root)}
+    assert names[str(result.chase_id)] == "Dimmer Chase"
+
+
+def test_a_16bit_dimmer_would_be_split(library):
+    """Proved on a fixture that does not exist here, so the guard is exercised
+    rather than merely present."""
+    ws = Workspace.load(SHOW)
+    caps = capabilities_of(ws.root, library)
+    par = next(c for c in caps if c.fixture.model == "PC-64 LED S")
+    assert keeps_16bit(par, INTENSITY_PAIRS)
+
+    class Contrived:
+        """A dimmer whose fine channel is two away, as the BEAM's pan is."""
+
+        def offsets_for_role(self, role):
+            return {roles.DIMMER: [0], roles.DIMMER_FINE: [2]}.get(role, [])
+
+    assert not keeps_16bit(Contrived(), INTENSITY_PAIRS)

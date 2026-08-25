@@ -18,6 +18,7 @@ from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
 
 FAST_MS = 50
@@ -59,7 +60,9 @@ def generate_strobe_effects(
 def _shutter_values(workspace: Workspace, library: FixtureLibrary):
     """fixture id -> (values that strobe it, values that reopen it).
 
-    Both come from the definition's own labelled ranges, never from a guess.
+    Both come from the definition's own labelled ranges, never from a guess -
+    the reopen value through `shutter_open_pairs`, so a strobe that stops and a
+    scene that opens a shutter always agree on where "open" is.
     """
     result: dict[int, tuple[list[tuple[int, int]], list[tuple[int, int]]]] = {}
     for capability in capabilities_of(workspace.root, library):
@@ -67,13 +70,15 @@ def _shutter_values(workspace: Workspace, library: FixtureLibrary):
             continue
         strobing: list[tuple[int, int]] = []
         opening: list[tuple[int, int]] = []
+        # One source of truth for "what value opens this shutter": the range the
+        # definition marks `ShutterOpen`, read by shutter_open_pairs.
+        reopen = dict(shutter_open_pairs(capability))
         for offset, ranges in capability.capabilities_for_role(roles.STROBE):
             strobe = _named(ranges, "strobe")
             if strobe is None:
                 continue
             strobing.append((offset, strobe.middle))
-            open_range = _named(ranges, "open") or _named(ranges, "no function")
-            opening.append((offset, open_range.middle if open_range else 0))
+            opening.append((offset, reopen.get(offset, 0)))
         if strobing:
             result[capability.fixture.fixture_id] = (strobing, opening)
     return result

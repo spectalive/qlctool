@@ -13,7 +13,9 @@ import pytest
 
 from qlctool.generate.stage_plot_layout import apply_stage_plot
 from qlctool.monitor_node import POINTS_OF_VIEW
+from qlctool.library import FixtureLibrary
 from qlctool.stage_plot import load_stage_plot
+from qlctool.fixture import patched_fixtures
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
@@ -31,6 +33,24 @@ def workspace():
     return Workspace.load(SHOW)
 
 
+def _depths(root):
+    library = FixtureLibrary.load()
+    return {
+        f.fixture_id: next(
+            d for (_, model), d in library._by_key.items() if model == f.model
+        ).dimensions.depth
+        for f in patched_fixtures(root)
+    }
+
+
+def _row(plot, depths, prefix):
+    """Items whose place starts with `prefix`, left to right."""
+    return sorted(
+        (i for i in plot.items if plot.places[i.fixture_id].startswith(prefix)),
+        key=lambda i: i.x,
+    )
+
+
 def test_the_standard_plot_matches_the_patch(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
     assert len(plot.items) == 29
@@ -42,10 +62,7 @@ def test_the_standard_plot_matches_the_patch(workspace):
 
 def test_the_front_truss_reads_left_to_right(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
-    front = sorted(
-        (item for item in plot.items if item.y == 3000 and item.z == 6800),
-        key=lambda item: item.x,
-    )
+    front = _row(plot, _depths(workspace.root), "Front truss")
     # grid, pixel, pixel, bar, pixel, pixel, grid - the bar dead centre.
     assert [item.fixture_id for item in front] == [4, 24, 25, 2, 27, 28, 5]
 
@@ -102,10 +119,7 @@ def test_the_booth_stands_on_the_floor(workspace):
 
 def test_the_back_truss_reads_left_to_right(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
-    truss = sorted(
-        (item for item in plot.items if item.y == 4000 and item.z == 1500),
-        key=lambda item: item.x,
-    )
+    truss = _row(plot, _depths(workspace.root), "Back truss")
     assert len(truss) == 10
     # LED PAR, beam, LED PAR, wash, LED PAR, LED PAR, wash, LED PAR, beam, LED PAR
     assert [item.fixture_id for item in truss] == [
@@ -175,3 +189,21 @@ def test_a_plot_naming_an_unpatched_fixture_is_refused(workspace, tmp_path):
 
     with pytest.raises(ValueError, match="not patched"):
         load_stage_plot(ghost, workspace.root)
+
+
+def test_every_row_has_its_fixtures_centred_on_one_line(workspace):
+    """A stored position is a near corner, so fixtures of different depths on the
+    same truss are only really in line once each is offset by half its own size.
+    The depth flip that mirrored corners rather than centres is what this guards
+    against."""
+    plot = load_stage_plot(PLOT, workspace.root)
+    depths = _depths(workspace.root)
+    for prefix in ("Back truss", "Front truss", "On a flightcase", "Spare"):
+        row = _row(plot, depths, prefix)
+        assert row, prefix
+        centres = [item.z + depths[item.fixture_id] / 2 for item in row]
+        # Stored positions are whole millimetres, so a fixture of odd depth
+        # lands half a millimetre off its line. Anything more is a real error.
+        assert max(centres) - min(centres) <= 1, (
+            f"{prefix!r} is not on one line: {sorted(set(centres))}"
+        )

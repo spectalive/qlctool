@@ -16,6 +16,7 @@ CYAN = "cyan"
 MAGENTA = "magenta"
 YELLOW = "yellow"
 DIMMER = "dimmer"
+DIMMER_FINE = "dimmer_fine"
 PAN = "pan"
 PAN_FINE = "pan_fine"
 TILT = "tilt"
@@ -38,6 +39,8 @@ _INTENSITY_PRESETS = {
     "IntensityYellow": YELLOW,
     "IntensityDimmer": DIMMER,
     "IntensityMasterDimmer": DIMMER,
+    "IntensityDimmerFine": DIMMER_FINE,
+    "IntensityMasterDimmerFine": DIMMER_FINE,
 }
 
 

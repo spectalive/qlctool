@@ -14,11 +14,13 @@ dimmer: an EFX in Dimmer mode drives the fixture's intensity channel, and a
 fixture without one would just sit in the list doing nothing.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
+from ..efx_16bit import INTENSITY_PAIRS, keeps_16bit
 from ..functions.chaser import build_chaser
+from ..functions.collection import build_collection
 from ..functions.efx import EFXFixture, build_efx
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -32,9 +34,12 @@ MODE_DIMMER = 1  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 
 @dataclass(frozen=True)
 class GeneratedDimmers:
+    # One function per look, whatever it took to build it: when the dimmable
+    # fixtures had to be split, chase_id is a Collection over the halves.
     chase_id: int
     pingpong_id: int
     scene_ids: list[int]
+    part_ids: list[int] = field(default_factory=list)
 
 
 def generate_dimmer_chases(
@@ -53,24 +58,54 @@ def generate_dimmer_chases(
     if not dimmable:
         raise ValueError("no fixture in this workspace has a dimmer")
 
-    offsets = spread_offsets(len(dimmable))
-    chase_id = next_function_id(workspace.root)
-    workspace.add_function(
-        build_efx(
-            chase_id,
-            "Dimmer Chase",
-            [
-                EFXFixture(
-                    fixture_id=capability.fixture.fixture_id,
-                    mode=MODE_DIMMER,
-                    start_offset=offset,
-                )
-                for capability, offset in zip(dimmable, offsets)
-            ],
-            duration=duration,
-            path=path,
+    # Same trap as the movement EFX, on the intensity channel instead: a fixture
+    # whose dimmer fine channel is not adjacent turns 16 bit off for the whole
+    # EFX. Nothing in this rig has one, so this is usually a single group - but
+    # patch a fixture that does and it will be split rather than break the rest.
+    # See `efx_16bit`.
+    groups: dict[bool, list] = {True: [], False: []}
+    for capability in dimmable:
+        groups[keeps_16bit(capability, INTENSITY_PAIRS)].append(capability)
+    parts = [members for members in groups.values() if members]
+    split = len(parts) > 1
+
+    def _efx(name: str, members: list, folder: str) -> int:
+        function_id = next_function_id(workspace.root)
+        workspace.add_function(
+            build_efx(
+                function_id,
+                name,
+                [
+                    EFXFixture(
+                        fixture_id=capability.fixture.fixture_id,
+                        mode=MODE_DIMMER,
+                        start_offset=offset,
+                    )
+                    for capability, offset in zip(
+                        members, spread_offsets(len(members))
+                    )
+                ],
+                duration=duration,
+                path=folder,
+            )
         )
-    )
+        return function_id
+
+    part_ids: list[int] = []
+    if not split:
+        chase_id = _efx("Dimmer Chase", parts[0], path)
+    else:
+        for members in parts:
+            paired = keeps_16bit(members[0], INTENSITY_PAIRS)
+            part_ids.append(_efx(
+                f"Dimmer Chase ({'16 bit' if paired else '8 bit'})",
+                members,
+                f"{path}/Partes",
+            ))
+        chase_id = next_function_id(workspace.root)
+        workspace.add_function(
+            build_collection(chase_id, "Dimmer Chase", part_ids, path=path)
+        )
 
     scene_ids = [
         _half_lit(workspace, dimmable, remainder, path) for remainder in (0, 1)
@@ -86,7 +121,8 @@ def generate_dimmer_chases(
         )
     )
     return GeneratedDimmers(
-        chase_id=chase_id, pingpong_id=pingpong_id, scene_ids=scene_ids
+        chase_id=chase_id, pingpong_id=pingpong_id, scene_ids=scene_ids,
+        part_ids=part_ids,
     )
 
 

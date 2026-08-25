@@ -151,7 +151,7 @@ def test_generate_movement_into_real_show(tmp_path):
     reloaded = Workspace.load(out).root
 
     # This rig holds both kinds of mover, so each shape is a Collection over two
-    # EFX - see test_pan_tilt_pairing for why they cannot share one.
+    # EFX - see test_efx_16bit for why they cannot share one.
     functions = _efx(reloaded)
     assert len(functions) == before_count + len(result.part_ids)
 
