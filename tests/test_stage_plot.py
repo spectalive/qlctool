@@ -43,7 +43,7 @@ def test_the_standard_plot_matches_the_patch(workspace):
 def test_the_front_truss_reads_left_to_right(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
     front = sorted(
-        (item for item in plot.items if item.y == 3000 and item.z == 1200),
+        (item for item in plot.items if item.y == 3000 and item.z == 6800),
         key=lambda item: item.x,
     )
     # grid, pixel, pixel, bar, pixel, pixel, grid - the bar dead centre.
@@ -62,15 +62,33 @@ def test_the_dj_beams_stand_on_their_flightcases_aimed_up(workspace):
         assert beam.x_rot == 180
 
 
-def test_everything_that_faces_the_audience_is_turned_to_face_it(workspace):
-    """0 is straight down, which is how QLC+'s meshes and its bars start. The
-    truss PARs, the pixel panels and both LED bars all point out instead."""
+def test_the_audience_is_at_large_z(workspace):
+    """QLC+'s 3D camera starts at +Z looking at -Z, so the front of the stage is
+    the *high* z. Getting this backwards mirrors the whole rig, which is exactly
+    what happened once."""
     plot = load_stage_plot(PLOT, workspace.root)
-    facing = {item.fixture_id for item in plot.items if item.x_rot == 90}
-    pars = {6, 7, 8, 9, 10, 11}
-    pixels = {24, 25, 27, 28}
-    bars = {2, 3}
-    assert facing == pars | pixels | bars
+    by_place = {plot.places[i.fixture_id]: i for i in plot.items}
+    back = next(i for p, i in by_place.items() if p.startswith("Back truss"))
+    front = next(i for p, i in by_place.items() if p.startswith("Front truss"))
+    assert front.z > back.z
+
+
+def test_nothing_that_should_light_the_room_is_aimed_at_the_back_wall(workspace):
+    """Light leaves along (0,-1,0) and x_rot turns it, so the direction is
+    (0, -cos, -sin): negative leans out over the audience, positive back over
+    the stage. The truss PARs lean out to colour, the panels and bars face
+    straight out, and the two downstage grids lean back at the DJ."""
+    plot = load_stage_plot(PLOT, workspace.root)
+    aim = {i.fixture_id: i.x_rot for i in plot.items}
+
+    for par in (6, 7, 8, 9, 10, 11):
+        assert -90 < aim[par] < 0, "a truss PAR leans out, it does not point flat"
+    for out in (24, 25, 27, 28, 2, 3):
+        assert aim[out] == -90, "panels and bars face the room"
+    for grid in (4, 5):
+        assert aim[grid] > 0, "the downstage grids look back at the stage"
+    for beam in (22, 23):
+        assert aim[beam] == 180, "the floor beams look up"
 
 
 def test_the_booth_stands_on_the_floor(workspace):
@@ -84,7 +102,7 @@ def test_the_booth_stands_on_the_floor(workspace):
 def test_the_back_truss_reads_left_to_right(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
     truss = sorted(
-        (item for item in plot.items if item.y == 4000 and item.z == 6500),
+        (item for item in plot.items if item.y == 4000 and item.z == 1500),
         key=lambda item: item.x,
     )
     assert len(truss) == 10
