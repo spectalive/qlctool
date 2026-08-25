@@ -9,6 +9,9 @@ from pathlib import Path
 
 import pytest
 
+from qlctool import roles
+from qlctool.capabilities_of import capabilities_of
+from qlctool.fixture_group import fixture_groups
 from qlctool.generate.canonical_show import KEYS, build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.patch_conflicts import patch_conflicts
@@ -54,6 +57,8 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     Keeping the bed outside the cycle is what stops a level change from
     blacking the room out, and the effects that read as "peak" - fast movement,
     prism, the dimmer chase - are reachable only through the level that is one.
+    The pixel cycle is part of the bed too: the bars own their own colour, so
+    whoever owns it has to keep owning it across a level change.
     """
     show, out = built
     functions = _functions(Workspace.load(out).root)
@@ -61,9 +66,13 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     auto = functions[str(show.master_ids["AUTO"])]
     assert auto.attrib["Type"] == "Collection"
     members = {step.text for step in findall_local(auto, "Step")}
-    assert members == {
+    named = {
         str(show.master_ids[name])
         for name in ("Rueda Colores", "Humo Auto", "Ciclo Energia")
+    }
+    assert named <= members
+    assert {functions[m].attrib["Name"] for m in members - named} == {
+        "Ciclo Matrices BarrasLed"
     }
 
     cycle = functions[str(show.master_ids["Ciclo Energia"])]
@@ -102,18 +111,24 @@ def test_only_a_pixel_group_cycles_matrices_under_auto(built):
     root = Workspace.load(out).root
     functions = _functions(root)
 
-    # Reached through the energy levels now, which is where every effect that
-    # is not the colour bed or the haze lives.
-    running = set()
-    for level in ("Nivel Ambiente", "Nivel Fiesta", "Nivel Peak"):
-        collection = functions[str(show.master_ids[level])]
-        running |= {step.text for step in findall_local(collection, "Step")}
+    # Part of the bed, beside the colour wheel: a level that owns the bars'
+    # colour hands it back on every step, and two levels running at once put
+    # two colour sources on one fixture. The levels carry no colour at all now.
+    auto = functions[str(show.master_ids["AUTO"])]
     cycles = {
-        functions[m].attrib["Name"]
-        for m in running
-        if functions[m].attrib["Name"].startswith("Ciclo Matrices")
+        functions[m.text].attrib["Name"]
+        for m in findall_local(auto, "Step")
+        if functions[m.text].attrib["Name"].startswith("Ciclo Matrices")
     }
     assert cycles == {"Ciclo Matrices BarrasLed"}
+
+    for level in ("Nivel Ambiente", "Nivel Fiesta", "Nivel Peak"):
+        collection = functions[str(show.master_ids[level])]
+        names = {
+            functions[step.text].attrib["Name"]
+            for step in findall_local(collection, "Step")
+        }
+        assert not any(n.startswith("Ciclo Matrices") for n in names), level
 
 
 def test_the_console_carries_the_old_keyboard_shortcuts(built):
@@ -197,3 +212,81 @@ def test_the_smoke_chaser_bursts_then_waits(built):
     assert find_local(smoke, "SpeedModes").attrib["Duration"] == "PerStep"
     holds = [int(s.attrib["Hold"]) for s in findall_local(smoke, "Step")]
     assert holds == [2000, 60000]
+
+
+def test_one_fixture_never_has_two_colour_sources_under_auto(built):
+    """RGB mixes HTP, so two sources on one fixture add up instead of choosing.
+
+    A bar told red by the rig-wide wheel and blue by its own matrix came out
+    magenta, and anything on top of that came out white. The pixel groups
+    belong to their matrix; the wheel lights everything else.
+    """
+    _, out = built
+    root = Workspace.load(out).root
+    caps = {
+        c.fixture.fixture_id: c
+        for c in capabilities_of(root, FixtureLibrary.load())
+    }
+    painted = {
+        fixture_id
+        for group in fixture_groups(root)
+        if group.name == "BarrasLed"
+        for fixture_id in group.fixture_ids
+    }
+    assert painted, "no pixel group in this patch"
+
+    for function in _functions(root).values():
+        name = function.attrib.get("Name", "")
+        if not name.startswith(("Rig ", "Cabezas ")):
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            fixture_id = int(value.attrib["ID"])
+            if fixture_id not in painted or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            written = set(numbers[0::2])
+            rgb = {
+                offset
+                for role in (roles.RED, roles.GREEN, roles.BLUE)
+                for offset in caps[fixture_id].offsets_for_role(role)
+            }
+            assert not (written & rgb), (name, fixture_id)
+
+
+def test_a_moment_brings_its_own_colour_bed(built):
+    """A moment replaces AUTO, so whatever AUTO was providing has to come with
+    it - otherwise pressing CHARLA leaves the room dark."""
+    show, out = built
+    functions = _functions(Workspace.load(out).root)
+
+    for moment in (
+        "Momento Charla", "Momento Tranquilo", "Momento Fiesta", "Momento Locura",
+    ):
+        collection = functions[str(show.master_ids[moment])]
+        assert collection.attrib["Type"] == "Collection"
+        members = {
+            functions[step.text].attrib["Name"]
+            for step in findall_local(collection, "Step")
+        }
+        lights_something = members & {
+            "Rueda Colores", "Luz Charla", "Ciclo Matrices BarrasLed",
+        }
+        assert lights_something, (moment, members)
+
+    # The speech look is the one with nothing moving in it.
+    charla = functions[str(show.master_ids["Momento Charla"])]
+    moving = {
+        functions[step.text].attrib["Name"]
+        for step in findall_local(charla, "Step")
+    } & {"Rueda Colores", "Movimientos Cabezas", "Gobo Animacion",
+         "Ciclo Matrices BarrasLed", "Dimmer Chase"}
+    assert not moving, moving
+
+
+def test_there_is_one_white_and_it_is_not_called_luces_on(built):
+    """Three buttons drove full white on the same fixtures and no name said
+    which was which."""
+    show, _ = built
+    assert "Blanco Total" in show.master_ids
+    assert "Luces ON" not in show.master_ids
+    assert "Todo Blanco" not in show.master_ids

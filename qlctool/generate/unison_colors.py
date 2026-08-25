@@ -59,17 +59,31 @@ def generate_unison_colors(
     contrasts: Sequence[tuple[str, str]] = CONTRAST_PAIRS,
     hold: int = 2500,
     fade: int = 800,
+    exclude_fixture_ids: Sequence[int] = (),
 ) -> GeneratedUnison:
     """Rig-wide colour scenes and one Random wheel over them.
 
     Slower than a per-group wheel on purpose: a whole-room colour change every
     1,5 s reads as flicker, where one group changing that often reads as motion.
+
+    `exclude_fixture_ids` keeps the wheel off fixtures a matrix already paints.
+    RGB channels mix HTP, so a fixture told red by this wheel and blue by a
+    running matrix comes out magenta - and a third source makes it white. One
+    fixture, one colour source; the pixel groups belong to their matrix. Their
+    colour *wheels* are still set, because a matrix cannot reach one: that is
+    what keeps the beams on the same colour as the rest of the rig.
     """
     caps = capabilities_of(workspace.root, library)
+    excluded = set(exclude_fixture_ids)
+    lit_ids = [
+        c.fixture.fixture_id
+        for c in caps
+        if c.fixture.fixture_id not in excluded
+    ]
 
     scene_ids: list[int] = []
     for name in colors:
-        values = color_scene_values(caps, PALETTE[name])
+        values = color_scene_values(caps, PALETTE[name], fixture_ids=lit_ids)
         values.update(_wheel_values(caps, name))
         if not values:
             continue
@@ -80,11 +94,17 @@ def generate_unison_colors(
         for c in caps
         if c.has_role(roles.PAN) and c.has_role(roles.TILT)
     ]
-    rest_ids = [c.fixture.fixture_id for c in caps if c.fixture.fixture_id not in head_ids]
+    rest_ids = [
+        c.fixture.fixture_id
+        for c in caps
+        if c.fixture.fixture_id not in head_ids and c.fixture.fixture_id not in excluded
+    ]
 
     contrast_ids: list[int] = []
     for heads_color, rest_color in contrasts:
-        values = _contrast_values(caps, head_ids, rest_ids, heads_color, rest_color)
+        values = _contrast_values(
+            caps, head_ids, rest_ids, heads_color, rest_color, excluded
+        )
         if len(values) < 2:
             continue
         contrast_ids.append(
@@ -123,9 +143,11 @@ def _contrast_values(
     rest_ids: Sequence[int],
     heads_color: str,
     rest_color: str,
+    excluded: set[int],
 ) -> dict[int, list[tuple[int, int]]]:
     """The movers on one colour, everything else on the other."""
-    values = color_scene_values(caps, PALETTE[heads_color], fixture_ids=head_ids)
+    lit_heads = [fid for fid in head_ids if fid not in excluded]
+    values = color_scene_values(caps, PALETTE[heads_color], fixture_ids=lit_heads)
     values.update(color_scene_values(caps, PALETTE[rest_color], fixture_ids=rest_ids))
     values.update(_wheel_values(caps, heads_color, fixture_ids=head_ids))
     values.update(_wheel_values(caps, rest_color, fixture_ids=rest_ids))

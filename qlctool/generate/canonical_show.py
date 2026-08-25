@@ -33,6 +33,7 @@ from .energy_levels import EnergyLevel, generate_energy_levels
 from .home_position import generate_home_position
 from .live_console import generate_live_console
 from .matrix_effects import GeneratedMatrices, generate_matrix_effects
+from .moments import Moment, generate_moments
 from .movement_efx import generate_movement_efx, moving_head_ids
 from .smoke_auto import generate_smoke_auto
 from .stage_layout import generate_stage_layout, unplaced_fixtures
@@ -47,6 +48,10 @@ MATRIX_COLORS = ("Rojo", "Verde", "Azul", "Ambar", "Magenta", "Blanco")
 
 # Movement at the peak: the same shapes, twice round in the time of one.
 FAST_MOVEMENT_DURATION = 3424
+
+# The light somebody is lit by when they speak: white, warmed off daylight so a
+# face does not read as a mortuary, and flat enough that nothing draws the eye.
+CHARLA_WHITE = (255, 214, 170)
 
 # How long the night spends at each level, in milliseconds. A wave rather than a
 # ramp: the cycle comes down through the middle level instead of jumping from
@@ -70,31 +75,42 @@ BEAT_TIMINGS: dict[str, BeatTiming] = {
     "Dimmer PingPong": BeatTiming(hold=2),
 }
 
-# The console the owner works with: one key each, as the old show had them.
+# The console the owner works with: one key each. The night-running looks keep
+# the letters the hand-built show had, so muscle memory carries over; the
+# moments - the states somebody takes the room into by hand - are on F1-F4,
+# which is a row of its own and cannot collide with a colour bank on 1-0.
 KEYS = {
+    # Page 1: the state the room is in, and the hits that ride on top of it.
     "AUTO": "Q",
+    "Momento Charla": "F1",
+    "Momento Tranquilo": "F2",
+    "Momento Fiesta": "F3",
+    "Momento Locura": "F4",
+    "Blanco Total": "X",
+    "Todo Negro": "º",
+    "Flash 100%": "Space",
+    "Flash 50%": "-",
+    "Humo ON": "H",
+    "Strobo Rapido": "F",
+    "Strobo Medio": "T",
+    "Color Beam Animacion": "C",
+    # Page 2: the layers, for somebody standing at the laptop.
     "Rueda Colores": "W",
     "Rueda Mezcla": "E",
     "Movimientos Cabezas": "A",
     "Gobo Animacion": "G",
-    "Color Beam Animacion": "C",
     "Prisma Animacion": "P",
     "Humo Auto": "J",
-    "Luces ON": "X",
-    "Todo Blanco": "B",
-    "Todo Negro": "º",
-    "Flash 100%": "Space",
-    "Flash 50%": "-",
-    # Live-only looks. The hand-built console has these on V/B/C/Z; B and C are
-    # already Todo Blanco and Color Beam here, so they move rather than clash.
+    # Live-only looks. The hand-built console has these on V/B/C/Z; C is
+    # already Color Beam here, so they move rather than clash.
     "Dimmer Chase": "V",
     "Dimmer PingPong": "Z",
     "Strobo ON": "S",
     "Strobo OFF": "D",
-    "Strobo Rapido": "F",
-    "Strobo Medio": "T",
 }
-FLASH_FUNCTIONS = ("Flash 100%", "Flash 50%")
+# Held, not latched. The smoke burst is one of them on purpose: a pump on a
+# Toggle button is how a tank ends up empty when somebody walks away from it.
+FLASH_FUNCTIONS = ("Flash 100%", "Flash 50%", "Humo ON")
 
 
 @dataclass(frozen=True)
@@ -137,9 +153,12 @@ def build_canonical_show(
     master: dict[str, int] = {}
 
     # Base looks first, so they are the lowest function IDs and read first.
-    master["Luces ON"] = _flat_scene(workspace, caps, "Luces ON", (255, 255, 255))
-    master["Todo Blanco"] = _flat_scene(
-        workspace, caps, "Todo Blanco", PALETTE["Blanco"]
+    # One white, not three. "Luces ON", "Todo Blanco" and "Flash 100%" were all
+    # full white on the same fixtures, which is why nobody could say what the
+    # difference was: there was none. What is left is a latched work light and a
+    # held hit, and the names say which is which.
+    master["Blanco Total"] = _flat_scene(
+        workspace, caps, "Blanco Total", (255, 255, 255)
     )
     master["Todo Negro"] = _blackout(workspace, caps)
     master["Flash 100%"] = _flat_scene(
@@ -159,6 +178,11 @@ def build_canonical_show(
     # extra steps anyway. The bars and panels keep theirs: they have something
     # to draw with.
     pixel_chasers: list[int] = []
+    # Every fixture a running matrix paints. The rig-wide colour wheel is kept
+    # off these: RGB mixes HTP, so a bar told red by the wheel and blue by its
+    # matrix comes out magenta, and a third source makes it white. One fixture,
+    # one colour source.
+    matrix_lit_ids: set[int] = set()
     subset = {name: PALETTE[name] for name in matrix_colors}
     for group in fixture_groups(workspace.root):
         generated = generate_matrix_effects(
@@ -171,6 +195,7 @@ def build_canonical_show(
         matrices.append(generated)
         if generated.chaser_id is not None and _is_pixel_group(caps, group.fixture_ids):
             pixel_chasers.append(generated.chaser_id)
+            matrix_lit_ids |= set(group.fixture_ids)
     matrix_ids = [fid for m in matrices for fid in m.matrix_ids]
 
     # Symmetry comes from reversing one side: with every head going the same way
@@ -225,6 +250,8 @@ def build_canonical_show(
 
     smoke = generate_smoke_auto(workspace, library)
     master["Humo Auto"] = smoke.chaser_id
+    # The burst on its own, for the console: a held button, never a latched one.
+    master["Humo ON"] = smoke.on_id
 
     dimmers = generate_dimmer_chases(workspace, library)
     master["Dimmer Chase"] = dimmers.chase_id
@@ -244,17 +271,25 @@ def build_canonical_show(
 
     # One wheel over the whole rig, not one per group: three Random wheels
     # never land on the same colour, and the heads and the PARs have to.
-    unison = generate_unison_colors(workspace, library)
+    unison = generate_unison_colors(
+        workspace, library, exclude_fixture_ids=sorted(matrix_lit_ids)
+    )
     if unison.wheel_id is not None:
         master["Rueda Colores"] = unison.wheel_id
     master["Rueda Mezcla"] = _collection(
         workspace, "Rueda Mezcla",
         [b.mix_wheel_id for b in banks if b.mix_wheel_id is not None],
     )
-    # The night goes somewhere: the colour bed and the haze run underneath, and
-    # what sits on top is a level that changes every few minutes. Everything a
-    # room reads as "peak" - fast movement, prism, the dimmer chase - is held
-    # back for the level that is meant to be one.
+    # The night goes somewhere: the colour bed, the pixels and the haze run
+    # underneath, and what sits on top is a level that changes every few
+    # minutes. Everything a room reads as "peak" - fast movement, prism, the
+    # dimmer chase - is held back for the level that is meant to be one.
+    #
+    # A level carries no colour at all. The matrix cycle moved out of them and
+    # into AUTO, because a level that owns the bars' colour hands it back on
+    # every step - and because two levels running at once (which the console
+    # used to allow) then put two colour sources on one fixture.
+    gobo_open_id = _first(gobos.scene_ids)
     energy = generate_energy_levels(
         workspace,
         levels=[
@@ -263,19 +298,18 @@ def build_canonical_show(
                 # Heads held still, and the beams on the open position of their
                 # gobo wheel: the quiet level is where the pattern comes *out*,
                 # and a wheel nothing drives keeps whatever it was left on.
-                [fid for fid in (home_id, _first(gobos.scene_ids)) if fid is not None],
+                [fid for fid in (home_id, gobo_open_id) if fid is not None],
                 AMBIENT_HOLD,
             ),
             EnergyLevel(
                 "Nivel Fiesta",
-                [master["Movimientos Cabezas"], master["Gobo Animacion"],
-                 *pixel_chasers],
+                [master["Movimientos Cabezas"], master["Gobo Animacion"]],
                 PARTY_HOLD,
             ),
             EnergyLevel(
                 "Nivel Peak",
                 [master.get("Movimientos Rapidos", master["Movimientos Cabezas"]),
-                 master["Gobo Animacion"], *pixel_chasers,
+                 master["Gobo Animacion"],
                  *( [master["Prisma Animacion"]] if "Prisma Animacion" in master else []),
                  master["Dimmer Chase"]],
                 PEAK_HOLD,
@@ -287,19 +321,55 @@ def build_canonical_show(
     if energy.cycle_id is not None:
         master["Ciclo Energia"] = energy.cycle_id
 
-    # The one thing to press: the colour bed, the haze and the energy cycle.
-    # Not the beams' colour wheel: it started after the colour wheel and so won
-    # the beams' one colour channel, which is what kept them off whatever the
-    # rest of the rig was doing. The rig-wide scenes set that wheel themselves
-    # now, and `Color Beam Animacion` stays as a button for somebody at the
-    # laptop.
-    auto_members = [master["Rueda Colores"], master["Humo Auto"]]
+    # The one thing to press: the colour bed, the pixels, the haze and the
+    # energy cycle. Not the beams' colour wheel: it started after the colour
+    # wheel and so won the beams' one colour channel, which is what kept them
+    # off whatever the rest of the rig was doing. The rig-wide scenes set that
+    # wheel themselves now, and `Color Beam Animacion` stays as a button for
+    # somebody at the laptop.
+    auto_members = [master["Rueda Colores"], master["Humo Auto"], *pixel_chasers]
     if "Ciclo Energia" in master:
         auto_members.append(master["Ciclo Energia"])
     else:
-        auto_members += [master["Movimientos Cabezas"], master["Gobo Animacion"],
-                         *pixel_chasers]
+        auto_members += [master["Movimientos Cabezas"], master["Gobo Animacion"]]
     master["AUTO"] = _collection(workspace, "AUTO", auto_members)
+
+    # The moments: a room state somebody takes over with, each one bringing its
+    # own colour bed because the console stops AUTO the instant one starts.
+    # These are what a night actually needs a person for - a speaker on stage,
+    # a lull, the last track - and they are the reason the energy levels are no
+    # longer buttons: pressing two of those at once is what put the room on
+    # every colour at once.
+    master["Luz Charla"] = _flat_scene(
+        workspace, caps, "Luz Charla", CHARLA_WHITE
+    )
+    beam_white_id = _first(beam_colors.scene_ids)
+    moments = generate_moments(workspace, [
+        # Somebody is talking: steady warm light, heads parked, nothing moving,
+        # no wheel and no matrix - the one state where change is the enemy.
+        Moment("Momento Charla", [
+            home_id, master["Luz Charla"], gobo_open_id, beam_white_id,
+        ]),
+        # A lull: the colour bed and the pixels keep breathing, the heads stay
+        # where they are.
+        Moment("Momento Tranquilo", [
+            master["Rueda Colores"], *pixel_chasers, home_id, gobo_open_id,
+        ]),
+        Moment("Momento Fiesta", [
+            master["Rueda Colores"], *pixel_chasers,
+            master["Movimientos Cabezas"], master["Gobo Animacion"],
+        ]),
+        # Everything the rig has, minus the strobe: a strobe belongs to a hit
+        # somebody presses and lets go of, not to a state left running.
+        Moment("Momento Locura", [
+            master["Rueda Colores"], *pixel_chasers,
+            master.get("Movimientos Rapidos", master["Movimientos Cabezas"]),
+            master["Gobo Animacion"],
+            master.get("Prisma Animacion"),
+            master["Dimmer Chase"],
+        ]),
+    ])
+    master.update(moments)
 
     if beats:
         # The layers that should feel the music go on the beat; the energy cycle

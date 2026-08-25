@@ -2,7 +2,10 @@
 
 A button is the console's unit of operation: caption, geometry, the function ID
 it triggers, and how it triggers it. Toggle starts and stops the function; Flash
-runs it while held.
+runs it while held. Two actions drive no function at all - Blackout toggles the
+DMX blackout, and StopAll stops every running function, which is the panic
+button a room needs when a look goes wrong and nobody knows which button
+started it.
 """
 
 from lxml import etree
@@ -11,21 +14,31 @@ from ..constants import QLC_NS
 from .appearance import DEFAULT, build_appearance
 from .window_state import build_window_state
 
+# Function::invalidId() - what QLC+ stores for a button that drives nothing.
+NO_FUNCTION = 4294967295
+
+TOGGLE = "Toggle"
+FLASH = "Flash"
+BLACKOUT = "Blackout"
+STOP_ALL = "StopAll"
+
 
 def build_button(
     parent: etree._Element,
     widget_id: int,
     caption: str,
-    function_id: int,
+    function_id: int | None,
     x: int,
     y: int,
     width: int,
     height: int,
-    action: str = "Toggle",
+    action: str = TOGGLE,
     key: str | None = None,
     background: str = DEFAULT,
     foreground: str = DEFAULT,
+    font: str = DEFAULT,
     intensity: int = 100,
+    stop_all_fade_ms: int = 0,
 ) -> etree._Element:
     """Append a <Button> to parent and return it.
 
@@ -37,11 +50,14 @@ def build_button(
     button.set("Icon", "")
 
     build_window_state(button, x, y, width, height)
-    build_appearance(button, background=background, foreground=foreground)
+    build_appearance(button, background=background, foreground=foreground, font=font)
 
     function = etree.SubElement(button, f"{{{QLC_NS}}}Function")
-    function.set("ID", str(function_id))
-    etree.SubElement(button, f"{{{QLC_NS}}}Action").text = action
+    function.set("ID", str(NO_FUNCTION if function_id is None else function_id))
+    action_element = etree.SubElement(button, f"{{{QLC_NS}}}Action")
+    if action == STOP_ALL and stop_all_fade_ms:
+        action_element.set("FadeOut", str(stop_all_fade_ms))
+    action_element.text = action
     shortcut = etree.SubElement(button, f"{{{QLC_NS}}}Key")
     if key is not None:
         shortcut.text = key

@@ -13,7 +13,7 @@ its own `Page` attribute, with the page arrows in the frame header.
 from lxml import etree
 
 from ..constants import QLC_NS
-from .appearance import build_appearance
+from .appearance import DEFAULT, build_appearance
 from .window_state import build_window_state
 
 
@@ -29,6 +29,7 @@ def build_frame(
     pages: int = 1,
     next_page_key: str | None = None,
     previous_page_key: str | None = None,
+    font: str = DEFAULT,
 ) -> etree._Element:
     """Append a frame to parent and return it, ready for child widgets."""
     tag = "SoloFrame" if solo else "Frame"
@@ -36,7 +37,7 @@ def build_frame(
     frame.set("Caption", caption)
     frame.set("ID", str(widget_id))
 
-    build_appearance(frame, frame_style="Sunken")
+    build_appearance(frame, frame_style="Sunken", font=font)
     build_window_state(frame, x, y, width, height)
 
     children = [

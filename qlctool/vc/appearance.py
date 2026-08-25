@@ -17,15 +17,20 @@ def build_appearance(
     frame_style: str = "None",
     foreground: str = DEFAULT,
     background: str = DEFAULT,
+    font: str = DEFAULT,
 ) -> etree._Element:
-    """Append an <Appearance> to parent; colours are ARGB decimals or Default."""
+    """Append an <Appearance> to parent; colours are ARGB decimals or Default.
+
+    font is a `QFont::toString()` string - see `console_font` - or Default,
+    which leaves the widget on whatever QLC+ itself is set to.
+    """
     appearance = etree.SubElement(parent, f"{{{QLC_NS}}}Appearance")
     for name, value in (
         ("FrameStyle", frame_style),
         ("ForegroundColor", foreground),
         ("BackgroundColor", background),
         ("BackgroundImage", "None"),
-        ("Font", DEFAULT),
+        ("Font", font),
     ):
         etree.SubElement(appearance, f"{{{QLC_NS}}}{name}").text = value
     return appearance

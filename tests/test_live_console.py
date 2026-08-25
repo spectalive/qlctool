@@ -13,7 +13,12 @@ from pathlib import Path
 import pytest
 
 from qlctool.generate.canonical_show import KEYS, build_canonical_show
-from qlctool.generate.live_console import CANVAS_HEIGHT, CANVAS_WIDTH
+from qlctool.generate.live_console import (
+    CANVAS_HEIGHT,
+    CANVAS_WIDTH,
+    HITS,
+    ROOM_STATES,
+)
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
@@ -131,7 +136,7 @@ def test_multipage_frames_only_reference_pages_they_have(console):
             if localname(child) not in WIDGET_TAGS:
                 continue
             assert 0 <= int(child.attrib.get("Page", "0")) < total
-    assert pages == 2  # the mixes and the matrices
+    assert pages == 3  # the console itself, the mixes and the matrices
 
 
 def test_the_keyboard_survives(console):
@@ -174,3 +179,105 @@ def test_the_audio_bands_press_toggle_buttons_that_exist(console):
         assert bar.attrib["Type"] == "3"  # AudioBar::VCWidgetBar
         target = buttons[int(bar.attrib["WidgetID"])]
         assert find_local(target, "Action").text == "Toggle", bar.attrib["Name"]
+
+
+def _frame_named(frame, caption):
+    for widget, _, _ in _walk(frame):
+        if localname(widget) in ("Frame", "SoloFrame") and widget.attrib.get(
+            "Caption", ""
+        ).startswith(caption):
+            return widget
+    raise AssertionError(f"no frame captioned {caption!r}")
+
+
+def _captions(widget):
+    return [
+        child.attrib.get("Caption", "")
+        for child in widget
+        if localname(child) == "Button"
+    ]
+
+
+def test_the_room_is_in_exactly_one_state(console):
+    """AUTO, the moments, the work light and the blackout are one solo frame.
+
+    That is the fix for the thing that broke the show: two energy levels
+    pressed at once put two colour beds and two movement sources on the same
+    rig, and the room went white. A state cannot be stacked if starting one
+    stops the others.
+    """
+    _, frame = console
+    room = _frame_named(frame, "LA SALA ESTÁ ASÍ")
+    assert localname(room) == "SoloFrame"
+    assert _captions(room) == [caption for _, caption, _, _ in ROOM_STATES]
+
+
+def test_no_energy_level_is_a_button(console):
+    """The levels are what the cycle steps, not something to press.
+
+    Pressing one by hand while AUTO ran gave that level two owners and left the
+    other one running underneath - which is exactly what the operator hit.
+    """
+    root, frame = console
+    functions = {
+        int(f.attrib["ID"]): f.attrib.get("Name", "")
+        for f in find_local(root, "Engine")
+        if localname(f) == "Function" and f.attrib.get("ID")
+    }
+    driven = {
+        functions.get(int(find_local(b, "Function").attrib["ID"]), "")
+        for b, _, _ in _walk(frame)
+        if localname(b) == "Button"
+    }
+    assert not {n for n in driven if n.startswith("Nivel ")}
+    assert "Ciclo Energia" not in driven
+
+
+def test_the_panic_button_stops_everything_and_drives_nothing(console):
+    _, frame = console
+    panic = _frame_named(frame, "SI ALGO VA MAL")
+    buttons = [b for b in panic if localname(b) == "Button"]
+    assert len(buttons) == 1
+    action = find_local(buttons[0], "Action")
+    assert action.text == "StopAll"
+    assert int(action.attrib["FadeOut"]) > 0
+    # Function::invalidId(): it stops what is running rather than adding to it.
+    assert find_local(buttons[0], "Function").attrib["ID"] == "4294967295"
+
+
+def test_every_button_on_the_show_page_says_its_own_key(console):
+    """Nobody reads a key map at a venue: the key is on the button."""
+    _, frame = console
+    for caption in _captions(_frame_named(frame, "LA SALA ESTÁ ASÍ")) + _captions(
+        _frame_named(frame, "GOLPES")
+    ):
+        assert " · " in caption, caption
+    assert [caption for _, caption in HITS] == _captions(_frame_named(frame, "GOLPES"))
+
+
+def test_a_colour_button_says_which_colour_it_is(console):
+    """Thirty blank squares is what the three colour banks used to be."""
+    _, frame = console
+    for group in ("BarrasLed", "Cabezas", "PAR"):
+        bank = _frame_named(frame, f"Colores {group}")
+        captions = _captions(bank)
+        assert len(captions) == 10
+        assert all(captions), group
+        assert len(set(captions)) == 10, group
+
+
+def test_a_mix_button_is_not_ambiguous(console):
+    """Azul and Amarillo both start with an A: one letter labelled six pairs
+    of different buttons identically."""
+    _, frame = console
+    mixes = _frame_named(frame, "Mezclas de dos colores")
+    by_page = {}
+    for child in mixes:
+        if localname(child) != "Button":
+            continue
+        by_page.setdefault(child.attrib.get("Page", "0"), []).append(
+            child.attrib["Caption"]
+        )
+    assert by_page
+    for page, captions in by_page.items():
+        assert len(captions) == len(set(captions)), page
