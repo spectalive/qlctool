@@ -52,12 +52,15 @@ def generate_smoke_auto(
     off_id = scene("Humo OFF", 0)
 
     chaser_id = next_function_id(workspace.root)
+    # A burst, then the long wait before the next one - so the two steps have
+    # their own holds, which is what puts this chaser in PerStep duration mode.
     chaser = build_chaser(
-        chaser_id, "Humo Auto", [on_id, off_id], hold=burst_ms, path=path
+        chaser_id,
+        "Humo Auto",
+        [on_id, off_id],
+        hold=[burst_ms, pause_ms],
+        path=path,
     )
-    # The second step is the wait between bursts, so it has its own hold.
-    steps = [c for c in chaser if c.tag.endswith("}Step")]
-    steps[1].set("Hold", str(pause_ms))
     workspace.add_function(chaser)
 
     return GeneratedSmoke(on_id=on_id, off_id=off_id, chaser_id=chaser_id)

@@ -1,0 +1,104 @@
+"""Dimmer looks: a running chase and an odd/even ping-pong across the rig.
+
+Colour is not the only thing that moves in the hand-built show - it also drives
+*intensity* on its own, which is what keeps a static colour from reading as a
+flood. Two shapes cover what it does:
+
+- a chase, an EFX in Dimmer mode with the fixtures spread around the path, so
+  the intensity peak runs along the rig;
+- a ping-pong, two scenes that light the odd fixtures then the even ones,
+  stepped by a fast chaser.
+
+Both skip the smoke machines, and both skip any fixture whose definition has no
+dimmer: an EFX in Dimmer mode drives the fixture's intensity channel, and a
+fixture without one would just sit in the list doing nothing.
+"""
+
+from dataclasses import dataclass
+
+from .. import roles
+from ..capabilities_of import capabilities_of
+from ..functions.chaser import build_chaser
+from ..functions.efx import EFXFixture, build_efx
+from ..functions.scene import build_scene
+from ..ids import next_function_id
+from ..library import FixtureLibrary
+from ..workspace import Workspace
+from .movement_efx import spread_offsets
+
+MODE_DIMMER = 1  # EFXFixture::Mode - PanTilt, Dimmer, RGB
+
+
+@dataclass(frozen=True)
+class GeneratedDimmers:
+    chase_id: int
+    pingpong_id: int
+    scene_ids: list[int]
+
+
+def generate_dimmer_chases(
+    workspace: Workspace,
+    library: FixtureLibrary,
+    duration: int = 6000,
+    pingpong_hold: int = 400,
+    path: str = "Dimmers",
+) -> GeneratedDimmers:
+    """Build the dimmer chase and the ping-pong; raises when nothing dims."""
+    dimmable = [
+        capability
+        for capability in capabilities_of(workspace.root, library)
+        if not capability.is_smoke and capability.offsets_for_role(roles.DIMMER)
+    ]
+    if not dimmable:
+        raise ValueError("no fixture in this workspace has a dimmer")
+
+    offsets = spread_offsets(len(dimmable))
+    chase_id = next_function_id(workspace.root)
+    workspace.add_function(
+        build_efx(
+            chase_id,
+            "Dimmer Chase",
+            [
+                EFXFixture(
+                    fixture_id=capability.fixture.fixture_id,
+                    mode=MODE_DIMMER,
+                    start_offset=offset,
+                )
+                for capability, offset in zip(dimmable, offsets)
+            ],
+            duration=duration,
+            path=path,
+        )
+    )
+
+    scene_ids = [
+        _half_lit(workspace, dimmable, remainder, path) for remainder in (0, 1)
+    ]
+    pingpong_id = next_function_id(workspace.root)
+    workspace.add_function(
+        build_chaser(
+            pingpong_id,
+            "Dimmer PingPong",
+            scene_ids,
+            hold=pingpong_hold,
+            path=path,
+        )
+    )
+    return GeneratedDimmers(
+        chase_id=chase_id, pingpong_id=pingpong_id, scene_ids=scene_ids
+    )
+
+
+def _half_lit(workspace: Workspace, dimmable, remainder: int, path: str) -> int:
+    """Every other fixture at full, the rest at zero."""
+    values = {
+        capability.fixture.fixture_id: [
+            (offset, 255 if index % 2 == remainder else 0)
+            for offset in capability.offsets_for_role(roles.DIMMER)
+        ]
+        for index, capability in enumerate(dimmable)
+    }
+    function_id = next_function_id(workspace.root)
+    name = "Dimmer Impares" if remainder else "Dimmer Pares"
+    workspace.add_function(build_scene(function_id, name, values, path=path))
+    return function_id

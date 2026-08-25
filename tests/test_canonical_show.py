@@ -106,3 +106,42 @@ def test_qlcplus_loads_the_show(built):
     _, out = built
     result = validate_workspace(out)
     assert result.ok, result.describe()
+
+
+def test_no_chaser_walks_itself_at_engine_speed(built):
+    """Every chaser has to have a step duration QLC+ will actually wait on.
+
+    ChaserRunner::stepDuration takes the step's time from the chaser when the
+    duration mode is Common, and from the step itself in PerStep. Either way a
+    duration of 0 is already over on the tick the step began, so the chaser
+    walks a step per engine tick and the show flickers through itself.
+    Common is preferred - a Speed Dial and Chaser::tap() only drive that mode -
+    so PerStep is only for a chaser whose steps genuinely differ.
+    """
+    _, out = built
+
+    for function in _functions(Workspace.load(out).root).values():
+        if function.attrib.get("Type") != "Chaser":
+            continue
+        name = function.attrib.get("Name")
+        holds = [int(s.attrib["Hold"]) for s in findall_local(function, "Step")]
+        assert holds and all(h > 0 for h in holds), name
+
+        mode = find_local(function, "SpeedModes").attrib["Duration"]
+        if len(set(holds)) == 1:
+            assert mode == "Common", name
+            fade_in = int(find_local(function, "Speed").attrib["FadeIn"])
+            duration = int(find_local(function, "Speed").attrib["Duration"])
+            assert duration == fade_in + holds[0], name
+        else:
+            assert mode == "PerStep", name
+
+
+def test_the_smoke_chaser_bursts_then_waits(built):
+    """The burst and the wait are different lengths, so it has to be PerStep."""
+    show, out = built
+    smoke = _functions(Workspace.load(out).root)[str(show.master_ids["Humo Auto"])]
+
+    assert find_local(smoke, "SpeedModes").attrib["Duration"] == "PerStep"
+    holds = [int(s.attrib["Hold"]) for s in findall_local(smoke, "Step")]
+    assert holds == [2000, 60000]

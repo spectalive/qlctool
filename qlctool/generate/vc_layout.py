@@ -16,7 +16,7 @@ from ..argb import argb_from_rgb
 from ..palette import PALETTE
 from ..vc.appearance import DEFAULT
 from ..vc.button import build_button
-from ..vc.solo_frame import build_solo_frame
+from ..vc.frame import build_frame
 from ..vc.widget_ids import next_widget_id
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
@@ -77,7 +77,10 @@ def generate_vc_layout(
         height = HEADER + PADDING + rows * (BUTTON_HEIGHT + PADDING)
 
         frame_id = next_widget_id(workspace.root)
-        frame = build_solo_frame(
+        # A plain frame, not a solo one: this groups by UI folder, and a folder
+        # holds a chaser next to the scenes it steps through. In a solo frame
+        # the first step starting would stop the chaser - see live_console.
+        frame = build_frame(
             console_frame, frame_id, caption, PADDING, y, width, height
         )
         frame_ids.append(frame_id)

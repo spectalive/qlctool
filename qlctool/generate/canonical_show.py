@@ -24,10 +24,12 @@ from ..skeleton import strip_to_skeleton
 from ..workspace import Workspace
 from .color_banks import GeneratedBank, generate_color_banks
 from .color_scene import color_scene_values
-from .matrix_effects import generate_matrix_effects
-from .movement_efx import generate_movement_efx
+from .dimmer_chases import generate_dimmer_chases
+from .live_console import generate_live_console
+from .matrix_effects import GeneratedMatrices, generate_matrix_effects
+from .movement_efx import generate_movement_efx, moving_head_ids
 from .smoke_auto import generate_smoke_auto
-from .vc_layout import generate_vc_layout
+from .strobe_effects import generate_strobe_effects
 from .wheel_scenes import generate_wheel_scenes
 
 SHOW_PATH = "Show"
@@ -49,6 +51,14 @@ KEYS = {
     "Todo Negro": "º",
     "Flash 100%": "Space",
     "Flash 50%": "-",
+    # Live-only looks. The hand-built console has these on V/B/C/Z; B and C are
+    # already Todo Blanco and Color Beam here, so they move rather than clash.
+    "Dimmer Chase": "V",
+    "Dimmer PingPong": "Z",
+    "Strobo ON": "S",
+    "Strobo OFF": "D",
+    "Strobo Rapido": "F",
+    "Strobo Medio": "T",
 }
 FLASH_FUNCTIONS = ("Flash 100%", "Flash 50%")
 
@@ -92,20 +102,20 @@ def build_canonical_show(
 
     banks = generate_color_banks(workspace, library)
 
-    matrix_ids: list[int] = []
-    matrix_chasers: list[int] = []
+    matrices: list[GeneratedMatrices] = []
     subset = {name: PALETTE[name] for name in matrix_colors}
     for group in fixture_groups(workspace.root):
-        matrices = generate_matrix_effects(
-            workspace,
-            group_id=group.group_id,
-            algorithms=algorithms,
-            palette=subset,
-            path=f"Matrices {group.name}",
+        matrices.append(
+            generate_matrix_effects(
+                workspace,
+                group_id=group.group_id,
+                algorithms=algorithms,
+                palette=subset,
+                path=f"Matrices {group.name}",
+            )
         )
-        matrix_ids.extend(matrices.matrix_ids)
-        if matrices.chaser_id is not None:
-            matrix_chasers.append(matrices.chaser_id)
+    matrix_ids = [fid for m in matrices for fid in m.matrix_ids]
+    matrix_chasers = [m.chaser_id for m in matrices if m.chaser_id is not None]
 
     movement = generate_movement_efx(
         workspace, library, path="Movimiento", chaser_hold=10000,
@@ -143,6 +153,22 @@ def build_canonical_show(
     smoke = generate_smoke_auto(workspace, library)
     master["Humo Auto"] = smoke.chaser_id
 
+    dimmers = generate_dimmer_chases(workspace, library)
+    master["Dimmer Chase"] = dimmers.chase_id
+    master["Dimmer PingPong"] = dimmers.pingpong_id
+
+    # Strobes reuse the base looks rather than duplicating them, so the flash
+    # chasers step the same "Flash 100%" and "Todo Negro" the console flashes.
+    strobes = generate_strobe_effects(
+        workspace, library,
+        full_id=master["Flash 100%"], black_id=master["Todo Negro"],
+    )
+    master["Strobo Rapido"] = strobes.fast_id
+    master["Strobo Medio"] = strobes.medium_id
+    if strobes.on_id is not None:
+        master["Strobo ON"] = strobes.on_id
+        master["Strobo OFF"] = strobes.off_id
+
     master["Rueda Colores"] = _collection(
         workspace, "Rueda Colores",
         [b.wheel_id for b in banks if b.wheel_id is not None],
@@ -161,7 +187,21 @@ def build_canonical_show(
 
     button_ids: list[int] = []
     if with_layout:
-        button_ids = _lay_out_console(workspace, master)
+        console = generate_live_console(
+            workspace,
+            master=master,
+            banks=banks,
+            matrices=matrices,
+            movement=movement,
+            gobos=gobos,
+            beam_colors=beam_colors,
+            prisms=prisms,
+            mover_fixture_ids=moving_head_ids(workspace, library),
+            keys=KEYS,
+            flash_functions=FLASH_FUNCTIONS,
+            matrix_algorithms=[a for a in algorithms if a],
+        )
+        button_ids = console.button_ids
 
     functions = [
         f for f in workspace.engine if f.tag.endswith("}Function")
@@ -214,22 +254,3 @@ def _collection(workspace: Workspace, name: str, members: list[int]) -> int:
         build_collection(function_id, name, members, path=SHOW_PATH)
     )
     return function_id
-
-
-def _lay_out_console(workspace: Workspace, master: dict[str, int]) -> list[int]:
-    """The master frame first, at the top, then a frame per generated folder."""
-    keys = {
-        master[name]: key for name, key in KEYS.items() if name in master
-    }
-    actions = {
-        master[name]: "Flash" for name in FLASH_FUNCTIONS if name in master
-    }
-    top = generate_vc_layout(
-        workspace,
-        function_ids=list(master.values()),
-        columns=6,
-        keys=keys,
-        actions=actions,
-    )
-    rest = generate_vc_layout(workspace, columns=10)
-    return top.button_ids + rest.button_ids

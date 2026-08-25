@@ -51,6 +51,27 @@ static bool Fixture::loader(...) Fixture "CromoWash100 #3" cannot be created.
 <n> channels of fixture <name> are out of bounds
 ```
 
+### Without it taking the screen
+
+The QML build opens a window, and on macOS that pulls focus away from whatever
+you were doing - once per generated file, which makes a test run unusable. So on
+macOS `validate` launches the bundle with `open -g`, which starts it in the
+background, and tells QLC+ to write its debug log to a file (`-g`, always
+`~/QLC+.log`) because `open` hands back no stdout. Only the processes that call
+started are killed afterwards, so a QLC+ you have open yourself survives.
+
+`open` refuses (`-600`) while a copy is still shutting down; the run then falls
+back to the foreground launch rather than reporting a false pass. Set
+`QLCTOOL_FOREGROUND=1` to always use the foreground path.
+
+### Reading the source
+
+QLC+ is open source and the answer to "what does this tag actually do" is in it.
+A shallow clone of `mcallegari/qlcplus` lives outside this repository; the files
+worth knowing are `engine/src/chaserrunner.cpp` (step timing),
+`ui/src/virtualconsole/` and `qmlui/virtualconsole/` (the two Virtual Console
+implementations, whose XML is the same).
+
 `qlctool validate <file>` does all of this, and `--validate` on any command that
 writes a workspace does it to the result. It looks for QLC+ in
 `/Applications/QLC+.app` and on `PATH`; `QLCTOOL_QLCPLUS` overrides both. **A

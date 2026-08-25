@@ -42,7 +42,8 @@ Commands never overwrite their input; they write a new file.
 | `probe` | One scene per DMX channel of a fixture - how an undocumented fixture gets settled on site |
 | `patch` | Check the patch for address overlaps, or edit it: add, re-address, rename, unpatch |
 | `layout` | Virtual Console buttons for every function, grouped by its UI folder |
-| `newshow` | A whole self-running show built on an existing patch |
+| `newshow` | A whole self-running show built on an existing patch, plus the one-screen live console |
+| | (colour banks and mixes, matrices, movement, gobos, beam colour, prism, smoke, dimmer chase and ping-pong, shutter and flash strobes) |
 | `validate` | Load a workspace in headless QLC+ and report what it complains about |
 | `decompose` / `compose` | Split a workspace into one file per function and rebuild it - a git-diffable source of truth |
 

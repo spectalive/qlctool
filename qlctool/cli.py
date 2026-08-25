@@ -221,9 +221,11 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     colors = sum(len(b.scene_ids) + len(b.split_ids) for b in show.banks)
     print(f"Built a self-running show on the same patch: {show.function_count} "
           f"functions ({colors} colour scenes across {len(show.banks)} groups, "
-          f"{len(show.matrix_ids)} matrices, {len(show.efx_ids)} EFX, "
-          f"{len(show.gobo_ids)} gobos, {len(show.prism_ids)} prism), "
-          f"{len(show.button_ids)} console buttons. Press AUTO (key Q).")
+          f"{len(show.matrix_ids)} matrices, {len(show.efx_ids)} movement EFX, "
+          f"{len(show.gobo_ids)} gobos, {len(show.prism_ids)} prism, plus "
+          f"dimmer chase, ping-pong and strobes), "
+          f"{len(show.button_ids)} console buttons on one 1440x900 screen. "
+          f"Press AUTO (key Q).")
     return _finish(out, args.validate)
 
 

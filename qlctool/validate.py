@@ -21,9 +21,14 @@ import os
 import select
 import shutil
 import subprocess
+import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
+
+# The QML build's -g writes the debug log here instead of stdout, which is what
+# makes a background launch readable: `open -g` does not give us its stdout.
+QML_LOG_FILE = Path.home() / "QLC+.log"
 
 DEFAULT_BINARIES = (
     # 4.x first: it is the only build that loads with no GUI at all.
@@ -94,6 +99,9 @@ def validate_workspace(
     Raises FileNotFoundError when no QLC+ is installed - a missing validator must
     never read as a passing validation.
     """
+    # Absolute: a background launch goes through `open`, which does not
+    # inherit this process's working directory.
+    path = Path(path).resolve()
     executable = binary or qlcplus_binary()
     if executable is None:
         raise FileNotFoundError(
@@ -106,6 +114,12 @@ def validate_workspace(
         [executable, "-d", "-m", "-o", str(path)] if qml
         else [executable, "--nowm", "--nogui", "-d", "1", "-o", str(path)]
     )
+    bundle = _app_bundle(executable)
+    if qml and bundle is not None and not os.environ.get("QLCTOOL_FOREGROUND"):
+        output = _run_in_background(bundle, executable, path, timeout, quiet_period)
+        if output is not None:
+            return _verdict(output)
+
     process = subprocess.Popen(
         arguments,
         stdout=subprocess.PIPE,
@@ -113,7 +127,10 @@ def validate_workspace(
         text=True,
     )
     output = _read_until_loaded(process, timeout, quiet_period, qml)
+    return _verdict(output)
 
+
+def _verdict(output: str) -> ValidationResult:
     errors = [
         line.strip()
         for line in (output or "").splitlines()
@@ -121,6 +138,81 @@ def validate_workspace(
         and not any(marker in line for marker in IGNORED_MARKERS)
     ]
     return ValidationResult(ok=not errors, errors=errors, log=output or "")
+
+
+def _app_bundle(executable: str) -> str | None:
+    """The .app this executable lives in, on macOS - None anywhere else."""
+    if sys.platform != "darwin":
+        return None
+    for parent in Path(executable).parents:
+        if parent.suffix == ".app":
+            return str(parent)
+    return None
+
+
+def _run_in_background(
+    bundle: str, executable: str, path: str | Path,
+    timeout: float, quiet_period: float,
+) -> str | None:
+    """Load the workspace without QLC+ taking the screen, and return its log.
+
+    `open -g` launches the bundle without bringing it to the front, which is
+    what keeps a generate-and-validate run from stealing focus every time. The
+    cost is that `open` returns immediately and hands back no stdout, so QLC+ is
+    told to log to a file (-g) and only the processes this call started are
+    killed afterwards - a QLC+ the owner has open stays open.
+    """
+    before = _running_pids(executable)
+    QML_LOG_FILE.write_text("")
+    launched = subprocess.run(
+        ["open", "-g", "-a", bundle, "--args",
+         "-d", "-g", "-m", "-o", str(path)],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if launched.returncode != 0:
+        # `open` refuses while a copy of the app is still going down (-600),
+        # among other things. Rather than guess, hand the run back to the
+        # foreground path, which owns its own process.
+        return None
+
+    deadline = time.monotonic() + timeout
+    loaded_at: float | None = None
+    while time.monotonic() < deadline:
+        text = QML_LOG_FILE.read_text(errors="replace")
+        if loaded_at is None and any(m in text for m in QML_LOADED_MARKERS):
+            loaded_at = time.monotonic()
+        if loaded_at is not None and time.monotonic() - loaded_at > quiet_period:
+            break
+        time.sleep(0.2)
+
+    started = _running_pids(executable) - before
+    for pid in started:
+        _terminate(pid)
+    # Let them actually go: `open` answers -600 if asked to launch the bundle
+    # again while a copy is still shutting down.
+    gone_by = time.monotonic() + 5.0
+    while started & _running_pids(executable) and time.monotonic() < gone_by:
+        time.sleep(0.1)
+    return QML_LOG_FILE.read_text(errors="replace")
+
+
+def _running_pids(executable: str) -> set[int]:
+    result = subprocess.run(
+        ["pgrep", "-f", Path(executable).name],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return {int(line) for line in result.stdout.split() if line.isdigit()}
+
+
+def _terminate(pid: int) -> None:
+    try:
+        os.kill(pid, 15)
+    except ProcessLookupError:
+        pass
 
 
 def _read_until_loaded(

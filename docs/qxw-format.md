@@ -62,6 +62,25 @@ toolkit groups Virtual Console frames by.
 (Loop/SingleShot/PingPong/**Random**), `SpeedModes`, then
 `<Step Number FadeIn Hold FadeOut>funcID</Step>` per step.
 
+**`SpeedModes` decides whose timing is real, and it is not obvious.**
+`<SpeedModes FadeIn FadeOut Duration/>` is `Common` or `PerStep` per field.
+With `Duration="Common"` every step lasts the chaser's own `<Speed Duration>`
+and the per-step `Hold` is ignored; with `PerStep` each step lasts
+`FadeIn + Hold`, which is how QLC+ derives a step's duration on load
+(`ChaserStep::loadXML`). The switch is `ChaserRunner::stepDuration`.
+
+Two consequences:
+
+- **A duration of 0 is not "no limit", it is "already over".** `write()`
+  advances as soon as `elapsed >= duration`, so a chaser with duration 0 walks
+  one step per engine tick - about 50 a second. A whole show of those, started
+  together, looks like QLC+ has hung.
+- **A Speed Dial and `Chaser::tap()` only reach a `Common` chaser.**
+  `Chaser::tap()` returns immediately in `PerStep`, and the dial writes the
+  chaser's duration, which `PerStep` never reads. So `Common` is the default to
+  want, and `PerStep` is for a chaser whose steps genuinely differ - a smoke
+  burst followed by a long wait.
+
 ### Collection
 
 `<Function Type="Collection">` + `<Step Number="n">funcID</Step>`. Members run
@@ -112,7 +131,9 @@ values.
 canvas `<Size Width Height>` and the grand master.
 
 Widgets: `Frame`, `SoloFrame` (one child active at a time), `Button`, `Label`,
-`Slider`, `XYPad`, `SpeedDial`, `Matrix`, `AudioTriggers`. Each carries a unique
+`Slider`, `XYPad`, `SpeedDial`, `Matrix`, `AudioTriggers`, `Clock`, `CueList`.
+QLC+ 5 renamed the RGB-matrix control class to `VCAnimation` but kept its tag
+`Matrix`, so the same file works in both. Each carries a unique
 `ID`, a `<WindowState Visible X Y Width Height/>` and an `<Appearance>` block of
 five children (`FrameStyle`, `ForegroundColor`, `BackgroundColor`,
 `BackgroundImage`, `Font`); colours are ARGB decimals or `Default`.
@@ -120,6 +141,42 @@ five children (`FrameStyle`, `ForegroundColor`, `BackgroundColor`,
 A button is `<Button Caption ID Icon>` + `WindowState` + `Appearance` +
 `<Function ID="n"/>` + `<Action>` (Toggle/Flash) + `<Key>` (QLC+ spells them
 `Space`, `1`, `Q`, `.`) + `<Intensity Adjust="False">100</Intensity>`.
+
+**A solo frame stops functions, and it does not only listen to clicks.** A
+Toggle button emits `functionStarting` whenever its function starts - including
+when something else started it (`VCButton::slotFunctionRunning`) - and the
+enclosing `VCSoloFrame` answers by calling `notifyFunctionStarting` on every
+other widget in it, which stops their functions. So **a function and the
+functions it starts must never share a solo frame**: press AUTO, AUTO starts
+`Rueda Colores`, that button reports it, and the frame stops AUTO. Identical in
+the 4.x and 5.x sources.
+
+`<ExcludeMonitored>True</ExcludeMonitored>` narrows it to buttons somebody
+actually pressed, which stops a chaser's own steps from cutting each other, but
+it does **not** save a parent that was pressed by hand.
+
+Other widgets, as this repo's shows use them:
+
+- `<SoloFrame>` / `<Frame>`: `AllowChildren`, `AllowResize`, `ShowHeader`,
+  `ShowEnableButton`, `Collapsed`, `Disabled`, plus `Mixing` and
+  `ExcludeMonitored` on a solo frame.
+- Multipage: `<Multipage PagesNum CurrentPage/>` on the frame, optional
+  `<Next><Key>…` / `<Previous><Key>…`, `<PagesLoop>`, and each child carries
+  `Page="n"` (absent means page 0). The page arrows live in the frame header,
+  so `ShowHeader` has to be `True`.
+- `<XYPad>`: one `<Fixture ID Head>` per driven fixture, each with
+  `<Axis ID="X"|"Y" LowLimit HighLimit Reverse/>` where the limits are 0-1
+  fractions of the fixture's range, then `<Pan Position>` and `<Tilt Position>`.
+- `<SpeedDial>`: `<AbsoluteValue Minimum Maximum/>`, `<Time>` in ms, and one
+  `<Function FadeIn FadeOut Duration>funcID</Function>` per driven function -
+  those three attributes are *multiplier* enum values, not times
+  (`VCSpeedDialFunction::SpeedMultiplier`: 0 = none, 6 = x1).
+- `<AudioTriggers BarsNumber>`: one `<SpectrumBar Name Type MinThreshold
+  MaxThreshold Divisor Index WidgetID/>` per bound band. `Type` is
+  `AudioBar::BarType` - 1 DMX channels, 2 a function, 3 another VC widget.
+- `<Slider>`: `SliderMode` is `Level`, `Playback` or `Submaster` - **there is no
+  speed mode**. A "speed" slider is either a Level slider on a real DMX channel
+  or it does nothing at all.
 
 ## Version differences seen in this repo
 

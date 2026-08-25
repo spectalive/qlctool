@@ -31,7 +31,7 @@ def _generated_frames(root, frame_ids):
     wanted = {str(i) for i in frame_ids}
     return [
         child for child in _console_frame(root)
-        if localname(child) == "SoloFrame" and child.attrib.get("ID") in wanted
+        if localname(child) == "Frame" and child.attrib.get("ID") in wanted
     ]
 
 

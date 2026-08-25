@@ -24,6 +24,7 @@ def build_button(
     action: str = "Toggle",
     key: str | None = None,
     background: str = DEFAULT,
+    foreground: str = DEFAULT,
     intensity: int = 100,
 ) -> etree._Element:
     """Append a <Button> to parent and return it.
@@ -36,7 +37,7 @@ def build_button(
     button.set("Icon", "")
 
     build_window_state(button, x, y, width, height)
-    build_appearance(button, background=background)
+    build_appearance(button, background=background, foreground=foreground)
 
     function = etree.SubElement(button, f"{{{QLC_NS}}}Function")
     function.set("ID", str(function_id))
