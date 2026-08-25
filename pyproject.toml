@@ -18,5 +18,10 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 include = ["qlctool*"]
 
+[tool.setuptools.package-data]
+# The vendored QLC+ system definitions and QLC+'s own fixture schema are
+# data the library reads at runtime, not just test material.
+qlctool = ["library/*.xsd", "library/system/*.qxf"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -15,7 +15,7 @@ it knows which channel is red, dimmer, pan or gobo on each fixture, and writes
 changes surgically: a generated file differs from the original only by what it
 added.
 
-## Two safety nets
+## Three safety nets
 
 1. **Semantic round-trip.** Load then save never changes what QLC+ reads -
    verified against every production workspace in the test suite. A generator
@@ -23,6 +23,12 @@ added.
 2. **Headless validation.** The result is loaded in a real QLC+ and any
    complaint fails the run. See
    [qlcplus-environment.md](qlcplus-environment.md).
+3. **Schema validation of the fixture definitions.** Every `.qxf` in
+   `QLC+ Fixtures/` is checked against `fixture.xsd`, QLC+'s own schema,
+   vendored into the toolkit. QLC+ itself never refuses a definition it
+   dislikes - it drops the parts it cannot read and carries on - so without
+   this the damage is invisible. It found a `Weight="0"` that had been there
+   since the definition was written.
 
 On top of both: every generator is tested against the real shows, and the
 builders are proved by **rebuilding the show's own functions node for node** -
