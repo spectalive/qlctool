@@ -22,15 +22,14 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..capability import FixtureCapabilities
-from ..color_wheel_match import color_wheel_pairs
 from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..palette import PALETTE, PRIMARY_COLORS
-from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
 from .color_scene import color_scene_values
+from .wheel_color_values import wheel_color_values
 
 PATH = "Colores Rig"
 
@@ -84,7 +83,7 @@ def generate_unison_colors(
     scene_ids: list[int] = []
     for name in colors:
         values = color_scene_values(caps, PALETTE[name], fixture_ids=lit_ids)
-        values.update(_wheel_values(caps, name))
+        values.update(wheel_color_values(caps, name))
         if not values:
             continue
         scene_ids.append(_scene(workspace, f"Rig {name}", values))
@@ -149,37 +148,8 @@ def _contrast_values(
     lit_heads = [fid for fid in head_ids if fid not in excluded]
     values = color_scene_values(caps, PALETTE[heads_color], fixture_ids=lit_heads)
     values.update(color_scene_values(caps, PALETTE[rest_color], fixture_ids=rest_ids))
-    values.update(_wheel_values(caps, heads_color, fixture_ids=head_ids))
-    values.update(_wheel_values(caps, rest_color, fixture_ids=rest_ids))
-    return values
-
-
-def _wheel_values(
-    caps: list[FixtureCapabilities],
-    color_name: str,
-    fixture_ids: Sequence[int] | None = None,
-) -> dict[int, list[tuple[int, int]]]:
-    """The same colour on the fixtures whose colour is a wheel: the beams.
-
-    They have no RGB, so a colour scene never reached them and they sat on
-    whatever the beam colour animation last picked - the one part of the rig
-    that never matched the rest. Their dimmer and shutter come along, or the
-    colour is on a wheel nobody can see. A colour the wheel does not carry
-    leaves the fixture out rather than parking it on something else.
-    """
-    wanted = None if fixture_ids is None else set(fixture_ids)
-    values: dict[int, list[tuple[int, int]]] = {}
-    for capability in caps:
-        if wanted is not None and capability.fixture.fixture_id not in wanted:
-            continue
-        if capability.is_smoke:
-            continue
-        pairs = color_wheel_pairs(capability, color_name)
-        if not pairs:
-            continue
-        pairs += [(o, 255) for o in capability.offsets_for_role(roles.DIMMER)]
-        pairs += shutter_open_pairs(capability)
-        values[capability.fixture.fixture_id] = pairs
+    values.update(wheel_color_values(caps, heads_color, fixture_ids=head_ids))
+    values.update(wheel_color_values(caps, rest_color, fixture_ids=rest_ids))
     return values
 
 

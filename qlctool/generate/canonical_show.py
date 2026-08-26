@@ -35,11 +35,13 @@ from .live_console import generate_live_console
 from .matrix_effects import GeneratedMatrices, generate_matrix_effects
 from .moments import Moment, generate_moments
 from .movement_efx import generate_movement_efx, moving_head_ids
+from .pixel_base import generate_pixel_base
 from .smoke_auto import generate_smoke_auto
 from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .stage_plot_layout import apply_stage_plot
 from .strobe_effects import generate_strobe_effects
 from .unison_colors import generate_unison_colors
+from .wheel_color_values import wheel_color_values
 from .wheel_scenes import generate_wheel_scenes
 
 SHOW_PATH = "Show"
@@ -157,15 +159,19 @@ def build_canonical_show(
     # full white on the same fixtures, which is why nobody could say what the
     # difference was: there was none. What is left is a latched work light and a
     # held hit, and the names say which is which.
+    # `wheel_color` is what lights the beams: they have no RGB, so a colour
+    # scene alone skipped them entirely and "everything white" left the four
+    # 7R dark - not dimmed, never written to.
     master["Blanco Total"] = _flat_scene(
-        workspace, caps, "Blanco Total", (255, 255, 255)
+        workspace, caps, "Blanco Total", (255, 255, 255), wheel_color="Blanco"
     )
     master["Todo Negro"] = _blackout(workspace, caps)
     master["Flash 100%"] = _flat_scene(
-        workspace, caps, "Flash 100%", (255, 255, 255)
+        workspace, caps, "Flash 100%", (255, 255, 255), wheel_color="Blanco"
     )
     master["Flash 50%"] = _flat_scene(
-        workspace, caps, "Flash 50%", (128, 128, 128)
+        workspace, caps, "Flash 50%", (128, 128, 128), wheel_color="Blanco",
+        wheel_dimmer=128,
     )
 
     banks = generate_color_banks(workspace, library)
@@ -197,6 +203,18 @@ def build_canonical_show(
             pixel_chasers.append(generated.chaser_id)
             matrix_lit_ids |= set(group.fixture_ids)
     matrix_ids = [fid for m in matrices for fid in m.matrix_ids]
+
+    # A matrix writes RGB and nothing else, so the panels' master dimmer and
+    # shutter need somebody. That used to be the rig-wide wheel, until these
+    # fixtures were taken off it; without this they are coloured and dark.
+    pixel_base_id = generate_pixel_base(workspace, caps, sorted(matrix_lit_ids))
+    if pixel_base_id is not None:
+        master["Pixeles ON"] = pixel_base_id
+    # Everything the pixel groups need in one list: their intensity first, then
+    # the cycle that colours them. Wherever one goes, both go.
+    pixel_layer = [
+        fid for fid in (pixel_base_id, *pixel_chasers) if fid is not None
+    ]
 
     # Symmetry comes from reversing one side: with every head going the same way
     # round the room sweeps in parallel, and with house right backwards the
@@ -327,7 +345,7 @@ def build_canonical_show(
     # off whatever the rest of the rig was doing. The rig-wide scenes set that
     # wheel themselves now, and `Color Beam Animacion` stays as a button for
     # somebody at the laptop.
-    auto_members = [master["Rueda Colores"], master["Humo Auto"], *pixel_chasers]
+    auto_members = [master["Rueda Colores"], master["Humo Auto"], *pixel_layer]
     if "Ciclo Energia" in master:
         auto_members.append(master["Ciclo Energia"])
     else:
@@ -353,16 +371,16 @@ def build_canonical_show(
         # A lull: the colour bed and the pixels keep breathing, the heads stay
         # where they are.
         Moment("Momento Tranquilo", [
-            master["Rueda Colores"], *pixel_chasers, home_id, gobo_open_id,
+            master["Rueda Colores"], *pixel_layer, home_id, gobo_open_id,
         ]),
         Moment("Momento Fiesta", [
-            master["Rueda Colores"], *pixel_chasers,
+            master["Rueda Colores"], *pixel_layer,
             master["Movimientos Cabezas"], master["Gobo Animacion"],
         ]),
         # Everything the rig has, minus the strobe: a strobe belongs to a hit
         # somebody presses and lets go of, not to a state left running.
         Moment("Momento Locura", [
-            master["Rueda Colores"], *pixel_chasers,
+            master["Rueda Colores"], *pixel_layer,
             master.get("Movimientos Rapidos", master["Movimientos Cabezas"]),
             master["Gobo Animacion"],
             master.get("Prisma Animacion"),
@@ -444,9 +462,20 @@ def _is_pixel_group(caps, fixture_ids) -> bool:
     )
 
 
-def _flat_scene(workspace, caps, name, rgb) -> int:
-    """One colour on every colour-capable fixture; smoke machines excluded."""
+def _flat_scene(
+    workspace, caps, name, rgb, wheel_color: str | None = None,
+    wheel_dimmer: int = 255,
+) -> int:
+    """One colour on every colour-capable fixture; smoke machines excluded.
+
+    `wheel_color` names the palette colour to put the wheel-coloured fixtures
+    on - the beams, which have no RGB and are otherwise skipped.
+    """
     values = color_scene_values(caps, rgb)
+    if wheel_color is not None:
+        values.update(
+            wheel_color_values(caps, wheel_color, dimmer=wheel_dimmer)
+        )
     function_id = next_function_id(workspace.root)
     workspace.add_function(
         build_scene(function_id, name, values, path=SHOW_PATH)
