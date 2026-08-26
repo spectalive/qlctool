@@ -16,6 +16,7 @@ from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
 from ..fixture_group import fixture_groups
+from ..internal_program import internal_program, internal_program_off_pairs
 from ..functions.collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -26,6 +27,7 @@ from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
 from ..workspace import Workspace
 from .beat_tempo import BeatTiming, apply_beat_tempo
+from .builtin_effects import generate_builtin_effects
 from .color_banks import GeneratedBank, generate_color_banks
 from .color_scene import color_scene_values
 from .dimmer_chases import generate_dimmer_chases
@@ -181,6 +183,12 @@ def build_canonical_show(
 
     banks = generate_color_banks(workspace, library)
 
+    # The panels' own forty-two programmes. Nobody has watched them yet, so
+    # every one is generated and the cycle is slow enough to see them.
+    builtins = generate_builtin_effects(workspace, caps, label="Paneles")
+    if builtins.chaser_id is not None:
+        master["Efectos Paneles"] = builtins.chaser_id
+
     matrices: list[GeneratedMatrices] = []
     # AUTO runs a matrix cycle only where a group is really made of pixels. A
     # matrix paints its group's own colour, so a cycle over the heads and
@@ -196,6 +204,11 @@ def build_canonical_show(
     matrix_lit_ids: set[int] = set()
     subset = {name: PALETTE[name] for name in matrix_colors}
     for group in fixture_groups(workspace.root):
+        # A fixture with forty-two animations of its own does not need a
+        # four-cell chase drawn over it, and could not show one anyway: in its
+        # automatic mode it ignores the red, green and blue a matrix writes.
+        if _all_self_animating(caps, group.fixture_ids):
+            continue
         generated = generate_matrix_effects(
             workspace,
             group_id=group.group_id,
@@ -219,7 +232,8 @@ def build_canonical_show(
     # Everything the pixel groups need in one list: their intensity first, then
     # the cycle that colours them. Wherever one goes, both go.
     pixel_layer = [
-        fid for fid in (pixel_base_id, *pixel_chasers) if fid is not None
+        fid for fid in (pixel_base_id, *pixel_chasers, builtins.chaser_id)
+        if fid is not None
     ]
 
     # Symmetry comes from reversing one side: with every head going the same way
@@ -295,8 +309,12 @@ def build_canonical_show(
 
     # One wheel over the whole rig, not one per group: three Random wheels
     # never land on the same colour, and the heads and the PARs have to.
+    # Off the rig-wide wheel go the fixtures somebody else is colouring: the
+    # pixel groups their matrix paints, and the panels running their own
+    # programmes, which ignore red, green and blue while they do.
     unison = generate_unison_colors(
-        workspace, library, exclude_fixture_ids=sorted(matrix_lit_ids)
+        workspace, library,
+        exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
     )
     if unison.wheel_id is not None:
         master["Rueda Colores"] = unison.wheel_id
@@ -423,6 +441,7 @@ def build_canonical_show(
             beam_colors=beam_colors,
             prisms=prisms,
             mover_fixture_ids=moving_head_ids(workspace, library),
+            builtins=builtins,
             keys=KEYS,
             flash_functions=FLASH_FUNCTIONS,
             matrix_algorithms=[a for a in algorithms if a],
@@ -500,8 +519,13 @@ def _blackout(workspace, caps) -> int:
             for role in (roles.RED, roles.GREEN, roles.BLUE, roles.WHITE, roles.DIMMER)
             for offset in capability.offsets_for_role(role)
         ]
-        if offsets:
-            values[capability.fixture.fixture_id] = [(o, 0) for o in sorted(offsets)]
+        pairs = [(offset, 0) for offset in sorted(offsets)]
+        # And out of its own programme: a blackout that leaves a panel
+        # animating in the dark is a blackout that ends the moment somebody
+        # raises a dimmer.
+        pairs += internal_program_off_pairs(capability)
+        if pairs:
+            values[capability.fixture.fixture_id] = sorted(pairs)
     function_id = next_function_id(workspace.root)
     workspace.add_function(
         build_scene(function_id, "Todo Negro", values, path=SHOW_PATH)
@@ -515,3 +539,12 @@ def _collection(workspace: Workspace, name: str, members: list[int]) -> int:
         build_collection(function_id, name, members, path=SHOW_PATH)
     )
     return function_id
+
+
+def _all_self_animating(caps, fixture_ids) -> bool:
+    """True when every colour-capable member runs programmes of its own."""
+    wanted = set(fixture_ids)
+    members = [c for c in caps if c.fixture.fixture_id in wanted]
+    return bool(members) and all(
+        internal_program(capability) is not None for capability in members
+    )

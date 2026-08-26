@@ -74,7 +74,7 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     # Plus what the pixel groups need, which the wheel no longer gives them:
     # their own colour cycle, and the scene holding their intensity open.
     assert {functions[m].attrib["Name"] for m in members - named} == {
-        "Ciclo Matrices BarrasLed", "Pixeles ON",
+        "Ciclo Matrices BarrasLed", "Pixeles ON", "Ciclo Paneles",
     }
 
     cycle = functions[str(show.master_ids["Ciclo Energia"])]

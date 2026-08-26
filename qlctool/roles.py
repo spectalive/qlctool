@@ -26,6 +26,7 @@ COLOR_MACRO = "color_macro"
 GOBO = "gobo"
 PRISM = "prism"
 EFFECT = "effect"
+SPEED = "speed"
 
 _INTENSITY_PRESETS = {
     "IntensityRed": RED,
@@ -58,7 +59,7 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
         return STROBE
     if p == "ColorMacro":
         return COLOR_MACRO
-    if p.startswith("GoboMacro") or p.startswith("GoboWheel"):
+    if p.startswith(("GoboMacro", "GoboWheel")):
         return GOBO
     if p.startswith("PrismEffect"):
         return PRISM
@@ -72,6 +73,8 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
         return PRISM
     if g == "effect":
         return EFFECT
+    if g == "speed":
+        return SPEED
     if g == "colour" or "macro" in n and "color" in n or "colour" in n:
         return COLOR_MACRO
     if g == "shutter" or "strob" in n:

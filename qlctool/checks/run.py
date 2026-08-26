@@ -22,6 +22,7 @@ from .rule_collision import check_collisions
 from .rule_console import check_console
 from .rule_group_grid import check_group_grids
 from .rule_intensity import check_intensity
+from .rule_internal_program import check_internal_programs
 from .rule_smoke import check_smoke
 from .rule_strobe_in_cycle import check_strobe_in_cycle
 from .rule_unfinished_effect import check_unfinished_effects
@@ -47,6 +48,7 @@ def check_workspace(
     findings: list[Finding] = []
     findings += check_intensity(graph, groups, entries, states)
     findings += check_wheel_colour(graph, groups, entries)
+    findings += check_internal_programs(graph, groups, entries)
     findings += check_collisions(graph, groups, entries)
     findings += check_unfinished_effects(graph, groups, entries)
     findings += check_strobe_in_cycle(graph, groups, entries)

@@ -224,6 +224,7 @@ def generate_live_console(
     beam_colors,
     prisms,
     mover_fixture_ids: Sequence[int],
+    builtins,
     keys: dict[str, str],
     flash_functions: Sequence[str] = (),
     matrix_algorithms: Sequence[str] = (),
@@ -289,7 +290,7 @@ def generate_live_console(
     )
     _page_library(
         outer, button, frame, label, ids, console, names,
-        banks, matrices, matrix_algorithms,
+        banks, matrices, builtins, matrix_algorithms,
     )
 
     # Last, because a band presses a button and needs its widget ID.
@@ -496,7 +497,7 @@ def _page_manual(
 
 def _page_library(
     outer, button, frame, label, ids, console, names,
-    banks, matrices, matrix_algorithms,
+    banks, matrices, builtins, matrix_algorithms,
 ) -> None:
     """Page 3: the material the show is built from, not buttons for a set."""
     label(
@@ -566,6 +567,12 @@ def _page_library(
         (m.chaser_id, _after(names.get(m.chaser_id, ""), "Ciclo "))
         for m in matrices if m.chaser_id is not None
     ]
+    # The panels' own cycle belongs here and not among the effects it starts:
+    # a chaser sharing a solo frame with its own steps dies as it begins.
+    if builtins.chaser_id is not None:
+        entries.append((
+            builtins.chaser_id, _after(names.get(builtins.chaser_id, ""), "Ciclo "),
+        ))
     for index, (function_id, caption) in enumerate(entries):
         column, row = index % 5, index // 5
         button(
@@ -573,6 +580,22 @@ def _page_library(
             x=GAP + column * 122, y=HEADER + row * 50, w=116, h=44,
             font=SMALL_FONT,
         )
+
+    if builtins.scene_ids:
+        panels = frame(
+            outer,
+            "Paneles — sus 42 efectos propios, sin ver todavía",
+            MIDDLE_X, 580, MIDDLE_WIDTH, 244, page=PAGE_LIBRARY, solo=True,
+            font=TITLE_FONT,
+        )
+        for index, function_id in enumerate(builtins.scene_ids):
+            column, row = index % 12, index // 12
+            button(
+                panels, function_id,
+                _after(names.get(function_id, ""), " - "),
+                x=GAP + column * 51, y=HEADER + row * 52, w=47, h=46,
+                font=TINY_FONT,
+            )
 
     if matrices and matrices[0].matrix_ids:
         matrix_widget_id = ids.take()

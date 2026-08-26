@@ -12,6 +12,7 @@ from collections.abc import Sequence
 
 from .. import roles
 from ..capability import FixtureCapabilities
+from ..internal_program import internal_program_off_pairs
 from ..shutter_open import shutter_open_pairs
 
 RGB = tuple[int, int, int]
@@ -50,6 +51,10 @@ def color_scene_values(
             for offset in caps.offsets_for_role(roles.DIMMER):
                 pairs.append((offset, 255))
             pairs += shutter_open_pairs(caps)
+        # A fixture running its own programme ignores red, green and blue, and
+        # nothing resets that channel on its own: state the colour and the
+        # fixture is still animating, through a speech included.
+        pairs += internal_program_off_pairs(caps)
 
         result[caps.fixture.fixture_id] = pairs
 

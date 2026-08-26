@@ -69,9 +69,9 @@ def test_a_fixture_given_colour_with_nothing_opening_its_dimmer(library):
     workspace = _show()
     panels = {24, 25, 27, 28}
     for function in _functions(workspace).values():
-        # Every step of the rig-wide colour wheel: the solid colours and the
-        # movers-against-the-rest contrasts alike.
-        if function.attrib.get("Path") != "Colores Rig":
+        # The panels' own colour bank: they left the rig-wide wheel when they
+        # started running their own programmes under AUTO.
+        if function.attrib.get("Path") != "Colores PixelesLed":
             continue
         for value in findall_local(function, "FixtureVal"):
             if int(value.attrib["ID"]) not in panels or not value.text:
@@ -86,6 +86,51 @@ def test_a_fixture_given_colour_with_nothing_opening_its_dimmer(library):
     ]
     assert findings, "colour with the dimmer left at zero went unnoticed"
     assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_colour_stated_on_a_fixture_left_running_its_own_programme(library):
+    """2026-08-26: the panels have 42 built-in effects behind a mode channel.
+
+    While that channel is in its automatic position the fixture ignores the
+    red, green and blue it is sent, and nothing resets it on its own. A scene
+    that states a colour and does not also stop the programme works or does
+    not depending on what ran before it, which is the worst way to fail.
+    """
+    workspace = _show()
+    panels = {24, 25, 27, 28}
+    for function in _functions(workspace).values():
+        if function.attrib.get("Type") != "Scene":
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            if int(value.attrib["ID"]) not in panels or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            pairs.pop(5, None)  # channel 6 is the mode channel
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "programa interno"
+    ]
+    assert findings, "colour stated over a running programme went unnoticed"
+    assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_the_panels_own_effects_are_actually_used(library):
+    """The show drove four rather clever lights as four RGB cells for years."""
+    workspace = _show()
+    functions = _functions(workspace)
+    assert "Ciclo Paneles" in functions
+    effects = [n for n in functions if n.startswith("Paneles - ")]
+    assert len(effects) == 42
+
+    by_id = {f.attrib["ID"]: f for f in functions.values() if f.attrib.get("ID")}
+    auto = {
+        by_id[step.text].attrib["Name"]
+        for step in findall_local(functions["AUTO"], "Step")
+    }
+    assert "Ciclo Paneles" in auto, "the panels animate themselves, unattended"
 
 
 def test_a_group_whose_grid_does_not_match_the_lights_in_it(library):
