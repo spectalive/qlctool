@@ -411,7 +411,7 @@ def _page_manual(
         y += 128
 
     dimmers = frame(
-        outer, "Intensidad y strobo de fixture", LEFT_X, y, LEFT_WIDTH, 140,
+        outer, "Intensidad y strobo de fixture", LEFT_X, y, LEFT_WIDTH, 136,
         page=PAGE_MANUAL, font=TITLE_FONT,
     )
     for index, (name, caption) in enumerate((
@@ -559,7 +559,7 @@ def _page_library(
     cycles = frame(
         outer, "Ruedas y ciclos por grupo — no usar a la vez que la rueda "
         "general: se suman los colores",
-        MIDDLE_X, 376, MIDDLE_WIDTH, 140, page=PAGE_LIBRARY, font=TITLE_FONT,
+        MIDDLE_X, 376, MIDDLE_WIDTH, 190, page=PAGE_LIBRARY, font=TITLE_FONT,
     )
     entries = [(fid, _wheel_caption(names.get(fid, ""))) for fid in wheel_ids]
     entries += [

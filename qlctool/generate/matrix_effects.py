@@ -51,9 +51,11 @@ def generate_matrix_effects(
     The chaser holds each matrix for **one full pass of its own animation**,
     not for a flat interval: an RGBMatrix walks a fixed number of frames that
     depends on the script and the grid, and a shorter hold cuts the animation
-    off wherever it had got to. `chaser_algorithms` restricts which of them the
-    chaser steps at all - the matrices themselves are still generated, for the
-    console to reach by hand.
+    off wherever it had got to. An effect too long for `chaser_max_hold` is
+    sped up rather than cut short - a wave across fifteen PARs runs quicker,
+    but it still gets to the end. `chaser_algorithms` restricts which of them
+    the chaser steps at all; the matrices themselves are still generated, for
+    the console to reach by hand.
     """
     colors = palette if palette is not None else PALETTE
     group_name = _group_name(workspace, group_id)
@@ -66,6 +68,9 @@ def generate_matrix_effects(
     matrix_ids: list[int] = []
     steps: list[tuple[int, int]] = []  # (function id, hold for one full pass)
     for algorithm in algorithms:
+        frame_ms, pass_ms = _pace(
+            algorithm, width, height, duration, chaser_max_hold
+        )
         for color_name, rgb in colors.items():
             fid = next_function_id(workspace.root)
             label = "Solid" if algorithm is None else algorithm
@@ -77,17 +82,14 @@ def generate_matrix_effects(
                     mono_color=rgb,
                     group_id=group_id,
                     color_format=color_format,
-                    duration=duration,
+                    duration=frame_ms,
                     direction=direction,
                     path=path,
                 )
             )
             matrix_ids.append(fid)
             if algorithm in stepped:
-                pass_ms = duration * matrix_step_count(algorithm, width, height)
-                steps.append(
-                    (fid, min(chaser_max_hold, max(chaser_hold, pass_ms)))
-                )
+                steps.append((fid, max(chaser_hold, pass_ms)))
 
     chaser_id: int | None = None
     if make_chaser and steps:
@@ -103,6 +105,22 @@ def generate_matrix_effects(
         )
 
     return GeneratedMatrices(matrix_ids=matrix_ids, chaser_id=chaser_id)
+
+
+def _pace(
+    algorithm: str | None, width: int, height: int, duration: int, cap: int
+) -> tuple[int, int]:
+    """Frame length and full-pass length for one algorithm on one grid.
+
+    A pass longer than the cap is run faster rather than cut off: a wave across
+    fifteen PARs at the nominal frame rate would hold one colour for ten
+    seconds, and holding it is as wrong as cutting it.
+    """
+    count = matrix_step_count(algorithm, width, height)
+    frame_ms = duration
+    if duration * count > cap:
+        frame_ms = max(1, cap // count)
+    return frame_ms, frame_ms * count
 
 
 def _grid(workspace: Workspace, group_id: int) -> tuple[int, int]:

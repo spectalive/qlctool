@@ -33,8 +33,10 @@ from .library import FixtureLibrary
 from .patch_conflicts import patch_conflicts
 from .repatch.add import add_fixture
 from .repatch.address import set_fixture_address
+from .repatch.group_add import add_fixture_group
 from .repatch.group_head import add_group_head
 from .repatch.group_head_remove import remove_group_head
+from .repatch.group_reshape import reshape_group
 from .repatch.group_size import set_group_size
 from .repatch.remove import remove_fixture
 from .repatch.rename import rename_fixture
@@ -178,7 +180,8 @@ def cmd_patch(args: argparse.Namespace) -> int:
     ws = Workspace.load(src)
 
     edits = (args.add or args.set_address or args.rename or args.remove
-             or args.group_size or args.group_add or args.group_remove)
+             or args.group_size or args.group_add or args.group_remove
+             or args.group_new or args.group_reshape)
     if not edits:
         conflicts = patch_conflicts(ws.root)
         if not conflicts:
@@ -224,6 +227,12 @@ def cmd_patch(args: argparse.Namespace) -> int:
 
     # Grid before members: a cell outside the declared size is a head no effect
     # can reach, so add_group_head refuses it.
+    for spec in args.group_new or []:
+        name, size = spec.split("=", 1)
+        width, height = size.lower().split("x", 1)
+        new_id = add_fixture_group(ws.root, name, int(width), int(height))
+        print(f"fixture group {new_id} {name!r} created, {width}x{height}, empty")
+
     for spec in args.group_size or []:
         group, size = spec.split("=", 1)
         width, height = size.lower().split("x", 1)
@@ -241,6 +250,12 @@ def cmd_patch(args: argparse.Namespace) -> int:
         group, fixture = spec.split("=", 1)
         removed = remove_group_head(ws.root, int(group), int(fixture))
         print(f"group {group} lost {removed} head(s) of fixture {fixture}")
+
+    for spec in args.group_reshape or []:
+        group, size = spec.split("=", 1)
+        width, height = size.lower().split("x", 1)
+        reshape_group(ws.root, int(group), int(width), int(height))
+        print(f"group {group} re-laid into {width}x{height}, no holes")
 
     remaining = patch_conflicts(ws.root)
     for conflict in remaining:
@@ -479,6 +494,14 @@ def build_parser() -> argparse.ArgumentParser:
     p_patch.add_argument("--rename", action="append", metavar="ID=NAME")
     p_patch.add_argument("--remove", action="append", type=int, metavar="ID",
                          help="unpatch fixture ID and clear every reference")
+    p_patch.add_argument("--group-new", action="append", metavar="NAME=WxH",
+                         help="create an empty fixture group - two kinds of "
+                              "light in one group share one picture")
+    p_patch.add_argument("--group-reshape", action="append",
+                         metavar="GROUP=WxH",
+                         help="re-place every head in reading order into a "
+                              "grid with no holes; refuses a size that is not "
+                              "exactly the group's own")
     p_patch.add_argument("--group-size", action="append", metavar="GROUP=WxH",
                          help="resize a fixture group's grid; refuses a size "
                               "that would leave its own heads unreachable")

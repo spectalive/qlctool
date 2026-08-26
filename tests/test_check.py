@@ -59,25 +59,54 @@ def test_every_shipped_show_passes_every_check(name, library):
     assert not unexpected, "\n".join(str(f) for f in unexpected)
 
 
-def test_a_fixture_painted_by_a_matrix_and_lit_by_nothing(library):
+def test_a_fixture_given_colour_with_nothing_opening_its_dimmer(library):
     """2026-08-26: the panels were the right colour and off all night.
 
-    A matrix writes red, green and blue and never a master dimmer. The rig-wide
-    wheel used to open them by accident; excluding those fixtures from the
-    wheel took the accident away with it.
+    Reproduced by taking the master dimmer back out of the rig-wide colour
+    scenes for the four panels - which is the shape the bug had, whatever is
+    painting them: colour written, intensity left at zero.
     """
     workspace = _show()
-    functions = _functions(workspace)
-    base = functions["Pixeles ON"].attrib["ID"]
-    for name in ("AUTO", "Momento Tranquilo", "Momento Fiesta", "Momento Locura"):
-        holder = functions[name]
-        for step in findall_local(holder, "Step"):
-            if step.text == base:
-                holder.remove(step)
+    panels = {24, 25, 27, 28}
+    for function in _functions(workspace).values():
+        # Every step of the rig-wide colour wheel: the solid colours and the
+        # movers-against-the-rest contrasts alike.
+        if function.attrib.get("Path") != "Colores Rig":
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            if int(value.attrib["ID"]) not in panels or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            pairs.pop(0, None)  # channel 1 is the panel's master dimmer
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [f for f in check_workspace(workspace, library) if f.rule == "intensidad"]
-    assert findings, "removing the pixel groups' intensity went unnoticed"
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "intensidad"
+    ]
+    assert findings, "colour with the dimmer left at zero went unnoticed"
     assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_group_whose_grid_does_not_match_the_lights_in_it(library):
+    """2026-08-26: "la mitad de la barra led los pixeles leds estan apagados".
+
+    Four wall panels and two eight-segment bars shared one 8x3 grid, and the
+    panels only occupied four of its eight columns - so they were dark through
+    the first half of every Fill. The grid also had four empty cells, and
+    Cabezas declared 8x1 over twelve heads with four of them outside it.
+    """
+    workspace = _show()
+    group = next(
+        g for g in workspace.root.iter()
+        if g.tag.endswith("FixtureGroup") and g.attrib.get("ID") == "0"
+    )
+    size = find_local(group, "Size")
+    size.set("Y", str(int(size.attrib["Y"]) + 1))  # a row nothing lives in
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "rejilla"]
+    assert findings, "a grid with a row of empty cells went unnoticed"
+    assert "BarrasLed" in {f.function for f in findings}
 
 
 def test_a_look_that_never_writes_the_wheel_coloured_fixtures(library):

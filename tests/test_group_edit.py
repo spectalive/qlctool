@@ -42,15 +42,19 @@ def test_the_barrasled_grid_covers_every_head_it_holds(root):
         assert int(head.attrib["Y"]) < height
 
 
-def test_all_four_pixel_panels_are_in_the_group(root):
-    group = _group(root, 0)
-    members = {int(h.attrib["Fixture"]) for h in findall_local(group, "Head")}
-    assert {24, 25, 27, 28} <= members
+def test_all_four_pixel_panels_are_in_a_group_of_their_own(root):
+    """They left BarrasLed on 2026-08-26: sharing a grid with the two bars made
+    them four cells of the bars' picture, dark through half of every sweep."""
+    panels = _group(root, 3)
+    members = {int(h.attrib["Fixture"]) for h in findall_local(panels, "Head")}
+    assert members == {24, 25, 27, 28}
+    bars = {int(h.attrib["Fixture"]) for h in findall_local(_group(root, 0), "Head")}
+    assert not bars & {24, 25, 27, 28}
 
 
 def test_a_size_that_would_orphan_a_head_is_refused(root):
     with pytest.raises(ValueError, match="outside the grid"):
-        set_group_size(root, 0, 8, 2)
+        set_group_size(root, 0, 8, 1)  # BarrasLed is 8x2, two rows of bar
 
 
 def test_a_cell_outside_the_grid_is_refused(root):
@@ -76,13 +80,14 @@ def test_an_unknown_group_is_refused(root):
 def test_a_head_already_in_the_group_is_refused(root):
     """Fixture 12 is already in the PAR group. A head in two cells of one group
     is almost always a slip, not a mirror."""
+    set_group_size(root, 2, 8, 1)  # PAR is 7x1 and full; make room first
     with pytest.raises(ValueError, match="already in group"):
-        add_group_head(root, 2, 12, x=2, y=2)
+        add_group_head(root, 2, 12, x=7, y=0)
 
 
 def test_growing_the_grid_then_adding_works(root):
-    set_group_size(root, 2, 4, 3)  # the PAR group, 3x3 with 7 heads
-    add_group_head(root, 2, 24, x=3, y=0)
+    set_group_size(root, 2, 8, 1)  # the PAR group, 7x1 with 7 heads
+    add_group_head(root, 2, 24, x=7, y=0)
     group = _group(root, 2)
     placed = [
         h for h in findall_local(group, "Head")

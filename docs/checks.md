@@ -45,6 +45,7 @@ beneath it already did.
 | `colores pisados` | Two concurrent members of one Collection reaching the same colour, wheel or pan/tilt channel | Two energy levels pressed at once turned the room white (2026-08-25) |
 | `efecto cortado` | A chaser holding an RGBMatrix for less than one full pass of its own animation | The LED bar started a Fill and never finished it (2026-08-26) |
 | `estrobo en un ciclo` | A `Strobe` matrix sitting among the steps of a chaser instead of on its own button | The pixels blinked without anyone asking, half the time (2026-08-26) |
+| `rejilla` | A fixture group with empty cells in its grid, or heads outside it | Four panels sharing the bars' grid sat dark through half of every sweep (2026-08-26) |
 | `humo` | A scene that raises the smoke machine *and* touches other fixtures | A pump swept up in an "all dimmers up" scene runs until the tank is empty |
 | `consola` | A master sharing a solo frame with its own members; two buttons on one key; a widget past the edge of the screen; one function with two buttons | AUTO died the instant it was pressed |
 

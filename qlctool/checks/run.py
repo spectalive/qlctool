@@ -20,6 +20,7 @@ from .entry_points import entry_points
 from .finding import ERROR, Finding
 from .rule_collision import check_collisions
 from .rule_console import check_console
+from .rule_group_grid import check_group_grids
 from .rule_intensity import check_intensity
 from .rule_smoke import check_smoke
 from .rule_strobe_in_cycle import check_strobe_in_cycle
@@ -50,6 +51,7 @@ def check_workspace(
     findings += check_unfinished_effects(graph, groups, entries)
     findings += check_strobe_in_cycle(graph, groups, entries)
     findings += check_smoke(graph, groups, entries)
+    findings += check_group_grids(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))
     return sorted(findings, key=lambda f: (f.severity != ERROR, f.rule, f.function))
 
