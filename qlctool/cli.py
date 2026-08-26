@@ -9,6 +9,8 @@ import argparse
 from pathlib import Path
 
 from .capabilities_of import capabilities_of
+from .checks.entry_points import entry_points
+from .checks.run import check_workspace
 from .compose import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
@@ -358,6 +360,30 @@ def cmd_validate(args: argparse.Namespace) -> int:
     return 1
 
 
+def cmd_check(args: argparse.Namespace) -> int:
+    """Say what the room will do, which is not what QLC+ loading it says."""
+    workspace = Workspace.load(args.workspace)
+    findings = check_workspace(workspace, FixtureLibrary.load())
+    if not findings:
+        print(f"{args.workspace}: {len(entry_points(workspace.root))} botones "
+              "revisados, ningun problema")
+        return 0
+
+    by_rule: dict[str, list] = {}
+    for finding in findings:
+        by_rule.setdefault(finding.rule, []).append(finding)
+    print(f"{args.workspace}: {len(findings)} problema(s) en "
+          f"{len(by_rule)} regla(s)")
+    for rule, group in by_rule.items():
+        print(f"\n  {rule} ({len(group)}):")
+        for finding in group[: args.limit]:
+            where = f"  [{', '.join(finding.fixtures)}]" if finding.fixtures else ""
+            print(f"    {finding.function}: {finding.message}{where}")
+        if len(group) > args.limit:
+            print(f"    ... y {len(group) - args.limit} mas")
+    return 1
+
+
 def cmd_decompose(args: argparse.Namespace) -> int:
     decompose_workspace(args.workspace, args.out_dir)
     print(f"Decomposed {args.workspace} -> {args.out_dir}/ "
@@ -540,6 +566,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_val.add_argument("workspace")
     p_val.set_defaults(func=cmd_validate)
+
+    p_chk = sub.add_parser(
+        "check",
+        help="check what the show will actually do: fixtures coloured but "
+             "never lit, colour a fixture can only take on a wheel, two "
+             "programmes writing the same channel, and the console's own traps",
+    )
+    p_chk.add_argument("workspace")
+    p_chk.add_argument("--limit", type=int, default=20,
+                       help="findings printed per rule (default 20)")
+    p_chk.set_defaults(func=cmd_check)
 
     p_dec = sub.add_parser(
         "decompose", help="split a workspace into a git-diffable fragment tree"

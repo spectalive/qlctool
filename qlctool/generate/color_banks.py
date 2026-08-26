@@ -20,6 +20,7 @@ from ..palette import PALETTE, PRIMARY_COLORS
 from ..workspace import Workspace
 from .color_scene import color_scene_values
 from .split_color_scene import split_color_scene_values
+from .wheel_color_values import wheel_color_values
 
 # Enough pairs to keep a mix wheel interesting without hundreds of scenes.
 SPLIT_COLORS: tuple[str, ...] = (
@@ -72,6 +73,12 @@ def _bank_for_group(
         values = color_scene_values(
             caps, PALETTE[name], fixture_ids=group.fixture_ids
         )
+        # A group holding a BEAM 230W 7R holds a fixture with no red channel at
+        # all. Colouring the group and skipping it is how the beams sat on last
+        # night's colour while everything around them changed.
+        values.update(
+            wheel_color_values(caps, name, fixture_ids=group.fixture_ids)
+        )
         if not values:
             return None  # no colour-capable fixture in this group
         function_id = next_function_id(workspace.root)
@@ -88,6 +95,7 @@ def _bank_for_group(
             values = split_color_scene_values(
                 caps, PALETTE[first], PALETTE[second],
                 fixture_ids=group.fixture_ids,
+                color_names=(first, second),
             )
             if len(values) < 2:
                 break  # a single fixture cannot show a split
