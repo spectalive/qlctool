@@ -169,12 +169,15 @@ DIAL_LINES = (
 # Page 3 says what it is for, because a page of 180 buttons otherwise reads as
 # something somebody is supposed to be using.
 LIBRARY_LINES = (
-    "Esta página es el almacén: los 90 pares de colores y las 90 matrices",
-    "que el show usa por dentro. Están aquí para mirarlos y para construir",
-    "AUTO con ellos, no para pulsarlos con la sala llena.",
+    "Esta página es el almacén: las mezclas de dos colores, las matrices y",
+    "los 42 efectos propios de los paneles. Están aquí para mirarlos y para",
+    "construir AUTO con ellos, no para pulsarlos con la sala llena.",
     "· · ·",
-    "Las flechas de la cabecera de cada marco cambian de grupo: barras,",
-    "cabezas y PAR tienen cada uno sus 30 mezclas y sus 30 matrices.",
+    "Las flechas de la cabecera de cada marco cambian de grupo: cada grupo",
+    "de luces tiene sus propias mezclas y sus propias matrices.",
+    "· · ·",
+    "Los 42 efectos de los paneles no los ha visto nadie todavía: el aparato",
+    "solo los llama «Effect N». Pulsa, mira, y apunta cuáles valen la pena.",
     "· · ·",
     "Las ruedas por grupo pintan los mismos fixtures que la rueda general.",
     "Encender las dos a la vez suma los dos colores: sale blanco.",
