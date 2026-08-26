@@ -43,6 +43,8 @@ beneath it already did.
 | `intensidad` | A fixture given colour with nothing opening its dimmer, or with a labelled shutter left shut | The HYULIGHTS panels were the right colour and off all night (2026-08-26) |
 | `rueda de color` | A look that colours a fixture group and writes nothing to the members of that group whose colour is a wheel | `BLANCO TOTAL` left the four BEAM 230W 7R black (2026-08-26) |
 | `colores pisados` | Two concurrent members of one Collection reaching the same colour, wheel or pan/tilt channel | Two energy levels pressed at once turned the room white (2026-08-25) |
+| `efecto cortado` | A chaser holding an RGBMatrix for less than one full pass of its own animation | The LED bar started a Fill and never finished it (2026-08-26) |
+| `estrobo en un ciclo` | A `Strobe` matrix sitting among the steps of a chaser instead of on its own button | The pixels blinked without anyone asking, half the time (2026-08-26) |
 | `humo` | A scene that raises the smoke machine *and* touches other fixtures | A pump swept up in an "all dimmers up" scene runs until the tank is empty |
 | `consola` | A master sharing a solo frame with its own members; two buttons on one key; a widget past the edge of the screen; one function with two buttons | AUTO died the instant it was pressed |
 
@@ -64,6 +66,27 @@ Four bugs, in a show that had already been fixed twice by hand:
 The last one was a decision about the rig rather than the code, and it is the
 shape these findings tend to have: the check does not fix anything, it turns
 "a veces acertamos" into one question with a right answer.
+
+## How long an animation is
+
+An RGBMatrix does not run "for a while": it walks a fixed number of frames and
+starts again, and how many depends on the script **and on the grid it paints**.
+`matrix_step_count` carries those numbers, read out of `rgbMapStepCount` in
+QLC+ 5.2.2's own RGBScripts for the default properties the generator writes:
+
+| Script | Frames in one pass | On the 8x3 bars |
+| --- | --- | --- |
+| `Fill` | the grid's width | 8 |
+| `Waves` | width + tail, one less on an odd width | 12 |
+| `Even/Odd`, `Alternate`, `Opposite`, `Strobe` | 2 | 2 |
+| `One By One` | width x height | 24 |
+| Plain (solid colour) | 1 | 1 |
+| anything else | `max(width, height)` - too much time rather than too little | 8 |
+
+The cycle holds each matrix for one full pass at its own speed, floored at two
+seconds so a solid colour still gets a moment and capped at eight so nothing
+drags. A function on **Beats** tempo is skipped by the check: its numbers are
+thousandths of a beat, and how long a beat lasts is the room's business.
 
 ## The one shutter subtlety
 

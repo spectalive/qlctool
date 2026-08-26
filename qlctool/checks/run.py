@@ -22,6 +22,8 @@ from .rule_collision import check_collisions
 from .rule_console import check_console
 from .rule_intensity import check_intensity
 from .rule_smoke import check_smoke
+from .rule_strobe_in_cycle import check_strobe_in_cycle
+from .rule_unfinished_effect import check_unfinished_effects
 from .rule_wheel_colour import check_wheel_colour
 from .show_graph import build_show_graph, group_fixtures
 
@@ -45,6 +47,8 @@ def check_workspace(
     findings += check_intensity(graph, groups, entries, states)
     findings += check_wheel_colour(graph, groups, entries)
     findings += check_collisions(graph, groups, entries)
+    findings += check_unfinished_effects(graph, groups, entries)
+    findings += check_strobe_in_cycle(graph, groups, entries)
     findings += check_smoke(graph, groups, entries)
     findings += check_console(graph, root, canvas or _canvas(root))
     return sorted(findings, key=lambda f: (f.severity != ERROR, f.rule, f.function))

@@ -17,6 +17,7 @@ from ..functions.chaser import build_chaser
 from ..functions.rgbmatrix import build_rgbmatrix
 from ..ids import next_function_id
 from ..matrix_algorithms import SCRIPT_ALGORITHMS
+from ..matrix_step_count import matrix_step_count
 from ..palette import PALETTE
 from ..workspace import Workspace
 
@@ -37,6 +38,8 @@ def generate_matrix_effects(
     duration: int = 478,
     direction: str = "Forward",
     chaser_hold: int = 2000,
+    chaser_max_hold: int = 8000,
+    chaser_algorithms: Sequence[str | None] | None = None,
 ) -> GeneratedMatrices:
     """Create one RGBMatrix per (algorithm, colour) for one fixture group.
 
@@ -44,13 +47,24 @@ def generate_matrix_effects(
     (`Algorithm Type="Plain"`). group_id must be a group the workspace defines,
     or ALL_FIXTURES_GROUP - a matrix pointing at a group that does not exist
     loads but paints nothing, so it is rejected here.
+
+    The chaser holds each matrix for **one full pass of its own animation**,
+    not for a flat interval: an RGBMatrix walks a fixed number of frames that
+    depends on the script and the grid, and a shorter hold cuts the animation
+    off wherever it had got to. `chaser_algorithms` restricts which of them the
+    chaser steps at all - the matrices themselves are still generated, for the
+    console to reach by hand.
     """
     colors = palette if palette is not None else PALETTE
     group_name = _group_name(workspace, group_id)
     # Write the colour shape this show already uses (4.13 vs 4.14+).
     color_format = color_format_of(workspace.root)
 
+    width, height = _grid(workspace, group_id)
+    stepped = algorithms if chaser_algorithms is None else chaser_algorithms
+
     matrix_ids: list[int] = []
+    steps: list[tuple[int, int]] = []  # (function id, hold for one full pass)
     for algorithm in algorithms:
         for color_name, rgb in colors.items():
             fid = next_function_id(workspace.root)
@@ -69,21 +83,34 @@ def generate_matrix_effects(
                 )
             )
             matrix_ids.append(fid)
+            if algorithm in stepped:
+                pass_ms = duration * matrix_step_count(algorithm, width, height)
+                steps.append(
+                    (fid, min(chaser_max_hold, max(chaser_hold, pass_ms)))
+                )
 
     chaser_id: int | None = None
-    if make_chaser and matrix_ids:
+    if make_chaser and steps:
         chaser_id = next_function_id(workspace.root)
         workspace.add_function(
             build_chaser(
                 chaser_id,
                 f"Ciclo Matrices {group_name}",
-                matrix_ids,
-                hold=chaser_hold,
+                [fid for fid, _ in steps],
+                hold=[hold for _, hold in steps],
                 path=path,
             )
         )
 
     return GeneratedMatrices(matrix_ids=matrix_ids, chaser_id=chaser_id)
+
+
+def _grid(workspace: Workspace, group_id: int) -> tuple[int, int]:
+    """The grid a matrix paints, which is what decides how long a pass takes."""
+    for group in fixture_groups(workspace.root):
+        if group.group_id == group_id:
+            return group.width, group.height
+    return 1, 1
 
 
 def _group_name(workspace: Workspace, group_id: int) -> str:

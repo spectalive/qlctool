@@ -38,6 +38,9 @@ class ShowGraph:
     functions: dict[int, etree._Element] = field(default_factory=dict)
     members: dict[int, tuple[int, ...]] = field(default_factory=dict)
     capabilities: dict[int, FixtureCapabilities] = field(default_factory=dict)
+    # group id -> the (width, height) an RGBMatrix paints across. The grid, not
+    # the head count: how long one pass of a script takes depends on it.
+    grids: dict[int, tuple[int, int]] = field(default_factory=dict)
 
     def name(self, function_id: int) -> str:
         function = self.functions.get(function_id)
@@ -88,6 +91,10 @@ def build_show_graph(
         functions=functions,
         members=members,
         capabilities={c.fixture.fixture_id: c for c in capabilities},
+        grids={
+            group.group_id: (group.width, group.height)
+            for group in fixture_groups(root)
+        },
     )
 
 

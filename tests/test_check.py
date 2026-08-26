@@ -196,6 +196,50 @@ def test_two_buttons_on_the_same_key(library):
     assert any("tecla" in f.message for f in findings)
 
 
+def test_an_animation_the_chaser_cuts_off_before_it_finishes(library):
+    """2026-08-26: "empezamos una animacion pero nunca la terminamos".
+
+    A Fill over an eight-wide bar is eight frames; the cycle held each matrix
+    for four of them, so the bar lit half way, jumped to another colour, and
+    lit half way again, all night. Cutting an animation in its first half is
+    also half of why the pixels read as off.
+    """
+    workspace = _show()
+    cycle = _functions(workspace)["Ciclo Matrices BarrasLed"]
+    for step in findall_local(cycle, "Step"):
+        step.set("Hold", "2000")  # the flat interval it used to have
+
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "efecto cortado"
+    ]
+    assert findings, "a chaser cutting its own animations went unnoticed"
+    assert "Ciclo Matrices BarrasLed" in {f.function for f in findings}
+
+
+def test_a_strobe_left_running_as_one_step_of_a_cycle(library):
+    """2026-08-26: the other half of "los pixeles la mitad del tiempo apagados".
+
+    This show's own rule is that a strobe is for somebody standing at the
+    laptop. Six Strobe matrices sitting among the steps of a cycle that loops
+    all night is that rule broken quietly.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    cycle = functions["Ciclo Matrices BarrasLed"]
+    strobe = functions["BarrasLed - Strobe Rojo"]
+    step = cycle.makeelement(findall_local(cycle, "Step")[0].tag, {
+        "Number": "99", "FadeIn": "0", "Hold": "2000", "FadeOut": "0",
+    })
+    step.text = strobe.attrib["ID"]
+    cycle.append(step)
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "estrobo en un ciclo"
+    ]
+    assert findings, "a strobe among a cycle's steps went unnoticed"
+
+
 def test_the_beams_take_their_colour_from_one_group_only(library):
     """2026-08-26: `Rueda Mezcla` started two wheels that both coloured them.
 

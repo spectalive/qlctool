@@ -46,6 +46,11 @@ from .wheel_scenes import generate_wheel_scenes
 
 SHOW_PATH = "Show"
 MATRIX_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Strobe", "Waves", None)
+# What the unattended cycle steps. "Strobe" is generated but left out of it:
+# it is a strobe, and this show's own rule is that a strobe is a button
+# somebody holds, not one look in a rotation that loops all night. On the bars
+# it was a third of the reason the pixels read as "off half the time".
+CYCLE_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Waves", None)
 MATRIX_COLORS = ("Rojo", "Verde", "Azul", "Ambar", "Magenta", "Blanco")
 
 # Movement at the peak: the same shapes, twice round in the time of one.
@@ -195,6 +200,7 @@ def build_canonical_show(
             workspace,
             group_id=group.group_id,
             algorithms=algorithms,
+            chaser_algorithms=CYCLE_ALGORITHMS,
             palette=subset,
             path=f"Matrices {group.name}",
         )
