@@ -34,6 +34,7 @@ from .patch_conflicts import patch_conflicts
 from .repatch.add import add_fixture
 from .repatch.address import set_fixture_address
 from .repatch.group_head import add_group_head
+from .repatch.group_head_remove import remove_group_head
 from .repatch.group_size import set_group_size
 from .repatch.remove import remove_fixture
 from .repatch.rename import rename_fixture
@@ -177,7 +178,7 @@ def cmd_patch(args: argparse.Namespace) -> int:
     ws = Workspace.load(src)
 
     edits = (args.add or args.set_address or args.rename or args.remove
-             or args.group_size or args.group_add)
+             or args.group_size or args.group_add or args.group_remove)
     if not edits:
         conflicts = patch_conflicts(ws.root)
         if not conflicts:
@@ -235,6 +236,11 @@ def cmd_patch(args: argparse.Namespace) -> int:
         x, y = cell.split(",", 1)
         add_group_head(ws.root, int(group), int(fixture), int(x), int(y))
         print(f"group {group} cell ({x},{y}) now holds fixture {fixture}")
+
+    for spec in args.group_remove or []:
+        group, fixture = spec.split("=", 1)
+        removed = remove_group_head(ws.root, int(group), int(fixture))
+        print(f"group {group} lost {removed} head(s) of fixture {fixture}")
 
     remaining = patch_conflicts(ws.root)
     for conflict in remaining:
@@ -480,6 +486,11 @@ def build_parser() -> argparse.ArgumentParser:
                          metavar="GROUP=FIXTURE@X,Y",
                          help="put a fixture's head in a group cell - without "
                               "it a fixture gets no colour bank and no matrix")
+    p_patch.add_argument("--group-remove", action="append",
+                         metavar="GROUP=FIXTURE",
+                         help="take a fixture out of a group - it then gets no "
+                              "colour bank and no matrix from that group, and "
+                              "the cells it held stay empty")
     p_patch.add_argument("--out", help="output file (default: <name>-generado.qxw)")
     p_patch.add_argument("--validate", action="store_true",
                        help="load the result in headless QLC+ and fail on "

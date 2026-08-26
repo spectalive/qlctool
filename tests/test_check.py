@@ -16,6 +16,7 @@ from pathlib import Path
 import pytest
 
 from qlctool.checks.run import check_workspace
+from qlctool.fixture_group import fixture_groups
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
@@ -24,15 +25,9 @@ REPO = Path(__file__).resolve().parents[3]
 SHOWS = ("Vibra.qxw", "Vibra-beats.qxw", "Vibra-split.qxw")
 BEAMS = (20, 21, 22, 23)
 
-# The one finding the shipped shows still carry, kept here rather than hidden
-# so it stays uncomfortable. The four BEAM 230W 7R are members of both the
-# BarrasLed group (where they are grid filler for the matrices) and the Cabezas
-# group, so both groups' mix wheels colour them and `Rueda Mezcla` starts the
-# two together. The fix is a decision about the rig, not about the code:
-# see ~/p/TODO.md, "Vibra Eventos (DMX / lighting)".
-KNOWN = {
-    ("colores pisados", "Rueda Mezcla"),
-}
+# Findings the shipped shows are allowed to carry. Empty, and meant to stay
+# that way: an entry here is a known-broken button somebody will press.
+KNOWN: set[tuple[str, str]] = set()
 
 
 @pytest.fixture(scope="module")
@@ -199,6 +194,22 @@ def test_two_buttons_on_the_same_key(library):
 
     findings = [f for f in check_workspace(workspace, library) if f.rule == "consola"]
     assert any("tecla" in f.message for f in findings)
+
+
+def test_the_beams_take_their_colour_from_one_group_only(library):
+    """2026-08-26: `Rueda Mezcla` started two wheels that both coloured them.
+
+    The four 7R were in the BarrasLed group purely so its third row existed for
+    the matrices - and a matrix does nothing on a fixture with no RGB anyway.
+    Being in the group also put them in its colour bank, so the bars' mix wheel
+    and the heads' mix wheel wrote their colour wheel at the same time.
+    """
+    workspace = _show()
+    groups = {
+        group.name: group for group in fixture_groups(workspace.root)
+    }
+    assert not set(BEAMS) & set(groups["BarrasLed"].fixture_ids)
+    assert set(BEAMS) <= set(groups["Cabezas"].fixture_ids)
 
 
 def test_a_smoke_machine_swept_into_somebody_elses_scene(library):

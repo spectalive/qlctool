@@ -5,6 +5,12 @@ group whose `<Size>` is smaller than its own contents has heads that no effect
 can ever reach. That is exactly what "BarrasLed" was: 8x2 declared over three
 rows of heads, which left row 2 - the beams and the pixel panels - dark through
 every matrix in the show.
+
+The beams are no longer in that group (2026-08-26). Putting them there to fill
+the grid also put them in the group's colour bank, so the bars' mix wheel and
+the heads' mix wheel both drove their colour wheel - and a matrix does nothing
+on a fixture with no RGB anyway. Their cells are simply empty now: see
+`group_head_remove`.
 """
 
 from lxml import etree

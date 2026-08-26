@@ -50,6 +50,21 @@ Dimmer and shutter collisions are **not** reported. QLC+ mixes intensity HTP on
 purpose, and the whole design - a colour bed underneath, a level on top -
 depends on two functions being able to ask for brightness at once.
 
+## What it found on its first run
+
+Four bugs, in a show that had already been fixed twice by hand:
+
+- every per-group colour bank and every two-colour mix skipped the beams, so
+  "the heads are red" left four of them on last night's colour;
+- `Rueda Mezcla` did the same across the whole rig;
+- every matrix button relied on a dimmer that nothing was opening;
+- and once the banks were fixed, the beams turned out to be in two fixture
+  groups at once, so two mix wheels wrote their colour wheel together.
+
+The last one was a decision about the rig rather than the code, and it is the
+shape these findings tend to have: the check does not fix anything, it turns
+"a veces acertamos" into one question with a right answer.
+
 ## The one shutter subtlety
 
 Whether a fixture is open depends on where its shutter *is*, not on whether
