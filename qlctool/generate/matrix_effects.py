@@ -16,7 +16,7 @@ from ..fixture_group import fixture_groups
 from ..functions.chaser import build_chaser
 from ..functions.rgbmatrix import build_rgbmatrix
 from ..ids import next_function_id
-from ..matrix_algorithms import SCRIPT_ALGORITHMS
+from ..matrix_algorithms import SCRIPT_ALGORITHMS, CuratedScript
 from ..matrix_step_count import matrix_step_count
 from ..palette import PALETTE
 from ..workspace import Workspace
@@ -40,6 +40,7 @@ def generate_matrix_effects(
     chaser_hold: int = 2000,
     chaser_max_hold: int = 8000,
     chaser_algorithms: Sequence[str | None] | None = None,
+    curated: Sequence[CuratedScript] = (),
 ) -> GeneratedMatrices:
     """Create one RGBMatrix per (algorithm, colour) for one fixture group.
 
@@ -56,6 +57,12 @@ def generate_matrix_effects(
     but it still gets to the end. `chaser_algorithms` restricts which of them
     the chaser steps at all; the matrices themselves are still generated, for
     the console to reach by hand.
+
+    `curated` is a different shape: one hand-tuned matrix per entry, with its
+    own properties and its own one or two colours (`matrix_algorithms.
+    CuratedScript`), rather than a cross-product over `colors`. Every entry is
+    always stepped into the chaser - there is no separate restriction for
+    these, they were chosen one at a time already.
     """
     colors = palette if palette is not None else PALETTE
     group_name = _group_name(workspace, group_id)
@@ -90,6 +97,29 @@ def generate_matrix_effects(
             matrix_ids.append(fid)
             if algorithm in stepped:
                 steps.append((fid, max(chaser_hold, pass_ms)))
+
+    for entry in curated:
+        frame_ms, pass_ms = _pace(
+            entry.algorithm, width, height, duration, chaser_max_hold
+        )
+        fid = next_function_id(workspace.root)
+        workspace.add_function(
+            build_rgbmatrix(
+                fid,
+                f"{group_name} - {entry.algorithm} {'/'.join(entry.colors)}",
+                algorithm=entry.algorithm,
+                mono_color=PALETTE[entry.colors[0]],
+                end_color=PALETTE[entry.colors[1]] if len(entry.colors) > 1 else None,
+                group_id=group_id,
+                color_format=color_format,
+                duration=frame_ms,
+                direction=direction,
+                path=path,
+                properties=entry.properties,
+            )
+        )
+        matrix_ids.append(fid)
+        steps.append((fid, max(chaser_hold, pass_ms)))
 
     chaser_id: int | None = None
     if make_chaser and steps:

@@ -10,7 +10,7 @@ pages that answer three different questions:
 2. **Manual** - the layers, for somebody who does know the rig and wants to
    drive it while AUTO runs.
 3. **Libreria** - the raw material the show is built from: 90 two-colour mixes,
-   90 matrix effects, 20 gobos, 17 beam colours. Nobody hunts through these
+   100 matrix effects, 20 gobos, 17 beam colours. Nobody hunts through these
    mid-set; they are here to be borrowed, not pressed.
 
 Two rules decide the frames.

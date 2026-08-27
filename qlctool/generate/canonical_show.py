@@ -21,6 +21,7 @@ from ..functions.collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..matrix_algorithms import CURATED_MATRICES
 from ..monitor_positions import house_right_fixture_ids
 from ..palette import PALETTE, PRIMARY_COLORS
 from ..skeleton import strip_to_skeleton
@@ -223,6 +224,7 @@ def build_canonical_show(
             chaser_algorithms=CYCLE_ALGORITHMS,
             palette=subset,
             path=f"Matrices {group.name}",
+            curated=[c for c in CURATED_MATRICES if c.group_name == group.name],
         )
         matrices.append(generated)
         if generated.chaser_id is not None and _is_pixel_group(caps, group.fixture_ids):

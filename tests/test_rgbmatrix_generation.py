@@ -17,6 +17,9 @@ from qlctool.fixture_group import fixture_groups
 from qlctool.functions.rgbmatrix import build_rgbmatrix
 from qlctool.generate.matrix_effects import generate_matrix_effects
 from qlctool.ids import existing_function_ids
+from qlctool.matrix_algorithms import CuratedScript
+from qlctool.matrix_step_count import matrix_step_count
+from qlctool.palette import PALETTE
 from qlctool.workspace import Workspace
 from qlctool.xmlsemantics import first_difference
 from qlctool.xmlutil import find_local, findall_local, iter_local
@@ -200,3 +203,125 @@ def test_generation_matches_the_target_show_colour_shape(tmp_path):
     assert [c.attrib["Index"] for c in colors] == ["0"]
     assert colors[0].text == str(argb_from_rgb((255, 0, 0)))
     assert find_local(generated, "MonoColor") is None
+
+
+def test_curated_scripts_carry_their_own_properties(tmp_path):
+    """A one-off curated recipe writes its <Property> values, not the script
+    default - matching matrix_algorithms.CuratedScript exactly."""
+    ws = Workspace.load(SHOW)
+    curated = [
+        CuratedScript(
+            "BarrasLed", "Sine Wave", {"orientation": "Horizontal"},
+            ("Rojo", "Azul"),
+        ),
+    ]
+    result = generate_matrix_effects(
+        ws, group_id=0, algorithms=[], palette={}, curated=curated,
+        make_chaser=False,
+    )
+    out = tmp_path / "out.qxw"
+    ws.save(out)
+    reloaded = Workspace.load(out).root
+
+    matrix = next(
+        m for m in _matrices(reloaded) if int(m.attrib["ID"]) == result.matrix_ids[0]
+    )
+    assert matrix.attrib["Name"] == "BarrasLed - Sine Wave Rojo/Azul"
+    properties = {
+        p.attrib["Name"]: p.attrib["Value"] for p in findall_local(matrix, "Property")
+    }
+    assert properties == {"orientation": "Horizontal"}
+
+
+def test_curated_two_colour_entries_use_indexed_colour_slots(tmp_path):
+    """A curated script with two colours writes Color Index 0 and 1 (or
+    MonoColor/EndColor in the legacy shape) - never a single mono colour."""
+    ws = Workspace.load(ALL_FORMATS[2])  # saved by QLC+ 5.2.2: INDEXED
+    curated = [
+        CuratedScript(
+            "BarrasLed", "Marquee", {"marquee": "Forward", "marqueeCount": "3"},
+            ("Amarillo", "Azul"),
+        ),
+    ]
+    result = generate_matrix_effects(
+        ws, group_id=0, algorithms=[], palette={}, curated=curated,
+        make_chaser=False,
+    )
+    out = tmp_path / "out.qxw"
+    ws.save(out)
+    reloaded = Workspace.load(out).root
+
+    matrix = next(
+        m for m in _matrices(reloaded) if int(m.attrib["ID"]) == result.matrix_ids[0]
+    )
+    colors = [c for c in matrix if c.tag.endswith("}Color")]
+    assert [c.attrib["Index"] for c in colors] == ["0", "1"]
+    assert colors[0].text == str(argb_from_rgb(PALETTE["Amarillo"]))
+    assert colors[1].text == str(argb_from_rgb(PALETTE["Azul"]))
+
+
+def test_curated_single_colour_entry_writes_no_end_color(tmp_path):
+    """A curated script with one colour (e.g. Noise, acceptColors 1) never
+    gets a second one - build_rgbmatrix must not invent an EndColor."""
+    ws = Workspace.load(SHOW)
+    curated = [CuratedScript("Cabezas", "Noise", {"noisePercentage": "Medium"}, ("Rosa",))]
+    result = generate_matrix_effects(
+        ws, group_id=1, algorithms=[], palette={}, curated=curated,
+        make_chaser=False,
+    )
+    out = tmp_path / "out.qxw"
+    ws.save(out)
+    reloaded = Workspace.load(out).root
+
+    matrix = next(
+        m for m in _matrices(reloaded) if int(m.attrib["ID"]) == result.matrix_ids[0]
+    )
+    assert find_local(matrix, "EndColor") is None
+    assert _text_of(matrix, "MonoColor") == str(argb_from_rgb(PALETTE["Rosa"]))
+
+
+def test_curated_scripts_are_stepped_for_a_full_pass_each():
+    """Every curated entry lands in the chaser, held for its own full pass -
+    the same rule `rule_unfinished_effect` enforces on everything else."""
+    ws = Workspace.load(SHOW)
+    curated = [
+        CuratedScript("BarrasLed", "Sine Wave", {"orientation": "Horizontal"}, ("Rojo", "Azul")),
+        CuratedScript("BarrasLed", "Plasma", {"presetIndex": "Rainbow"}, ("Blanco",)),
+    ]
+    result = generate_matrix_effects(
+        ws, group_id=0, algorithms=[], palette={}, curated=curated,
+    )
+    assert result.chaser_id is not None
+    chaser = next(
+        f for f in iter_local(ws.root, "Function")
+        if f.attrib.get("ID") == str(result.chaser_id)
+    )
+    steps = {
+        int(s.text): int(s.attrib["Hold"]) for s in findall_local(chaser, "Step")
+    }
+    assert set(steps) == set(result.matrix_ids)
+    width, height = 8, 2  # BarrasLed
+    matrices = {int(m.attrib["ID"]): m for m in _matrices(ws.root)}
+    for matrix_id, algorithm in zip(result.matrix_ids, ("Sine Wave", "Plasma")):
+        # Read back the frame length the generator actually wrote: `_pace`
+        # speeds up a pass longer than chaser_max_hold rather than cutting it
+        # off, so "needed" is frame_ms * count for *that* frame_ms, not the
+        # nominal 478 ms every other matrix uses.
+        frame_ms = int(find_local(matrices[matrix_id], "Speed").attrib["Duration"])
+        needed = frame_ms * matrix_step_count(algorithm, width, height)
+        assert steps[matrix_id] >= needed, algorithm
+
+
+def test_curated_matrices_are_filtered_into_their_own_group_only():
+    """canonical_show wires each CuratedScript to the group it names - a
+    Cabezas recipe never lands on BarrasLed or PAR, and vice versa."""
+    from qlctool.matrix_algorithms import CURATED_MATRICES
+
+    by_group: dict[str, list[str]] = {}
+    for entry in CURATED_MATRICES:
+        by_group.setdefault(entry.group_name, []).append(entry.algorithm)
+    assert by_group == {
+        "BarrasLed": ["Sine Wave", "Lines", "Marquee", "Plasma"],
+        "Cabezas": ["One By One", "Fill Unfill", "Noise"],
+        "PAR": ["Circular", "3D Starfield", "Gradient"],
+    }

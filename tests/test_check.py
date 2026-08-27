@@ -225,6 +225,33 @@ def test_two_colour_clocks_ticking_in_one_room_state(library):
     assert any("LED Bar" in fixture for f in findings for fixture in f.fixtures)
 
 
+def test_the_curated_matrix_library_never_reaches_a_wheel_step(library):
+    """Task 5's nine curated scripts (Sine Wave, Marquee, Gradient, ...) are
+    library material and per-group Ciclo Matrices only - `Rueda Colores`'s
+    steps still start only the single-wheel-colour matrices
+    `generate_pixel_wheel_matrices` builds (rule `relojes de color`'s whole
+    premise: a wheel step states exactly one colour clock)."""
+    workspace = _show()
+    curated_names = {
+        "Sine Wave", "Lines", "Marquee", "Plasma",
+        "One By One", "Fill Unfill", "Noise",
+        "Circular", "3D Starfield", "Gradient",
+    }
+    wheel_matrices = [
+        function
+        for function in _functions(workspace).values()
+        if function.attrib.get("Type") == "RGBMatrix"
+        and function.attrib.get("Path") == "Colores Rig"
+    ]
+    assert wheel_matrices, "no wheel-step matrices found to check"
+    for matrix in wheel_matrices:
+        algorithm = find_local(matrix, "Algorithm")
+        name = None if algorithm.attrib["Type"] == "Plain" else (algorithm.text or "").strip()
+        assert name not in curated_names, (
+            f"{matrix.attrib.get('Name')} is a curated matrix on a wheel step"
+        )
+
+
 def test_a_dimmer_at_full_behind_a_shut_shutter(library):
     """A BEAM 230W 7R at DMX 0 on its shutter is shut, dimmer or no dimmer."""
     workspace = _show()
