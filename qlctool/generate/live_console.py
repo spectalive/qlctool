@@ -497,10 +497,13 @@ def _page_manual(
         outer, "Figura que dibujan las cabezas", MIDDLE_X, 68, MIDDLE_WIDTH, 80,
         page=PAGE_MANUAL, solo=True, font=TITLE_FONT,
     )
+    # One button per shape, sized to fit however many the rig now draws - a
+    # step of 88/width of 82 is what this comes out to for the original 7.
+    shape_step = (MIDDLE_WIDTH - GAP) // len(movement.efx_ids)
     for index, function_id in enumerate(movement.efx_ids):
         button(
             shapes, function_id, _after(names.get(function_id, ""), "Movimiento "),
-            x=GAP + index * 88, y=HEADER, w=82, h=44,
+            x=GAP + index * shape_step, y=HEADER, w=shape_step - GAP, h=44,
         )
 
     # The beams' wheels are a live decision, not library material: somebody

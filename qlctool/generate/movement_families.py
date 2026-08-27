@@ -38,13 +38,21 @@ from .movement_efx import generate_movement_efx
 
 @dataclass(frozen=True)
 class Envelope:
-    """One family's movement at one tempo: shapes, size, and speed."""
+    """One family's movement at one tempo: shapes, size, and speed.
+
+    propagation and rotation apply to every algorithm in the envelope;
+    rotation_by_algorithm overrides rotation per shape, for an envelope that
+    mixes shapes wanting different angles (e.g. Diamond and Leaf).
+    """
 
     algorithms: tuple[str, ...]
     duration: int
     width: int
     height: int
     hold: int
+    propagation: str = "Parallel"
+    rotation: int = 0
+    rotation_by_algorithm: dict[str, int] = field(default_factory=dict)
 
 
 # Sizes and durations are QLC+ raw EFX values, not degrees: a starting
@@ -57,6 +65,30 @@ WASH = Envelope(
 BEAM = Envelope(("Circle", "Eight", "Line"), 11000, 55, 38, 10000)
 WASH_FAST = Envelope(WASH.algorithms, 5000, 80, 50, 6000)
 BEAM_FAST = Envelope(BEAM.algorithms, 5000, 70, 40, 6000)
+
+# The rig's 23 EFX all ran Rotation=0 and Parallel propagation, every shape an
+# axis-aligned clone of the others (Codex A6). A Serial EFX delays each
+# fixture by loopDuration/(fixtureCount+1)*serialNumber (efxfixture.cpp:
+# 380-386) for a cascade down the row at no extra cost; Line's smooth cosine
+# path (efx.cpp calculatePoint) makes that a wave rather than a stutter.
+#
+# Diamond and Leaf were wash-only shapes before this task - the beam family
+# was deliberately scoped down to Circle/Eight/Line (2026-08-27 review, see
+# module docstring). There is no pre-existing beam Diamond or Leaf to rotate,
+# so these are new beam figures rather than a rotation on old ones; sharing
+# BEAM's duration/width/height keeps them tuned for the same optics.
+BEAM_ROTATED_SHAPES = Envelope(
+    ("Diamond", "Leaf"), BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
+    rotation_by_algorithm={"Diamond": 90, "Leaf": 45},
+)
+WASH_CASCADE = Envelope(
+    ("Line",), WASH_SLOW.duration, WASH_SLOW.width, WASH_SLOW.height,
+    WASH_SLOW.hold, propagation="Serial",
+)
+BEAM_CASCADE = Envelope(
+    BEAM.algorithms[:1], BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
+    propagation="Serial", rotation=45,
+)
 
 
 @dataclass(frozen=True)
@@ -92,7 +124,7 @@ def generate_movement_families(
     if not washes and not beams:
         raise ValueError("no fixture in this workspace has both pan and tilt")
 
-    def _family(ids, envelope, name, prefix, path, make_chaser=True):
+    def _family(ids, envelope, name, prefix, path, make_chaser=True, names=None):
         if not ids:
             return None
         return generate_movement_efx(
@@ -101,13 +133,22 @@ def generate_movement_families(
             duration=envelope.duration, width=envelope.width,
             height=envelope.height, chaser_hold=envelope.hold,
             chaser_run_order="Random", chaser_name=name, label_prefix=prefix,
-            mirrored_ids=mirrored_ids,
+            mirrored_ids=mirrored_ids, propagation_mode=envelope.propagation,
+            rotation=envelope.rotation,
+            rotation_by_algorithm=envelope.rotation_by_algorithm or None,
+            names=names,
         )
 
-    slow = _family(washes, WASH_SLOW, "Movimientos Suaves", "Suave",
-                   "Movimiento Suave")
+    slow = _family(washes, WASH_SLOW, None, "Suave", "Movimiento Suave",
+                   make_chaser=False)
+    ola_suave = _family(washes, WASH_CASCADE, None, "Ola", "Movimiento Suave",
+                        make_chaser=False, names={"Line": "Ola Suave"})
     wash = _family(washes, WASH, "Movimientos Washes", "Wash", "Movimiento")
     beam = _family(beams, BEAM, None, "Beam", "Movimiento", make_chaser=False)
+    beam_shapes = _family(beams, BEAM_ROTATED_SHAPES, None, "Beam",
+                          "Movimiento", make_chaser=False)
+    cascada_beams = _family(beams, BEAM_CASCADE, None, "Cascada", "Movimiento",
+                            make_chaser=False, names={"Circle": "Cascada Beams"})
     fast_wash = _family(washes, WASH_FAST, "Rapidos Washes", "Wash Rapido",
                         "Movimiento Rapido")
     fast_beam = _family(beams, BEAM_FAST, "Rapidos Beams", "Beam Rapido",
@@ -115,21 +156,45 @@ def generate_movement_families(
 
     fan_id = generate_fan_position(workspace, library, beams)
 
+    # The Suave family gets its own cascade wave beside the two plain shapes.
+    slow_id: int | None = None
+    if slow is not None:
+        steps = list(slow.efx_ids) + (
+            list(ola_suave.efx_ids) if ola_suave is not None else []
+        )
+        slow_id = next_function_id(workspace.root)
+        workspace.add_function(build_chaser(
+            slow_id, "Movimientos Suaves", steps, hold=WASH_SLOW.hold,
+            run_order="Random", path="Movimiento Suave",
+        ))
+
     # The beams' rotation carries the fan as a step of its own: a rest the
     # chaser lands on, not a separate button somebody has to remember.
     beam_id: int | None = None
     if beam is not None:
-        steps = list(beam.efx_ids) + ([fan_id] if fan_id is not None else [])
+        steps = (
+            list(beam.efx_ids)
+            + (list(beam_shapes.efx_ids) if beam_shapes is not None else [])
+            + (list(cascada_beams.efx_ids) if cascada_beams is not None else [])
+            + ([fan_id] if fan_id is not None else [])
+        )
         beam_id = next_function_id(workspace.root)
         workspace.add_function(build_chaser(
             beam_id, "Movimientos Beams", steps, hold=BEAM.hold,
             run_order="Random", path="Movimiento",
         ))
 
-    # One entry per shape for the console, whichever families draw it.
+    # One entry per shape for the console, whichever families draw it. Diamond
+    # and Leaf merge the beam versions into the same button the wash versions
+    # already have; Ola Suave and Cascada Beams get a button of their own -
+    # their algorithm (Line, Circle) already names an existing button, and
+    # merging into it would fire a wash's plain Line whenever the cascade is
+    # pressed, or vice versa.
     efx_ids: list[int] = []
     by_shape: dict[str, list[int]] = {}
-    for generated, envelope in ((wash, WASH), (beam, BEAM)):
+    for generated, envelope in (
+        (wash, WASH), (beam, BEAM), (beam_shapes, BEAM_ROTATED_SHAPES),
+    ):
         if generated is None:
             continue
         for shape, efx in zip(envelope.algorithms, generated.efx_ids):
@@ -144,6 +209,10 @@ def generate_movement_families(
             members, path="Movimiento",
         ))
         efx_ids.append(collection_id)
+    if ola_suave is not None:
+        efx_ids.append(ola_suave.efx_ids[0])
+    if cascada_beams is not None:
+        efx_ids.append(cascada_beams.efx_ids[0])
 
     def _both(name, first, second, path):
         members = [m for m in (first, second) if m is not None]
@@ -159,7 +228,7 @@ def generate_movement_families(
     fast_wash_id = fast_wash.chaser_id if fast_wash is not None else None
     fast_beam_id = fast_beam.chaser_id if fast_beam is not None else None
     return GeneratedFamilies(
-        slow_id=slow.chaser_id if slow is not None else None,
+        slow_id=slow_id,
         wash_id=wash_id,
         beam_id=beam_id,
         fast_wash_id=fast_wash_id,

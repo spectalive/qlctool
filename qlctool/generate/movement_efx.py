@@ -63,6 +63,9 @@ def generate_movement_efx(
     chaser_name: str = "Movimientos Cabezas",
     label_prefix: str = "Movimiento",
     mirrored_ids: Sequence[int] = (),
+    rotation: int = 0,
+    rotation_by_algorithm: dict[str, int] | None = None,
+    names: dict[str, str] | None = None,
 ) -> GeneratedMovements:
     """Create one EFX per algorithm over the moving heads.
 
@@ -74,6 +77,12 @@ def generate_movement_efx(
     one side reversed the pairs open and close together. Pass the fixtures on
     one side of the centre line - `house_right_fixture_ids` reads them off the
     plot.
+
+    rotation applies to every algorithm in the batch; rotation_by_algorithm
+    overrides it for individual shapes (e.g. Diamond and Leaf wanting
+    different angles in the same call). names overrides the generated
+    "{label_prefix} {label}" name for an algorithm with a literal one, for a
+    figure whose name does not fit that pattern (e.g. "Ola Suave").
     """
     ids = list(fixture_ids) if fixture_ids is not None else moving_head_ids(
         workspace, library
@@ -113,6 +122,8 @@ def generate_movement_efx(
 
     for algorithm in algorithms:
         label = SPANISH_LABELS.get(algorithm, algorithm)
+        name = (names or {}).get(algorithm, f"{label_prefix} {label}")
+        shape_rotation = (rotation_by_algorithm or {}).get(algorithm, rotation)
         shape_parts: list[int] = []
         for paired, fixture_ids in parts:
             fid = next_function_id(workspace.root)
@@ -120,10 +131,11 @@ def generate_movement_efx(
             workspace.add_function(
                 build_efx(
                     fid,
-                    f"{label_prefix} {label}{suffix}",
+                    f"{name}{suffix}",
                     _members(fixture_ids),
                     algorithm=algorithm,
                     propagation_mode=propagation_mode,
+                    rotation=shape_rotation,
                     duration=duration,
                     width=width,
                     height=height,
@@ -140,9 +152,7 @@ def generate_movement_efx(
         part_ids.extend(shape_parts)
         collection_id = next_function_id(workspace.root)
         workspace.add_function(
-            build_collection(
-                collection_id, f"{label_prefix} {label}", shape_parts, path=path
-            )
+            build_collection(collection_id, name, shape_parts, path=path)
         )
         efx_ids.append(collection_id)
 
