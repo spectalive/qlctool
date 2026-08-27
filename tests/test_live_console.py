@@ -295,6 +295,21 @@ def test_a_colour_button_says_which_colour_it_is(console):
         assert len(set(captions)) == 10, group
 
 
+def test_the_console_can_reach_the_grand_master(console):
+    """The workspace's <GrandMaster> had no widget bound to it at all.
+
+    QLC+ moves that value through a Slider whose SliderMode is GrandMaster,
+    not the usual Level/Adjust/Submaster - confirmed to load on the installed
+    5.2.2 binary (docs/qlc5-verification.md, probe-gm-slider.qxw).
+    """
+    _, frame = console
+    sliders = [w for w, _, _ in _walk(frame) if localname(w) == "Slider"]
+    assert len(sliders) == 1
+    mode = find_local(sliders[0], "SliderMode")
+    assert mode.text == "GrandMaster"
+    assert mode.attrib["ValueDisplayStyle"] == "Exact"
+
+
 def test_a_mix_button_is_not_ambiguous(console):
     """Azul and Amarillo both start with an A: one letter labelled six pairs
     of different buttons identically."""

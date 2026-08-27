@@ -41,6 +41,7 @@ from ..vc.audio_triggers import build_audio_triggers
 from ..vc.button import BLACKOUT, FLASH, STOP_ALL, TOGGLE, build_button
 from ..vc.console_font import console_font
 from ..vc.frame import build_frame
+from ..vc.grand_master_slider import build_grand_master_slider
 from ..vc.label import build_label
 from ..vc.matrix_control import build_matrix_control
 from ..vc.speed_dial import build_speed_dial
@@ -166,6 +167,19 @@ DIAL_LINES = (
     "y del movimiento de las cabezas.",
     "Solo se nota con la rueda o el",
     "movimiento encendidos.",
+)
+
+# The workspace's own GrandMaster - it scales every output - had no widget
+# bound to it at all. Sits directly below "Intensidad y strobo de fixture",
+# the only other widget that touches every fixture instead of one function.
+GRAND_MASTER_WIDTH = 90
+GRAND_MASTER_HEIGHT = 140
+GRAND_MASTER_LINES = (
+    "MASTER GENERAL — corta la",
+    "intensidad de toda la sala",
+    "sobre lo que ya esté",
+    "encendido. Arriba = normal",
+    "(255), abajo = todo apagado.",
 )
 
 # Page 3 says what it is for, because a page of 180 buttons otherwise reads as
@@ -442,6 +456,22 @@ def _page_manual(
         master_button(
             dimmers, name, caption,
             GAP + column * 258, HEADER + row * 52, 252, 46,
+        )
+
+    grand_master_y = y + 136 + GAP
+    grand_master_id = ids.take()
+    grand_master = build_grand_master_slider(
+        outer, grand_master_id, "Master General",
+        LEFT_X, grand_master_y, GRAND_MASTER_WIDTH, GRAND_MASTER_HEIGHT,
+    )
+    _on_page(grand_master, PAGE_MANUAL)
+    console.widget_ids.append(grand_master_id)
+    for index, line in enumerate(GRAND_MASTER_LINES):
+        label(
+            outer, line,
+            LEFT_X + GRAND_MASTER_WIDTH + GAP, grand_master_y + index * 22,
+            LEFT_WIDTH - GRAND_MASTER_WIDTH - GAP, 20,
+            page=PAGE_MANUAL, font=HELP_FONT,
         )
 
     shapes = frame(
