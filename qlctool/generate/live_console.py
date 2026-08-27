@@ -477,14 +477,16 @@ def _page_manual(
     )
     for index, (name, caption) in enumerate((
         ("Dimmer Chase", "Barrido de intensidad · V"),
+        ("Dimmer Chase 2", "Barrido inverso · B"),
         ("Dimmer PingPong", "Pares / impares · Z"),
+        ("Dimmer Secuencia", "Rotación de barridos · M"),
         ("Strobo ON", "Strobo del fixture · S"),
         ("Strobo OFF", "Parar ese strobo · D"),
     )):
-        column, row = index % 2, index // 2
+        column, row = index % 3, index // 3
         master_button(
             dimmers, name, caption,
-            GAP + column * 258, HEADER + row * 52, 252, 46,
+            GAP + column * 170, HEADER + row * 52, 166, 46,
         )
 
     # Below the audio triggers (they end at y=440): the left column is full,

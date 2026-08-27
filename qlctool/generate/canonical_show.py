@@ -33,6 +33,7 @@ from .builtin_effects import generate_builtin_effects
 from .color_banks import GeneratedBank, generate_color_banks
 from .color_scene import color_scene_values
 from .dimmer_chases import generate_dimmer_chases
+from .dimmer_sequence import generate_dimmer_sequence
 from .dimmerless_intensity import generate_dimmerless_intensity
 from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
@@ -122,8 +123,10 @@ KEYS = {
     "Prisma Animacion": "P",
     "Humo Auto": "J",
     # Live-only looks. The hand-built console has these on V/B/C/Z; C is
-    # already Color Beam here, so they move rather than clash.
+    # already Color Beam here, so the sequence moves rather than clashes.
     "Dimmer Chase": "V",
+    "Dimmer Chase 2": "B",
+    "Dimmer Secuencia": "M",
     "Dimmer PingPong": "Z",
     "Strobo ON": "S",
     "Strobo OFF": "D",
@@ -347,6 +350,7 @@ def build_canonical_show(
 
     dimmers = generate_dimmer_chases(workspace, library)
     master["Dimmer Chase"] = dimmers.chase_id
+    master["Dimmer Chase 2"] = dimmers.chase2_id
     master["Dimmer PingPong"] = dimmers.pingpong_id
 
     # The burst chasers step the *plain* white and black - not "Flash 100%",
@@ -401,6 +405,13 @@ def build_canonical_show(
         master["Intensidad Ambiente"] = intensity.ambient_id
     if intensity.full_id is not None:
         master["Intensidad Total"] = intensity.full_id
+        master["Dimmer Secuencia"] = generate_dimmer_sequence(
+            workspace,
+            breath_id=intensity.full_id,
+            program_ids=[
+                dimmers.chase_id, dimmers.pingpong_id, dimmers.chase2_id,
+            ],
+        )
     # Peak hands its dimmers to the chase instead: `Intensidad Total` beside it
     # would hold every one of them at 255, and HTP means the chase's dips could
     # never win - cosmetic forever (TODO.md, 2026-08-27). The fixtures the chase

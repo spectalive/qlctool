@@ -12,6 +12,8 @@ import pytest
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.generate.dimmer_chases import MODE_DIMMER, generate_dimmer_chases
+from qlctool.generate.dimmer_sequence import generate_dimmer_sequence
+from qlctool.generate.energy_intensity import generate_energy_intensity
 from qlctool.generate.strobe_effects import generate_strobe_effects
 from qlctool.library import FixtureLibrary
 from qlctool.shutter_open import shutter_open_pairs
@@ -48,6 +50,54 @@ def test_the_dimmer_chase_is_an_efx_in_dimmer_mode(library):
     # Spread, not stacked: every fixture peaking together is just a dimmer.
     offsets = {find_local(f, "StartOffset").text for f in fixtures}
     assert len(offsets) == len(fixtures)
+
+
+def test_the_second_dimmer_chase_runs_backwards(library):
+    """2026-08-27: DeluxeEventos2 had two sweeps on V and B, but the
+    generated show kept only the forward one. The second sweep must reverse
+    every fixture rather than merely rename the same effect.
+    """
+    ws = Workspace.load(SHOW)
+    generated = generate_dimmer_chases(ws, library)
+    functions = _functions(ws.root)
+
+    forward = findall_local(functions[generated.chase_id], "Fixture")
+    backward = findall_local(functions[generated.chase2_id], "Fixture")
+    assert forward and backward
+    assert all(find_local(f, "Direction").text == "Forward" for f in forward)
+    assert all(find_local(f, "Direction").text == "Backward" for f in backward)
+
+
+def test_the_dimmer_sequence_breathes_between_all_three_programs(library):
+    """2026-08-27: the generated show lost DeluxeEventos2's steady breath
+    between its three dimmer sweeps. Restore the exact six-step rotation so
+    every moving programme returns to full light before the next one.
+    """
+    ws = Workspace.load(SHOW)
+    dimmers = generate_dimmer_chases(ws, library)
+    intensity = generate_energy_intensity(
+        ws, capabilities_of(ws.root, library)
+    )
+    assert intensity.full_id is not None
+    programs = [dimmers.chase_id, dimmers.pingpong_id, dimmers.chase2_id]
+
+    sequence_id = generate_dimmer_sequence(
+        ws, breath_id=intensity.full_id, program_ids=programs
+    )
+    chaser = _functions(ws.root)[sequence_id]
+    steps = findall_local(chaser, "Step")
+
+    assert chaser.attrib["Name"] == "Dimmer Secuencia"
+    assert find_local(chaser, "RunOrder").text == "Loop"
+    assert find_local(chaser, "SpeedModes").attrib["Duration"] == "PerStep"
+    assert [int(step.text) for step in steps] == [
+        intensity.full_id, dimmers.chase_id,
+        intensity.full_id, dimmers.pingpong_id,
+        intensity.full_id, dimmers.chase2_id,
+    ]
+    assert [int(step.attrib["Hold"]) for step in steps] == [
+        20000, 10000, 20000, 10000, 20000, 10000,
+    ]
 
 
 def test_the_dimmer_chase_leaves_the_smoke_machines_alone(library):
@@ -213,4 +263,3 @@ def test_a_channel_that_labels_its_open_position_no_strobe_is_not_read_as_one(li
     chosen = strobe_range(ranges)
 
     assert chosen is not None and chosen.minimum == 1
-

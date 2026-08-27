@@ -1,11 +1,12 @@
-"""Dimmer looks: a running chase and an odd/even ping-pong across the rig.
+"""Dimmer looks: two running chases and an odd/even ping-pong across the rig.
 
 Colour is not the only thing that moves in the hand-built show - it also drives
 *intensity* on its own, which is what keeps a static colour from reading as a
-flood. Two shapes cover what it does:
+flood. Two shapes cover what it does, with the running shape available both
+ways:
 
 - a chase, an EFX in Dimmer mode with the fixtures spread around the path, so
-  the intensity peak runs along the rig;
+  the intensity peak can run forward or backward along the rig;
 - a ping-pong, two scenes that light the odd fixtures then the even ones,
   stepped by a fast chaser.
 
@@ -35,8 +36,10 @@ MODE_DIMMER = 1  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 @dataclass(frozen=True)
 class GeneratedDimmers:
     # One function per look, whatever it took to build it: when the dimmable
-    # fixtures had to be split, chase_id is a Collection over the halves.
+    # fixtures had to be split, each chase ID is a Collection over its own
+    # halves, and part_ids carries the parts for both directions.
     chase_id: int
+    chase2_id: int
     pingpong_id: int
     scene_ids: list[int]
     part_ids: list[int] = field(default_factory=list)
@@ -49,7 +52,7 @@ def generate_dimmer_chases(
     pingpong_hold: int = 400,
     path: str = "Dimmers",
 ) -> GeneratedDimmers:
-    """Build the dimmer chase and the ping-pong; raises when nothing dims."""
+    """Build both dimmer chases and the ping-pong; raise when nothing dims."""
     dimmable = [
         capability
         for capability in capabilities_of(workspace.root, library)
@@ -69,7 +72,7 @@ def generate_dimmer_chases(
     parts = [members for members in groups.values() if members]
     split = len(parts) > 1
 
-    def _efx(name: str, members: list, folder: str) -> int:
+    def _efx(name: str, members: list, folder: str, direction: str) -> int:
         function_id = next_function_id(workspace.root)
         workspace.add_function(
             build_efx(
@@ -79,6 +82,7 @@ def generate_dimmer_chases(
                     EFXFixture(
                         fixture_id=capability.fixture.fixture_id,
                         mode=MODE_DIMMER,
+                        direction=direction,
                         start_offset=offset,
                     )
                     for capability, offset in zip(
@@ -92,20 +96,29 @@ def generate_dimmer_chases(
         return function_id
 
     part_ids: list[int] = []
-    if not split:
-        chase_id = _efx("Dimmer Chase", parts[0], path)
-    else:
+
+    def _chase(name: str, direction: str) -> int:
+        if not split:
+            return _efx(name, parts[0], path, direction)
+
+        chase_part_ids: list[int] = []
         for members in parts:
             paired = keeps_16bit(members[0], INTENSITY_PAIRS)
-            part_ids.append(_efx(
-                f"Dimmer Chase ({'16 bit' if paired else '8 bit'})",
+            chase_part_ids.append(_efx(
+                f"{name} ({'16 bit' if paired else '8 bit'})",
                 members,
                 f"{path}/Partes",
+                direction,
             ))
-        chase_id = next_function_id(workspace.root)
+        part_ids.extend(chase_part_ids)
+        function_id = next_function_id(workspace.root)
         workspace.add_function(
-            build_collection(chase_id, "Dimmer Chase", part_ids, path=path)
+            build_collection(function_id, name, chase_part_ids, path=path)
         )
+        return function_id
+
+    chase_id = _chase("Dimmer Chase", "Forward")
+    chase2_id = _chase("Dimmer Chase 2", "Backward")
 
     scene_ids = [
         _half_lit(workspace, dimmable, remainder, path) for remainder in (0, 1)
@@ -121,8 +134,8 @@ def generate_dimmer_chases(
         )
     )
     return GeneratedDimmers(
-        chase_id=chase_id, pingpong_id=pingpong_id, scene_ids=scene_ids,
-        part_ids=part_ids,
+        chase_id=chase_id, chase2_id=chase2_id, pingpong_id=pingpong_id,
+        scene_ids=scene_ids, part_ids=part_ids,
     )
 
 
