@@ -268,6 +268,7 @@ def generate_live_console(
     keys: dict[str, str],
     flash_functions: Sequence[str] = (),
     matrix_algorithms: Sequence[str] = (),
+    beam_subsets=None,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame."""
     root_frame = _root_frame(workspace.root)
@@ -330,10 +331,11 @@ def generate_live_console(
     _page_manual(
         outer, button, master_button, frame, label, ids, console, names,
         banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
+        beam_subsets,
     )
     _page_library(
         outer, button, frame, label, ids, console, names,
-        banks, matrices, builtins, matrix_algorithms,
+        banks, matrices, builtins, matrix_algorithms, beam_subsets,
     )
 
     # Last, because a band presses a button and needs its widget ID.
@@ -428,6 +430,7 @@ def _page_show(outer, button, master_button, frame, label) -> None:
 def _page_manual(
     outer, button, master_button, frame, label, ids, console, names,
     banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
+    beam_subsets,
 ) -> None:
     """Page 2: the layers, for somebody who wants to drive it by hand."""
     label(
@@ -555,7 +558,10 @@ def _page_manual(
         MIDDLE_X, 314, MIDDLE_WIDTH, 150, PAGE_MANUAL, columns=12,
     )
     _wheel_frame(
-        outer, button, frame, names, prisms.scene_ids,
+        outer, button, frame, names,
+        prisms.scene_ids + (
+            beam_subsets.prism_scene_ids if beam_subsets is not None else []
+        ),
         "Prisma — solo los 4 BEAM", "Prisma - ",
         MIDDLE_X, 472, MIDDLE_WIDTH, 92, PAGE_MANUAL, columns=12,
     )
@@ -598,7 +604,7 @@ def _page_manual(
 
 def _page_library(
     outer, button, frame, label, ids, console, names,
-    banks, matrices, builtins, matrix_algorithms,
+    banks, matrices, builtins, matrix_algorithms, beam_subsets,
 ) -> None:
     """Page 3: the material the show is built from, not buttons for a set."""
     label(
@@ -630,6 +636,13 @@ def _page_library(
                 ),
                 page,
             )
+
+    _wheel_frame(
+        outer, button, frame, names,
+        beam_subsets.multicolor_scene_ids if beam_subsets is not None else [],
+        "MultiColor BEAM — dos colores a la vez en el haz", "MultiColor - ",
+        LEFT_X, 306, LEFT_WIDTH, 92, PAGE_LIBRARY, columns=8,
+    )
 
     matrix_frame = frame(
         outer, "Matrices — dibujos sobre las barras y los paneles",
@@ -734,7 +747,7 @@ def _page_library(
 
     for index, line in enumerate(LIBRARY_LINES):
         label(
-            outer, line, LEFT_X, 310 + index * 26, LEFT_WIDTH, 24,
+            outer, line, LEFT_X, 410 + index * 26, LEFT_WIDTH, 24,
             page=PAGE_LIBRARY, font=HELP_FONT,
         )
 

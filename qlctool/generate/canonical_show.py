@@ -16,10 +16,10 @@ from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
 from ..fixture_group import fixture_groups
-from ..internal_program import internal_program, internal_program_off_pairs
 from ..functions.collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..matrix_algorithms import CURATED_MATRICES
 from ..monitor_positions import house_right_fixture_ids
@@ -28,6 +28,7 @@ from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
 from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
+from .beam_subsets import generate_beam_subsets
 from .beat_tempo import BeatTiming, apply_beat_tempo
 from .builtin_effects import generate_builtin_effects
 from .color_banks import GeneratedBank, generate_color_banks
@@ -37,6 +38,7 @@ from .dimmer_sequence import generate_dimmer_sequence
 from .dimmerless_intensity import generate_dimmerless_intensity
 from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
+from .flash_color import generate_flash_color
 from .home_position import generate_home_position
 from .live_console import generate_live_console
 from .matrix_effects import GeneratedMatrices, generate_matrix_effects
@@ -45,7 +47,6 @@ from .movement_efx import moving_head_ids
 from .movement_families import generate_movement_families
 from .pixel_base import generate_pixel_base
 from .pixel_wheel_matrices import generate_pixel_wheel_matrices
-from .flash_color import generate_flash_color
 from .smoke_auto import generate_smoke_auto
 from .stage_aim import generate_stage_aim
 from .stage_layout import generate_stage_layout, unplaced_fixtures
@@ -340,6 +341,7 @@ def build_canonical_show(
         workspace, library, role=roles.PRISM, label="Prisma", run_order="Loop",
         hold=8000, path="Prisma", dimmer_full=False,
     )
+    beam_subsets = generate_beam_subsets(workspace, library)
     if prisms.chaser_id is not None:
         master["Prisma Animacion"] = prisms.chaser_id
 
@@ -553,6 +555,7 @@ def build_canonical_show(
             keys=KEYS,
             flash_functions=FLASH_FUNCTIONS,
             matrix_algorithms=[a for a in algorithms if a],
+            beam_subsets=beam_subsets,
         )
         button_ids = console.button_ids
 
@@ -564,7 +567,7 @@ def build_canonical_show(
         matrix_ids=matrix_ids,
         efx_ids=movement.efx_ids,
         gobo_ids=gobos.scene_ids + beam_colors.scene_ids,
-        prism_ids=prisms.scene_ids,
+        prism_ids=prisms.scene_ids + beam_subsets.prism_scene_ids,
         master_ids=master,
         button_ids=button_ids,
         function_count=len(functions),
