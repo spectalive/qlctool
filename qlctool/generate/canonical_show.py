@@ -32,6 +32,7 @@ from .builtin_effects import generate_builtin_effects
 from .color_banks import GeneratedBank, generate_color_banks
 from .color_scene import color_scene_values
 from .dimmer_chases import generate_dimmer_chases
+from .dimmerless_intensity import generate_dimmerless_intensity
 from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
 from .home_position import generate_home_position
@@ -359,6 +360,17 @@ def build_canonical_show(
         master["Intensidad Ambiente"] = intensity.ambient_id
     if intensity.full_id is not None:
         master["Intensidad Total"] = intensity.full_id
+    # Peak hands its dimmers to the chase instead: `Intensidad Total` beside it
+    # would hold every one of them at 255, and HTP means the chase's dips could
+    # never win - cosmetic forever (TODO.md, 2026-08-27). The fixtures the chase
+    # cannot reach - no dimmer role, like the MiN Wash - still need an owner or
+    # they go dark the moment the level's old flat scene leaves; this is theirs.
+    peak_static = generate_dimmerless_intensity(
+        workspace, caps,
+        exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
+    )
+    if peak_static is not None:
+        master["Intensidad Peak"] = peak_static
     energy = generate_energy_levels(
         workspace,
         levels=[
@@ -390,7 +402,7 @@ def build_canonical_show(
                     movement.fast_wash_id, movement.fast_beam_id,
                     master["Gobo Animacion"],
                     master.get("Prisma Animacion"),
-                    master["Dimmer Chase"], intensity.full_id,
+                    master["Dimmer Chase"], peak_static,
                 ) if fid is not None],
                 PEAK_HOLD,
             ),

@@ -105,9 +105,15 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     assert {"Movimientos Washes", "Movimientos Beams",
             "Gobo Animacion", "Intensidad Total"} <= party
 
+    # 2026-08-27: Peak is the one level `Dimmer Chase` actually owns. Before
+    # this, `Intensidad Total` ran beside it here too and held every dimmer at
+    # 255 - HTP means the chase's dips could never win, so it was cosmetic
+    # (TODO.md). `Intensidad Peak` is its replacement: a static owner only for
+    # the fixtures the chase cannot reach at all (no dimmer role).
     peak = _names("Nivel Peak")
     assert {"Rapidos Washes", "Rapidos Beams", "Dimmer Chase",
-            "Intensidad Total"} <= peak
+            "Intensidad Peak"} <= peak
+    assert "Intensidad Total" not in peak
     # Held back for the peak, not running all night.
     assert "Dimmer Chase" not in party
     # And the colour wheel is one wheel over the whole rig, not one per group:
@@ -115,6 +121,86 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     wheel = functions[str(show.master_ids["Rueda Colores"])]
     assert wheel.attrib["Type"] == "Chaser"
     assert wheel.attrib["Name"] == "Rueda Colores"
+
+
+def test_dimmer_chase_owns_peak_and_nothing_is_left_dark(built):
+    """2026-08-27: `Dimmer Chase` in Peak was cosmetically dead.
+
+    `intensidad tapada` cannot see this shape at all: it only counts Scene and
+    Sequence writes (`rule_shadowed_intensity._dimmer_writes`), on purpose - an
+    EFX's actual output is not one knowable value, so the rule treats it as "we
+    don't know" rather than risk a false alarm. Sharpening it to count a
+    Dimmer-mode EFX as a writer would also light up `Momento Locura`, which
+    pairs the very same chase with `Intensidad Total` on purpose and stays that
+    way (out of scope here) - a real false positive on a shipped workspace, not
+    a missed catch. So the proof lives here instead, at the generator level:
+    reproduce the old shape and show analytically that a static 255 - the DMX
+    ceiling - shadows every channel the chase could ever write to, then confirm
+    the generated Peak no longer pairs them, and that the fixtures the chase
+    cannot dim (the MiN Wash - no dimmer role, its light lives behind a shutter
+    range) still have an owner so they are not left dark. The full check gate
+    over the real shipped shows is `test_check.py`'s.
+    """
+    from qlctool.checks.driven_channels import driven_channels
+
+    show, out = built
+    root = Workspace.load(out).root
+    functions = _functions(root)
+    library = FixtureLibrary.load()
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(root, library)}
+
+    chase = functions[str(show.master_ids["Dimmer Chase"])]
+    chase_writes = driven_channels(chase, caps, {})
+    assert chase_writes, "the chase should drive at least one fixture's dimmer"
+
+    total = functions[str(show.master_ids["Intensidad Total"])]
+    total_writes = driven_channels(total, caps, {})
+    # RED, reproduced: for every fixture `Intensidad Total` actually reaches
+    # (it deliberately skips the pixel groups and the panels - a separate
+    # owner each, unrelated to this bug), the channel the chase drives was
+    # also a 255 there - HTP can never show anything but that ceiling.
+    shadowed = 0
+    for fixture_id, offsets in chase_writes.items():
+        if fixture_id not in total_writes:
+            continue
+        for offset in offsets:
+            assert total_writes[fixture_id].get(offset) == 255, (
+                "the old bug should still shadow every channel the chase owns"
+            )
+            shadowed += 1
+    assert shadowed, "the chase and `Intensidad Total` should overlap somewhere"
+
+    # GREEN: Peak itself does not carry `Intensidad Total` any more, and
+    # nothing else in Peak contests the chase's own channels.
+    peak = functions[str(show.master_ids["Nivel Peak"])]
+    peak_members = {step.text for step in findall_local(peak, "Step")}
+    assert str(show.master_ids["Intensidad Total"]) not in peak_members
+
+    chase_step_id = str(show.master_ids["Dimmer Chase"])
+    other_writes: dict[int, dict[int, int | None]] = {}
+    for member_id in peak_members - {chase_step_id}:
+        for fixture_id, pairs in driven_channels(
+            functions[member_id], caps, {}
+        ).items():
+            other_writes.setdefault(fixture_id, {}).update(pairs)
+    for fixture_id, offsets in chase_writes.items():
+        contested = set(offsets) & set(other_writes.get(fixture_id, {}))
+        assert not contested, "something besides the chase owns its dimmers"
+
+    # Nothing goes dark: the fixture the chase cannot dim at all (no dimmer
+    # role - found by capability, not by name) still has an owner in Peak.
+    static_id = show.master_ids.get("Intensidad Peak")
+    assert static_id is not None, "Peak needs an owner for fixtures the chase skips"
+    static_writes = driven_channels(functions[str(static_id)], caps, {})
+    assert static_writes, "the static owner should light at least one fixture"
+    for fixture_id in static_writes:
+        assert not caps[fixture_id].offsets_for_role(roles.DIMMER), (
+            "the static owner should only cover fixtures the chase cannot reach"
+        )
+    min_wash_ids = {
+        c.fixture.fixture_id for c in caps.values() if c.fixture.model == "MiN Wash"
+    }
+    assert min_wash_ids and min_wash_ids <= static_writes.keys()
 
 
 def test_only_a_pixel_group_gets_matrices_inside_the_wheel(built):
