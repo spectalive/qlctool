@@ -165,15 +165,16 @@ def test_the_keyboard_survives(console):
         assert len(captions) == 1, (key, captions)
 
 
-def test_the_audio_bands_ship_unbound_and_never_reach_a_strobe(console):
-    """The widget is there for the venue to wire; no band ships bound.
-
-    Until 2026-08-27 the upper mids pressed `Strobo Rapido`: a strobe fired by
-    whatever the PA does is a strobe nobody chose, and the flash-rate cap
-    means nothing if a cymbal can hold the button. Binding a band is a
-    decision to make with the real music playing - and any bar that is bound
-    must press a Toggle button (a bar presses on the way up and again on the
-    way down, so a Flash target would latch), never a strobe.
+def test_the_bass_band_presses_a_flash_hit_and_never_a_strobe(console):
+    """2026-08-27: the bass band is bound, and the target has to be a Flash
+    hit, not a Toggle. An audio bar calls `pressFunction` on the way up and
+    `pressFunction`+`releaseFunction` on the way down (`ui/src/audiobar.cpp`
+    in the QLC+ source) - exactly how a Flash button expects to be worked, so
+    it self-releases. A Toggle would stay latched one way or the other, and a
+    Toggle inside the room-state solo frame (`Blanco Total`, the first shape
+    this bug took) would also stop AUTO with nothing to restart it -
+    `disparador de audio vacio` in checks/ catches that shape directly; this
+    test pins the generator's own output.
     """
     _, frame = console
     buttons = {
@@ -184,12 +185,14 @@ def test_the_audio_bands_ship_unbound_and_never_reach_a_strobe(console):
     triggers = [w for w, _, _ in _walk(frame) if localname(w) == "AudioTriggers"]
     assert len(triggers) == 1
 
-    for bar in findall_local(triggers[0], "SpectrumBar"):
-        assert bar.attrib["Type"] == "3"  # AudioBar::VCWidgetBar
-        target = buttons[int(bar.attrib["WidgetID"])]
-        assert find_local(target, "Action").text == "Toggle", bar.attrib["Name"]
-        caption = target.attrib.get("Caption", "")
-        assert "STROBO" not in caption.upper(), caption
+    bars = findall_local(triggers[0], "SpectrumBar")
+    assert len(bars) == 1, "exactly one band should ship bound"
+    bar = bars[0]
+    assert bar.attrib["Type"] == "3"  # AudioBar::VCWidgetBar
+    target = buttons[int(bar.attrib["WidgetID"])]
+    assert find_local(target, "Action").text == "Flash", bar.attrib["Name"]
+    caption = target.attrib.get("Caption", "")
+    assert "STROBO" not in caption.upper(), caption
 
 
 def _frame_named(frame, caption):

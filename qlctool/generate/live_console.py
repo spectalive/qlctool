@@ -207,17 +207,17 @@ LIBRARY_LINES = (
 # chose, and the safety cap on flash rate means nothing if a cymbal can hold
 # the button - so no band reaches one (`disparador de audio vacio` checks
 # that on every function the bound bars can reach, not just this one).
-# Bass is bound to `Blanco Total` - the pre-2026-08-27 pairing (then named
-# `Todo Blanco`), a Scene with no strobe in it - as a starting point for the
-# venue to judge with the real music playing. Its button now lives in the
-# room-state solo frame (`Blanco Total` is a "latched work light" room
-# state), so a loud bass line also stops AUTO the way a hand on that button
-# would; nothing restarts AUTO on the way back down. That trade only got
-# introduced today (f14b768 moved `Todo Blanco` into the solo frame the same
-# day this pairing was restored), so it wants eyes at the first on-site test,
-# alongside the thresholds.
+# Bass is bound to `Flash 100%`, one of the GOLPES hits: a Scene, Flash
+# action with override priority, in a plain frame outside any solo frame.
+# An audio bar presses on the way up and releases on the way down exactly
+# the way `VCButton::pressFunction`/`releaseFunction` expect a Flash button
+# to be worked, so the bass gets a momentary white hit that lets go on its
+# own - it was `Blanco Total` first, but that room-state button shares the
+# AUTO solo frame: the bass would have stopped AUTO with nothing to restart
+# it, which `disparador de audio vacio` now catches on any bar bound that
+# way (see rule_audio_triggers.py).
 AUDIO_BANDS: tuple[tuple[str, str | None], ...] = (
-    ("Graves", "Blanco Total"),
+    ("Graves", "Flash 100%"),
     ("Medios-graves", None),
     ("Medios", None),
     ("Medios-agudos", None),

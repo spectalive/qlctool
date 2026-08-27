@@ -583,3 +583,65 @@ def test_an_audio_trigger_bound_to_a_strobe(library):
         if f.rule == "disparador de audio vacio"
     ]
     assert findings, "an audio bar bound to a strobe went unnoticed"
+
+
+def test_an_audio_trigger_bound_to_a_room_state_button(library):
+    """2026-08-27, controller review of this same audit: the first fix bound
+    the bass bar to `Blanco Total`, a Scene with no strobe in it - but that
+    scene's button lives in the room-state SoloFrame alongside AUTO.
+    `VCSoloFrame::slotWidgetFunctionStarting` stops every other widget's
+    function in the frame the moment one starts (confirmed against
+    `ui/src/virtualconsole/vcbutton.cpp` and `vcaudiotriggers.cpp` in the
+    QLC+ source), and nothing restarts AUTO when the bar releases on the way
+    back down - a human choosing to press that button is the frame doing its
+    job; a bass line doing it unattended is a malfunction. Reproduced by
+    binding a bar to `Blanco Total`'s own button, the shape the shipped fix
+    briefly had. The replacement - a bar bound to the `Flash 100%` hit, a
+    plain-frame Flash button outside any SoloFrame - must not trip this
+    finding.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+
+    workspace = _show()
+    functions = _functions(workspace)
+
+    def button_for(name):
+        function_id = functions[name].attrib["ID"]
+        return next(
+            b for b in workspace.root.iter()
+            if localname(b) == "Button"
+            and (function := find_local(b, "Function")) is not None
+            and function.attrib.get("ID") == function_id
+        )
+
+    widget = next(
+        w for w in workspace.root.iter() if localname(w) == "AudioTriggers"
+    )
+
+    def bind(widget_id):
+        for bar in findall_local(widget, "SpectrumBar"):
+            widget.remove(bar)
+        bar = etree.SubElement(widget, f"{{{QLC_NS}}}SpectrumBar")
+        bar.set("Name", "Graves")
+        bar.set("Type", "3")
+        bar.set("MinThreshold", "12")
+        bar.set("MaxThreshold", "51")
+        bar.set("Divisor", "1")
+        bar.set("Index", "0")
+        bar.set("WidgetID", widget_id)
+
+    bind(button_for("Blanco Total").attrib["ID"])
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "disparador de audio vacio"
+    ]
+    assert findings, "an audio bar pressing a room-state button went unnoticed"
+
+    bind(button_for("Flash 100%").attrib["ID"])
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "disparador de audio vacio"
+    ]
+    assert not findings, "the fixed binding (Flash 100%) should not trip this rule"
