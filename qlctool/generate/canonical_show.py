@@ -26,6 +26,7 @@ from ..monitor_positions import house_right_fixture_ids
 from ..palette import PALETTE, PRIMARY_COLORS
 from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
+from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
 from .beat_tempo import BeatTiming, apply_beat_tempo
 from .builtin_effects import generate_builtin_effects
@@ -43,6 +44,7 @@ from .movement_efx import moving_head_ids
 from .movement_families import generate_movement_families
 from .pixel_base import generate_pixel_base
 from .pixel_wheel_matrices import generate_pixel_wheel_matrices
+from .flash_color import generate_flash_color
 from .smoke_auto import generate_smoke_auto
 from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .stage_plot_layout import apply_stage_plot
@@ -106,6 +108,7 @@ KEYS = {
     "Todo Negro": "º",
     "Flash 100%": "Space",
     "Flash 50%": "-",
+    "Flash Color": ".",
     "Humo ON": "H",
     "Strobo Rapido": "F",
     "Strobo Medio": "T",
@@ -126,7 +129,19 @@ KEYS = {
 }
 # Held, not latched. The smoke burst is one of them on purpose: a pump on a
 # Toggle button is how a tank ends up empty when somebody walks away from it.
-FLASH_FUNCTIONS = ("Flash 100%", "Flash 50%", "Humo ON")
+FLASH_FUNCTIONS = (
+    "Flash 100%", "Flash 50%", "Flash Color", "Humo ON", "Golpe Graves",
+)
+
+# Where the held flashes sit on every shutter's slow-to-fast run. The hand-built
+# show's `Flash 100%` strobed the rig near the top of each channel (CromoWash
+# 240 of 10-255, Vortex 250, panels 255) and its `Flash 50%` was the *same*
+# full white at roughly half the strobe speed (Vortex 220, panels 140, beams
+# 120) - not half the brightness. Space without the strobe is the regression
+# the owner caught at home on 2026-08-27: "esto no hace estrobo y antes lo
+# hacia".
+FLASH_STROBE_FAST = 0.85
+FLASH_STROBE_SLOW = 0.45
 
 
 @dataclass(frozen=True)
@@ -180,12 +195,27 @@ def build_canonical_show(
         workspace, caps, "Blanco Total", (255, 255, 255), wheel_color="Blanco"
     )
     master["Todo Negro"] = _blackout(workspace, caps)
+    # The flashes are the work light *strobing*: full white plus every shutter
+    # driven, fast on Space and at half speed on `-` - which is what "50%"
+    # meant on the hand-built console, not half the brightness.
     master["Flash 100%"] = _flat_scene(
-        workspace, caps, "Flash 100%", (255, 255, 255), wheel_color="Blanco"
+        workspace, caps, "Flash 100%", (255, 255, 255), wheel_color="Blanco",
+        strobe=FLASH_STROBE_FAST,
     )
     master["Flash 50%"] = _flat_scene(
-        workspace, caps, "Flash 50%", (128, 128, 128), wheel_color="Blanco",
-        wheel_dimmer=128,
+        workspace, caps, "Flash 50%", (255, 255, 255), wheel_color="Blanco",
+        strobe=FLASH_STROBE_SLOW,
+    )
+    # And the third flash the old console had on `.`: the strobe over whatever
+    # colour is already running - dimmer and shutter only, RGB untouched.
+    master["Flash Color"] = generate_flash_color(
+        workspace, caps, fraction=FLASH_STROBE_FAST
+    )
+    # The bass bar's hit. It was `Flash 100%` - but that scene now strobes,
+    # and a strobe fired by whatever the PA does is a strobe nobody chose. So
+    # the bass keeps its own plain white: same look, shutters open, no strobe.
+    master["Golpe Graves"] = _flat_scene(
+        workspace, caps, "Golpe Graves", (255, 255, 255), wheel_color="Blanco"
     )
 
     banks = generate_color_banks(workspace, library)
@@ -310,11 +340,13 @@ def build_canonical_show(
     master["Dimmer Chase"] = dimmers.chase_id
     master["Dimmer PingPong"] = dimmers.pingpong_id
 
-    # Strobes reuse the base looks rather than duplicating them, so the flash
-    # chasers step the same "Flash 100%" and "Todo Negro" the console flashes.
+    # The burst chasers step the *plain* white and black - not "Flash 100%",
+    # which now carries the hardware strobe: a chaser latching that scene for
+    # 125 ms a step would stack a ~17 Hz shutter strobe on top of its own
+    # 4 Hz chop.
     strobes = generate_strobe_effects(
         workspace, library,
-        full_id=master["Flash 100%"], black_id=master["Todo Negro"],
+        full_id=master["Blanco Total"], black_id=master["Todo Negro"],
     )
     master["Strobo Rapido"] = strobes.fast_id
     master["Strobo Medio"] = strobes.medium_id
@@ -557,18 +589,32 @@ def _is_pixel_group(caps, fixture_ids) -> bool:
 
 def _flat_scene(
     workspace, caps, name, rgb, wheel_color: str | None = None,
-    wheel_dimmer: int = 255,
+    wheel_dimmer: int = 255, strobe: float | None = None,
 ) -> int:
     """One colour on every colour-capable fixture; smoke machines excluded.
 
     `wheel_color` names the palette colour to put the wheel-coloured fixtures
-    on - the beams, which have no RGB and are otherwise skipped.
+    on - the beams, which have no RGB and are otherwise skipped. `strobe`
+    additionally drives every strobe channel at that point of its slow-to-fast
+    run, overriding the open-shutter values a plain look carries - which is
+    what turns the work light into a flash.
     """
     values = color_scene_values(caps, rgb)
     if wheel_color is not None:
         values.update(
             wheel_color_values(caps, wheel_color, dimmer=wheel_dimmer)
         )
+    if strobe is not None:
+        for capability in caps:
+            if capability.is_smoke:
+                continue
+            strobing = strobe_speed_pairs(capability, strobe)
+            if not strobing:
+                continue
+            fixture_id = capability.fixture.fixture_id
+            merged = dict(values.get(fixture_id, []))
+            merged.update(strobing)
+            values[fixture_id] = sorted(merged.items())
     function_id = next_function_id(workspace.root)
     workspace.add_function(
         build_scene(function_id, name, values, path=SHOW_PATH)

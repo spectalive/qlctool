@@ -26,9 +26,12 @@ from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
 
 PATH = "Efectos Propios"
-# Mid-scale. "Slow to Fast" is the whole of what the definition says about the
-# speed channel, so this is a starting point to be set at the venue.
-DEFAULT_SPEED = 128
+# Where the hand-built show ran these: its speed sequence stepped the panels'
+# channel between 160 and 255, so 128 - the blind mid-scale first guess - was
+# slower than the show had ever actually looked. 200 sits in the middle of the
+# range the room is known to have worked at (audit of DeluxeEventos2's
+# "Strobo LED" functions, 2026-08-27).
+DEFAULT_SPEED = 200
 
 
 @dataclass(frozen=True)

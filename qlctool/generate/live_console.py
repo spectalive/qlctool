@@ -134,8 +134,9 @@ ROOM_STATES: tuple[tuple[str, str, tuple[int, int, int, int], str], ...] = (
 # they live in a plain frame. Six across one row.
 HITS: tuple[tuple[str, str], ...] = (
     ("Flash 100%", "FLASH · Espacio"),
-    ("Flash 50%", "FLASH SUAVE · -"),
-    ("Humo ON", "HUMO YA — mantén pulsado · H"),
+    ("Flash 50%", "FLASH LENTO · -"),
+    ("Flash Color", "FLASH COLOR · ."),
+    ("Humo ON", "HUMO YA · H"),
     ("Strobo Rapido", "STROBO · F"),
     ("Strobo Medio", "STROBO SUAVE · T"),
     ("Color Beam Animacion", "COLOR BEAM · C"),
@@ -216,17 +217,16 @@ LIBRARY_LINES = (
 # chose, and the safety cap on flash rate means nothing if a cymbal can hold
 # the button - so no band reaches one (`disparador de audio vacio` checks
 # that on every function the bound bars can reach, not just this one).
-# Bass is bound to `Flash 100%`, one of the GOLPES hits: a Scene, Flash
-# action with override priority, in a plain frame outside any solo frame.
-# An audio bar presses on the way up and releases on the way down exactly
-# the way `VCButton::pressFunction`/`releaseFunction` expect a Flash button
-# to be worked, so the bass gets a momentary white hit that lets go on its
-# own - it was `Blanco Total` first, but that room-state button shares the
-# AUTO solo frame: the bass would have stopped AUTO with nothing to restart
-# it, which `disparador de audio vacio` now catches on any bar bound that
-# way (see rule_audio_triggers.py).
+# Bass is bound to `Golpe Graves`, the plain white twin of the flash: a
+# Scene, Flash action with override priority, in no solo frame. An audio bar
+# presses on the way up and releases on the way down exactly the way
+# `VCButton::pressFunction`/`releaseFunction` expect a Flash button to be
+# worked, so the bass gets a momentary white hit that lets go on its own. It
+# was `Blanco Total` first (shares the AUTO solo frame: the bass stopped
+# AUTO), then `Flash 100%` - until that scene got its hardware strobe back,
+# and a strobe fired by whatever the PA does is a strobe nobody chose.
 AUDIO_BANDS: tuple[tuple[str, str | None], ...] = (
-    ("Graves", "Flash 100%"),
+    ("Graves", "Golpe Graves"),
     ("Medios-graves", None),
     ("Medios", None),
     ("Medios-agudos", None),
@@ -375,10 +375,13 @@ def _page_show(outer, button, master_button, frame, label) -> None:
         outer, "GOLPES — se suman a lo que ya está sonando",
         LEFT_X, 400, OUTER_WIDTH - 16, 160, page=PAGE_SHOW, font=TITLE_FONT,
     )
+    # Seven across the row: pitch derived from the frame so adding a hit
+    # narrows the buttons instead of pushing the last one off the screen.
+    pitch = (OUTER_WIDTH - 16 - 2 * GAP - 4) // len(HITS)
     for index, (name, caption) in enumerate(HITS):
         master_button(
             hits, name, caption,
-            GAP + 2 + index * 234, HEADER + 4, 228, 118, font=BIG_FONT,
+            GAP + 2 + index * pitch, HEADER + 4, pitch - 6, 118, font=BIG_FONT,
         )
 
     panic = frame(
@@ -486,6 +489,14 @@ def _page_manual(
     # Below the audio triggers (they end at y=440): the left column is full,
     # four colour banks deep.
     grand_master_y = 450
+    # The bass bar's target has to be a widget (SpectrumBar presses widgets,
+    # not functions), so its plain white hit gets a button of its own here,
+    # beside the audio triggers that press it.
+    master_button(
+        outer, "Golpe Graves", "GOLPE GRAVES — lo pulsa el audio",
+        RIGHT_X + GRAND_MASTER_WIDTH + GAP, grand_master_y,
+        RIGHT_WIDTH - GRAND_MASTER_WIDTH - GAP, 60, page=PAGE_MANUAL,
+    )
     grand_master_id = ids.take()
     grand_master = build_grand_master_slider(
         outer, grand_master_id, "Master General",

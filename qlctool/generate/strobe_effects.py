@@ -19,13 +19,13 @@ chaser: press it, it plays its pulses, it stops on its own.
 
 from dataclasses import dataclass
 
-from .. import roles
 from ..capabilities_of import capabilities_of
 from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..shutter_open import shutter_open_pairs
+from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
 
 # Half-cycles: full for this long, black for this long. 125 ms each way is
@@ -34,6 +34,9 @@ FAST_MS = 125
 MEDIUM_MS = 250
 # One press is one burst: this many flashes, then the chaser ends itself.
 PULSES = 4
+# Where `Strobo ON` sits on each shutter's slow-to-fast run. Mid-speed: it is
+# a latched look somebody walks away from, not a hit.
+ON_FRACTION = 0.5
 
 
 @dataclass(frozen=True)
@@ -71,53 +74,27 @@ def generate_strobe_effects(
 def _shutter_values(workspace: Workspace, library: FixtureLibrary):
     """fixture id -> (values that strobe it, values that reopen it).
 
-    Both come from the definition's own labelled ranges, never from a guess -
-    the reopen value through `shutter_open_pairs`, so a strobe that stops and a
-    scene that opens a shutter always agree on where "open" is.
+    The strobing value through `strobe_speed_pairs`, which also covers the
+    channels whose whole job is the strobe and carry no labelled range at all
+    (the Vortex PC-64, the HYULIGHTS panels) - leaving those out is how
+    `Strobo ON` shipped strobing ten fixtures and skipping nine (found live,
+    2026-08-27). The reopen value through `shutter_open_pairs`, so a strobe
+    that stops and a scene that opens a shutter always agree on where "open"
+    is; a channel with no labelled open position reopens at 0, which is where
+    the untouched channel already sat.
     """
     result: dict[int, tuple[list[tuple[int, int]], list[tuple[int, int]]]] = {}
     for capability in capabilities_of(workspace.root, library):
         if capability.is_smoke:
             continue
-        strobing: list[tuple[int, int]] = []
-        opening: list[tuple[int, int]] = []
         # One source of truth for "what value opens this shutter": the range the
         # definition marks `ShutterOpen`, read by shutter_open_pairs.
         reopen = dict(shutter_open_pairs(capability))
-        for offset, ranges in capability.capabilities_for_role(roles.STROBE):
-            strobe = _strobe_range(ranges)
-            if strobe is None:
-                continue
-            strobing.append((offset, strobe.middle))
-            opening.append((offset, reopen.get(offset, 0)))
+        strobing = strobe_speed_pairs(capability, ON_FRACTION)
+        opening = [(offset, reopen.get(offset, 0)) for offset, _ in strobing]
         if strobing:
             result[capability.fixture.fixture_id] = (strobing, opening)
     return result
-
-
-# QLC+ names every strobing preset "Strobe..." - StrobeSlowToFast,
-# StrobeFastToSlow, StrobeRandom..., and so on.
-STROBE_PRESET_PREFIX = "Strobe"
-SHUTTER_PRESETS = ("ShutterOpen", "ShutterClose")
-
-
-def _strobe_range(ranges):
-    """The range that actually strobes, preset first and name only as a fallback.
-
-    Reading the name alone picks "No strobe" out of a channel that labels its
-    open position that way - which is how a split CLB2.4 came out with
-    `Strobo ON` sending 0, the one value that guarantees no strobe at all. A
-    preset is what the definition means; a name is what it happens to say.
-    """
-    for capability in ranges:
-        if (capability.preset or "").startswith(STROBE_PRESET_PREFIX):
-            return capability
-    for capability in ranges:
-        if (capability.preset or "") in SHUTTER_PRESETS:
-            continue
-        if "strobe" in capability.name.lower() and "no strobe" not in capability.name.lower():
-            return capability
-    return None
 
 
 def _scene(workspace: Workspace, name: str, values, path: str) -> int:

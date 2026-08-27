@@ -438,8 +438,10 @@ def test_everything_white_reaches_the_beams(built):
     ]
     assert wheel_only, "no wheel-coloured fixture in this patch"
 
+    # Both flashes at full: "50%" is half the strobe *speed*, not half the
+    # brightness - what it meant on the hand-built console (2026-08-27).
     for look, level in (("Blanco Total", 255), ("Flash 100%", 255),
-                        ("Flash 50%", 128)):
+                        ("Flash 50%", 255)):
         scene = functions[str(show.master_ids[look])]
         for capability in wheel_only:
             written = _pairs(scene, capability.fixture.fixture_id)

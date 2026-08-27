@@ -474,6 +474,76 @@ def test_a_strobe_that_loops_behind_a_button(library):
     assert "Strobo Rapido" in {f.function for f in findings}
 
 
+def test_a_flash_that_lights_the_room_without_strobing_it(library):
+    """2026-08-27, the owner testing at home over the FT232R card: "esto no
+    hace estrobo y antes lo hacia cuando le daba al espacio". The hand-built
+    `Flash 100%` drove every shutter near the top of its range; the generated
+    one was a steady work light with the shutters parked "Open". Reproduced
+    by parking the CromoWash strobe channel back on its "No function" value.
+    """
+    workspace = _show()
+    scene = _functions(workspace)["Flash 100%"]
+    for value in findall_local(scene, "FixtureVal"):
+        if int(value.attrib["ID"]) not in (0, 1, 13, 14):
+            continue
+        numbers = [int(n) for n in value.text.split(",")]
+        pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+        pairs[10] = 4  # the strobe channel, 0-9 = "No function"
+        value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "flash sin estrobo"
+    ]
+    assert findings, "a flash with its shutters parked open went unnoticed"
+    assert "Flash 100%" in {f.function for f in findings}
+
+
+def test_a_strobe_scene_that_skips_half_the_rig(library):
+    """2026-08-27, found in the same session: `Strobo ON` drove only the
+    channels with a labelled strobing range, so the seven Vortex PARs and the
+    pixel panels - bare speed channels, no labels - held steady while the
+    rest of the rig flashed. Reproduced by dropping the Vortex writes back
+    out of the scene.
+    """
+    workspace = _show()
+    scene = _functions(workspace)["Strobo ON"]
+    for value in findall_local(scene, "FixtureVal"):
+        if int(value.attrib["ID"]) in range(6, 13):
+            scene.remove(value)
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "estrobo incompleto"
+    ]
+    assert findings, "a strobe scene skipping seven fixtures went unnoticed"
+    assert "Strobo ON" in {f.function for f in findings}
+
+
+def test_a_strobe_the_music_can_fire(library):
+    """2026-08-27: the bass bar presses `Golpe Graves`, the deliberately
+    plain twin of the flash, because a strobe fired by whatever the PA does
+    is a strobe nobody chose. Reproduced by giving that scene the strobe
+    values back.
+    """
+    workspace = _show()
+    scene = _functions(workspace)["Golpe Graves"]
+    for value in findall_local(scene, "FixtureVal"):
+        if int(value.attrib["ID"]) not in (0, 1, 13, 14):
+            continue
+        numbers = [int(n) for n in value.text.split(",")]
+        pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+        pairs[10] = 218  # the strobe channel, strobing
+        value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "estrobo en manos del audio"
+    ]
+    assert findings, "an audio-fired strobe went unnoticed"
+    assert "Golpe Graves" in {f.function for f in findings}
+
+
 def test_a_flash_button_pointed_at_something_qlcplus_cannot_flash(library):
     """2026-08-27: only a Scene implements flash (`Scene::flash`; the base
     class raises a flag nothing reads). A Flash button over a Chaser, EFX or

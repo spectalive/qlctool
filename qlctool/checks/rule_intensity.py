@@ -13,6 +13,7 @@ that promises light and does not deliver it.
 
 from .. import roles
 from ..shutter_open import shutter_open_ranges
+from ..strobe_range import strobe_range
 from .color_roles import COLOUR
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
@@ -118,19 +119,28 @@ def _reason_it_stays_dark(capability, written: dict[int, int | None]) -> bool:
     if dimmers and not any(lit(written.get(o, 0)) for o in dimmers):
         return True
     return any(
-        _shut(written.get(offset, UNTOUCHED), opening)
+        _shut(
+            written.get(offset, UNTOUCHED), opening,
+            strobe_range(capability.capabilities_by_offset[offset]),
+        )
         for offset, opening in shutter_open_ranges(capability)
     )
 
 
-def _shut(value: int | None, opening) -> bool:
-    """Whether the shutter is somewhere other than its open range.
+def _shut(value: int | None, opening, strobing) -> bool:
+    """Whether the shutter is somewhere other than its open or strobing range.
 
     An untouched DMX channel is 0, which on one fixture is "no strobe, open"
     and on the next is "closed". A value nobody can predict - an effect driving
     the shutter - is not reported: strobing is what that fixture was asked to
-    do.
+    do. A value inside the *labelled strobing range* is not shut either: a
+    strobing shutter emits light, which is the whole reason `Flash 100%`
+    drives it there.
     """
     if value is None:
         return False
-    return not opening.minimum <= value <= opening.maximum
+    if opening.minimum <= value <= opening.maximum:
+        return False
+    return strobing is None or not (
+        strobing.minimum <= value <= strobing.maximum
+    )

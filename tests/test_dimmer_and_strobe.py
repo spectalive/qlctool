@@ -133,9 +133,15 @@ def test_the_lit_half_of_the_ping_pong_opens_its_shutter(library):
     assert seen_lit
 
 
-def test_a_strobe_value_only_comes_from_a_labelled_range(library):
-    """Never a guess: the value has to sit inside a range the definition calls
-    a strobe, or the fixture is left out entirely."""
+def test_a_strobe_value_lands_where_the_definition_says_it_strobes(library):
+    """A labelled channel is driven inside its strobing range, never outside.
+
+    A channel with no labels at all - the Vortex and panel speed channels,
+    which *are* the strobe and say nothing else about themselves - is driven
+    too (above zero), because leaving them out is how `Strobo ON` shipped
+    strobing ten fixtures and skipping nine (2026-08-27). The hand-built show
+    drove exactly those channels at 250/255 for years.
+    """
     ws = Workspace.load(SHOW)
     generated = generate_strobe_effects(ws, library, full_id=0, black_id=1)
     functions = _functions(ws.root)
@@ -146,17 +152,22 @@ def test_a_strobe_value_only_comes_from_a_labelled_range(library):
         for offset, caps in capability.capabilities_for_role(roles.STROBE):
             ranges[(capability.fixture.fixture_id, offset)] = caps
 
-    driven = 0
+    driven = bare = 0
     for element in findall_local(functions[generated.on_id], "FixtureVal"):
         fixture_id = int(element.attrib["ID"])
         numbers = [int(n) for n in (element.text or "").split(",") if n != ""]
         for offset, value in zip(numbers[0::2], numbers[1::2]):
             labels = ranges[(fixture_id, offset)]
+            if not labels:
+                assert value > 0, (fixture_id, offset, value)
+                bare += 1
+                continue
             hit = [c for c in labels if c.minimum <= value <= c.maximum]
             assert hit, (fixture_id, offset, value)
             assert "strobe" in hit[0].name.lower(), hit[0].name
             driven += 1
     assert driven >= 3  # the CromoWash, the MiN Wash and the beams
+    assert bare >= 2  # the Vortex PARs and the panels
 
 
 def test_the_flash_strobes_are_bounded_bursts_capped_at_four_hz(library):
@@ -190,7 +201,7 @@ def test_a_channel_that_labels_its_open_position_no_strobe_is_not_read_as_one(li
     matched the first one and sent `Strobo ON` a zero - the single value that
     guarantees no strobe at all.
     """
-    from qlctool.generate.strobe_effects import _strobe_range
+    from qlctool.strobe_range import strobe_range
     from qlctool.definition import Capability
 
     ranges = (
@@ -199,7 +210,7 @@ def test_a_channel_that_labels_its_open_position_no_strobe_is_not_read_as_one(li
                    preset="StrobeSlowToFast"),
     )
 
-    chosen = _strobe_range(ranges)
+    chosen = strobe_range(ranges)
 
     assert chosen is not None and chosen.minimum == 1
 
