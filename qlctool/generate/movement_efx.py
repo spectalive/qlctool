@@ -56,6 +56,8 @@ def generate_movement_efx(
     make_chaser: bool = True,
     propagation_mode: str = "Parallel",
     duration: int = 6848,
+    width: int = 100,
+    height: int = 100,
     chaser_hold: int = 4000,
     chaser_run_order: str = "Loop",
     chaser_name: str = "Movimientos Cabezas",
@@ -123,6 +125,8 @@ def generate_movement_efx(
                     algorithm=algorithm,
                     propagation_mode=propagation_mode,
                     duration=duration,
+                    width=width,
+                    height=height,
                     path=part_path if split else path,
                 )
             )

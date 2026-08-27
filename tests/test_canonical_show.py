@@ -57,8 +57,8 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     Keeping the bed outside the cycle is what stops a level change from
     blacking the room out, and the effects that read as "peak" - fast movement,
     prism, the dimmer chase - are reachable only through the level that is one.
-    The pixel cycle is part of the bed too: the bars own their own colour, so
-    whoever owns it has to keep owning it across a level change.
+    The pixels' colour is part of the bed too: the wheel's own steps carry
+    their matrices, so one clock owns the room's colour across a level change.
     """
     show, out = built
     functions = _functions(Workspace.load(out).root)
@@ -71,10 +71,11 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
         for name in ("Rueda Colores", "Humo Auto", "Ciclo Energia")
     }
     assert named <= members
-    # Plus what the pixel groups need, which the wheel no longer gives them:
-    # their own colour cycle, and the scene holding their intensity open.
+    # Plus what the pixel groups need beside the wheel, which carries their
+    # colour inside its own steps: the scene holding their intensity open,
+    # and the panels' own programmes.
     assert {functions[m].attrib["Name"] for m in members - named} == {
-        "Ciclo Matrices BarrasLed", "Pixeles ON", "Ciclo Paneles",
+        "Pixeles ON", "Ciclo Paneles",
     }
 
     cycle = functions[str(show.master_ids["Ciclo Energia"])]
@@ -84,17 +85,31 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
         "Nivel Ambiente", "Nivel Fiesta", "Nivel Peak", "Nivel Fiesta",
     ]
 
-    party = functions[str(show.master_ids["Nivel Fiesta"])]
-    party_members = {step.text for step in findall_local(party, "Step")}
-    assert str(show.master_ids["Movimientos Cabezas"]) in party_members
-    assert str(show.master_ids["Gobo Animacion"]) in party_members
+    def _names(level):
+        collection = functions[str(show.master_ids[level])]
+        return {
+            functions[step.text].attrib["Name"]
+            for step in findall_local(collection, "Step")
+        }
 
-    peak = functions[str(show.master_ids["Nivel Peak"])]
-    peak_members = {step.text for step in findall_local(peak, "Step")}
-    assert str(show.master_ids["Movimientos Rapidos"]) in peak_members
-    assert str(show.master_ids["Dimmer Chase"]) in peak_members
+    # 2026-08-27, the owner on pressing AUTO and watching parked heads: "el
+    # auto es eso, como el modo auto de las cabezas en si". Every level moves
+    # from the first second - the quiet one slowly, on the washes, with the
+    # beams fanned - and every level owns its intensity, low or full.
+    ambient = _names("Nivel Ambiente")
+    assert "Movimientos Suaves" in ambient
+    assert "Beams Abanico" in ambient
+    assert "Intensidad Ambiente" in ambient
+
+    party = _names("Nivel Fiesta")
+    assert {"Movimientos Washes", "Movimientos Beams",
+            "Gobo Animacion", "Intensidad Total"} <= party
+
+    peak = _names("Nivel Peak")
+    assert {"Rapidos Washes", "Rapidos Beams", "Dimmer Chase",
+            "Intensidad Total"} <= peak
     # Held back for the peak, not running all night.
-    assert str(show.master_ids["Dimmer Chase"]) not in party_members
+    assert "Dimmer Chase" not in party
     # And the colour wheel is one wheel over the whole rig, not one per group:
     # three Random wheels never agree, and the heads and the PARs have to.
     wheel = functions[str(show.master_ids["Rueda Colores"])]
@@ -102,27 +117,41 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     assert wheel.attrib["Name"] == "Rueda Colores"
 
 
-def test_only_a_pixel_group_cycles_matrices_under_auto(built):
-    """A matrix paints its own group's colour, so a cycle per group desyncs it.
+def test_only_a_pixel_group_gets_matrices_inside_the_wheel(built):
+    """Two chasers that each rotate colour never agree, so there is one clock.
 
-    The bars and panels have cells to draw across and keep theirs; the heads
-    and the PARs take their colour from the rig-wide wheel instead, which is
-    the only way they land on white together.
+    The bars' colour rides inside the rig-wide wheel: each of its steps starts
+    a matrix of the step's own colour over the group that has pixels to draw
+    on, and nothing else in AUTO rotates colour - the standalone matrix cycle
+    stays on the console for a person, and out of the room states.
     """
     show, out = built
     root = Workspace.load(out).root
     functions = _functions(root)
 
-    # Part of the bed, beside the colour wheel: a level that owns the bars'
-    # colour hands it back on every step, and two levels running at once put
-    # two colour sources on one fixture. The levels carry no colour at all now.
     auto = functions[str(show.master_ids["AUTO"])]
-    cycles = {
-        functions[m.text].attrib["Name"]
-        for m in findall_local(auto, "Step")
-        if functions[m.text].attrib["Name"].startswith("Ciclo Matrices")
-    }
-    assert cycles == {"Ciclo Matrices BarrasLed"}
+    names = {functions[m.text].attrib["Name"] for m in findall_local(auto, "Step")}
+    assert not any(n.startswith("Ciclo Matrices") for n in names)
+
+    wheel = functions[str(show.master_ids["Rueda Colores"])]
+    steps = [functions[s.text] for s in findall_local(wheel, "Step")]
+    assert steps and all(s.attrib["Type"] == "Collection" for s in steps)
+    matrices = [
+        functions[member.text]
+        for step in steps
+        for member in findall_local(step, "Step")
+        if functions[member.text].attrib["Type"] == "RGBMatrix"
+    ]
+    assert len(matrices) == len(steps), "every wheel step colours the pixels"
+    pixel_group = next(
+        str(g.group_id) for g in fixture_groups(root) if g.name == "BarrasLed"
+    )
+    assert {find_local(m, "FixtureGroup").text for m in matrices} == {pixel_group}
+    # The step's scene and its matrix state the same colour, by name: the
+    # solid steps their own, a contrast step the colour of the "resto".
+    for step, matrix in zip(steps, matrices, strict=True):
+        colour = step.attrib["Name"].split(" + ")[0].split()[-1]
+        assert f" {colour} (Rueda)" in matrix.attrib["Name"], step.attrib["Name"]
 
     for level in ("Nivel Ambiente", "Nivel Fiesta", "Nivel Peak"):
         collection = functions[str(show.master_ids[level])]
@@ -384,18 +413,20 @@ def test_a_matrix_lit_fixture_has_its_intensity_opened(built):
                 assert offset not in written, capability.fixture.name
 
 
-def test_the_pixel_intensity_runs_wherever_the_pixel_cycle_does(built):
-    """Colour without intensity is a fixture that is off. They travel together."""
+def test_the_pixel_intensity_runs_wherever_the_wheel_does(built):
+    """Colour without intensity is a fixture that is off. They travel together.
+
+    The wheel's steps paint the pixel groups through their matrices, and a
+    matrix writes RGB and nothing else - so every state that starts the wheel
+    starts the scene holding their dimmers and shutters open beside it.
+    """
     show, out = built
     functions = _functions(Workspace.load(out).root)
     base = str(show.master_ids["Pixeles ON"])
+    wheel = str(show.master_ids["Rueda Colores"])
 
     for name in ("AUTO", "Momento Tranquilo", "Momento Fiesta", "Momento Locura"):
         collection = functions[str(show.master_ids[name])]
         members = {step.text for step in findall_local(collection, "Step")}
-        cycles = {
-            m for m in members
-            if functions[m].attrib["Name"].startswith("Ciclo Matrices")
-        }
-        assert cycles, name
+        assert wheel in members, name
         assert base in members, name

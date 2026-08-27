@@ -8,6 +8,13 @@ an unlabelled channel is how a head goes dark in the middle of a set.
 Everything else - the LED bars and PARs - has no shutter, so it strobes the way
 the hand-built show does it: a chaser flipping the whole rig between full and
 black. Two speeds, because one is a hard strobe and the other is a pulse.
+
+Both chasers are **bounded bursts, capped at 4 Hz** (2026-08-27). The first
+version looped at 50 ms a step - ten flashes a second, inside the
+photosensitive-epilepsy trigger band, latched behind a Toggle button. UK
+performance guidance caps effect flashing at four per second, and QLC+ cannot
+make a chaser momentary (only Scenes flash), so the safe shape is a SingleShot
+chaser: press it, it plays its pulses, it stops on its own.
 """
 
 from dataclasses import dataclass
@@ -21,8 +28,12 @@ from ..library import FixtureLibrary
 from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
 
-FAST_MS = 50
+# Half-cycles: full for this long, black for this long. 125 ms each way is
+# 4 Hz - the cap - and 250 ms is a 2 Hz pulse.
+FAST_MS = 125
 MEDIUM_MS = 250
+# One press is one burst: this many flashes, then the chaser ends itself.
+PULSES = 4
 
 
 @dataclass(frozen=True)
@@ -121,6 +132,9 @@ def _flash_chaser(
 ) -> int:
     function_id = next_function_id(workspace.root)
     workspace.add_function(
-        build_chaser(function_id, name, [full_id, black_id], hold=hold, path=path)
+        build_chaser(
+            function_id, name, [full_id, black_id] * PULSES, hold=hold,
+            run_order="SingleShot", path=path,
+        )
     )
     return function_id

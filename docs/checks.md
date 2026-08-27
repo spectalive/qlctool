@@ -43,16 +43,28 @@ beneath it already did.
 | `intensidad` | A fixture given colour with nothing opening its dimmer, or with a labelled shutter left shut | The HYULIGHTS panels were the right colour and off all night (2026-08-26) |
 | `rueda de color` | A look that colours a fixture group and writes nothing to the members of that group whose colour is a wheel | `BLANCO TOTAL` left the four BEAM 230W 7R black (2026-08-26) |
 | `colores pisados` | Two concurrent members of one Collection reaching the same colour, wheel or pan/tilt channel | Two energy levels pressed at once turned the room white (2026-08-25) |
+| `relojes de color` | A room state starting two chasers that each rotate colour on their own clock - a wheel of scenes and a cycle of matrices never land on the same colour | The bars sat on magenta while the wheel had the room on cyan: "van con los colores a su bola" (2026-08-26) |
 | `efecto cortado` | A chaser holding an RGBMatrix for less than one full pass of its own animation | The LED bar started a Fill and never finished it (2026-08-26) |
 | `estrobo en un ciclo` | A `Strobe` matrix sitting among the steps of a chaser instead of on its own button | The pixels blinked without anyone asking, half the time (2026-08-26) |
 | `programa interno` | A scene stating a colour on a fixture without taking it out of its own built-in programme, which makes it ignore that colour | The panels kept animating under looks that thought they were setting a colour (2026-08-26) |
 | `rejilla` | A fixture group with empty cells in its grid, or heads outside it | Four panels sharing the bars' grid sat dark through half of every sweep (2026-08-26) |
 | `humo` | A scene that raises the smoke machine *and* touches other fixtures | A pump swept up in an "all dimmers up" scene runs until the tank is empty |
 | `consola` | A master sharing a solo frame with its own members; two buttons on one key; a widget past the edge of the screen; one function with two buttons | AUTO died the instant it was pressed |
+| `estrobo demasiado rapido` | Anything with a strobe's shape - a chaser alternating lit and black on the same channels, a `Strobe` matrix - flashing above 4 Hz, the UK public-performance cap; 3-30 Hz is the photosensitive-epilepsy trigger band | `Strobo Rapido` shipped at 10 Hz over the whole rig and the checker was blind to it (Codex review, 2026-08-27) |
+| `estrobo enganchado` | A looping strobe chaser reachable from any console button: one press and it flashes until somebody finds it. A strobe hit is a SingleShot burst that ends itself | The STROBO button was a Toggle over an endless loop (2026-08-27) |
+| `flash sin escena` | A Flash button whose function is not a Scene - `Scene::flash` is the only implementation, so anything else half-works | Found wiring the highlight buttons, before it shipped (2026-08-27) |
+| `intensidad tapada` | Two concurrent members of one Collection writing the same dimmer channel to different definite values: HTP, the higher wins, the lower is dead code | "Ambiente = dimmer bajo" could never have worked while the colour wheel held every dimmer at 255 (2026-08-27) |
+| `acento sin dueño` | A Flash scene moving an LTP wheel (gobo, prisma, colour) that some room state lights but never writes: on release the wheel stays where the flash left it | The prism flashed for one drop is still in the beam an hour later (2026-08-27) |
+| `familias de movimiento mezcladas` | One EFX moving wash-class and beam-class fixtures (told apart by the gobo wheel) with one geometry | Twelve movers shared a 100x100 EFX; a 7R needle ran wash-sized sweeps through faces (2026-08-27) |
 
-Dimmer and shutter collisions are **not** reported. QLC+ mixes intensity HTP on
-purpose, and the whole design - a colour bed underneath, a level on top -
-depends on two functions being able to ask for brightness at once.
+Dimmer and shutter collisions between a bed and a level are **not** reported.
+QLC+ mixes intensity HTP on purpose, and the design - a colour bed underneath,
+a level on top - depends on two functions being able to ask for brightness at
+once. What `intensidad tapada` rejects is the case where they ask for
+*different* brightnesses concurrently, because then one of them is a lie.
+Since 2026-08-27 the two ownerships are separate: colour scenes state colour
+only, and each energy level (and each moment) carries one intensity base -
+`Intensidad Ambiente` low, `Intensidad Total` full - beside its colour.
 
 ## What it found on its first run
 

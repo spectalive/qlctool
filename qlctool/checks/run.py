@@ -18,13 +18,20 @@ from ..workspace import Workspace
 from .console_states import room_states
 from .entry_points import entry_points
 from .finding import ERROR, Finding
+from .rule_accent_restore import check_accent_restore
 from .rule_collision import check_collisions
+from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
+from .rule_flash_scene import check_flash_scene
 from .rule_group_grid import check_group_grids
 from .rule_intensity import check_intensity
 from .rule_internal_program import check_internal_programs
+from .rule_latched_strobe import check_latched_strobe
+from .rule_movement_families import check_movement_families
+from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_smoke import check_smoke
 from .rule_strobe_in_cycle import check_strobe_in_cycle
+from .rule_strobe_rate import check_strobe_rate
 from .rule_unfinished_effect import check_unfinished_effects
 from .rule_wheel_colour import check_wheel_colour
 from .show_graph import build_show_graph, group_fixtures
@@ -50,8 +57,15 @@ def check_workspace(
     findings += check_wheel_colour(graph, groups, entries)
     findings += check_internal_programs(graph, groups, entries)
     findings += check_collisions(graph, groups, entries)
+    findings += check_colour_clocks(graph, groups, entries, states)
     findings += check_unfinished_effects(graph, groups, entries)
     findings += check_strobe_in_cycle(graph, groups, entries)
+    findings += check_strobe_rate(graph, groups, entries)
+    findings += check_latched_strobe(graph, groups, entries)
+    findings += check_flash_scene(graph, root)
+    findings += check_shadowed_intensity(graph, groups, entries)
+    findings += check_accent_restore(graph, groups, root, states)
+    findings += check_movement_families(graph)
     findings += check_smoke(graph, groups, entries)
     findings += check_group_grids(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))

@@ -159,19 +159,27 @@ def test_a_strobe_value_only_comes_from_a_labelled_range(library):
     assert driven >= 3  # the CromoWash, the MiN Wash and the beams
 
 
-def test_the_flash_strobes_step_the_looks_they_were_given(library):
+def test_the_flash_strobes_are_bounded_bursts_capped_at_four_hz(library):
+    """2026-08-27, from the Codex review of the highlight plan: the fast
+    strobe looped at 50 ms a step - ten flashes a second, inside the
+    photosensitive-epilepsy band - latched behind a Toggle button. A strobe
+    hit is a burst now: SingleShot, it plays its pulses and ends itself, and
+    no half-cycle is shorter than 125 ms (4 Hz, the UK performance cap).
+    """
     ws = Workspace.load(SHOW)
     generated = generate_strobe_effects(ws, library, full_id=42, black_id=43)
     functions = _functions(ws.root)
 
     for chaser_id, expected_hold in (
-        (generated.fast_id, 50),
+        (generated.fast_id, 125),
         (generated.medium_id, 250),
     ):
         chaser = functions[chaser_id]
         steps = findall_local(chaser, "Step")
-        assert [s.text for s in steps] == ["42", "43"]
+        assert [s.text for s in steps] == ["42", "43"] * 4
         assert all(int(s.attrib["Hold"]) == expected_hold for s in steps)
+        assert expected_hold >= 125, "faster than 4 flashes a second"
+        assert find_local(chaser, "RunOrder").text == "SingleShot"
         assert find_local(chaser, "SpeedModes").attrib["Duration"] == "Common"
 
 def test_a_channel_that_labels_its_open_position_no_strobe_is_not_read_as_one(library):

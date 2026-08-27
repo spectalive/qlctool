@@ -23,6 +23,7 @@ from .. import roles
 from ..capabilities_of import capabilities_of
 from ..capability import FixtureCapabilities
 from ..functions.chaser import build_chaser
+from ..functions.collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
@@ -59,6 +60,7 @@ def generate_unison_colors(
     hold: int = 2500,
     fade: int = 800,
     exclude_fixture_ids: Sequence[int] = (),
+    step_extras: dict[str, Sequence[int]] | None = None,
 ) -> GeneratedUnison:
     """Rig-wide colour scenes and one Random wheel over them.
 
@@ -71,6 +73,14 @@ def generate_unison_colors(
     fixture, one colour source; the pixel groups belong to their matrix. Their
     colour *wheels* are still set, because a matrix cannot reach one: that is
     what keeps the beams on the same colour as the rest of the rig.
+
+    `step_extras` is what keeps the *matrix-painted* fixtures on the wheel's
+    colour: per colour name, extra functions - the pixel groups' matrices of
+    that same colour - that the step starts beside the scene, wrapped together
+    in a Collection. Two chasers rotating colour never land on the same one;
+    one chaser starting both by the step is what "the bars follow the show"
+    means in QLC+. A contrast step runs the *rest* colour's extras, because
+    that is the colour everything that is not a moving head is on.
     """
     caps = capabilities_of(workspace.root, library)
     excluded = set(exclude_fixture_ids)
@@ -80,13 +90,23 @@ def generate_unison_colors(
         if c.fixture.fixture_id not in excluded
     ]
 
+    extras = step_extras or {}
     scene_ids: list[int] = []
+    steps: list[int] = []
     for name in colors:
-        values = color_scene_values(caps, PALETTE[name], fixture_ids=lit_ids)
-        values.update(wheel_color_values(caps, name))
+        # Colour only, never intensity: these scenes run all night under every
+        # energy level, and a dimmer at 255 here is a dimmer no level can ever
+        # bring down - HTP, the highest write wins (2026-08-27). The levels
+        # own the dimmers and shutters now.
+        values = color_scene_values(
+            caps, PALETTE[name], fixture_ids=lit_ids, dimmer_full=False
+        )
+        values.update(wheel_color_values(caps, name, dimmer=None))
         if not values:
             continue
-        scene_ids.append(_scene(workspace, f"Rig {name}", values))
+        scene_id = _scene(workspace, f"Rig {name}", values)
+        scene_ids.append(scene_id)
+        steps.append(_step(workspace, f"Rig {name}", scene_id, extras.get(name)))
 
     head_ids = [
         c.fixture.fixture_id
@@ -106,15 +126,11 @@ def generate_unison_colors(
         )
         if len(values) < 2:
             continue
-        contrast_ids.append(
-            _scene(
-                workspace,
-                f"Cabezas {heads_color} / Resto {rest_color}",
-                values,
-            )
-        )
+        name = f"Cabezas {heads_color} / Resto {rest_color}"
+        scene_id = _scene(workspace, name, values)
+        contrast_ids.append(scene_id)
+        steps.append(_step(workspace, name, scene_id, extras.get(rest_color)))
 
-    steps = scene_ids + contrast_ids
     wheel_id: int | None = None
     if steps:
         wheel_id = next_function_id(workspace.root)
@@ -144,16 +160,42 @@ def _contrast_values(
     rest_color: str,
     excluded: set[int],
 ) -> dict[int, list[tuple[int, int]]]:
-    """The movers on one colour, everything else on the other."""
+    """The movers on one colour, everything else on the other.
+
+    Colour only, like the solid steps: intensity belongs to the levels.
+    """
     lit_heads = [fid for fid in head_ids if fid not in excluded]
-    values = color_scene_values(caps, PALETTE[heads_color], fixture_ids=lit_heads)
-    values.update(color_scene_values(caps, PALETTE[rest_color], fixture_ids=rest_ids))
-    values.update(wheel_color_values(caps, heads_color, fixture_ids=head_ids))
-    values.update(wheel_color_values(caps, rest_color, fixture_ids=rest_ids))
+    values = color_scene_values(
+        caps, PALETTE[heads_color], fixture_ids=lit_heads, dimmer_full=False
+    )
+    values.update(color_scene_values(
+        caps, PALETTE[rest_color], fixture_ids=rest_ids, dimmer_full=False
+    ))
+    values.update(wheel_color_values(
+        caps, heads_color, fixture_ids=head_ids, dimmer=None
+    ))
+    values.update(wheel_color_values(
+        caps, rest_color, fixture_ids=rest_ids, dimmer=None
+    ))
     return values
 
 
 def _scene(workspace: Workspace, name: str, values) -> int:
     function_id = next_function_id(workspace.root)
     workspace.add_function(build_scene(function_id, name, values, path=PATH))
+    return function_id
+
+
+def _step(
+    workspace: Workspace, name: str, scene_id: int, extras: Sequence[int] | None
+) -> int:
+    """What the wheel actually steps: the scene, with its extras beside it."""
+    if not extras:
+        return scene_id
+    function_id = next_function_id(workspace.root)
+    workspace.add_function(
+        build_collection(
+            function_id, f"{name} + Pixeles", [scene_id, *extras], path=PATH
+        )
+    )
     return function_id

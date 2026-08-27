@@ -179,14 +179,14 @@ def test_a_look_that_never_writes_the_wheel_coloured_fixtures(library):
 def test_two_programmes_writing_one_fixtures_colour(library):
     """2026-08-25: the room went white with two colour beds on one rig.
 
-    Reproduced the way the owner hit it: put the pixel groups back on the
-    rig-wide wheel while their own matrix cycle is still running under AUTO.
+    Reproduced the way the owner hit it: put a pixel fixture back into the
+    rig-wide colour scene while the same wheel step's matrix is painting it.
     """
     workspace = _show()
     functions = _functions(workspace)
     scene = functions["Rig Rojo"]
     value = find_local(scene, "FixtureVal")
-    # Fixture 2 is an LED Bar: pure RGB, and painted by Ciclo Matrices.
+    # Fixture 2 is an LED Bar: pure RGB, and painted by the step's matrix.
     duplicate = value.makeelement(value.tag, {"ID": "2"})
     duplicate.text = "0,255,1,0,2,0"
     scene.append(duplicate)
@@ -194,9 +194,35 @@ def test_two_programmes_writing_one_fixtures_colour(library):
     findings = [
         f for f in check_workspace(workspace, library) if f.rule == "colores pisados"
     ]
-    assert any(f.function == "AUTO" for f in findings), (
-        "two colour sources on one bar under AUTO went unnoticed"
+    assert any(f.function.startswith("Rig Rojo") for f in findings), (
+        "two colour sources on one bar went unnoticed"
     )
+
+
+def test_two_colour_clocks_ticking_in_one_room_state(library):
+    """2026-08-26: "las barras led van con los colores a su bola, no siguen el show".
+
+    The rig-wide wheel stepped the room through cyan while the bars' own matrix
+    cycle stepped them through magenta, and both were right alone: two chasers
+    that each rotate colour on their own clock never agree. The bars' colour
+    now rides inside the wheel's steps - a matrix of the step's own colour -
+    and the bug is reproduced by stepping the standalone cycle back into AUTO
+    beside the wheel, which is exactly the shape the show used to have.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    auto = functions["AUTO"]
+    cycle = functions["Ciclo Matrices BarrasLed"]
+    step = auto.makeelement(findall_local(auto, "Step")[0].tag, {"Number": "99"})
+    step.text = cycle.attrib["ID"]
+    auto.append(step)
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "relojes de color"
+    ]
+    assert findings, "two colour clocks in one room state went unnoticed"
+    assert any("LED Bar" in fixture for f in findings for fixture in f.fixtures)
 
 
 def test_a_dimmer_at_full_behind_a_shut_shutter(library):
@@ -342,3 +368,155 @@ def test_a_smoke_machine_swept_into_somebody_elses_scene(library):
 
     findings = [f for f in check_workspace(workspace, library) if f.rule == "humo"]
     assert any(f.function == "Blanco Total" for f in findings)
+
+
+def test_a_strobe_flashing_faster_than_four_hertz(library):
+    """2026-08-27, Codex review of the highlight plan: `Strobo Rapido` had
+    shipped alternating the whole rig between white and black every 50 ms -
+    ten flashes a second, inside the photosensitive-epilepsy trigger band -
+    and the checker said "ningun problema". Reproduced by putting the 50 ms
+    steps back into the burst.
+    """
+    workspace = _show()
+    chaser = _functions(workspace)["Strobo Rapido"]
+    for step in findall_local(chaser, "Step"):
+        step.set("Hold", "50")
+    find_local(chaser, "Speed").set("Duration", "50")
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "estrobo demasiado rapido"
+    ]
+    assert findings, "a 10 Hz whole-rig strobe went unnoticed"
+    assert "Strobo Rapido" in {f.function for f in findings}
+
+
+def test_a_strobe_that_loops_behind_a_button(library):
+    """2026-08-27, same review: the console's STROBO was a Toggle over a
+    looping chaser - one press and the rig flashed until somebody remembered
+    which button had started it. A strobe hit has to be a bounded SingleShot
+    burst that ends itself. Reproduced by putting the loop back.
+    """
+    workspace = _show()
+    chaser = _functions(workspace)["Strobo Rapido"]
+    find_local(chaser, "RunOrder").text = "Loop"
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "estrobo enganchado"
+    ]
+    assert findings, "a latched looping strobe went unnoticed"
+    assert "Strobo Rapido" in {f.function for f in findings}
+
+
+def test_a_flash_button_pointed_at_something_qlcplus_cannot_flash(library):
+    """2026-08-27: only a Scene implements flash (`Scene::flash`; the base
+    class raises a flag nothing reads). A Flash button over a Chaser, EFX or
+    Collection half-works and teaches the operator not to trust the console.
+    Reproduced by pointing the FLASH button at the AUTO Collection.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    auto_id = functions["AUTO"].attrib["ID"]
+    for button in workspace.root.iter():
+        if localname(button) != "Button":
+            continue
+        action = find_local(button, "Action")
+        if action is None or (action.text or "").strip() != "Flash":
+            continue
+        find_local(button, "Function").set("ID", auto_id)
+        break
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "flash sin escena"
+    ]
+    assert findings, "a Flash button over a Collection went unnoticed"
+
+
+def test_a_quiet_dimmer_shadowed_by_a_full_one_running_beside_it(library):
+    """2026-08-27, the finding that sank the first Ambiente plan: intensity
+    mixes HTP, so while the colour wheel held every dimmer at 255 all night, a
+    quiet level asking for 110 on the same channels changed nothing - and
+    nothing looked broken. Reproduced by giving the wheel's scenes their
+    dimmers back.
+    """
+    from qlctool import roles
+    from qlctool.capabilities_of import capabilities_of
+
+    workspace = _show()
+    caps = {
+        c.fixture.fixture_id: c
+        for c in capabilities_of(workspace.root, library)
+    }
+    for function in _functions(workspace).values():
+        if function.attrib.get("Type") != "Scene":
+            continue
+        if not function.attrib.get("Name", "").startswith("Rig "):
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            fixture_id = int(value.attrib["ID"])
+            offsets = caps[fixture_id].offsets_for_role(roles.DIMMER)
+            if not offsets or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            pairs.update({offset: 255 for offset in offsets})
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "intensidad tapada"
+    ]
+    assert findings, "a dimmer nobody can ever see went unnoticed"
+
+
+def test_a_flash_accent_on_a_wheel_no_state_puts_back(library):
+    """2026-08-27: wheel channels are LTP - the last write stays. A Flash
+    scene that moves the beams' colour wheel releases cleanly only if the
+    state underneath also drives that wheel; otherwise the accent's position
+    simply stays, and nobody can say which button left it there. Reproduced
+    by taking the beams' white out of `Momento Charla`.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    charla = functions["Momento Charla"]
+    white_id = functions["Color Beam - White"].attrib["ID"]
+    for step in findall_local(charla, "Step"):
+        if step.text == white_id:
+            charla.remove(step)
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "acento sin dueño"
+    ]
+    assert findings, "a flashed wheel with no owner underneath went unnoticed"
+
+
+def test_an_efx_stretched_over_both_optics_families(library):
+    """2026-08-27: all twelve movers ran the same 100x100 EFX - a wash's wide
+    soft curve is a 7R needle dragged through faces at the same size and
+    speed. A mover with a gobo wheel is beam-class; an EFX that mixes the
+    families is tuned for neither. Reproduced by adding a beam to a wash EFX.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+
+    workspace = _show()
+    efx = next(
+        f for f in _functions(workspace).values()
+        if f.attrib.get("Type") == "EFX"
+        and f.attrib.get("Name", "").startswith("Wash ")
+    )
+    fixture = etree.SubElement(efx, f"{{{QLC_NS}}}Fixture")
+    for tag, text in (("ID", "20"), ("Head", "0"), ("Mode", "0"),
+                      ("Direction", "Forward"), ("StartOffset", "0")):
+        child = etree.SubElement(fixture, f"{{{QLC_NS}}}{tag}")
+        child.text = text
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "familias de movimiento mezcladas"
+    ]
+    assert findings, "an EFX mixing washes and beams went unnoticed"

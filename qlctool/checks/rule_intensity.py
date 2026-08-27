@@ -43,8 +43,13 @@ def check_intensity(
     states = states or set()
     findings: list[Finding] = []
     for function_id, caption in sorted(entries.items()):
-        kinds = None if function_id in states else STATES_COLOUR
-        dark = _dark(graph, reach(graph, groups, function_id, kinds=kinds))
+        is_state = function_id in states
+        kinds = None if is_state else STATES_COLOUR
+        dark = _dark(
+            graph,
+            reach(graph, groups, function_id, kinds=kinds),
+            layer=not is_state,
+        )
         if not dark:
             continue
         findings.append(Finding(
@@ -61,7 +66,21 @@ def check_intensity(
     return findings
 
 
-def _dark(graph: ShowGraph, driven) -> set[str]:
+def _dark(graph: ShowGraph, driven, layer: bool = False) -> set[str]:
+    # A layer that states colour and nothing else rides on the state beneath
+    # it, which owns the intensity (2026-08-27: colour and intensity are
+    # separate owners now, so the rig-wide wheel opens nobody's dimmer). But a
+    # layer that opens intensity for *some* of what it colours answers for all
+    # of it - a bank that lights twenty fixtures and forgets the panels'
+    # dimmer is the original panels-dark bug, and a dimmer opened behind a
+    # shutter left shut is still the beams' gobo-scene bug.
+    if layer and not any(
+        _touches_intensity_path(capability, written)
+        for fixture_id, written in driven.items()
+        if (capability := graph.capabilities.get(fixture_id)) is not None
+        and not capability.is_smoke
+    ):
+        return set()
     dark: set[str] = set()
     for fixture_id, written in driven.items():
         capability = graph.capabilities.get(fixture_id)
@@ -72,6 +91,15 @@ def _dark(graph: ShowGraph, driven) -> set[str]:
         if _reason_it_stays_dark(capability, written):
             dark.add(capability.fixture.name)
     return dark
+
+
+def _touches_intensity_path(capability, written: dict[int, int | None]) -> bool:
+    if any(offset in written for offset in capability.offsets_for_role(roles.DIMMER)):
+        return True
+    return any(
+        offset in written
+        for offset, _ in shutter_open_ranges(capability)
+    )
 
 
 def _colours(capability, written: dict[int, int | None]) -> bool:

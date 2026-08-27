@@ -183,17 +183,20 @@ LIBRARY_LINES = (
     "Encender las dos a la vez suma los dos colores: sale blanco.",
 )
 
-# The five spectrum bands, and which look each one presses. Only one is bound:
-# a starting point, since the thresholds and the pairing are a decision at the
-# venue with the real music playing. Its target is a Toggle button in a plain
-# frame - an audio bar calls pressFunction on the way up and again on the way
-# down, so a Flash button would latch on and never release, and a target inside
-# the room-state solo frame would have the bass line killing AUTO.
+# The five spectrum bands, none bound by default. The strobe was wired to the
+# upper mids until 2026-08-27: a strobe fired by whatever the PA does is a
+# strobe nobody chose, and the safety cap on flash rate means nothing if a
+# cymbal can hold the button. Binding a band to a look is a decision to make
+# at the venue, with the real music playing - and never to a strobe. A target
+# would be a Toggle button in a plain frame: an audio bar calls pressFunction
+# on the way up and again on the way down, so a Flash button would latch on,
+# and a target inside the room-state solo frame would have the bass killing
+# AUTO.
 AUDIO_BANDS: tuple[tuple[str, str | None], ...] = (
     ("Graves", None),
     ("Medios-graves", None),
     ("Medios", None),
-    ("Medios-agudos", "Strobo Rapido"),
+    ("Medios-agudos", None),
     ("Agudos", None),
 )
 
@@ -277,6 +280,9 @@ def generate_live_console(
             parent, master[name], caption, x, y, w, h, page=page,
             key=keys.get(name),
             action=FLASH if name in flash else TOGGLE,
+            # A hit must read over the running state, not merely join it:
+            # without override priority a white flash is one more HTP bid.
+            flash_override=name in flash,
             **kwargs,
         )
 
@@ -474,11 +480,7 @@ def _page_manual(
     wheel_ids += [b.mix_wheel_id for b in banks if b.mix_wheel_id is not None]
     for index, (caption, function_ids, time_ms) in enumerate((
         ("Vel. Colores", wheel_ids, 1900),
-        (
-            "Vel. Movimiento",
-            [movement.chaser_id] if movement.chaser_id else [],
-            10000,
-        ),
+        ("Vel. Movimiento", list(movement.dial_ids), 10000),
     )):
         if not function_ids:
             continue

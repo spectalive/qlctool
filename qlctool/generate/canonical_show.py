@@ -22,7 +22,7 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..monitor_positions import house_right_fixture_ids
-from ..palette import PALETTE
+from ..palette import PALETTE, PRIMARY_COLORS
 from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
 from ..workspace import Workspace
@@ -31,18 +31,21 @@ from .builtin_effects import generate_builtin_effects
 from .color_banks import GeneratedBank, generate_color_banks
 from .color_scene import color_scene_values
 from .dimmer_chases import generate_dimmer_chases
+from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
 from .home_position import generate_home_position
 from .live_console import generate_live_console
 from .matrix_effects import GeneratedMatrices, generate_matrix_effects
 from .moments import Moment, generate_moments
-from .movement_efx import generate_movement_efx, moving_head_ids
+from .movement_efx import moving_head_ids
+from .movement_families import generate_movement_families
 from .pixel_base import generate_pixel_base
+from .pixel_wheel_matrices import generate_pixel_wheel_matrices
 from .smoke_auto import generate_smoke_auto
 from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .stage_plot_layout import apply_stage_plot
 from .strobe_effects import generate_strobe_effects
-from .unison_colors import generate_unison_colors
+from .unison_colors import CONTRAST_PAIRS, generate_unison_colors
 from .wheel_color_values import wheel_color_values
 from .wheel_scenes import generate_wheel_scenes
 
@@ -55,19 +58,18 @@ MATRIX_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Strobe", "Wave
 CYCLE_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Waves", None)
 MATRIX_COLORS = ("Rojo", "Verde", "Azul", "Ambar", "Magenta", "Blanco")
 
-# Movement at the peak: the same shapes, twice round in the time of one.
-FAST_MOVEMENT_DURATION = 3424
-
 # The light somebody is lit by when they speak: white, warmed off daylight so a
 # face does not read as a mortuary, and flat enough that nothing draws the eye.
 CHARLA_WHITE = (255, 214, 170)
 
 # How long the night spends at each level, in milliseconds. A wave rather than a
 # ramp: the cycle comes down through the middle level instead of jumping from
-# peak to quiet.
+# peak to quiet. Peak is a burst, not a block - two continuous minutes of fast
+# movement and prism stopped reading as a peak at all (Codex review,
+# 2026-08-27: 20-45 s); the wave passes through it twice per cycle anyway.
 AMBIENT_HOLD = 4 * 60 * 1000
 PARTY_HOLD = 8 * 60 * 1000
-PEAK_HOLD = 2 * 60 * 1000
+PEAK_HOLD = 40 * 1000
 
 # Beat-locked timings, in beats, for `newshow --beats`. Two bars of colour, one
 # bar of matrix, eight bars of one movement shape: the counts a chase is
@@ -75,8 +77,11 @@ PEAK_HOLD = 2 * 60 * 1000
 MATRIX_BEATS = BeatTiming(hold=4)
 BEAT_TIMINGS: dict[str, BeatTiming] = {
     "Rueda Colores": BeatTiming(hold=8, fade=1),
-    "Movimientos Cabezas": BeatTiming(hold=32),
-    "Movimientos Rapidos": BeatTiming(hold=16),
+    "Movimientos Suaves": BeatTiming(hold=64),
+    "Movimientos Washes": BeatTiming(hold=32),
+    "Movimientos Beams": BeatTiming(hold=32),
+    "Rapidos Washes": BeatTiming(hold=16),
+    "Rapidos Beams": BeatTiming(hold=16),
     "Gobo Animacion": BeatTiming(hold=16),
     "Color Beam Animacion": BeatTiming(hold=16),
     "Prisma Animacion": BeatTiming(hold=32),
@@ -190,13 +195,15 @@ def build_canonical_show(
         master["Efectos Paneles"] = builtins.chaser_id
 
     matrices: list[GeneratedMatrices] = []
-    # AUTO runs a matrix cycle only where a group is really made of pixels. A
-    # matrix paints its group's own colour, so a cycle over the heads and
-    # another over the PARs is what put them on different colours all night -
-    # and on a group of single-cell fixtures a matrix is a colour wheel with
-    # extra steps anyway. The bars and panels keep theirs: they have something
-    # to draw with.
-    pixel_chasers: list[int] = []
+    # Matrices are drawn only where a group is really made of pixels: on a
+    # group of single-cell fixtures a matrix is a colour wheel with extra
+    # steps. The pixel groups' colour, though, belongs to the rig-wide wheel -
+    # their matrices ride inside its steps, one per wheel colour, because two
+    # chasers each rotating colour on their own clock never agree: the wheel
+    # had the room on cyan while the bars' cycle had them on magenta ("van con
+    # los colores a su bola", owner, 2026-08-26). The standalone cycle is still
+    # generated for the console; AUTO does not step it.
+    pixel_group_ids: list[int] = []
     # Every fixture a running matrix paints. The rig-wide colour wheel is kept
     # off these: RGB mixes HTP, so a bar told red by the wheel and blue by its
     # matrix comes out magenta, and a third source makes it white. One fixture,
@@ -219,7 +226,7 @@ def build_canonical_show(
         )
         matrices.append(generated)
         if generated.chaser_id is not None and _is_pixel_group(caps, group.fixture_ids):
-            pixel_chasers.append(generated.chaser_id)
+            pixel_group_ids.append(group.group_id)
             matrix_lit_ids |= set(group.fixture_ids)
     matrix_ids = [fid for m in matrices for fid in m.matrix_ids]
 
@@ -229,39 +236,44 @@ def build_canonical_show(
     pixel_base_id = generate_pixel_base(workspace, caps, sorted(matrix_lit_ids))
     if pixel_base_id is not None:
         master["Pixeles ON"] = pixel_base_id
-    # Everything the pixel groups need in one list: their intensity first, then
-    # the cycle that colours them. Wherever one goes, both go.
+    # Everything the pixel groups need beside the wheel: their intensity, and
+    # the panels' own programmes. Their colour is not here - the wheel's steps
+    # carry it, matrix included. Wherever the wheel goes, this goes.
     pixel_layer = [
-        fid for fid in (pixel_base_id, *pixel_chasers, builtins.chaser_id)
-        if fid is not None
+        fid for fid in (pixel_base_id, builtins.chaser_id) if fid is not None
     ]
+
+    # The wheel colours the pixel groups too, but through a matrix of its own
+    # colour started by each step - never through the scene, whose RGB would
+    # mix HTP with the matrix and land on a colour nobody chose.
+    step_matrices = generate_pixel_wheel_matrices(
+        workspace,
+        pixel_group_ids,
+        _wheel_colors(),
+        CYCLE_ALGORITHMS,
+    ) if pixel_group_ids else {}
 
     # Symmetry comes from reversing one side: with every head going the same way
     # round the room sweeps in parallel, and with house right backwards the
-    # pairs open and close together.
+    # pairs open and close together. Movement is generated per optics family -
+    # washes wide and slow, beams narrow and shorter - because one geometry
+    # over both tuned the show for neither (Codex review, 2026-08-27).
     mirrored = house_right_fixture_ids(workspace.root)
-    movement = generate_movement_efx(
-        workspace, library, path="Movimiento", chaser_hold=10000,
-        chaser_run_order="Random", mirrored_ids=mirrored,
+    movement = generate_movement_families(
+        workspace, library, mirrored_ids=mirrored
     )
-    if movement.chaser_id is not None:
-        master["Movimientos Cabezas"] = movement.chaser_id
-    # The same shapes at twice the speed, for the peak. Movement is a level, not
-    # a background: the quiet part of the night has the heads held still and the
-    # loud part has them moving fast, and one EFX cannot be both - the speed
-    # lives on the EFX, not on the chaser that steps it.
-    fast_movement = generate_movement_efx(
-        workspace, library, path="Movimiento Rapido", chaser_hold=6000,
-        chaser_run_order="Random", duration=FAST_MOVEMENT_DURATION,
-        chaser_name="Movimientos Rapidos", label_prefix="Movimiento Rapido",
-        mirrored_ids=mirrored,
-    )
-    if fast_movement.chaser_id is not None:
-        master["Movimientos Rapidos"] = fast_movement.chaser_id
+    if movement.cabezas_id is not None:
+        master["Movimientos Cabezas"] = movement.cabezas_id
+    if movement.rapidos_id is not None:
+        master["Movimientos Rapidos"] = movement.rapidos_id
     home_id = generate_home_position(workspace, library)
 
+    # Wheel scenes state the wheel and nothing else: their dimmer used to ride
+    # along at 255, which a quiet level could never bring down (HTP). The
+    # levels own intensity now - see `energy_intensity`.
     gobos = generate_wheel_scenes(
-        workspace, library, role=roles.GOBO, label="Gobo", path="Gobos"
+        workspace, library, role=roles.GOBO, label="Gobo", path="Gobos",
+        dimmer_full=False,
     )
     if gobos.chaser_id is not None:
         master["Gobo Animacion"] = gobos.chaser_id
@@ -274,14 +286,14 @@ def build_canonical_show(
     ]
     beam_colors = generate_wheel_scenes(
         workspace, library, role=roles.COLOR_MACRO, label="Color Beam",
-        fixture_ids=beams, hold=6000, path="Color Beam",
+        fixture_ids=beams, hold=6000, path="Color Beam", dimmer_full=False,
     )
     if beam_colors.chaser_id is not None:
         master["Color Beam Animacion"] = beam_colors.chaser_id
 
     prisms = generate_wheel_scenes(
         workspace, library, role=roles.PRISM, label="Prisma", run_order="Loop",
-        hold=8000, path="Prisma",
+        hold=8000, path="Prisma", dimmer_full=False,
     )
     if prisms.chaser_id is not None:
         master["Prisma Animacion"] = prisms.chaser_id
@@ -315,6 +327,7 @@ def build_canonical_show(
     unison = generate_unison_colors(
         workspace, library,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
+        step_extras=step_matrices,
     )
     if unison.wheel_id is not None:
         master["Rueda Colores"] = unison.wheel_id
@@ -332,28 +345,51 @@ def build_canonical_show(
     # every step - and because two levels running at once (which the console
     # used to allow) then put two colour sources on one fixture.
     gobo_open_id = _first(gobos.scene_ids)
+    # Each level carries its own intensity base, and nobody else bids on those
+    # dimmers: with the colour scenes stripped of theirs, "Ambiente" really is
+    # dimmer than "Fiesta" for the first time. The pixel groups stay out -
+    # `Pixeles ON` owns them.
+    intensity = generate_energy_intensity(
+        workspace, caps,
+        exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
+    )
+    if intensity.ambient_id is not None:
+        master["Intensidad Ambiente"] = intensity.ambient_id
+    if intensity.full_id is not None:
+        master["Intensidad Total"] = intensity.full_id
     energy = generate_energy_levels(
         workspace,
         levels=[
             EnergyLevel(
                 "Nivel Ambiente",
-                # Heads held still, and the beams on the open position of their
-                # gobo wheel: the quiet level is where the pattern comes *out*,
-                # and a wheel nothing drives keeps whatever it was left on.
-                [fid for fid in (home_id, gobo_open_id) if fid is not None],
+                # Alive from the first second - "el auto es eso, como el modo
+                # auto de las cabezas en si" (owner, 2026-08-27). The washes
+                # breathe through wide slow shapes, the beams hold their fan,
+                # and the room sits at the low intensity base. The gobo wheel
+                # is parked open: the quiet level is where the pattern comes
+                # *out*, and a wheel nothing drives keeps what it was left on.
+                [fid for fid in (
+                    movement.slow_id, movement.fan_id, gobo_open_id,
+                    intensity.ambient_id,
+                ) if fid is not None],
                 AMBIENT_HOLD,
             ),
             EnergyLevel(
                 "Nivel Fiesta",
-                [master["Movimientos Cabezas"], master["Gobo Animacion"]],
+                [fid for fid in (
+                    movement.wash_id, movement.beam_id,
+                    master["Gobo Animacion"], intensity.full_id,
+                ) if fid is not None],
                 PARTY_HOLD,
             ),
             EnergyLevel(
                 "Nivel Peak",
-                [master.get("Movimientos Rapidos", master["Movimientos Cabezas"]),
-                 master["Gobo Animacion"],
-                 *( [master["Prisma Animacion"]] if "Prisma Animacion" in master else []),
-                 master["Dimmer Chase"]],
+                [fid for fid in (
+                    movement.fast_wash_id, movement.fast_beam_id,
+                    master["Gobo Animacion"],
+                    master.get("Prisma Animacion"),
+                    master["Dimmer Chase"], intensity.full_id,
+                ) if fid is not None],
                 PEAK_HOLD,
             ),
         ],
@@ -386,20 +422,25 @@ def build_canonical_show(
         workspace, caps, "Luz Charla", CHARLA_WHITE
     )
     beam_white_id = _first(beam_colors.scene_ids)
+    # Every moment brings its own intensity base beside its colour, because
+    # the colour scenes no longer open anything on their own.
     moments = generate_moments(workspace, [
         # Somebody is talking: steady warm light, heads parked, nothing moving,
         # no wheel and no matrix - the one state where change is the enemy.
         Moment("Momento Charla", [
             home_id, master["Luz Charla"], gobo_open_id, beam_white_id,
+            intensity.full_id,
         ]),
-        # A lull: the colour bed and the pixels keep breathing, the heads stay
-        # where they are.
+        # A lull: the colour bed and the pixels keep breathing at the low
+        # intensity base, the heads stay where they are.
         Moment("Momento Tranquilo", [
             master["Rueda Colores"], *pixel_layer, home_id, gobo_open_id,
+            intensity.ambient_id,
         ]),
         Moment("Momento Fiesta", [
             master["Rueda Colores"], *pixel_layer,
             master["Movimientos Cabezas"], master["Gobo Animacion"],
+            intensity.full_id,
         ]),
         # Everything the rig has, minus the strobe: a strobe belongs to a hit
         # somebody presses and lets go of, not to a state left running.
@@ -409,6 +450,7 @@ def build_canonical_show(
             master["Gobo Animacion"],
             master.get("Prisma Animacion"),
             master["Dimmer Chase"],
+            intensity.full_id,
         ]),
     ])
     master.update(moments)
@@ -471,6 +513,18 @@ def _first(ids) -> int | None:
     what the quiet level wants: no gobo rather than whatever was left in.
     """
     return ids[0] if ids else None
+
+
+def _wheel_colors() -> dict[str, tuple[int, int, int]]:
+    """Every colour a wheel step can put the room on, in wheel order.
+
+    The solid steps use the primary palette; a contrast step puts everything
+    that is not a moving head - the pixel groups included - on its *rest*
+    colour, so those are wheel colours too even when the primaries skip them.
+    """
+    names = list(PRIMARY_COLORS)
+    names += [rest for _, rest in CONTRAST_PAIRS if rest not in names]
+    return {name: PALETTE[name] for name in names}
 
 
 def _is_pixel_group(caps, fixture_ids) -> bool:

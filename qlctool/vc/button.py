@@ -39,10 +39,15 @@ def build_button(
     font: str = DEFAULT,
     intensity: int = 100,
     stop_all_fade_ms: int = 0,
+    flash_override: bool = False,
 ) -> etree._Element:
     """Append a <Button> to parent and return it.
 
     key is a QLC+ keyboard shortcut as it writes them - "Space", "1", "Q", ".".
+    flash_override marks a Flash button "Override priority": its scene beats
+    every other channel owner while held (VCButton saves it as Override="1" on
+    the Action element), which is what makes a white hit read over a running
+    colour bed instead of merely joining it.
     """
     button = etree.SubElement(parent, f"{{{QLC_NS}}}Button")
     button.set("Caption", caption)
@@ -57,6 +62,8 @@ def build_button(
     action_element = etree.SubElement(button, f"{{{QLC_NS}}}Action")
     if action == STOP_ALL and stop_all_fade_ms:
         action_element.set("FadeOut", str(stop_all_fade_ms))
+    if action == FLASH and flash_override:
+        action_element.set("Override", "1")
     action_element.text = action
     shortcut = etree.SubElement(button, f"{{{QLC_NS}}}Key")
     if key is not None:
