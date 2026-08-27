@@ -20,6 +20,7 @@ from qlctool.generate.live_console import (
     ROOM_STATES,
 )
 from qlctool.library import FixtureLibrary
+from qlctool.vc.button import NO_FUNCTION
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
@@ -119,6 +120,9 @@ def test_every_function_gets_at_most_one_button(console):
         for b, _, _ in _walk(frame)
         if localname(b) == "Button"
     ]
+    # NO_FUNCTION is the sentinel for "drives nothing" (StopAll, Blackout):
+    # sharing it is not two buttons fighting over one function.
+    driven = [f for f in driven if f != NO_FUNCTION]
     assert len(driven) == len(set(driven))
 
 
@@ -244,12 +248,30 @@ def test_the_panic_button_stops_everything_and_drives_nothing(console):
     _, frame = console
     panic = _frame_named(frame, "SI ALGO VA MAL")
     buttons = [b for b in panic if localname(b) == "Button"]
-    assert len(buttons) == 1
-    action = find_local(buttons[0], "Action")
-    assert action.text == "StopAll"
+    stop_all = [b for b in buttons if find_local(b, "Action").text == "StopAll"]
+    assert len(stop_all) == 1
+    action = find_local(stop_all[0], "Action")
     assert int(action.attrib["FadeOut"]) > 0
     # Function::invalidId(): it stops what is running rather than adding to it.
-    assert find_local(buttons[0], "Function").attrib["ID"] == "4294967295"
+    assert find_local(stop_all[0], "Function").attrib["ID"] == "4294967295"
+
+
+def test_the_panic_frame_also_has_a_blackout_button(console):
+    """StopAll stops functions; Blackout forces the outputs themselves to zero.
+
+    They answer different questions - "what is running" versus "what is the
+    desk outputting" - so the panic frame needs both, not one standing in for
+    the other.
+    """
+    _, frame = console
+    panic = _frame_named(frame, "SI ALGO VA MAL")
+    buttons = [b for b in panic if localname(b) == "Button"]
+    blackout = [b for b in buttons if find_local(b, "Action").text == "Blackout"]
+    assert len(blackout) == 1
+    # No function of its own, same as StopAll.
+    assert find_local(blackout[0], "Function").attrib["ID"] == "4294967295"
+    stop_all = [b for b in buttons if find_local(b, "Action").text == "StopAll"]
+    assert len(stop_all) == 1
 
 
 def test_every_button_on_the_show_page_says_its_own_key(console):

@@ -38,7 +38,7 @@ from ..argb import argb_from_rgb
 from ..palette import PALETTE
 from ..vc.appearance import DEFAULT
 from ..vc.audio_triggers import build_audio_triggers
-from ..vc.button import FLASH, STOP_ALL, TOGGLE, build_button
+from ..vc.button import BLACKOUT, FLASH, STOP_ALL, TOGGLE, build_button
 from ..vc.console_font import console_font
 from ..vc.frame import build_frame
 from ..vc.label import build_label
@@ -65,6 +65,8 @@ PAGES = 3
 # bound to nothing else in QLC+ or in this console.
 STOP_ALL_KEY = "Backspace"
 STOP_ALL_FADE_MS = 1000
+# Escape, for the same reason - free everywhere else on this console.
+BLACKOUT_KEY = "Escape"
 
 OUTER_X, OUTER_Y = 4, 4
 OUTER_WIDTH, OUTER_HEIGHT = 1432, 892
@@ -352,19 +354,25 @@ def _page_show(outer, button, master_button, frame, label) -> None:
         outer, "SI ALGO VA MAL", LEFT_X, 570, OUTER_WIDTH - 16, 118,
         page=PAGE_SHOW, font=TITLE_FONT,
     )
-    # No function of its own: StopAll stops every one that is running, which is
-    # the only honest answer to "something is on and nobody knows what started
-    # it". A scene would only add one more thing on top of the mess.
+    # Neither drives a function of its own. StopAll stops every one that is
+    # running, which is the only honest answer to "something is on and nobody
+    # knows what started it". Blackout answers a different question - it forces
+    # the outputs themselves to zero, for when the desk is stuck showing light
+    # that no running function accounts for.
     button(
         panic, None, "PARAR TODO · Retroceso", GAP + 2, HEADER + 4, 460, 78,
         action=STOP_ALL, key=STOP_ALL_KEY, stop_all_fade_ms=STOP_ALL_FADE_MS,
         font=BIG_FONT,
     )
+    button(
+        panic, None, "APAGON", 474, HEADER + 4, 200, 78,
+        action=BLACKOUT, key=BLACKOUT_KEY, font=BIG_FONT,
+    )
     label(
         panic,
         "Para todas las funciones con un fundido de 1 segundo y deja la sala "
         "a oscuras. Después, pulsa AUTO para volver a empezar.",
-        476, HEADER + 4, 930, 78, font=HELP_FONT,
+        680, HEADER + 4, 726, 78, font=HELP_FONT,
     )
 
     for index, line in enumerate(HELP_LINES):
