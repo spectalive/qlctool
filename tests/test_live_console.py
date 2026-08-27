@@ -307,10 +307,14 @@ def test_the_console_can_reach_the_grand_master(console):
     """
     _, frame = console
     sliders = [w for w, _, _ in _walk(frame) if localname(w) == "Slider"]
-    assert len(sliders) == 1
-    mode = find_local(sliders[0], "SliderMode")
-    assert mode.text == "GrandMaster"
-    assert mode.attrib["ValueDisplayStyle"] == "Exact"
+    modes = {
+        (find_local(s, "SliderMode").text or ""): find_local(s, "SliderMode")
+        for s in sliders
+    }
+    # Exactly one GrandMaster; the Level fader over the panels' speed channel
+    # ("Vel. Paneles", 2026-08-27) rides beside it and must not absorb it.
+    assert sorted(modes) == ["GrandMaster", "Level"]
+    assert modes["GrandMaster"].attrib["ValueDisplayStyle"] == "Exact"
 
 
 def test_a_mix_button_is_not_ambiguous(console):

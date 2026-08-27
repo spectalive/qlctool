@@ -46,6 +46,7 @@ from .pixel_base import generate_pixel_base
 from .pixel_wheel_matrices import generate_pixel_wheel_matrices
 from .flash_color import generate_flash_color
 from .smoke_auto import generate_smoke_auto
+from .stage_aim import generate_stage_aim
 from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .stage_plot_layout import apply_stage_plot
 from .strobe_effects import generate_strobe_effects
@@ -300,6 +301,14 @@ def build_canonical_show(
     if movement.rapidos_id is not None:
         master["Movimientos Rapidos"] = movement.rapidos_id
     home_id = generate_home_position(workspace, library)
+    if home_id is not None:
+        # On the console beside the movement shapes: stillness is a look too.
+        master["Cabezas Centro"] = home_id
+    # The hand-built show's stage look, aimed by eye on the real rig and
+    # carried as measured data: heads on the stage, colour left to the state.
+    stage_aim_id = generate_stage_aim(workspace, library)
+    if stage_aim_id is not None:
+        master["Escenario"] = stage_aim_id
 
     # Wheel scenes state the wheel and nothing else: their dimmer used to ride
     # along at 255, which a quiet level could never bring down (HTP). The

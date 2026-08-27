@@ -39,6 +39,10 @@ class GeneratedBuiltins:
     scene_ids: list[int] = field(default_factory=list)
     chaser_id: int | None = None
     fixture_ids: tuple[int, ...] = ()
+    # (fixture id, channel offset) of every speed channel the scenes set, so
+    # the console can put a live fader over them the way the hand-built show
+    # did ("Strobo LED Effect Speed").
+    speed_channels: tuple[tuple[int, int], ...] = ()
 
 
 def generate_builtin_effects(
@@ -107,4 +111,9 @@ def generate_builtin_effects(
         scene_ids=scene_ids,
         chaser_id=chaser_id,
         fixture_ids=tuple(c.fixture.fixture_id for c, _ in programmed),
+        speed_channels=tuple(
+            (capability.fixture.fixture_id, program.speed_offset)
+            for capability, program in programmed
+            if program.speed_offset is not None
+        ),
     )

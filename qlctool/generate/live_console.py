@@ -43,6 +43,7 @@ from ..vc.console_font import console_font
 from ..vc.frame import build_frame
 from ..vc.grand_master_slider import build_grand_master_slider
 from ..vc.label import build_label
+from ..vc.level_slider import build_level_slider
 from ..vc.matrix_control import build_matrix_control
 from ..vc.speed_dial import build_speed_dial
 from ..vc.widget_ids import next_widget_id
@@ -516,13 +517,27 @@ def _page_manual(
         outer, "Figura que dibujan las cabezas", MIDDLE_X, 68, MIDDLE_WIDTH, 80,
         page=PAGE_MANUAL, solo=True, font=TITLE_FONT,
     )
-    # One button per shape, sized to fit however many the rig now draws - a
-    # step of 88/width of 82 is what this comes out to for the original 7.
-    shape_step = (MIDDLE_WIDTH - GAP) // len(movement.efx_ids)
+    # One button per shape, sized to fit however many the rig now draws.
+    # `Escenario` (the measured stage aim) and `Cabezas Centro` (parked) sit
+    # in the same solo frame on purpose: aiming the heads somewhere fixed and
+    # drawing a figure with them are exclusive, and the solo frame is what
+    # stops the figure when the aim is pressed.
+    aims = [
+        (name, caption) for name, caption in
+        (("Escenario", "Escenario"), ("Cabezas Centro", "Centro"))
+    ]
+    slots = len(movement.efx_ids) + len(aims)
+    shape_step = (MIDDLE_WIDTH - GAP) // slots
     for index, function_id in enumerate(movement.efx_ids):
         button(
             shapes, function_id, _after(names.get(function_id, ""), "Movimiento "),
             x=GAP + index * shape_step, y=HEADER, w=shape_step - GAP, h=44,
+        )
+    for offset, (name, caption) in enumerate(aims):
+        master_button(
+            shapes, name, caption,
+            GAP + (len(movement.efx_ids) + offset) * shape_step, HEADER,
+            shape_step - GAP, 44,
         )
 
     # The beams' wheels are a live decision, not library material: somebody
@@ -682,6 +697,27 @@ def _page_library(
                 x=GAP + column * 51, y=HEADER + row * 52, w=47, h=46,
                 font=TINY_FONT,
             )
+
+    if builtins.speed_channels:
+        # The live fader over the panels' speed channel, beside the effects it
+        # paces - the hand-built console's "Strobo LED Effect Speed", whose
+        # slider sat at 253 with the show's own sequence stepping 160-255.
+        # HTP over the scenes' 200, so pushing it up speeds the running
+        # effect and pulling it to zero simply hands the pace back.
+        slider_id = ids.take()
+        slider = build_level_slider(
+            outer, slider_id, "Vel. Paneles",
+            RIGHT_X, 580, 90, 244,
+            channels=list(builtins.speed_channels),
+        )
+        _on_page(slider, PAGE_LIBRARY)
+        console.widget_ids.append(slider_id)
+        label(
+            outer, "Velocidad de los efectos de los paneles. A cero, manda "
+            "la del ciclo (200).",
+            RIGHT_X + 96, 580, RIGHT_WIDTH - 96, 120,
+            page=PAGE_LIBRARY, font=HELP_FONT,
+        )
 
     if matrices and matrices[0].matrix_ids:
         matrix_widget_id = ids.take()
