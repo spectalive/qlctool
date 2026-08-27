@@ -9,9 +9,9 @@ it already did.
 
 The frame is found by what its buttons *do*, never by their names. Several solo
 frames hold a dozen buttons; only one holds buttons that between them drive the
-whole rig, because that is what being the room's state means. A frame of
-ninety matrix looks, each painting one group, is not that however many buttons
-it has.
+whole rig, because that is what being the room's state means. A frame of a
+hundred matrix looks, each painting one group, is not that however many
+buttons it has.
 """
 
 from lxml import etree

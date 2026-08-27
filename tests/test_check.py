@@ -226,7 +226,7 @@ def test_two_colour_clocks_ticking_in_one_room_state(library):
 
 
 def test_the_curated_matrix_library_never_reaches_a_wheel_step(library):
-    """Task 5's nine curated scripts (Sine Wave, Marquee, Gradient, ...) are
+    """Task 5's ten curated scripts (Sine Wave, Marquee, Gradient, ...) are
     library material and per-group Ciclo Matrices only - `Rueda Colores`'s
     steps still start only the single-wheel-colour matrices
     `generate_pixel_wheel_matrices` builds (rule `relojes de color`'s whole
@@ -710,3 +710,41 @@ def test_an_audio_trigger_bound_to_a_room_state_button(library):
         if f.rule == "disparador de audio vacio"
     ]
     assert not findings, "the fixed binding (Flash 100%) should not trip this rule"
+
+
+def test_an_audio_trigger_bar_bound_to_a_dangling_widget_id(library):
+    """2026-08-27, final whole-branch review of this same audit: `_is_bound`
+    counted any WidgetID as a binding, even one no widget on the console
+    actually carries. QLC+'s own `checkWidgetFunctionality` looks the widget
+    up by ID first and does nothing when that lookup fails
+    (qmlui/virtualconsole/vcaudiotriggers.cpp:506) - so a bar left pointing
+    at a deleted or never-created widget presses nothing, exactly like a bar
+    with no WidgetID at all, and an AudioTriggers widget whose only bar does
+    this is dead by construction, the same finding as the empty-BarsNumber
+    case above. Reproduced by pointing the one bar QLC+ ships at a WidgetID
+    nothing on the console carries.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+
+    workspace = _show()
+    widget = next(
+        w for w in workspace.root.iter() if localname(w) == "AudioTriggers"
+    )
+    for bar in findall_local(widget, "SpectrumBar"):
+        widget.remove(bar)
+    bar = etree.SubElement(widget, f"{{{QLC_NS}}}SpectrumBar")
+    bar.set("Name", "Graves")
+    bar.set("Type", "3")
+    bar.set("MinThreshold", "12")
+    bar.set("MaxThreshold", "51")
+    bar.set("Divisor", "1")
+    bar.set("Index", "0")
+    bar.set("WidgetID", "999999")
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "disparador de audio vacio"
+    ]
+    assert findings, "a bar bound to a dangling WidgetID went unnoticed"

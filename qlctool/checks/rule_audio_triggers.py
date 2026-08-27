@@ -23,14 +23,17 @@ involved and no cap on how often a beat repeats it.
   means any bar bound to a function - directly, or through a widget that
   starts one - that reaches a strobe anywhere under it is a finding.
 - A `VCWidgetBar` that presses a button living in a `SoloFrame` alongside
-  other buttons is worse than a latched Toggle: `VCSoloFrame::
-  slotWidgetFunctionStarting` stops every *other* widget's function in the
-  frame the instant one starts (confirmed against `ui/src/virtualconsole/
-  vcbutton.cpp` and `vcaudiotriggers.cpp` in the QLC+ source), and nothing
-  restores whichever was running when the bar's own button releases. A human
-  choosing to press a room-state button and lose whatever was running is the
-  frame doing its job; a bass line doing the same thing, unattended, is a
-  malfunction - the room can go dark for the rest of the night.
+  other buttons is worse than a latched Toggle: a bar's threshold crossing
+  calls `VCButton::requestStateChange` on its target exactly like a finger
+  would (`qmlui/virtualconsole/vcaudiotriggers.cpp:506`,
+  `checkWidgetFunctionality`), and that ends up at `VCSoloFrame::
+  slotFunctionStarting` (`qmlui/virtualconsole/vcbutton.cpp:428-451`), which
+  stops every *other* widget's function in the frame the instant one starts,
+  and nothing restores whichever was running when the bar's own button
+  releases. A human choosing to press a room-state button and lose whatever
+  was running is the frame doing its job; a bass line doing the same thing,
+  unattended, is a malfunction - the room can go dark for the rest of the
+  night.
 """
 
 from ..vc.button import NO_FUNCTION
@@ -68,7 +71,10 @@ def _check_widget(
     graph: ShowGraph, groups, widget, widgets_by_id: dict, solo_frames: dict
 ) -> list[Finding]:
     caption = widget.attrib.get("Caption", "") or "AudioTriggers"
-    bars = [bar for bar in iter_local(widget, "SpectrumBar") if _is_bound(bar)]
+    bars = [
+        bar for bar in iter_local(widget, "SpectrumBar")
+        if _is_bound(bar, widgets_by_id)
+    ]
     if not bars:
         return [Finding(
             rule=RULE,
@@ -116,13 +122,19 @@ def _check_widget(
     return findings
 
 
-def _is_bound(bar) -> bool:
+def _is_bound(bar, widgets_by_id: dict) -> bool:
     """Whether this bar actually targets a channel, a function or a widget."""
     bar_type = bar.attrib.get("Type")
     if bar_type == FUNCTION_BAR:
         return bar.attrib.get("FunctionID") is not None
     if bar_type == WIDGET_BAR:
-        return bar.attrib.get("WidgetID") is not None
+        widget_id = bar.attrib.get("WidgetID")
+        # A WidgetID with no matching widget is a dangling reference, not a
+        # binding: QLC+'s own `checkWidgetFunctionality` looks the widget up
+        # by ID and does nothing when that lookup fails, so a bar left
+        # pointing at a deleted or never-created widget presses nothing -
+        # the same as no WidgetID at all.
+        return widget_id is not None and widget_id in widgets_by_id
     if bar_type == DMX_BAR:
         channels = find_local(bar, "DMXChannels")
         return channels is not None and bool((channels.text or "").strip())
@@ -180,7 +192,15 @@ def _solo_frame_membership(console) -> dict:
 
 
 def _solo_frame_conflict(target, solo_frame) -> bool:
-    """Whether another button in the frame would lose its function to this one."""
+    """Whether another button in the frame would lose its function to this one.
+
+    Only scans `solo_frame`'s direct Button children, unlike
+    `_solo_frame_membership` above, which follows a SoloFrame's nested plain
+    Frames too - an asymmetry that is fine today because every SoloFrame this
+    generator ships holds Buttons directly, never a Button nested inside a
+    plain Frame of its own; a shipped SoloFrame that grows one would need this
+    walked the same way.
+    """
     for button in solo_frame:
         if localname(button) != "Button" or button is target:
             continue

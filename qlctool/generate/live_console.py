@@ -17,7 +17,7 @@ Two rules decide the frames.
 
 **A function and the functions it starts never share a solo frame.** A solo
 frame stops every other widget's function as soon as one starts
-(VCSoloFrame::slotWidgetFunctionStarting), and a Toggle button reports its
+(qmlui's `VCSoloFrame::slotFunctionStarting`), and a Toggle button reports its
 function starting however it was started - so AUTO dies the instant it starts a
 wheel that sits in the same solo frame. Masters and anything that drives other
 functions live in plain frames; only leaf looks are grouped solo.
@@ -389,20 +389,28 @@ def _page_show(outer, button, master_button, frame, label) -> None:
     # running, which is the only honest answer to "something is on and nobody
     # knows what started it". Blackout answers a different question - it forces
     # the outputs themselves to zero, for when the desk is stuck showing light
-    # that no running function accounts for.
+    # that no running function accounts for. And unlike StopAll, Blackout is a
+    # latch, not a one-shot: qmlui's VCButton::Action::Blackout case toggles
+    # `inputOutputMap()->toggleBlackout()` on press (qmlui/virtualconsole/
+    # vcbutton.cpp:445-450) - the first APAGON forces the room dark regardless
+    # of what AUTO or a moment is still doing underneath, and only a second
+    # APAGON lifts it back to that. AUTO restarts nothing while blacked out:
+    # it has to follow the second APAGON, not replace it - the help label
+    # below says so.
     button(
         panic, None, "PARAR TODO · Retroceso", GAP + 2, HEADER + 4, 460, 78,
         action=STOP_ALL, key=STOP_ALL_KEY, stop_all_fade_ms=STOP_ALL_FADE_MS,
         font=BIG_FONT,
     )
     button(
-        panic, None, "APAGON", 474, HEADER + 4, 200, 78,
+        panic, None, "APAGON · Esc", 474, HEADER + 4, 200, 78,
         action=BLACKOUT, key=BLACKOUT_KEY, font=BIG_FONT,
     )
     label(
         panic,
-        "Para todas las funciones con un fundido de 1 segundo y deja la sala "
-        "a oscuras. Después, pulsa AUTO para volver a empezar.",
+        "PARAR TODO para las funciones con un fundido de 1 segundo — pulsa "
+        "AUTO para retomar. APAGON deja la sala a oscuras — vuelve a pulsar "
+        "APAGON para devolverla, y luego AUTO.",
         680, HEADER + 4, 726, 78, font=HELP_FONT,
     )
 
