@@ -170,8 +170,11 @@ DIAL_LINES = (
 )
 
 # The workspace's own GrandMaster - it scales every output - had no widget
-# bound to it at all. Sits directly below "Intensidad y strobo de fixture",
-# the only other widget that touches every fixture instead of one function.
+# bound to it at all. It wants to sit below "Intensidad y strobo de
+# fixture", the only other widget that touches every fixture instead of one
+# function, but the left column's colour banks grow with the rig - four
+# groups already leave that spot off the bottom of a 900px screen - so it
+# sits under the audio triggers on the right instead, where there is room.
 GRAND_MASTER_WIDTH = 90
 GRAND_MASTER_HEIGHT = 140
 GRAND_MASTER_LINES = (
@@ -199,17 +202,22 @@ LIBRARY_LINES = (
     "Encender las dos a la vez suma los dos colores: sale blanco.",
 )
 
-# The five spectrum bands, none bound by default. The strobe was wired to the
-# upper mids until 2026-08-27: a strobe fired by whatever the PA does is a
-# strobe nobody chose, and the safety cap on flash rate means nothing if a
-# cymbal can hold the button. Binding a band to a look is a decision to make
-# at the venue, with the real music playing - and never to a strobe. A target
-# would be a Toggle button in a plain frame: an audio bar calls pressFunction
-# on the way up and again on the way down, so a Flash button would latch on,
-# and a target inside the room-state solo frame would have the bass killing
-# AUTO.
+# The five spectrum bands. The strobe was wired to the upper mids until
+# 2026-08-27: a strobe fired by whatever the PA does is a strobe nobody
+# chose, and the safety cap on flash rate means nothing if a cymbal can hold
+# the button - so no band reaches one (`disparador de audio vacio` checks
+# that on every function the bound bars can reach, not just this one).
+# Bass is bound to `Blanco Total` - the pre-2026-08-27 pairing (then named
+# `Todo Blanco`), a Scene with no strobe in it - as a starting point for the
+# venue to judge with the real music playing. Its button now lives in the
+# room-state solo frame (`Blanco Total` is a "latched work light" room
+# state), so a loud bass line also stops AUTO the way a hand on that button
+# would; nothing restarts AUTO on the way back down. That trade only got
+# introduced today (f14b768 moved `Todo Blanco` into the solo frame the same
+# day this pairing was restored), so it wants eyes at the first on-site test,
+# alongside the thresholds.
 AUDIO_BANDS: tuple[tuple[str, str | None], ...] = (
-    ("Graves", None),
+    ("Graves", "Blanco Total"),
     ("Medios-graves", None),
     ("Medios", None),
     ("Medios-agudos", None),
@@ -458,19 +466,21 @@ def _page_manual(
             GAP + column * 258, HEADER + row * 52, 252, 46,
         )
 
-    grand_master_y = y + 136 + GAP
+    # Below the audio triggers (they end at y=440): the left column is full,
+    # four colour banks deep.
+    grand_master_y = 450
     grand_master_id = ids.take()
     grand_master = build_grand_master_slider(
         outer, grand_master_id, "Master General",
-        LEFT_X, grand_master_y, GRAND_MASTER_WIDTH, GRAND_MASTER_HEIGHT,
+        RIGHT_X, grand_master_y, GRAND_MASTER_WIDTH, GRAND_MASTER_HEIGHT,
     )
     _on_page(grand_master, PAGE_MANUAL)
     console.widget_ids.append(grand_master_id)
     for index, line in enumerate(GRAND_MASTER_LINES):
         label(
             outer, line,
-            LEFT_X + GRAND_MASTER_WIDTH + GAP, grand_master_y + index * 22,
-            LEFT_WIDTH - GRAND_MASTER_WIDTH - GAP, 20,
+            RIGHT_X, grand_master_y + GRAND_MASTER_HEIGHT + GAP + index * 22,
+            RIGHT_WIDTH, 20,
             page=PAGE_MANUAL, font=HELP_FONT,
         )
 

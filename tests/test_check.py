@@ -520,3 +520,66 @@ def test_an_efx_stretched_over_both_optics_families(library):
         if f.rule == "familias de movimiento mezcladas"
     ]
     assert findings, "an EFX mixing washes and beams went unnoticed"
+
+
+def test_an_audio_trigger_with_no_bar_bound_to_anything(library):
+    """2026-08-27, Codex audit verification (docs/superpowers/plans/
+    2026-08-27-qlc-audit-verification.md, claim A1): the console's
+    AudioTriggers widget ships with BarsNumber=5 and zero SpectrumBar
+    children. Somebody who finds it and picks an audio input in
+    Configuration still presses nothing - every band is unbound, so the
+    widget is dead by design, not by missing hardware. Reproduced by
+    stripping every SpectrumBar off the widget.
+    """
+    workspace = _show()
+    widget = next(
+        w for w in workspace.root.iter() if localname(w) == "AudioTriggers"
+    )
+    for bar in findall_local(widget, "SpectrumBar"):
+        widget.remove(bar)
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "disparador de audio vacio"
+    ]
+    assert findings, "an AudioTriggers widget with no bound bar went unnoticed"
+
+
+def test_an_audio_trigger_bound_to_a_strobe(library):
+    """Same audit: an audio bar presses whatever widget it is bound to on the
+    way up and again on the way down, with no finger on the button and no
+    limit on how often a beat repeats it. A strobe behind that is worse than
+    the latched Toggle the 2026-08-27 review already found, because nobody
+    even pressed it. Reproduced by binding a bar to the button that starts
+    `Strobo Rapido`.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+
+    workspace = _show()
+    functions = _functions(workspace)
+    strobe_id = functions["Strobo Rapido"].attrib["ID"]
+    strobe_button = next(
+        b for b in workspace.root.iter()
+        if localname(b) == "Button"
+        and (function := find_local(b, "Function")) is not None
+        and function.attrib.get("ID") == strobe_id
+    )
+    widget = next(
+        w for w in workspace.root.iter() if localname(w) == "AudioTriggers"
+    )
+    bar = etree.SubElement(widget, f"{{{QLC_NS}}}SpectrumBar")
+    bar.set("Name", "Graves")
+    bar.set("Type", "3")
+    bar.set("MinThreshold", "12")
+    bar.set("MaxThreshold", "51")
+    bar.set("Divisor", "1")
+    bar.set("Index", "0")
+    bar.set("WidgetID", strobe_button.attrib["ID"])
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "disparador de audio vacio"
+    ]
+    assert findings, "an audio bar bound to a strobe went unnoticed"

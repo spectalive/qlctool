@@ -19,6 +19,7 @@ from .console_states import room_states
 from .entry_points import entry_points
 from .finding import ERROR, Finding
 from .rule_accent_restore import check_accent_restore
+from .rule_audio_triggers import check_audio_triggers
 from .rule_collision import check_collisions
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
@@ -69,6 +70,7 @@ def check_workspace(
     findings += check_smoke(graph, groups, entries)
     findings += check_group_grids(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))
+    findings += check_audio_triggers(graph, groups, root)
     return sorted(findings, key=lambda f: (f.severity != ERROR, f.rule, f.function))
 
 
