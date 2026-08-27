@@ -1,11 +1,16 @@
 """The console's own traps, which a workspace can load cleanly and still have.
 
-Three of them have already cost a show. A **solo frame** stops every other
+Four of them have already cost a show. A **solo frame** stops every other
 widget's function the moment one starts, so a master sharing one with its own
 members dies the instant it starts them - that is what killed AUTO. A **key**
-reaches every widget on every page, so two buttons on one letter fire both. And
-a widget past the edge of a 1440x900 canvas is a button nobody can press,
-because the show laptop cannot scroll to it.
+reaches every widget on every page, so two buttons on one letter fire both. A
+widget past the edge of a 1440x900 canvas is a button nobody can press, because
+the show laptop cannot scroll to it. And a widget past the edge of its own
+*parent frame* - inside the canvas, so `_off_canvas` never sees it - is a
+button drawn clipped or spilling onto whatever sits below or beside that frame:
+the librería's Matrices frame grew to 34 buttons on a 6-column layout sized
+for 30 (Task 5's curated scripts), and its sixth row rendered into the "Ruedas
+y ciclos" frame underneath it (2026-08-27).
 """
 
 from lxml import etree
@@ -35,6 +40,7 @@ def check_console(graph: ShowGraph, root: etree._Element, canvas: tuple[int, int
     findings += _keys(frame)
     findings += _off_canvas(frame, canvas)
     findings += _double_buttons(graph, frame)
+    findings += _parent_bounds(frame)
     return findings
 
 
@@ -126,6 +132,60 @@ def _off_canvas(frame: etree._Element, canvas: tuple[int, int]) -> list[Finding]
                     f"{width}x{height}): nadie puede pulsarlo"
                 ),
             ))
+    return findings
+
+
+def _widgets(parent: etree._Element):
+    """Every widget under `parent`, at any depth - each visited exactly once,
+    so a containment check below can look at a widget's own direct children
+    without walking the tree itself."""
+    for child in parent:
+        if localname(child) not in WIDGETS:
+            continue
+        yield child
+        yield from _widgets(child)
+
+
+def _parent_bounds(frame: etree._Element) -> list[Finding]:
+    """A widget must fit inside its own parent frame - not just the canvas.
+
+    `_off_canvas` only ever compares a widget's absolute position against the
+    outer 1440x900 screen: a widget nested two frames deep can sit well
+    inside that and still spill past the box of the frame meant to hold it,
+    drawn clipped or over whatever sits below or beside that frame.
+
+    Local coordinates, deliberately: a widget's <WindowState> X/Y is already
+    relative to its own parent's top-left, and a multipage frame puts every
+    page's widgets at those same local coordinates on purpose - two pages'
+    buttons landing on top of each other there is normal, not a bug. Checking
+    only against the immediate parent's own Width/Height, never against a
+    sibling widget, is what keeps paging from reading as a collision.
+    """
+    findings: list[Finding] = []
+    for widget in _widgets(frame):
+        state = find_local(widget, "WindowState")
+        if state is None:
+            continue
+        width, height = int(state.attrib["Width"]), int(state.attrib["Height"])
+        for child in widget:
+            if localname(child) not in WIDGETS:
+                continue
+            child_state = find_local(child, "WindowState")
+            if child_state is None:
+                continue
+            right = int(child_state.attrib["X"]) + int(child_state.attrib["Width"])
+            bottom = int(child_state.attrib["Y"]) + int(child_state.attrib["Height"])
+            if right > width or bottom > height:
+                findings.append(Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=child.attrib.get("Caption", "") or localname(child),
+                    message=(
+                        f"se sale de su propio marco «{widget.attrib.get('Caption', '')}» "
+                        f"({right}x{bottom} sobre {width}x{height} del marco): "
+                        f"queda cortado o invade lo que hay al lado"
+                    ),
+                ))
     return findings
 
 

@@ -75,48 +75,24 @@ def generate_matrix_effects(
     matrix_ids: list[int] = []
     steps: list[tuple[int, int]] = []  # (function id, hold for one full pass)
     for algorithm in algorithms:
-        frame_ms, pass_ms = _pace(
-            algorithm, width, height, duration, chaser_max_hold
-        )
+        label = "Solid" if algorithm is None else algorithm
         for color_name, rgb in colors.items():
-            fid = next_function_id(workspace.root)
-            label = "Solid" if algorithm is None else algorithm
-            workspace.add_function(
-                build_rgbmatrix(
-                    fid,
-                    f"{group_name} - {label} {color_name}",
-                    algorithm=algorithm,
-                    mono_color=rgb,
-                    group_id=group_id,
-                    color_format=color_format,
-                    duration=frame_ms,
-                    direction=direction,
-                    path=path,
-                )
+            fid, pass_ms = _add_matrix(
+                workspace, f"{group_name} - {label} {color_name}", algorithm,
+                rgb, None, group_id, color_format, direction, path, None,
+                width, height, duration, chaser_max_hold,
             )
             matrix_ids.append(fid)
             if algorithm in stepped:
                 steps.append((fid, max(chaser_hold, pass_ms)))
 
     for entry in curated:
-        frame_ms, pass_ms = _pace(
-            entry.algorithm, width, height, duration, chaser_max_hold
-        )
-        fid = next_function_id(workspace.root)
-        workspace.add_function(
-            build_rgbmatrix(
-                fid,
-                f"{group_name} - {entry.algorithm} {'/'.join(entry.colors)}",
-                algorithm=entry.algorithm,
-                mono_color=PALETTE[entry.colors[0]],
-                end_color=PALETTE[entry.colors[1]] if len(entry.colors) > 1 else None,
-                group_id=group_id,
-                color_format=color_format,
-                duration=frame_ms,
-                direction=direction,
-                path=path,
-                properties=entry.properties,
-            )
+        fid, pass_ms = _add_matrix(
+            workspace, f"{group_name} - {entry.algorithm} {'/'.join(entry.colors)}",
+            entry.algorithm, PALETTE[entry.colors[0]],
+            PALETTE[entry.colors[1]] if len(entry.colors) > 1 else None,
+            group_id, color_format, direction, path, entry.properties,
+            width, height, duration, chaser_max_hold,
         )
         matrix_ids.append(fid)
         steps.append((fid, max(chaser_hold, pass_ms)))
@@ -135,6 +111,48 @@ def generate_matrix_effects(
         )
 
     return GeneratedMatrices(matrix_ids=matrix_ids, chaser_id=chaser_id)
+
+
+def _add_matrix(
+    workspace: Workspace,
+    name: str,
+    algorithm: str | None,
+    mono_color: RGB,
+    end_color: RGB | None,
+    group_id: int,
+    color_format: str,
+    direction: str,
+    path: str,
+    properties: dict[str, str] | None,
+    width: int,
+    height: int,
+    duration: int,
+    chaser_max_hold: int,
+) -> tuple[int, int]:
+    """Build one RGBMatrix, add it to the workspace, and hand back what both
+    call sites above need next: its function id, and the hold one full pass
+    of it needs. The base cross-product and a curated one-off recipe differ
+    only in what they loop over and whether every result is stepped - this is
+    the build-and-append shape both of them share.
+    """
+    frame_ms, pass_ms = _pace(algorithm, width, height, duration, chaser_max_hold)
+    fid = next_function_id(workspace.root)
+    workspace.add_function(
+        build_rgbmatrix(
+            fid,
+            name,
+            algorithm=algorithm,
+            mono_color=mono_color,
+            end_color=end_color,
+            group_id=group_id,
+            color_format=color_format,
+            duration=frame_ms,
+            direction=direction,
+            path=path,
+            properties=properties,
+        )
+    )
+    return fid, pass_ms
 
 
 def _pace(

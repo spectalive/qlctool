@@ -323,6 +323,44 @@ def test_two_buttons_on_the_same_key(library):
     assert any("tecla" in f.message for f in findings)
 
 
+def test_a_widget_that_spills_past_its_own_parent_frame(library):
+    """2026-08-27: the librería's Matrices frame grew to 34 buttons on a
+    6-column, 300px-tall layout sized for 30 (Task 5's curated scripts). The
+    sixth row rendered 20px past the frame's own bottom edge, into the
+    sibling "Ruedas y ciclos" frame below it - and `qlctool check` said
+    nothing, because `_off_canvas` only compares a widget's absolute position
+    against the outer 1440x900 canvas, never against the frame that actually
+    contains it.
+
+    The shipped shape is fixed first (asserted below); a widget pushed past
+    its own parent's box reproduces the original bug's shape and the new
+    check must bite on it, wherever it happens.
+    """
+    workspace = _show()
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "consola"]
+    assert not [f for f in findings if "su propio marco" in f.message], (
+        "the shipped console already spills a widget past a parent frame"
+    )
+
+    console = find_local(workspace.root, "VirtualConsole")
+    matrix_frame = next(
+        frame for frame in console.iter()
+        if localname(frame) == "SoloFrame"
+        and frame.attrib.get("Caption", "").startswith("Matrices")
+    )
+    frame_height = int(find_local(matrix_frame, "WindowState").attrib["Height"])
+    button = next(b for b in matrix_frame if localname(b) == "Button")
+    # Push it mostly past the frame's own bottom edge - the exact shape of
+    # the original overflow, just forced rather than incidental.
+    find_local(button, "WindowState").set("Y", str(frame_height - 10))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "consola" and "su propio marco" in f.message
+    ]
+    assert findings, "a widget pushed past its own parent frame's box went unnoticed"
+
+
 def test_an_animation_the_chaser_cuts_off_before_it_finishes(library):
     """2026-08-26: "empezamos una animacion pero nunca la terminamos".
 

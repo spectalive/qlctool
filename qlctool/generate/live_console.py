@@ -86,6 +86,15 @@ HELP_FONT = console_font(11, bold=False)
 SMALL_FONT = console_font(9)
 TINY_FONT = console_font(8)
 
+# The library's Matrices frame: Task 5's curated scripts push the widest group
+# (BarrasLed) to 34 buttons (30 base + 4 curated), Cabezas and PAR to 33. Six
+# columns at 46px rows only ever fit 30 in the frame's 300px height (5 rows);
+# seven fits 35 in the same five rows, with room to spare, so the frame itself
+# does not have to grow into the "Ruedas y ciclos" frame below it.
+MATRIX_COLUMNS = 7
+MATRIX_ROW_HEIGHT = 46
+MATRIX_BUTTON_HEIGHT = 40
+
 # Keys 1-0 across a colour bank, as the hand-built console has them. Every
 # widget sees every key press - on any page, visible or not - so one key lights
 # that colour on all three banks.
@@ -594,13 +603,15 @@ def _page_library(
             matrix_frame, f"Grupo: {group}", GAP, HEADER, 400, 20,
             page=page, font=HELP_FONT,
         )
+        step = (MIDDLE_WIDTH - GAP * 2) // MATRIX_COLUMNS
         for index, function_id in enumerate(generated.matrix_ids):
-            column, row = index % 6, index // 6
+            column, row = index % MATRIX_COLUMNS, index // MATRIX_COLUMNS
             _on_page(
                 button(
                     matrix_frame, function_id,
                     _after(names.get(function_id, ""), " - "),
-                    x=GAP + column * 102, y=HEADER + 24 + row * 46, w=96, h=40,
+                    x=GAP + column * step, y=HEADER + 24 + row * MATRIX_ROW_HEIGHT,
+                    w=step - 6, h=MATRIX_BUTTON_HEIGHT,
                     font=SMALL_FONT,
                 ),
                 page,
