@@ -22,8 +22,19 @@ def test_waves_carries_a_tail_past_the_end_of_the_grid():
 
 
 def test_the_two_frame_scripts():
-    for algorithm in ("Even/Odd", "Alternate", "Opposite", "Strobe"):
+    for algorithm in ("Even/Odd", "Alternate", "Random Column", "Strobe"):
         assert matrix_step_count(algorithm, 8, 3) == 2, algorithm
+
+
+def test_the_recovered_scripts_count_their_own_sweeps():
+    """2026-08-28: the old bar cycle's algorithm families came back, and their
+    counts are read off the scripts, not assumed two-frame - opposite.js walks
+    the full row (rgbMapStepCount returns width on Horizontal), the two
+    from-center scripts walk half of it, rounded up."""
+    assert matrix_step_count("Opposite", 8, 3) == 8
+    assert matrix_step_count("Fill From Center", 8, 3) == 4
+    assert matrix_step_count("Fill From Center", 15, 1) == 8
+    assert matrix_step_count("Stripes From Center", 8, 3) == 4
 
 
 def test_a_solid_matrix_is_one_frame():

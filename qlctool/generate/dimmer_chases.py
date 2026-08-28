@@ -19,7 +19,6 @@ from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
-from ..efx_16bit import INTENSITY_PAIRS, keeps_16bit
 from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..functions.efx import EFXFixture, build_efx
@@ -61,15 +60,23 @@ def generate_dimmer_chases(
     if not dimmable:
         raise ValueError("no fixture in this workspace has a dimmer")
 
-    # Same trap as the movement EFX, on the intensity channel instead: a fixture
-    # whose dimmer fine channel is not adjacent turns 16 bit off for the whole
-    # EFX. Nothing in this rig has one, so this is usually a single group - but
-    # patch a fixture that does and it will be split rather than break the rest.
-    # See `efx_16bit`.
-    groups: dict[bool, list] = {True: [], False: []}
+    # The hand-built show did not run one intensity path over the whole rig: it
+    # ran a *cascade per fixture family* - `Dimmer Chase CromoWash`, `... PC
+    # LED`, `... Beam 7R 230W` - each a Serial Line EFX so the peak walks down
+    # that family's own row, and a Collection lit them all at once. One
+    # whole-rig Circle replaced that and lost the look (old-vs-new audit,
+    # 2026-08-28); the family partition comes back here, by model, which is
+    # the line the old EFX drew. Model families are homogeneous, so the 16-bit
+    # adjacency question (see `efx_16bit`) is answered per family instead of
+    # splitting one - a family whose dimmer fine channel is not adjacent runs
+    # 8 bit on its own without turning it off for the rest.
+    families: dict[tuple[str, str], list] = {}
     for capability in dimmable:
-        groups[keeps_16bit(capability, INTENSITY_PAIRS)].append(capability)
-    parts = [members for members in groups.values() if members]
+        fixture = capability.fixture
+        families.setdefault((fixture.manufacturer, fixture.model), []).append(
+            capability
+        )
+    parts = list(families.values())
     split = len(parts) > 1
 
     def _efx(name: str, members: list, folder: str, direction: str) -> int:
@@ -89,6 +96,13 @@ def generate_dimmer_chases(
                         members, spread_offsets(len(members))
                     )
                 ],
+                # The old family EFX, verbatim in shape: Line with the pan
+                # term killed (Width 0), full-height sweep, cascaded Serial
+                # down the family's patch order.
+                algorithm="Line",
+                width=0,
+                height=127,
+                propagation_mode="Serial",
                 duration=duration,
                 path=folder,
             )
@@ -103,9 +117,8 @@ def generate_dimmer_chases(
 
         chase_part_ids: list[int] = []
         for members in parts:
-            paired = keeps_16bit(members[0], INTENSITY_PAIRS)
             chase_part_ids.append(_efx(
-                f"{name} ({'16 bit' if paired else '8 bit'})",
+                f"{name} {members[0].fixture.model}",
                 members,
                 f"{path}/Partes",
                 direction,

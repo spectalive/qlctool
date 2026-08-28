@@ -87,14 +87,14 @@ HELP_FONT = console_font(11, bold=False)
 SMALL_FONT = console_font(9)
 TINY_FONT = console_font(8)
 
-# The library's Matrices frame: Task 5's curated scripts push the widest group
-# (BarrasLed) to 34 buttons (30 base + 4 curated), Cabezas and PAR to 33. Six
-# columns at 46px rows only ever fit 30 in the frame's 300px height (5 rows);
-# seven fits 35 in the same five rows, with room to spare, so the frame itself
-# does not have to grow into the "Ruedas y ciclos" frame below it.
-MATRIX_COLUMNS = 7
-MATRIX_ROW_HEIGHT = 46
-MATRIX_BUTTON_HEIGHT = 40
+# The library's Matrices frame: the recovered algorithm families (old-vs-new
+# audit, 2026-08-28) push the widest group (BarrasLed) to 43 buttons (30 base
+# + 13 curated). Eight columns at 40px rows fit 48 in the frame's 300px height
+# (24px group label + 6 rows), so the frame still does not grow into the
+# "Ruedas y ciclos" frame below it.
+MATRIX_COLUMNS = 8
+MATRIX_ROW_HEIGHT = 40
+MATRIX_BUTTON_HEIGHT = 36
 
 # Keys 1-0 across a colour bank, as the hand-built console has them. Every
 # widget sees every key press - on any page, visible or not - so one key lights
@@ -334,7 +334,7 @@ def generate_live_console(
         beam_subsets,
     )
     _page_library(
-        outer, button, frame, label, ids, console, names,
+        outer, button, master_button, frame, label, ids, console, names,
         banks, matrices, builtins, matrix_algorithms, beam_subsets,
     )
 
@@ -442,6 +442,8 @@ def _page_manual(
         outer, "Capas del show", LEFT_X, 68, LEFT_WIDTH, 140,
         page=PAGE_MANUAL, font=TITLE_FONT,
     )
+    # Four columns since the rainbows came back (2026-08-28): eight layers
+    # have to fit the same two rows the six fitted.
     layer_names = (
         ("Rueda Colores", "Rueda de colores · W"),
         ("Rueda Mezcla", "Rueda de mezclas · E"),
@@ -449,12 +451,14 @@ def _page_manual(
         ("Gobo Animacion", "Gobos girando · G"),
         ("Prisma Animacion", "Prisma · P"),
         ("Humo Auto", "Humo automático · J"),
+        ("Arcoiris Simultaneo", "Arcoiris junto · '"),
+        ("Arcoiris Pasos", "Arcoiris fases · ¡"),
     )
     for index, (name, caption) in enumerate(layer_names):
-        column, row = index % 3, index // 3
+        column, row = index % 4, index // 4
         master_button(
             layers, name, caption,
-            GAP + column * 172, HEADER + row * 52, 166, 46,
+            GAP + column * 129, HEADER + row * 52, 124, 46, font=SMALL_FONT,
         )
 
     y = 216
@@ -464,13 +468,23 @@ def _page_manual(
             LEFT_X, y, LEFT_WIDTH, 122, page=PAGE_MANUAL, solo=True,
             font=TITLE_FONT,
         )
-        for index, function_id in enumerate(bank.scene_ids[: len(BANK_KEYS)]):
+        # Keys 1-0 follow the bank's key list - eight solids, then the old
+        # blue/red splits on 9 and 0 (restored 2026-08-28). The solids the
+        # splits displaced stay in the row, keyless, after them.
+        keyed = bank.key_ids[: len(BANK_KEYS)] or bank.scene_ids[: len(BANK_KEYS)]
+        keyless = [fid for fid in bank.scene_ids if fid not in keyed]
+        pitch = (LEFT_WIDTH - 2 * GAP) // max(len(keyed) + len(keyless), 1)
+        for index, function_id in enumerate(keyed + keyless):
             name = names.get(function_id, "")
+            split = " / " in name
             button(
-                element, function_id, _bank_caption(name),
-                x=GAP + index * 51, y=HEADER, w=48, h=44,
-                key=BANK_KEYS[index],
-                background=_swatch(name), font=SMALL_FONT,
+                element, function_id,
+                _mix_caption(name) if split else _bank_caption(name),
+                x=GAP + index * pitch, y=HEADER, w=pitch - 3, h=44,
+                key=BANK_KEYS[index] if index < len(keyed) else None,
+                background=_swatch(name),
+                foreground=_swatch(name, second=True) if split else DEFAULT,
+                font=TINY_FONT if split else SMALL_FONT,
             )
         y += 128
 
@@ -615,7 +629,7 @@ def _page_manual(
 
 
 def _page_library(
-    outer, button, frame, label, ids, console, names,
+    outer, button, master_button, frame, label, ids, console, names,
     banks, matrices, builtins, matrix_algorithms, beam_subsets,
 ) -> None:
     """Page 3: the material the show is built from, not buttons for a set."""
@@ -635,7 +649,12 @@ def _page_library(
             mixes, f"Grupo: {bank.group_name}", GAP, HEADER, 512, 20,
             page=page, font=HELP_FONT,
         )
-        for index, function_id in enumerate(bank.split_ids):
+        # The blue/red pair lives on the bank's keys 9/0 (restored
+        # 2026-08-28); a second button here would always look off.
+        library_splits = [
+            fid for fid in bank.split_ids if fid not in bank.key_ids
+        ]
+        for index, function_id in enumerate(library_splits):
             column, row = index % 10, index // 10
             name = names.get(function_id, "")
             _on_page(
@@ -744,6 +763,14 @@ def _page_library(
             "la del ciclo (200).",
             RIGHT_X + 96, 580, RIGHT_WIDTH - 96, 120,
             page=PAGE_LIBRARY, font=HELP_FONT,
+        )
+        # The old "Strobo LED - Speed Auto", beside the fader it shares the
+        # channel with: the pace rides 160-255 on its own until somebody
+        # stops it (HTP - the raised fader wins while it is higher).
+        master_button(
+            outer, "Vel. Paneles Auto", "VEL. AUTO — sube y baja sola",
+            RIGHT_X + 96, 704, RIGHT_WIDTH - 96, 60, page=PAGE_LIBRARY,
+            font=SMALL_FONT,
         )
 
     if matrices and matrices[0].matrix_ids:

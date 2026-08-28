@@ -37,19 +37,46 @@ def _functions(root):
     }
 
 
-def test_the_dimmer_chase_is_an_efx_in_dimmer_mode(library):
+def _chase_efx(root, chase_id):
+    """The EFX under a dimmer chase: itself, or its Collection's members.
+
+    2026-08-28: the chase went back to the hand-built shape - one Serial Line
+    cascade per fixture family, gathered in a Collection - so a chase on a
+    multi-family rig is a Collection and on a one-family rig a plain EFX.
+    """
+    functions = _functions(root)
+    function = functions[chase_id]
+    if function.attrib["Type"] == "EFX":
+        return [function]
+    assert function.attrib["Type"] == "Collection"
+    return [
+        functions[int(step.text)] for step in findall_local(function, "Step")
+    ]
+
+
+def test_the_dimmer_chase_is_a_family_cascade_in_dimmer_mode(library):
+    """2026-08-28: the hand-built show ran a Serial Line cascade per fixture
+    family (Dimmer Chase CromoWash, ... PC LED, ... Beam 7R); the whole-rig
+    Circle that replaced them lost the look. Each family EFX must be a Serial
+    Line in Dimmer mode with the pan term killed.
+    """
     ws = Workspace.load(SHOW)
     generated = generate_dimmer_chases(ws, library)
-    efx = _functions(ws.root)[generated.chase_id]
+    parts = _chase_efx(ws.root, generated.chase_id)
 
-    assert efx.attrib["Type"] == "EFX"
-    fixtures = findall_local(efx, "Fixture")
-    assert fixtures
-    for fixture in fixtures:
-        assert find_local(fixture, "Mode").text == str(MODE_DIMMER)
-    # Spread, not stacked: every fixture peaking together is just a dimmer.
-    offsets = {find_local(f, "StartOffset").text for f in fixtures}
-    assert len(offsets) == len(fixtures)
+    assert len(parts) > 1  # this rig has several dimmable families
+    for efx in parts:
+        assert efx.attrib["Type"] == "EFX"
+        assert find_local(efx, "Algorithm").text == "Line"
+        assert find_local(efx, "Width").text == "0"
+        assert find_local(efx, "PropagationMode").text == "Serial"
+        fixtures = findall_local(efx, "Fixture")
+        assert fixtures
+        for fixture in fixtures:
+            assert find_local(fixture, "Mode").text == str(MODE_DIMMER)
+        # Spread, not stacked: every fixture peaking together is a dimmer.
+        offsets = {find_local(f, "StartOffset").text for f in fixtures}
+        assert len(offsets) == len(fixtures)
 
 
 def test_the_second_dimmer_chase_runs_backwards(library):
@@ -59,10 +86,15 @@ def test_the_second_dimmer_chase_runs_backwards(library):
     """
     ws = Workspace.load(SHOW)
     generated = generate_dimmer_chases(ws, library)
-    functions = _functions(ws.root)
 
-    forward = findall_local(functions[generated.chase_id], "Fixture")
-    backward = findall_local(functions[generated.chase2_id], "Fixture")
+    forward = [
+        f for efx in _chase_efx(ws.root, generated.chase_id)
+        for f in findall_local(efx, "Fixture")
+    ]
+    backward = [
+        f for efx in _chase_efx(ws.root, generated.chase2_id)
+        for f in findall_local(efx, "Fixture")
+    ]
     assert forward and backward
     assert all(find_local(f, "Direction").text == "Forward" for f in forward)
     assert all(find_local(f, "Direction").text == "Backward" for f in backward)

@@ -151,8 +151,18 @@ def test_dimmer_chase_owns_peak_and_nothing_is_left_dark(built):
     library = FixtureLibrary.load()
     caps = {c.fixture.fixture_id: c for c in capabilities_of(root, library)}
 
+    # 2026-08-28: the chase went back to the hand-built shape - a Collection
+    # of per-family Serial Line cascades - so its writes are the union of its
+    # members' (driven_channels returns {} for the Collection itself).
     chase = functions[str(show.master_ids["Dimmer Chase"])]
-    chase_writes = driven_channels(chase, caps, {})
+    chase_writes: dict[int, dict[int, int | None]] = {}
+    chase_parts = (
+        [functions[step.text] for step in findall_local(chase, "Step")]
+        if chase.attrib["Type"] == "Collection" else [chase]
+    )
+    for part in chase_parts:
+        for fixture_id, pairs in driven_channels(part, caps, {}).items():
+            chase_writes.setdefault(fixture_id, {}).update(pairs)
     assert chase_writes, "the chase should drive at least one fixture's dimmer"
 
     total = functions[str(show.master_ids["Intensidad Total"])]
@@ -244,9 +254,11 @@ def test_only_a_pixel_group_gets_matrices_inside_the_wheel(built):
     # The step's scene and its matrix state the same colour, by name: the
     # solid steps their own, a contrast step the colour of the "resto". The
     # multicolour steps are the exception that proves the clock: no single
-    # colour to agree on, so their matrix is the rainbow plasma (2026-08-28).
+    # colour to agree on, so their matrix is the rainbow plasma (2026-08-28) -
+    # and the recovered "Rig 4 Colores" deals (same audit) are multicolour
+    # steps by nature, so they ride the same plasma.
     for step, matrix in zip(steps, matrices, strict=True):
-        if step.attrib["Name"].startswith("Rig Multicolor"):
+        if step.attrib["Name"].startswith(("Rig Multicolor", "Rig 4 Colores")):
             assert "Plasma Rainbow (Rueda)" in matrix.attrib["Name"]
             continue
         colour = step.attrib["Name"].split(" + ")[0].split()[-1]

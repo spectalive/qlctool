@@ -106,9 +106,11 @@ def test_the_console_still_sees_one_function_per_shape(library):
 
 
 def test_the_dimmer_efx_is_guarded_too(library):
-    """Same trap, intensity channels instead. No fixture here has a 16-bit
-    dimmer, so nothing is split - the guard is there for the day one is
-    patched."""
+    """Same trap, intensity channels instead. 2026-08-28: the chase became a
+    per-family Collection (the hand-built cascade shape), so the guard's job
+    moved - each family is model-homogeneous, so a fixture whose dimmer fine
+    channel is not adjacent runs 8 bit inside its own family without turning
+    16 bit off for the rest. On this rig every family keeps 16 bit."""
     from qlctool.generate.dimmer_chases import generate_dimmer_chases
 
     ws = Workspace.load(SHOW)
@@ -116,9 +118,14 @@ def test_the_dimmer_efx_is_guarded_too(library):
     assert all(keeps_16bit(c, INTENSITY_PAIRS) for c in caps)
 
     result = generate_dimmer_chases(ws, library)
-    assert result.part_ids == []
     names = {f.attrib["ID"]: f.attrib["Name"] for f in _functions(ws.root)}
     assert names[str(result.chase_id)] == "Dimmer Chase"
+    # Every family part belongs to one chase, and no part was 8-bit-split
+    # further: one EFX per family per direction.
+    assert all(
+        names[str(part_id)].startswith(("Dimmer Chase", "Dimmer Chase 2"))
+        for part_id in result.part_ids
+    )
 
 
 def test_a_16bit_dimmer_would_be_split(library):

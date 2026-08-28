@@ -24,6 +24,7 @@ from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..matrix_algorithms import CURATED_MATRICES
 from ..monitor_positions import house_right_fixture_ids
+from ..output_binding import pin_generic_output
 from ..palette import PALETTE, PRIMARY_COLORS
 from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
@@ -50,7 +51,10 @@ from .movement_families import generate_movement_families
 from .multicolor_matrices import generate_multicolor_matrices
 from .multicolor_scene import generate_multicolor_scenes
 from .panel_manual import generate_panel_manual
+from .panel_speed_auto import generate_panel_speed_auto
 from .pixel_base import generate_pixel_base
+from .quad_color_scenes import generate_quad_color_scenes
+from .rainbow_efx import generate_rainbow_efx
 from .pixel_wheel_matrices import generate_pixel_wheel_matrices
 from .smoke_auto import generate_smoke_auto
 from .stage_aim import generate_stage_aim
@@ -152,6 +156,10 @@ KEYS = {
     "Prisma Animacion": "P",
     "Humo Auto": "J",
     "Humo Vertical": "N",
+    # The two whole-rig rainbows, on the keys the hand-built console gave
+    # them (Spanish keyboard: the row left of 1 and right of 0).
+    "Arcoiris Simultaneo": "'",
+    "Arcoiris Pasos": "¡",
     # Live-only looks. The hand-built console has these on V/B/C/Z; C is
     # already Color Beam here, so the sequence moves rather than clashes.
     "Dimmer Chase": "V",
@@ -202,6 +210,11 @@ def build_canonical_show(
 ) -> CanonicalShow:
     """Strip the workspace to its patch and generate a self-running show on it."""
     strip_to_skeleton(workspace)
+    # Whatever machine the source file was saved on, the show binds to the
+    # USB-DMX interface that is actually plugged in (docs/rig.md; the three
+    # shipped files disagreed about serial numbers, old-vs-new audit
+    # 2026-08-28).
+    pin_generic_output(workspace.root)
     # The patch carries the rig, not where any of it stands: give the 2D and 3D
     # views a plot to draw, or they stack every fixture on one spot. A workspace
     # whose Monitor already places everything was positioned by hand in QLC+ -
@@ -277,6 +290,11 @@ def build_canonical_show(
     vertical_id = generate_vertical_smoke_light(workspace, builtins.scene_ids)
     if vertical_id is not None:
         master["Humo Vertical"] = vertical_id
+    # The old "Strobo LED - Speed Auto": the panels' pace riding up and down
+    # on its own, beside the manual fader (HTP - whichever is higher wins).
+    speed_auto_id = generate_panel_speed_auto(workspace, builtins.speed_channels)
+    if speed_auto_id is not None:
+        master["Vel. Paneles Auto"] = speed_auto_id
 
     matrices: list[GeneratedMatrices] = []
     # Matrices are drawn only where a group is really made of pixels: on a
@@ -396,12 +414,15 @@ def build_canonical_show(
     # whatever the last look left, and a parked prism does not kaleidoscope.
     prisms = generate_wheel_scenes(
         workspace, library, role=roles.PRISM, label="Prisma", run_order="Loop",
-        hold=8000, path="Prisma", dimmer_full=False,
+        hold=8000, path="Prisma", dimmer_full=False, make_chaser=False,
         companion=(roles.PRISM_ROTATION, PRISM_SPIN_SLOW, 0),
     )
     beam_subsets = generate_beam_subsets(workspace, library)
-    if prisms.chaser_id is not None:
-        master["Prisma Animacion"] = prisms.chaser_id
+    prism_animation_id = _prism_choreography(
+        workspace, prisms.scene_ids, beam_subsets.prism_scene_ids
+    )
+    if prism_animation_id is not None:
+        master["Prisma Animacion"] = prism_animation_id
 
     smoke = generate_smoke_auto(workspace, library)
     master["Humo Auto"] = smoke.chaser_id
@@ -447,18 +468,29 @@ def build_canonical_show(
         exclude_fixture_ids=sorted(matrix_lit_ids),
         program_gated_ids=program_gated,
     )
+    # The hand-built "4 Colores" rotations, back beside the wild steps: the
+    # same deal of blue/red/green/white walked one seat per scene.
+    quad_ids = generate_quad_color_scenes(
+        workspace, library,
+        exclude_fixture_ids=sorted(matrix_lit_ids),
+        program_gated_ids=program_gated,
+    )
     multicolor_matrix_ids = generate_multicolor_matrices(
         workspace, pixel_group_ids
-    ) if pixel_group_ids and multicolor_ids else []
+    ) if pixel_group_ids and (multicolor_ids or quad_ids) else []
+    wild_scenes = [
+        (scene_id, f"Rig Multicolor {n}")
+        for n, scene_id in enumerate(multicolor_ids, start=1)
+    ] + [
+        (scene_id, f"Rig 4 Colores {n}")
+        for n, scene_id in enumerate(quad_ids, start=1)
+    ]
     multicolor_steps = [
         _collection(
             workspace, f"{graph_name} + Pixeles",
             [scene_id, *multicolor_matrix_ids],
         ) if multicolor_matrix_ids else scene_id
-        for scene_id, graph_name in zip(
-            multicolor_ids,
-            (f"Rig Multicolor {n}" for n in range(1, len(multicolor_ids) + 1)),
-        )
+        for scene_id, graph_name in wild_scenes
     ]
     unison = generate_unison_colors(
         workspace, library,
@@ -473,6 +505,14 @@ def build_canonical_show(
         workspace, "Rueda Mezcla",
         [b.mix_wheel_id for b in banks if b.mix_wheel_id is not None],
     )
+    # The two whole-rig rainbows the hand-built console kept on keys of their
+    # own: console layers, like the group wheels - somebody starts them over
+    # (instead of) the wheel, and stops them. AUTO never does.
+    rainbows = generate_rainbow_efx(workspace, library)
+    if rainbows.simultaneo_id is not None:
+        master["Arcoiris Simultaneo"] = rainbows.simultaneo_id
+    if rainbows.pasos_id is not None:
+        master["Arcoiris Pasos"] = rainbows.pasos_id
     # The night goes somewhere: the colour bed, the pixels and the haze run
     # underneath, and what sits on top is a level that changes every few
     # minutes. Everything a room reads as "peak" - fast movement, prism, the
@@ -700,6 +740,43 @@ def _first(ids) -> int | None:
     what the quiet level wants: no gobo rather than whatever was left in.
     """
     return ids[0] if ids else None
+
+
+# The hand-built `Prisma Animacion` (Chaser 373) was a choreography, not a
+# toggle: single beams and mirrored pairs taking the prism in turn, all-in as
+# the crest, all-out as the rest. Steps are indices into
+# `generate_beam_subsets`'s fixed order ("1","2","3","4","1 y 3","2 y 4");
+# None means the whole-rig wheel scene (False=out, True=in).
+_PRISM_CHOREOGRAPHY: tuple[int | bool, ...] = (3, 5, 0, 1, True, 2, 4, False)
+PRISM_STEP_HOLD_MS = 8000
+
+
+def _prism_choreography(
+    workspace, wheel_scene_ids: list[int], subset_scene_ids: list[int],
+) -> int | None:
+    """The old eight-step prism dance, or the plain out/in walk as fallback.
+
+    The dance needs the full set of subset scenes (a rig with fewer than four
+    prism beams generates fewer) and both wheel positions; anything less falls
+    back to walking the wheel scenes the way the generator always did.
+    """
+    if len(wheel_scene_ids) < 2:
+        return None
+    out_id, in_id = wheel_scene_ids[0], wheel_scene_ids[1]
+    if len(subset_scene_ids) >= 6:
+        steps = [
+            (in_id if step is True else out_id if step is False
+             else subset_scene_ids[step])
+            for step in _PRISM_CHOREOGRAPHY
+        ]
+    else:
+        steps = list(wheel_scene_ids)
+    function_id = next_function_id(workspace.root)
+    workspace.add_function(build_chaser(
+        function_id, "Prisma Animacion", steps, hold=PRISM_STEP_HOLD_MS,
+        path="Prisma",
+    ))
+    return function_id
 
 
 def _wheel_colors() -> dict[str, tuple[int, int, int]]:

@@ -118,4 +118,65 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
         {"presetIndex": "Rainbow", "presetSize": "5", "orientation": "Horizontal"},
         ("Ambar",),
     ),
+    # --- Recovered from the hand-built show (old-vs-new audit, 2026-08-28).
+    # DeluxeEventos2's bar cycle ran Alternate, Opposite, Fill From Center,
+    # Fill Unfill, One By One, Random Column and Stripes From Center, plus
+    # two-colour looks - all of which the generated show had dropped. The old
+    # matrices' own MonoColors were sloppy (several "Rosa"/"Cyan" ones were
+    # literally blue), so the vocabulary comes back with palette colours, and
+    # the seven palette colours nothing generated was emitting ride in here.
+    #
+    # alternate.js: acceptColors 2, both colours drawn at once (even pixels /
+    # odd pixels), step count 2 - the honest script for the old "X / Y" bar
+    # duals. orientation is explicit because the step-count table assumes it.
+    CuratedScript(
+        "BarrasLed", "Alternate", {"orientation": "Horizontal"},
+        ("Azul", "Rojo"),
+    ),
+    CuratedScript(
+        "BarrasLed", "Alternate", {"orientation": "Horizontal"},
+        ("Cyan", "Rosa"),
+    ),
+    CuratedScript(
+        "BarrasLed", "Alternate", {"orientation": "Horizontal"},
+        ("Verde", "Amarillo"),
+    ),
+    # opposite.js: two dots crossing the row, step count = width (Horizontal).
+    CuratedScript("BarrasLed", "Opposite", {"orientation": "Horizontal"}, ("Verde",)),
+    # fillfromcenter.js / stripesfromcenter.js: centre outwards, (width+1)/2
+    # steps on Horizontal - Vertical on an 8x2 bar is a two-frame blink.
+    CuratedScript(
+        "BarrasLed", "Fill From Center", {"orientation": "Horizontal"},
+        ("Naranja",),
+    ),
+    CuratedScript(
+        "BarrasLed", "Stripes From Center", {"orientation": "Horizontal"},
+        ("Morado",),
+    ),
+    # randomcolumn.js: declares nothing, step count 2, reads rgb[0] only.
+    CuratedScript("BarrasLed", "Random Column", {}, ("Amarillo",)),
+    # fillunfill.js and onebyone.js: same recipes the Cabezas entries above
+    # use, on the bars' own grid, in colours the bars' base set lacks.
+    CuratedScript(
+        "BarrasLed", "Fill Unfill", {"orientation": "Horizontal"}, ("Rosa",),
+    ),
+    CuratedScript("BarrasLed", "One By One", {}, ("Cyan",)),
+    # The heads and the PARs carry the rest of the missing palette.
+    CuratedScript(
+        "Cabezas", "Alternate", {"orientation": "Horizontal"},
+        ("Verde Menta", "Azul Profundo"),
+    ),
+    CuratedScript("Cabezas", "Opposite", {"orientation": "Horizontal"}, ("Celeste",)),
+    CuratedScript("Cabezas", "Random Column", {}, ("Fucsia",)),
+    CuratedScript(
+        "PAR", "Fill From Center", {"orientation": "Horizontal"},
+        ("Rojo Fuego",),
+    ),
+    CuratedScript(
+        "PAR", "Stripes From Center", {"orientation": "Horizontal"},
+        ("Azul Cielo",),
+    ),
+    CuratedScript(
+        "PAR", "Alternate", {"orientation": "Horizontal"}, ("Rosa", "Cyan"),
+    ),
 )

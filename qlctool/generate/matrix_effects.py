@@ -106,6 +106,10 @@ def generate_matrix_effects(
                 f"Ciclo Matrices {group_name}",
                 [fid for fid, _ in steps],
                 hold=[hold for _, hold in steps],
+                # Random like the old 121-step bar cycle (and every other
+                # cycle in this show): unattended, a fixed order reads as a
+                # loop. Restored 2026-08-28 with the old algorithm families.
+                run_order="Random",
                 path=path,
             )
         )

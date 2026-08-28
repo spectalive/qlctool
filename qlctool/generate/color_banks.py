@@ -27,6 +27,13 @@ SPLIT_COLORS: tuple[str, ...] = (
     "Rojo", "Azul", "Verde", "Amarillo", "Magenta", "Blanco",
 )
 
+# The hand-built console's keys 9 and 0 were not solid colours: on every bank
+# they were the alternating two-colour looks, blue/red on 9 and red/blue on 0.
+# The generator put Naranja and Rosa there instead - muscle-memory regression,
+# old-vs-new audit 2026-08-28. These pairs go back on those keys; the two
+# solids stay in the bank, keyless.
+KEY_SPLIT_PAIRS: tuple[tuple[str, str], ...] = (("Azul", "Rojo"), ("Rojo", "Azul"))
+
 
 @dataclass(frozen=True)
 class GeneratedBank:
@@ -35,6 +42,10 @@ class GeneratedBank:
     split_ids: list[int] = field(default_factory=list)
     wheel_id: int | None = None
     mix_wheel_id: int | None = None
+    # What the console binds to keys 1-0: eight solids, then the old blue/red
+    # and red/blue splits on 9 and 0. Falls back to plain solids when a group
+    # cannot show a split.
+    key_ids: list[int] = field(default_factory=list)
 
 
 def generate_color_banks(
@@ -88,6 +99,7 @@ def _bank_for_group(
         scene_ids.append(function_id)
 
     split_ids: list[int] = []
+    split_of: dict[tuple[str, str], int] = {}
     for first in split_colors:
         for second in split_colors:
             if first == second:
@@ -109,6 +121,15 @@ def _bank_for_group(
                 )
             )
             split_ids.append(function_id)
+            split_of[(first, second)] = function_id
+
+    # Keys 1-8 stay the first solids; 9 and 0 are the old blue/red pair. A
+    # group whose splits never built (single fixture) keeps plain solids.
+    key_splits = [split_of[pair] for pair in KEY_SPLIT_PAIRS if pair in split_of]
+    if len(key_splits) == len(KEY_SPLIT_PAIRS):
+        key_ids = scene_ids[: len(colors) - len(KEY_SPLIT_PAIRS)] + key_splits
+    else:
+        key_ids = list(scene_ids)
 
     wheel_id = _wheel(
         workspace, f"Rueda Colores {group.name}", scene_ids, hold, fade, path
@@ -122,6 +143,7 @@ def _bank_for_group(
         split_ids=split_ids,
         wheel_id=wheel_id,
         mix_wheel_id=mix_wheel_id,
+        key_ids=key_ids,
     )
 
 

@@ -20,6 +20,13 @@ from ..library import FixtureLibrary
 from ..workspace import Workspace
 
 MID = 127
+# The hand-built `Cabezas Reposo` did not park the 7R beams mid-travel: it laid
+# them at pan 0, tilt 130, aimed by eye on the real rig (old-vs-new audit,
+# 2026-08-28 - a beam at pan 127 is not the same look as pan 0). The washes
+# stay at mid-scale; a beam is a fixture with a gobo wheel, the same line the
+# movement families draw.
+BEAM_PAN = 0
+BEAM_TILT = 130
 
 
 def generate_home_position(
@@ -28,15 +35,16 @@ def generate_home_position(
     name: str = "Cabezas Centro",
     path: str = "Movimiento",
 ) -> int | None:
-    """One scene holding every mover at mid pan and mid tilt. None if none move."""
+    """One scene holding every mover parked. None if none move."""
     values: dict[int, list[tuple[int, int]]] = {}
     for caps in capabilities_of(workspace.root, library):
         if not (caps.has_role(roles.PAN) and caps.has_role(roles.TILT)):
             continue
+        beam = caps.has_role(roles.GOBO)
         pairs: list[tuple[int, int]] = []
         for role, value in (
-            (roles.PAN, MID),
-            (roles.TILT, MID),
+            (roles.PAN, BEAM_PAN if beam else MID),
+            (roles.TILT, BEAM_TILT if beam else MID),
             (roles.PAN_FINE, 0),
             (roles.TILT_FINE, 0),
         ):

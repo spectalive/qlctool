@@ -288,14 +288,20 @@ def test_every_button_on_the_show_page_says_its_own_key(console):
 
 
 def test_a_colour_button_says_which_colour_it_is(console):
-    """Thirty blank squares is what the three colour banks used to be."""
+    """Thirty blank squares is what the three colour banks used to be.
+
+    2026-08-28: twelve buttons per bank since keys 9/0 went back to the old
+    blue/red splits - ten keyed (eight solids + the two splits), plus the two
+    displaced solids keyless at the end.
+    """
     _, frame = console
     for group in ("BarrasLed", "Cabezas", "PAR"):
         bank = _frame_named(frame, f"Colores {group}")
         captions = _captions(bank)
-        assert len(captions) == 10
+        assert len(captions) == 12
         assert all(captions), group
-        assert len(set(captions)) == 10, group
+        assert len(set(captions)) == 12, group
+        assert "Az/Ro" in captions and "Ro/Az" in captions, group
 
 
 def test_the_console_can_reach_the_grand_master(console):

@@ -320,8 +320,21 @@ def test_curated_matrices_are_filtered_into_their_own_group_only():
     by_group: dict[str, list[str]] = {}
     for entry in CURATED_MATRICES:
         by_group.setdefault(entry.group_name, []).append(entry.algorithm)
+    # 2026-08-28: the hand-built bar cycle's algorithm families came back as
+    # curated entries, carrying the seven palette colours nothing emitted.
     assert by_group == {
-        "BarrasLed": ["Sine Wave", "Lines", "Marquee", "Plasma"],
-        "Cabezas": ["One By One", "Fill Unfill", "Noise"],
-        "PAR": ["Circular", "3D Starfield", "Gradient"],
+        "BarrasLed": [
+            "Sine Wave", "Lines", "Marquee", "Plasma",
+            "Alternate", "Alternate", "Alternate", "Opposite",
+            "Fill From Center", "Stripes From Center", "Random Column",
+            "Fill Unfill", "One By One",
+        ],
+        "Cabezas": [
+            "One By One", "Fill Unfill", "Noise",
+            "Alternate", "Opposite", "Random Column",
+        ],
+        "PAR": [
+            "Circular", "3D Starfield", "Gradient",
+            "Fill From Center", "Stripes From Center", "Alternate",
+        ],
     }

@@ -50,8 +50,12 @@ def matrix_step_count(algorithm: str | None, width: int, height: int) -> int:
         return PLAIN_STEPS  # <Algorithm Type="Plain"/>: one static frame
     if algorithm == "Fill":
         return width  # fill.js, orientation Horizontal
-    if algorithm in ("Even/Odd", "Alternate", "Opposite"):
+    if algorithm in ("Even/Odd", "Alternate", "Random Column"):
         return 2  # evenodd.js and friends: one frame per half
+    if algorithm == "Opposite":
+        return width  # opposite.js, orientation Horizontal: two dots cross the row
+    if algorithm in ("Fill From Center", "Stripes From Center"):
+        return (width + 1) // 2  # *fromcenter.js, Horizontal: centre to both edges
     if algorithm == "Strobe":
         return 2  # strobe.js: the default frequency
     if algorithm == "Waves":

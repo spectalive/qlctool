@@ -103,6 +103,13 @@ BEAM_TILT_WAVE = Envelope(
     ("Line",), BEAM.duration, 0, BEAM.height, BEAM.hold, propagation="Serial",
 )
 
+# The hand-built show kept a "(Simultaneo)" twin of every shape - all heads at
+# the same phase, the whole rig tracing one figure together - and its rotation
+# crossfaded 5 s between blocks (Chaser 23, FadeIn/FadeOut Common 5000). The
+# generated show dropped both (old-vs-new audit, 2026-08-28); the twins come
+# back as chaser steps per family, same envelope as the phased version.
+MOVEMENT_CROSSFADE_MS = 5000
+
 # The synced push: every head at the same phase (spread_phase=False in the
 # EFX), so the rig traces one motion together - with the house-right mirror
 # kept, the two sides push toward each other and open apart, which is what a
@@ -171,6 +178,24 @@ def generate_movement_families(
                         make_chaser=False, names={"Line": "Ola Suave"})
     wash = _family(washes, WASH, None, "Wash", "Movimiento", make_chaser=False)
     beam = _family(beams, BEAM, None, "Beam", "Movimiento", make_chaser=False)
+    # The old "(Simultaneo)" twins: same shapes, same envelope, every head at
+    # phase 0 so the family traces one figure together.
+    wash_sim = _family(
+        washes, WASH, None, "Wash", "Movimiento", make_chaser=False,
+        names={
+            shape: f"Wash {SPANISH_LABELS.get(shape, shape)} Simultaneo"
+            for shape in WASH.algorithms
+        },
+        spread_phase=False,
+    )
+    beam_sim = _family(
+        beams, BEAM, None, "Beam", "Movimiento", make_chaser=False,
+        names={
+            shape: f"Beam {SPANISH_LABELS.get(shape, shape)} Simultaneo"
+            for shape in BEAM.algorithms
+        },
+        spread_phase=False,
+    )
     beam_shapes = _family(beams, BEAM_ROTATED_SHAPES, None, "Beam",
                           "Movimiento", make_chaser=False)
     cascada_beams = _family(beams, BEAM_CASCADE, None, "Cascada", "Movimiento",
@@ -205,6 +230,7 @@ def generate_movement_families(
         slow_id = next_function_id(workspace.root)
         workspace.add_function(build_chaser(
             slow_id, "Movimientos Suaves", steps, hold=WASH_SLOW.hold,
+            fade_in=MOVEMENT_CROSSFADE_MS, fade_out=MOVEMENT_CROSSFADE_MS,
             run_order="Random", path="Movimiento Suave",
         ))
 
@@ -214,12 +240,14 @@ def generate_movement_families(
     if wash is not None:
         steps = (
             list(wash.efx_ids)
+            + (list(wash_sim.efx_ids) if wash_sim is not None else [])
             + (list(ola_wash.efx_ids) if ola_wash is not None else [])
             + (list(unison_wash.efx_ids) if unison_wash is not None else [])
         )
         wash_id = next_function_id(workspace.root)
         workspace.add_function(build_chaser(
             wash_id, "Movimientos Washes", steps, hold=WASH.hold,
+            fade_in=MOVEMENT_CROSSFADE_MS, fade_out=MOVEMENT_CROSSFADE_MS,
             run_order="Random", path="Movimiento",
         ))
 
@@ -233,6 +261,7 @@ def generate_movement_families(
     if beam is not None:
         steps = (
             list(beam.efx_ids)
+            + (list(beam_sim.efx_ids) if beam_sim is not None else [])
             + (list(beam_shapes.efx_ids) if beam_shapes is not None else [])
             + (list(cascada_beams.efx_ids) if cascada_beams is not None else [])
             + (list(ola_beam.efx_ids) if ola_beam is not None else [])
@@ -243,6 +272,7 @@ def generate_movement_families(
         beam_id = next_function_id(workspace.root)
         workspace.add_function(build_chaser(
             beam_id, "Movimientos Beams", steps, hold=BEAM.hold,
+            fade_in=MOVEMENT_CROSSFADE_MS, fade_out=MOVEMENT_CROSSFADE_MS,
             run_order="Random", path="Movimiento",
         ))
 
