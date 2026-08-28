@@ -27,6 +27,11 @@ from qlctool.xmlutil import find_local, findall_local, localname
 REPO = Path(__file__).resolve().parents[3]
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
+# Buttons that exist only when the rig has the fixture behind them. The test
+# rig is the hand-built DeluxeEventos2, which has no lit fog machine, so its
+# console builds without the vertical burst.
+OPTIONAL_KEYS = {"Humo Vertical YA"}
+
 WIDGET_TAGS = {
     "Frame", "SoloFrame", "Button", "Label", "Slider", "XYPad", "SpeedDial",
     "AudioTriggers", "Matrix", "Clock",
@@ -154,6 +159,8 @@ def test_the_keyboard_survives(console):
             by_key.setdefault(key.text, []).append(widget.attrib.get("Caption"))
 
     for name, key in KEYS.items():
+        if name in OPTIONAL_KEYS and key not in by_key:
+            continue
         assert key in by_key, name
     # 1-0 light the same colour on all three banks, as the old console does.
     assert len(by_key["1"]) == 3
@@ -284,7 +291,12 @@ def test_every_button_on_the_show_page_says_its_own_key(console):
         _frame_named(frame, "GOLPES")
     ):
         assert " · " in caption, caption
-    assert [caption for _, caption in HITS] == _captions(_frame_named(frame, "GOLPES"))
+    actual = _captions(_frame_named(frame, "GOLPES"))
+    expected = [
+        caption for name, caption in HITS
+        if name not in OPTIONAL_KEYS or caption in actual
+    ]
+    assert expected == actual
 
 
 def test_a_colour_button_says_which_colour_it_is(console):

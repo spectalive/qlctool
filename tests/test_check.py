@@ -442,13 +442,53 @@ def test_a_smoke_machine_swept_into_somebody_elses_scene(library):
     workspace = _show()
     scene = _functions(workspace)["Blanco Total"]
     value = find_local(scene, "FixtureVal")
-    # Fixture 26 is a Generic Smoke: sweep its pump up with everything else.
-    duplicate = value.makeelement(value.tag, {"ID": "26"})
+    # Fixture 17 is the AF-150: sweep its pump up with everything else.
+    duplicate = value.makeelement(value.tag, {"ID": "17"})
     duplicate.text = "0,255"
     scene.append(duplicate)
 
     findings = [f for f in check_workspace(workspace, library) if f.rule == "humo"]
     assert any(f.function == "Blanco Total" for f in findings)
+
+
+def test_a_fog_machine_fired_with_its_light_never_programmed(library):
+    """2026-08-29, the vertical fog machines' manual: DMX priority kills the
+    machine's internal colour program, so a show that fires the pump without
+    ever writing dimmer + colour launches a column nobody lit. Strip every LED
+    write to the machines - burst scene, colour bed, blackout - leaving only
+    the pumps, and the checker must see the dark column."""
+    from qlctool.capabilities_of import capabilities_of
+    from qlctool.fog_offsets import fog_offsets
+
+    workspace = _show()
+    machines = {
+        c.fixture.fixture_id: set(fog_offsets(c))
+        for c in capabilities_of(workspace.root, library)
+        if c.is_lit_smoke
+    }
+    assert machines, "the split show should patch the vertical fog machines"
+    for function in find_local(workspace.root, "Engine"):
+        if localname(function) != "Function":
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            fixture_id = int(value.attrib["ID"])
+            if fixture_id not in machines or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            kept = [
+                (offset, level)
+                for offset, level in zip(numbers[0::2], numbers[1::2])
+                if offset in machines[fixture_id]
+            ]
+            if kept:
+                value.text = ",".join(str(n) for pair in kept for n in pair)
+            else:
+                value.getparent().remove(value)
+
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "humo-luz"
+    ]
+    assert findings, "the stripped show should read as a dark column"
 
 
 def test_a_strobe_flashing_faster_than_four_hertz(library):

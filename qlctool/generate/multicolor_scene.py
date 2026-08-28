@@ -50,7 +50,8 @@ def generate_multicolor_scenes(
     gated = set(program_gated_ids)
     rgb_caps = [
         c for c in caps
-        if not c.is_smoke and c.fixture.fixture_id not in excluded
+        if not (c.is_smoke and not c.is_lit_smoke)
+        and c.fixture.fixture_id not in excluded
         and any(c.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE))
     ]
     wheel_caps = [

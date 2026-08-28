@@ -33,6 +33,12 @@ PRISM_ROTATION = "prism_rotation"
 GOBO_SHAKE = "gobo_shake"
 EFFECT = "effect"
 SPEED = "speed"
+# The fog pump of a machine that also carries lights. A plain smoke machine
+# types its pump as a master dimmer and that is fine - it has no other
+# intensity for the role to collide with. A vertical fog machine with LEDs has
+# both: the pump and the light's master dimmer are different channels, and a
+# generator that says "dimmer" must never reach the pump.
+SMOKE = "smoke"
 
 _INTENSITY_PRESETS = {
     "IntensityRed": RED,
@@ -81,6 +87,8 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
         return PRISM_ROTATION
     if g == "effect" and ("jitter" in n or "shake" in n):
         return GOBO_SHAKE
+    if g == "effect" and ("fog" in n or "smoke" in n or "humo" in n):
+        return SMOKE
     if g == "effect":
         return EFFECT
     if g == "speed":

@@ -53,11 +53,12 @@ def _row(plot, depths, prefix):
 
 def test_the_standard_plot_matches_the_patch(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
-    assert len(plot.items) == 29
+    assert len(plot.items) == 32
     # 10 on the back truss, 7 on the front truss, 2 beams beside the DJ table,
-    # 1 bar over the booth, 1 smoke machine.
-    assert len(plot.rigged) == 21
-    assert len(plot.spare) == 8
+    # 1 bar over the booth, 1 smoke machine, 4 vertical fog machines on the
+    # floor.
+    assert len(plot.rigged) == 25
+    assert len(plot.spare) == 7
 
 
 def test_the_front_truss_reads_left_to_right(workspace):

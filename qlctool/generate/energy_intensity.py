@@ -61,7 +61,11 @@ def _scene(
 ) -> int | None:
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:
-        if capability.is_smoke or capability.fixture.fixture_id in excluded:
+        # Fog-only machines have no light to own; the lit ones' LED dimmer is
+        # intensity like any other - the pump is a different role entirely.
+        if (capability.is_smoke and not capability.is_lit_smoke) or (
+            capability.fixture.fixture_id in excluded
+        ):
             continue
         pairs = [
             (offset, level)

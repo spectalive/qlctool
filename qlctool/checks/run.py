@@ -32,6 +32,7 @@ from .rule_latched_strobe import check_latched_strobe
 from .rule_movement_families import check_movement_families
 from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_smoke import check_smoke
+from .rule_smoke_light import check_smoke_light
 from .rule_strobe_coverage import check_strobe_coverage
 from .rule_strobe_in_cycle import check_strobe_in_cycle
 from .rule_strobe_rate import check_strobe_rate
@@ -74,6 +75,7 @@ def check_workspace(
     findings += check_strobe_restore(graph, groups, root, states)
     findings += check_movement_families(graph)
     findings += check_smoke(graph, groups, entries)
+    findings += check_smoke_light(graph, groups, entries)
     findings += check_group_grids(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))
     findings += check_audio_triggers(graph, groups, root)

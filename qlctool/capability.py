@@ -8,6 +8,7 @@ offsets carry role X on this fixture?" A role can map to several offsets - an
 
 from dataclasses import dataclass
 
+from . import roles
 from .definition import Capability, Dimensions, FixtureDefinition
 from .fixture import PatchedFixture
 
@@ -43,6 +44,17 @@ class FixtureCapabilities:
     @property
     def is_smoke(self) -> bool:
         return self.fixture_type.lower() == "smoke"
+
+    @property
+    def is_lit_smoke(self) -> bool:
+        """A smoke machine that carries its own lights.
+
+        Its pump is still sacred - only the smoke scenes fire it - but the LED
+        half is an ordinary RGB fixture: it joins the colour bed and the
+        blackout like a PAR on the floor. The split is safe because the pump
+        is typed with the dedicated smoke role, never as the dimmer.
+        """
+        return self.is_smoke and roles.RED in self.roles_by_offset
 
     def offsets_for_role(self, role: str) -> list[int]:
         return [i for i, r in enumerate(self.roles_by_offset) if r == role]

@@ -10,6 +10,7 @@ from dataclasses import dataclass
 
 from .. import roles
 from ..capabilities_of import capabilities_of
+from ..fog_offsets import fog_offsets
 from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -32,15 +33,24 @@ def generate_smoke_auto(
     level: int = 255,
     path: str = "Humo",
 ) -> GeneratedSmoke:
-    """Burst/pause the smoke machines on a loop; raises when the rig has none."""
-    smoke = [c for c in capabilities_of(workspace.root, library) if c.is_smoke]
+    """Burst/pause the ambient smoke machines; raises when the rig has none.
+
+    Only the fog-only machines: a smoke machine that also carries lights is a
+    show machine - a vertical column somebody fires on purpose - and a timer
+    that fires four of those every minute all night is a wrong show and four
+    empty tanks. Those fire from `vertical_smoke_burst` instead.
+    """
+    smoke = [
+        c for c in capabilities_of(workspace.root, library)
+        if c.is_smoke and not c.has_role(roles.RED)
+    ]
     if not smoke:
         raise ValueError("no smoke machine in this workspace")
 
     def scene(name: str, value: int) -> int:
         values = {
             caps.fixture.fixture_id: [
-                (offset, value) for offset in caps.offsets_for_role(roles.DIMMER)
+                (offset, value) for offset in fog_offsets(caps)
             ]
             for caps in smoke
         }

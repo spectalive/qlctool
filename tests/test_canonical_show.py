@@ -290,22 +290,38 @@ def test_the_console_carries_the_old_keyboard_shortcuts(built):
     assert buttons[show.master_ids["Todo Negro"]] == (KEYS["Todo Negro"], "Toggle")
 
 
-def test_no_scene_but_the_smoke_ones_touches_the_smoke_machine(built):
+def test_no_scene_but_the_smoke_ones_touches_the_smoke_pump(built):
+    """The pump, not the fixture: a lit fog machine's LED joins the colour bed
+    like a floor PAR, so ordinary scenes may write it - but a value above zero
+    on any pump channel outside the smoke scenes is a tank emptying itself."""
+    from qlctool.fog_offsets import fog_offsets
+
     show, out = built
     root = Workspace.load(out).root
     functions = _functions(root)
 
-    smoke_ids = {
-        f.fixture_id for f in patched_fixtures(root) if "Smoke" in f.model
+    pumps = {
+        c.fixture.fixture_id: set(fog_offsets(c))
+        for c in capabilities_of(root, FixtureLibrary.load())
+        if c.is_smoke
     }
-    smoke_scene_names = {"Humo ON", "Humo OFF"}
+    smoke_scene_names = {"Humo ON", "Humo OFF", "Humo Vertical YA"}
     for function in functions.values():
         if function.attrib.get("Type") != "Scene":
             continue
         if function.attrib.get("Name") in smoke_scene_names:
             continue
-        driven = {int(v.attrib["ID"]) for v in findall_local(function, "FixtureVal")}
-        assert not (driven & smoke_ids), function.attrib.get("Name")
+        for value in findall_local(function, "FixtureVal"):
+            fixture_id = int(value.attrib["ID"])
+            if fixture_id not in pumps or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            fired = [
+                (offset, level)
+                for offset, level in zip(numbers[0::2], numbers[1::2])
+                if offset in pumps[fixture_id] and level > 0
+            ]
+            assert not fired, (function.attrib.get("Name"), fired)
 
 
 @pytest.mark.skipif(

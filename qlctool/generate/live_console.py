@@ -138,6 +138,7 @@ HITS: tuple[tuple[str, str], ...] = (
     ("Flash 50%", "FLASH LENTO · -"),
     ("Flash Color", "FLASH COLOR · ."),
     ("Humo ON", "HUMO YA · H"),
+    ("Humo Vertical YA", "HUMO VERT · U"),
     ("Strobo Rapido", "STROBO · F"),
     ("Strobo Medio", "STROBO SUAVE · T"),
     ("Color Beam Animacion", "COLOR BEAM · C"),

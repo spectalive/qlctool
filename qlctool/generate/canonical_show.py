@@ -62,6 +62,7 @@ from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .stage_plot_layout import apply_stage_plot
 from .strobe_effects import generate_strobe_effects
 from .unison_colors import CONTRAST_PAIRS, generate_unison_colors
+from .vertical_smoke_burst import generate_vertical_smoke_burst
 from .vertical_smoke_light import generate_vertical_smoke_light
 from .wheel_color_values import wheel_color_values
 from .wheel_scenes import generate_wheel_scenes
@@ -145,6 +146,7 @@ KEYS = {
     "Flash 50%": "-",
     "Flash Color": ".",
     "Humo ON": "H",
+    "Humo Vertical YA": "U",
     "Strobo Rapido": "F",
     "Strobo Medio": "T",
     "Color Beam Animacion": "C",
@@ -172,7 +174,8 @@ KEYS = {
 # Held, not latched. The smoke burst is one of them on purpose: a pump on a
 # Toggle button is how a tank ends up empty when somebody walks away from it.
 FLASH_FUNCTIONS = (
-    "Flash 100%", "Flash 50%", "Flash Color", "Humo ON", "Golpe Graves",
+    "Flash 100%", "Flash 50%", "Flash Color", "Humo ON", "Humo Vertical YA",
+    "Golpe Graves",
 )
 
 # Where the held flashes sit on every shutter's slow-to-fast run. The hand-built
@@ -428,6 +431,12 @@ def build_canonical_show(
     master["Humo Auto"] = smoke.chaser_id
     # The burst on its own, for the console: a held button, never a latched one.
     master["Humo ON"] = smoke.on_id
+    # The vertical machines' column, fog and its own LED in one held scene -
+    # with DMX plugged in their internal light program is dead, so if this
+    # scene does not light them, nothing does (`rule_smoke_light`).
+    burst_id = generate_vertical_smoke_burst(workspace, library)
+    if burst_id is not None:
+        master["Humo Vertical YA"] = burst_id
 
     dimmers = generate_dimmer_chases(workspace, library)
     master["Dimmer Chase"] = dimmers.chase_id
@@ -841,10 +850,15 @@ def _flat_scene(
 
 
 def _blackout(workspace, caps) -> int:
-    """Everything to zero - except the smoke machine, which is never touched."""
+    """Everything to zero - except the smoke pumps, which are never touched.
+
+    A lit fog machine's LED is part of the room's light and goes dark with the
+    rest; its pump is a different role, so zeroing the dimmer cannot stop - or
+    start - the fog.
+    """
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in caps:
-        if capability.is_smoke:
+        if capability.is_smoke and not capability.is_lit_smoke:
             continue
         offsets = [
             offset

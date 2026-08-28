@@ -44,10 +44,12 @@ def test_a_unison_scene_lights_every_colour_fixture_in_the_patch(tmp_path):
     functions = _functions(Workspace.load(out).root)
     assert len(unison.scene_ids) == len(PRIMARY_COLORS)
 
+    # The lit fog machines count: their LED is a floor PAR on the wheel, only
+    # their pump stays out of it.
     colored = {
         caps.fixture.fixture_id
         for caps in capabilities_of(ws.root, library)
-        if not caps.is_smoke
+        if not (caps.is_smoke and not caps.is_lit_smoke)
         and any(
             caps.has_role(role)
             for role in (roles.RED, roles.GREEN, roles.BLUE)

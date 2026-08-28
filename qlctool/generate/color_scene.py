@@ -33,7 +33,10 @@ def color_scene_values(
     for caps in capabilities:
         if wanted is not None and caps.fixture.fixture_id not in wanted:
             continue
-        if caps.is_smoke:
+        # A fog-only machine has no colour to state. One that carries lights
+        # joins like a floor PAR - its pump is a different role, never touched
+        # here ("una fuente de luz desde el suelo", owner, 2026-08-29).
+        if caps.is_smoke and not caps.is_lit_smoke:
             continue
         if not (
             caps.has_role(roles.RED)
