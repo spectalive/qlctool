@@ -49,3 +49,33 @@ def test_a_fixture_with_no_programmes_needs_nothing_switched_off():
     caps = _capabilities()
     assert internal_program_off_pairs(caps[6]) == []   # a plain LED PAR
     assert internal_program_off_pairs(caps[24]) == [(5, 0)]
+
+
+def test_the_number_counter_stays_out_of_the_cycle():
+    """2026-08-28: the owner ran all forty-two programmes at home - "estaban
+    todos menos uno que va como con un contador de numeros". The hand-built
+    show's own chaser skipped exactly one of the forty-two, Effect 40, and
+    that is the counter: generated for the library page, never cycled.
+    """
+    from qlctool.generate.builtin_effects import (
+        EXCLUDED_FROM_CYCLE, generate_builtin_effects,
+    )
+    from qlctool.xmlutil import find_local, findall_local, localname
+
+    workspace = Workspace.load(SHOW)
+    generated = generate_builtin_effects(
+        workspace,
+        capabilities_of(workspace.root, FixtureLibrary.load()),
+        label="Paneles",
+    )
+    assert len(generated.scene_ids) == 42
+    functions = {
+        f.attrib.get("ID"): f
+        for f in find_local(workspace.root, "Engine")
+        if localname(f) == "Function"
+    }
+    chaser = functions[str(generated.chaser_id)]
+    stepped = {int(s.text) for s in findall_local(chaser, "Step")}
+    assert len(stepped) == 41
+    for excluded in EXCLUDED_FROM_CYCLE:
+        assert generated.scene_ids[excluded - 1] not in stepped

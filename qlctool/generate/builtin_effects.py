@@ -33,6 +33,14 @@ PATH = "Efectos Propios"
 # "Strobo LED" functions, 2026-08-27).
 DEFAULT_SPEED = 200
 
+# Programmes generated but left out of the cycle, 1-based. Effect 40 is a
+# number counter - the one programme the hand-built show's own chaser skipped
+# (its "Strobo LED - Effects" steps 41 of the 42, and the owner confirms:
+# "estaban todos menos uno que va como con un contador de numeros",
+# 2026-08-28). Its scene still exists for the library page; a counter is a
+# thing to show somebody once, not a look for a party.
+EXCLUDED_FROM_CYCLE = (40,)
+
 
 @dataclass(frozen=True)
 class GeneratedBuiltins:
@@ -96,12 +104,17 @@ def generate_builtin_effects(
         )
         scene_ids.append(function_id)
 
+    cycled = [
+        scene_id
+        for index, scene_id in enumerate(scene_ids, start=1)
+        if index not in EXCLUDED_FROM_CYCLE
+    ]
     chaser_id = next_function_id(workspace.root)
     workspace.add_function(
         build_chaser(
             chaser_id,
             f"Ciclo {label}",
-            scene_ids,
+            cycled,
             hold=hold,
             run_order=run_order,
             path=path,
