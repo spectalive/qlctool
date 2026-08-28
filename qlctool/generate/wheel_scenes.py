@@ -38,6 +38,9 @@ def generate_wheel_scenes(
     run_order: str = "Random",
     make_chaser: bool = True,
     path: str | None = None,
+    companion: tuple[str, int, int] | None = None,
+    off_presets: tuple[str, ...] = ("PrismEffectOff",),
+    extra_step_ids: Sequence[int] = (),
 ) -> GeneratedWheel:
     """One scene per wheel position, driven on every fixture that has the wheel.
 
@@ -45,6 +48,17 @@ def generate_wheel_scenes(
     scene - a gobo nobody can see is not a check of anything, and a beam with a
     mechanical shutter shows nothing on dimmer alone. Raises when no fixture
     carries the role.
+
+    companion is (role, on_value, off_value): a channel that belongs to this
+    wheel and is LTP like it - the prism's own rotation, the gobo's shake -
+    written in every scene so the wheel's owner owns it too, instead of the
+    channel keeping whatever the last look left there. A position whose
+    capability preset is in off_presets counts as the wheel disengaged and
+    gets off_value; every other position gets on_value.
+
+    extra_step_ids appends ready-made scenes to the chaser - steps that
+    belong to this wheel's clock (a gobo shake burst) without being one of
+    its plain positions.
     """
     wanted = None if fixture_ids is None else set(fixture_ids)
     caps = [
@@ -66,6 +80,15 @@ def generate_wheel_scenes(
             # the role stays where it is - see wheel_for_role.
             offset, _ = capability.wheel_for_role(role)
             pairs = [(offset, position.middle)]
+            if companion is not None:
+                companion_role, on_value, off_value = companion
+                engaged = (position.preset or "") not in off_presets
+                pairs += [
+                    (companion_offset, on_value if engaged else off_value)
+                    for companion_offset in capability.offsets_for_role(
+                        companion_role
+                    )
+                ]
             if dimmer_full:
                 pairs += [
                     (offset, 255)
@@ -88,7 +111,7 @@ def generate_wheel_scenes(
             build_chaser(
                 chaser_id,
                 f"{label} Animacion",
-                scene_ids,
+                scene_ids + list(extra_step_ids),
                 fade_in=fade,
                 hold=hold,
                 fade_out=fade,

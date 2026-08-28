@@ -13,6 +13,7 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
 from ..shutter_open import shutter_open_pairs
+from ..strobe_off import strobe_off_pairs
 from .wheel_color_values import wheel_color_values
 
 RGB = tuple[int, int, int]
@@ -60,6 +61,9 @@ def split_color_scene_values(
             for offset in caps.offsets_for_role(roles.DIMMER):
                 pairs.append((offset, 255))
             pairs += shutter_open_pairs(caps)
+            # A strobe-only channel is LTP and a released Flash restores
+            # nothing: the scene that owns the light writes the strobe off.
+            pairs += strobe_off_pairs(caps)
         pairs += internal_program_off_pairs(caps)
         result[caps.fixture.fixture_id] = pairs
 

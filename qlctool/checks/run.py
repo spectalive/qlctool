@@ -35,6 +35,7 @@ from .rule_smoke import check_smoke
 from .rule_strobe_coverage import check_strobe_coverage
 from .rule_strobe_in_cycle import check_strobe_in_cycle
 from .rule_strobe_rate import check_strobe_rate
+from .rule_strobe_restore import check_strobe_restore
 from .rule_unfinished_effect import check_unfinished_effects
 from .rule_wheel_colour import check_wheel_colour
 from .show_graph import build_show_graph, group_fixtures
@@ -58,7 +59,7 @@ def check_workspace(
     findings: list[Finding] = []
     findings += check_intensity(graph, groups, entries, states)
     findings += check_wheel_colour(graph, groups, entries)
-    findings += check_internal_programs(graph, groups, entries)
+    findings += check_internal_programs(graph, groups, entries, states)
     findings += check_collisions(graph, groups, entries)
     findings += check_colour_clocks(graph, groups, entries, states)
     findings += check_unfinished_effects(graph, groups, entries)
@@ -70,6 +71,7 @@ def check_workspace(
     findings += check_strobe_coverage(graph, groups)
     findings += check_shadowed_intensity(graph, groups, entries)
     findings += check_accent_restore(graph, groups, root, states)
+    findings += check_strobe_restore(graph, groups, root, states)
     findings += check_movement_families(graph)
     findings += check_smoke(graph, groups, entries)
     findings += check_group_grids(graph, root)

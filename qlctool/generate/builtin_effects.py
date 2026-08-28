@@ -23,6 +23,7 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..internal_program import internal_program
 from ..shutter_open import shutter_open_pairs
+from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 
 PATH = "Efectos Propios"
@@ -95,6 +96,9 @@ def generate_builtin_effects(
                 for offset in capability.offsets_for_role(roles.DIMMER)
             ]
             pairs += shutter_open_pairs(capability)
+            # A strobe-only channel is LTP and a released Flash restores
+            # nothing: the scene that owns the light writes the strobe off.
+            pairs += strobe_off_pairs(capability)
             values[capability.fixture.fixture_id] = pairs
 
         function_id = next_function_id(workspace.root)

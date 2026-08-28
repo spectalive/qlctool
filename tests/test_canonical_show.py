@@ -73,16 +73,18 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     assert named <= members
     # Plus what the pixel groups need beside the wheel, which carries their
     # colour inside its own steps: the scene holding their intensity open,
-    # and the panels' own programmes.
+    # and the panels' phase cycle - their own programmes most of the night,
+    # a stretch in manual listening to the wheel's RGB (2026-08-28).
     assert {functions[m].attrib["Name"] for m in members - named} == {
-        "Pixeles ON", "Ciclo Paneles",
+        "Pixeles ON", "Ciclo Paneles Mixto",
     }
 
     cycle = functions[str(show.master_ids["Ciclo Energia"])]
     assert cycle.attrib["Type"] == "Chaser"
-    # A wave, not a ramp: it comes back down through the middle level.
+    # A wave, not a ramp: the way down from the peak is the dynamic level,
+    # party pace with the dimmers taking turns (2026-08-28).
     assert [functions[s.text].attrib["Name"] for s in findall_local(cycle, "Step")] == [
-        "Nivel Ambiente", "Nivel Fiesta", "Nivel Peak", "Nivel Fiesta",
+        "Nivel Ambiente", "Nivel Fiesta", "Nivel Peak", "Nivel Fiesta Dinamico",
     ]
 
     def _names(level):
@@ -193,9 +195,15 @@ def test_dimmer_chase_owns_peak_and_nothing_is_left_dark(built):
     assert static_id is not None, "Peak needs an owner for fixtures the chase skips"
     static_writes = driven_channels(functions[str(static_id)], caps, {})
     assert static_writes, "the static owner should light at least one fixture"
-    for fixture_id in static_writes:
-        assert not caps[fixture_id].offsets_for_role(roles.DIMMER), (
-            "the static owner should only cover fixtures the chase cannot reach"
+    # The static owner never bids on a dimmer the chase owns - HTP, the chase's
+    # dips could never win. What it does write on the dimmered fixtures is
+    # their strobe-off (2026-08-28): a flash released during a chase level
+    # used to latch the strobe until the next level's intensity base cleared
+    # it, because nothing in the level wrote the channel back.
+    for fixture_id, written in static_writes.items():
+        dimmers = set(caps[fixture_id].offsets_for_role(roles.DIMMER))
+        assert not (dimmers & set(written)), (
+            "the static owner must not contest the chase's dimmers"
         )
     min_wash_ids = {
         c.fixture.fixture_id for c in caps.values() if c.fixture.model == "MiN Wash"
@@ -234,8 +242,13 @@ def test_only_a_pixel_group_gets_matrices_inside_the_wheel(built):
     )
     assert {find_local(m, "FixtureGroup").text for m in matrices} == {pixel_group}
     # The step's scene and its matrix state the same colour, by name: the
-    # solid steps their own, a contrast step the colour of the "resto".
+    # solid steps their own, a contrast step the colour of the "resto". The
+    # multicolour steps are the exception that proves the clock: no single
+    # colour to agree on, so their matrix is the rainbow plasma (2026-08-28).
     for step, matrix in zip(steps, matrices, strict=True):
+        if step.attrib["Name"].startswith("Rig Multicolor"):
+            assert "Plasma Rainbow (Rueda)" in matrix.attrib["Name"]
+            continue
         colour = step.attrib["Name"].split(" + ")[0].split()[-1]
         assert f" {colour} (Rueda)" in matrix.attrib["Name"], step.attrib["Name"]
 

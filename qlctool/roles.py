@@ -25,6 +25,12 @@ STROBE = "strobe"
 COLOR_MACRO = "color_macro"
 GOBO = "gobo"
 PRISM = "prism"
+# The prism's own spin and the gobo's shake: LTP channels that stay where the
+# last look left them, so the scenes that own the wheel own these too. Their
+# generic Speed/Effect groups would match unrelated channels, hence the
+# dedicated roles.
+PRISM_ROTATION = "prism_rotation"
+GOBO_SHAKE = "gobo_shake"
 EFFECT = "effect"
 SPEED = "speed"
 
@@ -71,6 +77,10 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
         return GOBO
     if g == "prism":
         return PRISM
+    if g == "speed" and "prism" in n:
+        return PRISM_ROTATION
+    if g == "effect" and ("jitter" in n or "shake" in n):
+        return GOBO_SHAKE
     if g == "effect":
         return EFFECT
     if g == "speed":

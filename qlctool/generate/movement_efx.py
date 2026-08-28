@@ -66,6 +66,7 @@ def generate_movement_efx(
     rotation: int = 0,
     rotation_by_algorithm: dict[str, int] | None = None,
     names: dict[str, str] | None = None,
+    spread_phase: bool = True,
 ) -> GeneratedMovements:
     """Create one EFX per algorithm over the moving heads.
 
@@ -83,6 +84,12 @@ def generate_movement_efx(
     different angles in the same call). names overrides the generated
     "{label_prefix} {label}" name for an algorithm with a literal one, for a
     figure whose name does not fit that pattern (e.g. "Ola Suave").
+
+    spread_phase=False puts every fixture at StartOffset 0 - the synced push,
+    where the whole rig traces the same point of the path at the same instant.
+    Spreading the phase is what desynchronises heads; a push is the one look
+    whose point is that nobody is desynchronised (mirroring still applies, so
+    the two sides push toward each other rather than in parallel).
     """
     ids = list(fixture_ids) if fixture_ids is not None else moving_head_ids(
         workspace, library
@@ -106,13 +113,18 @@ def generate_movement_efx(
     mirrored = set(mirrored_ids)
 
     def _members(fixture_ids: list[int]) -> list[EFXFixture]:
+        offsets = (
+            spread_offsets(len(fixture_ids))
+            if spread_phase
+            else [0] * len(fixture_ids)
+        )
         return [
             EFXFixture(
                 fixture_id=fid,
                 start_offset=offset,
                 direction="Backward" if fid in mirrored else "Forward",
             )
-            for fid, offset in zip(fixture_ids, spread_offsets(len(fixture_ids)))
+            for fid, offset in zip(fixture_ids, offsets)
         ]
 
     efx_ids: list[int] = []

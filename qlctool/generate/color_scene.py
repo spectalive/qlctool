@@ -14,6 +14,7 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
 from ..shutter_open import shutter_open_pairs
+from ..strobe_off import strobe_off_pairs
 
 RGB = tuple[int, int, int]
 
@@ -23,6 +24,7 @@ def color_scene_values(
     rgb: RGB,
     dimmer_full: bool = True,
     fixture_ids: Sequence[int] | None = None,
+    internal_program_off: bool = True,
 ) -> dict[int, list[tuple[int, int]]]:
     red, green, blue = rgb
     result: dict[int, list[tuple[int, int]]] = {}
@@ -51,10 +53,19 @@ def color_scene_values(
             for offset in caps.offsets_for_role(roles.DIMMER):
                 pairs.append((offset, 255))
             pairs += shutter_open_pairs(caps)
+            # A strobe-only channel is LTP and a released Flash restores
+            # nothing: the scene that owns the light writes the strobe off.
+            pairs += strobe_off_pairs(caps)
         # A fixture running its own programme ignores red, green and blue, and
         # nothing resets that channel on its own: state the colour and the
         # fixture is still animating, through a speech included.
-        pairs += internal_program_off_pairs(caps)
+        # internal_program_off=False leaves the mode channel to a concurrent
+        # owner instead - the wheel writes the panels' RGB all night while
+        # `Ciclo Paneles Mixto` decides whether they are listening. Only for a
+        # caller that really runs such an owner; `rule_internal_program` holds
+        # everyone else to writing the mode off right here.
+        if internal_program_off:
+            pairs += internal_program_off_pairs(caps)
 
         result[caps.fixture.fixture_id] = pairs
 

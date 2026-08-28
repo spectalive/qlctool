@@ -24,6 +24,7 @@ from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..shutter_open import shutter_open_pairs
+from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 
 PATH = "Niveles"
@@ -67,6 +68,9 @@ def _scene(
             for offset in capability.offsets_for_role(roles.DIMMER)
         ]
         pairs += shutter_open_pairs(capability)
+        # A strobe-only channel is LTP and a released Flash restores nothing:
+        # the intensity owner writes the strobe off.
+        pairs += strobe_off_pairs(capability)
         if pairs:
             values[capability.fixture.fixture_id] = sorted(set(pairs))
     if not values:

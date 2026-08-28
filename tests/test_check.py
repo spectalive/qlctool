@@ -130,7 +130,18 @@ def test_the_panels_own_effects_are_actually_used(library):
         by_id[step.text].attrib["Name"]
         for step in findall_local(functions["AUTO"], "Step")
     }
-    assert "Ciclo Paneles" in auto, "the panels animate themselves, unattended"
+    # Since 2026-08-28 the effects cycle sits inside `Ciclo Paneles Mixto`,
+    # which alternates it with a manual phase listening to the rig wheel.
+    assert "Ciclo Paneles Mixto" in auto, (
+        "the panels animate themselves, unattended"
+    )
+    mixto_steps = {
+        by_id[step.text].attrib["Name"]
+        for step in findall_local(functions["Ciclo Paneles Mixto"], "Step")
+    }
+    assert "Ciclo Paneles" in mixto_steps, (
+        "the effects phase left the panels' cycle"
+    )
 
 
 def test_a_group_whose_grid_does_not_match_the_lights_in_it(library):
@@ -247,6 +258,11 @@ def test_the_curated_matrix_library_never_reaches_a_wheel_step(library):
     for matrix in wheel_matrices:
         algorithm = find_local(matrix, "Algorithm")
         name = None if algorithm.attrib["Type"] == "Plain" else (algorithm.text or "").strip()
+        # The one deliberate exception (2026-08-28): the multicolour steps
+        # state many colours by design, and their pixel companion is the
+        # rainbow plasma - still on the wheel's clock, so still one clock.
+        if "Plasma Rainbow (Rueda)" in (matrix.attrib.get("Name") or ""):
+            continue
         assert name not in curated_names, (
             f"{matrix.attrib.get('Name')} is a curated matrix on a wheel step"
         )
@@ -818,3 +834,106 @@ def test_an_audio_trigger_bar_bound_to_a_dangling_widget_id(library):
         if f.rule == "disparador de audio vacio"
     ]
     assert findings, "a bar bound to a dangling WidgetID went unnoticed"
+
+
+def test_a_flashed_strobe_no_state_switches_off(library):
+    """2026-08-28: the owner pressed FLASH and the four panels strobed until
+    somebody found `Strobo OFF` by hand. Strobe channels are LTP and a
+    released Flash restores nothing, so every room state that lights the
+    fixture must itself write the strobe channel back off. Reproduced by
+    taking the strobe-off write out of every scene that has it on the panels.
+    """
+    workspace = _show()
+    panels = {24, 25, 27, 28}
+    for function in _functions(workspace).values():
+        if function.attrib.get("Type") != "Scene":
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            if int(value.attrib["ID"]) not in panels or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            if pairs.get(4) == 0:  # channel 5 is the strobe, 0 stops it
+                pairs.pop(4)
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "estrobo pegado"
+    ]
+    assert findings, "a flashed strobe nobody switches off went unnoticed"
+    assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_the_wheel_colours_the_panels_and_the_mixto_owns_their_mode(library):
+    """2026-08-28: the panels join the rig's colours without a second clock.
+
+    The rig wheel writes their RGB on every step - never their mode channel -
+    and `Ciclo Paneles Mixto` alternates them between their own programmes and
+    manual listening. One colour clock, one mode owner. This pins the wiring:
+    lose either half and the panels are back to "a su bola" or to ignoring
+    every colour they are sent.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    panels = {24, 25, 27, 28}
+
+    mixto = functions["Ciclo Paneles Mixto"]
+    steps = [s.text for s in findall_local(mixto, "Step")]
+    step_names = {
+        f.attrib.get("Name")
+        for f in functions.values()
+        if f.attrib.get("ID") in steps
+    }
+    assert step_names == {"Ciclo Paneles", "Paneles Manual"}
+
+    rig_scenes = [
+        f for name, f in functions.items()
+        if name and name.startswith(("Rig ", "Cabezas "))
+        and f.attrib.get("Type") == "Scene"
+        and f.attrib.get("Path") == "Colores Rig"
+    ]
+    assert rig_scenes
+    for scene in rig_scenes:
+        written_panels = set()
+        for value in findall_local(scene, "FixtureVal"):
+            if int(value.attrib["ID"]) not in panels or not value.text:
+                continue
+            written_panels.add(int(value.attrib["ID"]))
+            numbers = [int(n) for n in value.text.split(",")]
+            offsets = set(numbers[0::2])
+            assert {1, 2, 3} <= offsets, scene.attrib.get("Name")  # RGB
+            assert 5 not in offsets, scene.attrib.get("Name")  # mode is owned
+        assert written_panels == panels, scene.attrib.get("Name")
+
+
+def test_colour_on_the_panels_without_a_mode_owner_still_fires(library):
+    """2026-08-28: the `programa interno` excuse is ownership, not amnesty.
+
+    The rig scenes state RGB on the panels without the mode-off because every
+    room state that lights them runs `Ciclo Paneles Mixto`, which owns the
+    mode channel. Take the mode write out of the owner's own scenes - the
+    panels' effect scenes and `Paneles Manual` - and the old bug is back:
+    colour that works or not depending on what ran before. The rule must bite
+    again, or the excuse is amnesty rather than ownership.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    panels = {24, 25, 27, 28}
+    for name, function in functions.items():
+        if not (name or "").startswith("Paneles"):
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            if int(value.attrib["ID"]) not in panels or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            pairs.pop(5, None)  # channel 6 is the mode channel
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "programa interno"
+    ]
+    assert findings, "colour with no standing mode owner went unnoticed"
+    assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)

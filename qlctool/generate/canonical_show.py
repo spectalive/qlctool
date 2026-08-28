@@ -16,6 +16,7 @@ from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
 from ..fixture_group import fixture_groups
+from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -39,12 +40,16 @@ from .dimmerless_intensity import generate_dimmerless_intensity
 from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
 from .flash_color import generate_flash_color
+from .gobo_shake import generate_gobo_shake
 from .home_position import generate_home_position
 from .live_console import generate_live_console
 from .matrix_effects import GeneratedMatrices, generate_matrix_effects
 from .moments import Moment, generate_moments
 from .movement_efx import moving_head_ids
 from .movement_families import generate_movement_families
+from .multicolor_matrices import generate_multicolor_matrices
+from .multicolor_scene import generate_multicolor_scenes
+from .panel_manual import generate_panel_manual
 from .pixel_base import generate_pixel_base
 from .pixel_wheel_matrices import generate_pixel_wheel_matrices
 from .smoke_auto import generate_smoke_auto
@@ -70,6 +75,10 @@ MATRIX_COLORS = ("Rojo", "Verde", "Azul", "Ambar", "Magenta", "Blanco")
 # face does not read as a mortuary, and flat enough that nothing draws the eye.
 CHARLA_WHITE = (255, 214, 170)
 
+# Slow forward on the 7R prism rotation's 0-127 slow-to-fast run: the inserted
+# prism turns, which is what makes it read as a kaleidoscope and not a smudge.
+PRISM_SPIN_SLOW = 25
+
 # How long the night spends at each level, in milliseconds. A wave rather than a
 # ramp: the cycle comes down through the middle level instead of jumping from
 # peak to quiet. Peak is a burst, not a block - two continuous minutes of fast
@@ -78,6 +87,24 @@ CHARLA_WHITE = (255, 214, 170)
 AMBIENT_HOLD = 4 * 60 * 1000
 PARTY_HOLD = 8 * 60 * 1000
 PEAK_HOLD = 40 * 1000
+# The descent from the peak: party pace, but the intensity moves - the running
+# chase, then the odd/even ping-pong - so the room reads "some on, some off"
+# instead of a flat wall of light ("a veces se apagan unos y se encienden
+# otros", owner, 2026-08-28).
+DYNAMIC_HOLD = 4 * 60 * 1000
+# Inside that level the two dimmer programmes take turns - serialized in one
+# chaser, because two of them at once are not an ownership handover: intensity
+# mixes HTP and the ping-pong's 255 half simply masks the chase.
+DYNAMIC_CHASE_HOLD = 30 * 1000
+DYNAMIC_PINGPONG_HOLD = 8 * 1000
+
+# The panels' night, in phases: their own forty-one programmes most of the
+# time, then a stretch in manual listening to the rig wheel's RGB - "estaría
+# bien usar rgb para que vaya con el resto de vez en cuando" (owner,
+# 2026-08-28). The wheel writes their colour on every step all night; this
+# cycle only decides whether they are listening.
+PANEL_EFFECTS_HOLD = 8 * 60 * 1000
+PANEL_MANUAL_HOLD = 4 * 60 * 1000
 
 # Beat-locked timings, in beats, for `newshow --beats`. Two bars of colour, one
 # bar of matrix, eight bars of one movement shape: the counts a chase is
@@ -232,6 +259,19 @@ def build_canonical_show(
     builtins = generate_builtin_effects(workspace, caps, label="Paneles")
     if builtins.chaser_id is not None:
         master["Efectos Paneles"] = builtins.chaser_id
+    # The two phases in one chaser: steps are alternatives, so the mode
+    # channel always has exactly one owner, and Loop - never Random - because
+    # the alternation is the point.
+    panel_manual_id = generate_panel_manual(workspace, caps, builtins.fixture_ids)
+    panel_cycle_id = builtins.chaser_id
+    if builtins.chaser_id is not None and panel_manual_id is not None:
+        panel_cycle_id = _chaser(
+            workspace, "Ciclo Paneles Mixto",
+            [builtins.chaser_id, panel_manual_id],
+            holds=[PANEL_EFFECTS_HOLD, PANEL_MANUAL_HOLD],
+            path="Efectos Propios",
+        )
+        master["Ciclo Paneles Mixto"] = panel_cycle_id
     # The vertical smoke's companion light: the panels on the two colour
     # cycles the hand-built show held up while the column fired.
     vertical_id = generate_vertical_smoke_light(workspace, builtins.scene_ids)
@@ -285,7 +325,7 @@ def build_canonical_show(
     # the panels' own programmes. Their colour is not here - the wheel's steps
     # carry it, matrix included. Wherever the wheel goes, this goes.
     pixel_layer = [
-        fid for fid in (pixel_base_id, builtins.chaser_id) if fid is not None
+        fid for fid in (pixel_base_id, panel_cycle_id) if fid is not None
     ]
 
     # The wheel colours the pixel groups too, but through a matrix of its own
@@ -324,9 +364,15 @@ def build_canonical_show(
     # Wheel scenes state the wheel and nothing else: their dimmer used to ride
     # along at 255, which a quiet level could never bring down (HTP). The
     # levels own intensity now - see `energy_intensity`.
+    # The shake bursts ride inside the gobo wheel's own rotation - a shake is
+    # a step, never a concurrent layer - and every plain gobo scene parks the
+    # jitter channel at zero, so the burst always has somebody to end it.
+    shake = generate_gobo_shake(workspace, library)
     gobos = generate_wheel_scenes(
         workspace, library, role=roles.GOBO, label="Gobo", path="Gobos",
         dimmer_full=False,
+        companion=(roles.GOBO_SHAKE, 0, 0),
+        extra_step_ids=shake.scene_ids,
     )
     if gobos.chaser_id is not None:
         master["Gobo Animacion"] = gobos.chaser_id
@@ -344,9 +390,14 @@ def build_canonical_show(
     if beam_colors.chaser_id is not None:
         master["Color Beam Animacion"] = beam_colors.chaser_id
 
+    # The prism spins while it is in: its rotation channel is LTP like the
+    # wheel, so every prism scene owns it - slow forward when the prism is
+    # inserted, stopped on the "None" position. Without this the channel kept
+    # whatever the last look left, and a parked prism does not kaleidoscope.
     prisms = generate_wheel_scenes(
         workspace, library, role=roles.PRISM, label="Prisma", run_order="Loop",
         hold=8000, path="Prisma", dimmer_full=False,
+        companion=(roles.PRISM_ROTATION, PRISM_SPIN_SLOW, 0),
     )
     beam_subsets = generate_beam_subsets(workspace, library)
     if prisms.chaser_id is not None:
@@ -381,10 +432,40 @@ def build_canonical_show(
     # Off the rig-wide wheel go the fixtures somebody else is colouring: the
     # pixel groups their matrix paints, and the panels running their own
     # programmes, which ignore red, green and blue while they do.
+    # The panels whose RGB the wheel writes without touching their mode: the
+    # self-animating ones - minus any a matrix already paints, because a
+    # fixture gets one colour source and a matrix-painted panel already has
+    # its own (the old DeluxeEventos2 patch kept two of them inside the bars'
+    # group, and that patch still builds).
+    program_gated = sorted(set(builtins.fixture_ids) - matrix_lit_ids)
+    # The wild steps: every fixture its own colour, the beams on their rainbow
+    # scroll, the bars under a rainbow plasma - entering the wheel as ordinary
+    # steps, so "de vez en cuando" is the Random rotation doing its job.
+    multicolor_ids = generate_multicolor_scenes(
+        workspace, library,
+        colors=list(_wheel_colors().items()),
+        exclude_fixture_ids=sorted(matrix_lit_ids),
+        program_gated_ids=program_gated,
+    )
+    multicolor_matrix_ids = generate_multicolor_matrices(
+        workspace, pixel_group_ids
+    ) if pixel_group_ids and multicolor_ids else []
+    multicolor_steps = [
+        _collection(
+            workspace, f"{graph_name} + Pixeles",
+            [scene_id, *multicolor_matrix_ids],
+        ) if multicolor_matrix_ids else scene_id
+        for scene_id, graph_name in zip(
+            multicolor_ids,
+            (f"Rig Multicolor {n}" for n in range(1, len(multicolor_ids) + 1)),
+        )
+    ]
     unison = generate_unison_colors(
         workspace, library,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
         step_extras=step_matrices,
+        program_gated_ids=program_gated,
+        extra_step_ids=multicolor_steps,
     )
     if unison.wheel_id is not None:
         master["Rueda Colores"] = unison.wheel_id
@@ -402,6 +483,11 @@ def build_canonical_show(
     # every step - and because two levels running at once (which the console
     # used to allow) then put two colour sources on one fixture.
     gobo_open_id = _first(gobos.scene_ids)
+    # The prism parked out, spin stopped: every level and moment that does not
+    # run `Prisma Animacion` holds this, or the last peak's prism stays in the
+    # beam for the whole of the next quiet hour - the same LTP latch as the
+    # gobo, on the channel one wheel over.
+    prism_off_id = _first(prisms.scene_ids)
     # Each level carries its own intensity base, and nobody else bids on those
     # dimmers: with the colour scenes stripped of theirs, "Ambiente" really is
     # dimmer than "Fiesta" for the first time. The pixel groups stay out -
@@ -432,6 +518,16 @@ def build_canonical_show(
     )
     if peak_static is not None:
         master["Intensidad Peak"] = peak_static
+    # The dynamic level's intensity: the running chase and the odd/even
+    # ping-pong taking turns in one chaser - steps are alternatives, so the
+    # dimmers always have exactly one owner.
+    dimmer_programs_id = _chaser(
+        workspace, "Dimmer Programas",
+        [dimmers.chase2_id, dimmers.pingpong_id],
+        holds=[DYNAMIC_CHASE_HOLD, DYNAMIC_PINGPONG_HOLD],
+        path="Dimmers",
+    )
+    master["Dimmer Programas"] = dimmer_programs_id
     energy = generate_energy_levels(
         workspace,
         levels=[
@@ -445,7 +541,7 @@ def build_canonical_show(
                 # *out*, and a wheel nothing drives keeps what it was left on.
                 [fid for fid in (
                     movement.slow_id, movement.fan_id, gobo_open_id,
-                    intensity.ambient_id,
+                    prism_off_id, intensity.ambient_id,
                 ) if fid is not None],
                 AMBIENT_HOLD,
             ),
@@ -453,7 +549,7 @@ def build_canonical_show(
                 "Nivel Fiesta",
                 [fid for fid in (
                     movement.wash_id, movement.beam_id,
-                    master["Gobo Animacion"], intensity.full_id,
+                    master["Gobo Animacion"], prism_off_id, intensity.full_id,
                 ) if fid is not None],
                 PARTY_HOLD,
             ),
@@ -467,8 +563,23 @@ def build_canonical_show(
                 ) if fid is not None],
                 PEAK_HOLD,
             ),
+            # The way down from the peak: party movement, but the dimmers
+            # belong to the serialized programmes - lights taking turns
+            # instead of a flat wall.
+            EnergyLevel(
+                "Nivel Fiesta Dinamico",
+                [fid for fid in (
+                    movement.wash_id, movement.beam_id,
+                    master["Gobo Animacion"], prism_off_id,
+                    dimmer_programs_id, peak_static,
+                ) if fid is not None],
+                DYNAMIC_HOLD,
+            ),
         ],
-        order=("Nivel Ambiente", "Nivel Fiesta", "Nivel Peak", "Nivel Fiesta"),
+        order=(
+            "Nivel Ambiente", "Nivel Fiesta", "Nivel Peak",
+            "Nivel Fiesta Dinamico",
+        ),
     )
     master.update(energy.level_ids)
     if energy.cycle_id is not None:
@@ -503,19 +614,19 @@ def build_canonical_show(
         # Somebody is talking: steady warm light, heads parked, nothing moving,
         # no wheel and no matrix - the one state where change is the enemy.
         Moment("Momento Charla", [
-            home_id, master["Luz Charla"], gobo_open_id, beam_white_id,
-            intensity.full_id,
+            home_id, master["Luz Charla"], gobo_open_id, prism_off_id,
+            beam_white_id, intensity.full_id,
         ]),
         # A lull: the colour bed and the pixels keep breathing at the low
         # intensity base, the heads stay where they are.
         Moment("Momento Tranquilo", [
             master["Rueda Colores"], *pixel_layer, home_id, gobo_open_id,
-            intensity.ambient_id,
+            prism_off_id, intensity.ambient_id,
         ]),
         Moment("Momento Fiesta", [
             master["Rueda Colores"], *pixel_layer,
             master["Movimientos Cabezas"], master["Gobo Animacion"],
-            intensity.full_id,
+            prism_off_id, intensity.full_id,
         ]),
         # Everything the rig has, minus the strobe: a strobe belongs to a hit
         # somebody presses and lets go of, not to a state left running.
@@ -673,6 +784,17 @@ def _blackout(workspace, caps) -> int:
     function_id = next_function_id(workspace.root)
     workspace.add_function(
         build_scene(function_id, "Todo Negro", values, path=SHOW_PATH)
+    )
+    return function_id
+
+
+def _chaser(
+    workspace: Workspace, name: str, steps: list[int],
+    holds: list[int], path: str,
+) -> int:
+    function_id = next_function_id(workspace.root)
+    workspace.add_function(
+        build_chaser(function_id, name, steps, hold=holds, path=path)
     )
     return function_id
 

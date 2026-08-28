@@ -61,6 +61,8 @@ def generate_unison_colors(
     fade: int = 800,
     exclude_fixture_ids: Sequence[int] = (),
     step_extras: dict[str, Sequence[int]] | None = None,
+    program_gated_ids: Sequence[int] = (),
+    extra_step_ids: Sequence[int] = (),
 ) -> GeneratedUnison:
     """Rig-wide colour scenes and one Random wheel over them.
 
@@ -81,6 +83,16 @@ def generate_unison_colors(
     one chaser starting both by the step is what "the bars follow the show"
     means in QLC+. A contrast step runs the *rest* colour's extras, because
     that is the colour everything that is not a moving head is on.
+
+    `program_gated_ids` are the self-animating panels: every scene writes
+    their RGB (with the rest, on the rest's colour) but never their mode
+    channel - whether they are listening belongs to `Ciclo Paneles Mixto`,
+    which flips them between their own programmes and manual. One colour
+    clock, one mode owner.
+
+    `extra_step_ids` are ready-made steps appended to the wheel - the
+    multicolour looks - so they rotate on this one clock instead of
+    becoming a chaser of their own.
     """
     caps = capabilities_of(workspace.root, library)
     excluded = set(exclude_fixture_ids)
@@ -101,6 +113,10 @@ def generate_unison_colors(
         values = color_scene_values(
             caps, PALETTE[name], fixture_ids=lit_ids, dimmer_full=False
         )
+        values.update(color_scene_values(
+            caps, PALETTE[name], fixture_ids=program_gated_ids,
+            dimmer_full=False, internal_program_off=False,
+        ))
         values.update(wheel_color_values(caps, name, dimmer=None))
         if not values:
             continue
@@ -124,6 +140,10 @@ def generate_unison_colors(
         values = _contrast_values(
             caps, head_ids, rest_ids, heads_color, rest_color, excluded
         )
+        values.update(color_scene_values(
+            caps, PALETTE[rest_color], fixture_ids=program_gated_ids,
+            dimmer_full=False, internal_program_off=False,
+        ))
         if len(values) < 2:
             continue
         name = f"Cabezas {heads_color} / Resto {rest_color}"
@@ -131,6 +151,7 @@ def generate_unison_colors(
         contrast_ids.append(scene_id)
         steps.append(_step(workspace, name, scene_id, extras.get(rest_color)))
 
+    steps += list(extra_step_ids)
     wheel_id: int | None = None
     if steps:
         wheel_id = next_function_id(workspace.root)

@@ -21,6 +21,7 @@ from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..shutter_open import shutter_open_pairs
+from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 
 NAME = "Pixeles ON"
@@ -53,6 +54,9 @@ def generate_pixel_base(
             continue
         pairs = [(o, 255) for o in capability.offsets_for_role(roles.DIMMER)]
         pairs += shutter_open_pairs(capability)
+        # A strobe-only channel is LTP and a released Flash restores nothing:
+        # the scene that owns the light writes the strobe off.
+        pairs += strobe_off_pairs(capability)
         if pairs:
             values[capability.fixture.fixture_id] = pairs
 
