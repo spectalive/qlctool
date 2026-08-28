@@ -79,3 +79,39 @@ def test_the_number_counter_stays_out_of_the_cycle():
     assert len(stepped) == 41
     for excluded in EXCLUDED_FROM_CYCLE:
         assert generated.scene_ids[excluded - 1] not in stepped
+
+
+def test_the_vertical_smoke_light_is_the_old_chaser_verbatim():
+    """2026-08-28, "como el antiguo": when the vertical smoke fires, the
+    panels hold Effect 1 for a minute and Effect 3 for ten - the hand-built
+    console's misnamed HUMO AUTO chaser (DeluxeEventos2 ID 367), values,
+    order and holds carried verbatim.
+    """
+    from qlctool.generate.builtin_effects import generate_builtin_effects
+    from qlctool.generate.vertical_smoke_light import (
+        generate_vertical_smoke_light,
+    )
+    from qlctool.xmlutil import find_local, findall_local, localname
+
+    workspace = Workspace.load(SHOW)
+    builtins = generate_builtin_effects(
+        workspace,
+        capabilities_of(workspace.root, FixtureLibrary.load()),
+        label="Paneles",
+    )
+    chaser_id = generate_vertical_smoke_light(workspace, builtins.scene_ids)
+    assert chaser_id is not None
+
+    functions = {
+        f.attrib.get("ID"): f
+        for f in find_local(workspace.root, "Engine")
+        if localname(f) == "Function"
+    }
+    chaser = functions[str(chaser_id)]
+    assert chaser.attrib["Name"] == "Humo Vertical"
+    assert find_local(chaser, "RunOrder").text == "Loop"
+    steps = findall_local(chaser, "Step")
+    assert [int(s.text) for s in steps] == [
+        builtins.scene_ids[0], builtins.scene_ids[2],
+    ]
+    assert [int(s.attrib["Hold"]) for s in steps] == [60000, 600000]

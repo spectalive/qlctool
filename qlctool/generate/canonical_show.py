@@ -53,6 +53,7 @@ from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .stage_plot_layout import apply_stage_plot
 from .strobe_effects import generate_strobe_effects
 from .unison_colors import CONTRAST_PAIRS, generate_unison_colors
+from .vertical_smoke_light import generate_vertical_smoke_light
 from .wheel_color_values import wheel_color_values
 from .wheel_scenes import generate_wheel_scenes
 
@@ -123,6 +124,7 @@ KEYS = {
     "Gobo Animacion": "G",
     "Prisma Animacion": "P",
     "Humo Auto": "J",
+    "Humo Vertical": "N",
     # Live-only looks. The hand-built console has these on V/B/C/Z; C is
     # already Color Beam here, so the sequence moves rather than clashes.
     "Dimmer Chase": "V",
@@ -230,6 +232,11 @@ def build_canonical_show(
     builtins = generate_builtin_effects(workspace, caps, label="Paneles")
     if builtins.chaser_id is not None:
         master["Efectos Paneles"] = builtins.chaser_id
+    # The vertical smoke's companion light: the panels on the two colour
+    # cycles the hand-built show held up while the column fired.
+    vertical_id = generate_vertical_smoke_light(workspace, builtins.scene_ids)
+    if vertical_id is not None:
+        master["Humo Vertical"] = vertical_id
 
     matrices: list[GeneratedMatrices] = []
     # Matrices are drawn only where a group is really made of pixels: on a

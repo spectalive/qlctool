@@ -518,6 +518,18 @@ def _page_manual(
             page=PAGE_MANUAL, font=HELP_FONT,
         )
 
+    # The vertical smoke's light: latched on purpose - the column lasts as
+    # long as it lasts, and somebody presses it off when it is over.
+    master_button(
+        outer, "Humo Vertical", "HUMO VERTICAL — su luz · N",
+        RIGHT_X, 716, RIGHT_WIDTH, 60, page=PAGE_MANUAL,
+    )
+    label(
+        outer, "Los paneles a sus ciclos de color mientras dispara el humo "
+        "vertical. Se queda puesto: apágalo al terminar.",
+        RIGHT_X, 782, RIGHT_WIDTH, 60, page=PAGE_MANUAL, font=HELP_FONT,
+    )
+
     shapes = frame(
         outer, "Figura que dibujan las cabezas", MIDDLE_X, 68, MIDDLE_WIDTH, 80,
         page=PAGE_MANUAL, solo=True, font=TITLE_FONT,
