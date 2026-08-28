@@ -332,6 +332,10 @@ def generate_live_console(
         pages=PAGES, next_page_key=PAGE_NEXT_KEY,
         previous_page_key=PAGE_PREVIOUS_KEY, font=TITLE_FONT,
     )
+    # The SMC-PAD's arrow buttons page the console: a frame's Next Page is
+    # external control 0 and Previous Page is 1 (qmlui vcframe.h).
+    build_input_source(outer, SMC_PAD_BINDINGS["Pagina Siguiente"])
+    build_input_source(outer, SMC_PAD_BINDINGS["Pagina Anterior"], source_id=1)
 
     _page_show(outer, button, master_button, frame, label)
     _page_manual(
@@ -409,15 +413,19 @@ def _page_show(outer, button, master_button, frame, label) -> None:
     # APAGON lifts it back to that. AUTO restarts nothing while blacked out:
     # it has to follow the second APAGON, not replace it - the help label
     # below says so.
-    button(
+    # The panic pair rides the SMC-PAD's transport buttons - on the device's
+    # right edge, physically apart from the pads a hand hammers in the dark.
+    stop_all = button(
         panic, None, "PARAR TODO · Retroceso", GAP + 2, HEADER + 4, 460, 78,
         action=STOP_ALL, key=STOP_ALL_KEY, stop_all_fade_ms=STOP_ALL_FADE_MS,
         font=BIG_FONT,
     )
-    button(
+    build_input_source(stop_all, SMC_PAD_BINDINGS["PARAR TODO"])
+    blackout = button(
         panic, None, "APAGON · Esc", 474, HEADER + 4, 200, 78,
         action=BLACKOUT, key=BLACKOUT_KEY, font=BIG_FONT,
     )
+    build_input_source(blackout, SMC_PAD_BINDINGS["APAGON"])
     label(
         panic,
         "PARAR TODO para las funciones con un fundido de 1 segundo — pulsa "

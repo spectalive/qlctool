@@ -667,10 +667,16 @@ def build_canonical_show(
             beam_white_id, intensity.full_id,
         ]),
         # A lull: the colour bed and the pixels keep breathing at the low
-        # intensity base, the heads stay where they are.
+        # intensity base, and the heads rest without freezing - the washes on
+        # the wide slow Suave shapes, the beams parked in their fan. Parked
+        # dead they read as broken ("molaría un movimiento suave estilo
+        # reposo", owner, 2026-08-29); home is only the fallback for a rig
+        # whose movers grew neither family.
         Moment("Momento Tranquilo", [
-            master["Rueda Colores"], *pixel_layer, home_id, gobo_open_id,
-            prism_off_id, intensity.ambient_id,
+            master["Rueda Colores"], *pixel_layer,
+            *([f for f in (movement.slow_id, movement.fan_id)
+               if f is not None] or [home_id]),
+            gobo_open_id, prism_off_id, intensity.ambient_id,
         ]),
         Moment("Momento Fiesta", [
             master["Rueda Colores"], *pixel_layer,

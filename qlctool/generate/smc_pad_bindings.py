@@ -18,8 +18,13 @@ The layout is the owner's (2026-08-29): hits on the top two rows - the first
 column is the build-up punch (flash + vertical smoke), the second the gentler
 fills (slow flash + plain smoke) - room states on the two bottom rows, and
 the panic stays OFF the pads so a missed hit cannot black the room out.
-Pad 4 (bottom-right) is left free on purpose for the same reason. The five
-small buttons wait for a photo of their icons before they get jobs.
+Pad 4 (bottom-right) is left free on purpose for the same reason.
+
+The five small buttons on the right edge (captured 2026-08-29, pressed in
+order): "<" CC 25, ">" CC 26, play CC 27, pause CC 28, record CC 29. The
+arrows page the console like PgUp/PgDown, pause is PARAR TODO and record is
+APAGON - the panic pair, physically apart from the pads. Play stays free: a
+button can carry one external source per control, and AUTO's is pad 5's.
 
 Keys are the widget's identity in `generate_live_console`: a master function's
 name for buttons, the widget caption for the sliders and dials.
@@ -54,8 +59,14 @@ SMC_PAD_BINDINGS: dict[str, int] = {
     "Humo Auto": 37049,            # shift + pad 10
     "Arcoiris Simultaneo": 37050,  # shift + pad 11
     "Arcoiris Pasos": 37051,       # shift + pad 12
-    # Encoders (CC on channel 1, absolute 0-127).
+    # Encoders (CC on channel 1, absolute 0-127). The device numbers its
+    # knobs bottom-up too: knob 1 is bottom-left, labeled RATE on the panel.
     "Master General": 30,          # encoder 1 - the whole room's intensity
     "Vel. Colores": 31,            # encoder 2
     "Vel. Movimiento": 32,         # encoder 3
+    # The small buttons on the right edge (CC on channel 1, 127/0).
+    "Pagina Anterior": 25,         # "<" - the console's PgUp
+    "Pagina Siguiente": 26,        # ">" - the console's PgDown
+    "PARAR TODO": 28,              # pause - stop every running function
+    "APAGON": 29,                  # record - the blackout latch
 }

@@ -564,9 +564,10 @@ def test_the_pixel_intensity_runs_wherever_the_wheel_does(built):
 def test_the_console_is_bound_to_the_smc_pad(built):
     """2026-08-29: the M-VAVE SMC-PAD became the show's hardware surface.
 
-    Every widget the map names carries its <Input> binding (universe 0,
-    source ID 0), and every channel appears exactly once - a channel bound
-    twice is one pad pressing two widgets at a venue in the dark.
+    Every widget the map names carries its <Input> binding (universe 0), and
+    every channel appears exactly once - a channel bound twice is one pad
+    pressing two widgets at a venue in the dark. Source ID is 0, the primary
+    control, everywhere but the multipage frame, whose Previous Page is 1.
     """
     from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
 
@@ -576,20 +577,22 @@ def test_the_console_is_bound_to_the_smc_pad(built):
     channels = []
     button_channel = {}
     caption_channel = {}
+    frame_pages = {}
     for element in root.iter():
-        if localname(element) not in ("Button", "Slider", "SpeedDial"):
+        if localname(element) not in ("Button", "Slider", "SpeedDial", "Frame"):
             continue
-        source = find_local(element, "Input")
-        if source is None:
-            continue
-        assert source.attrib["ID"] == "0"
-        assert source.attrib["Universe"] == "0"
-        channel = int(source.attrib["Channel"])
-        channels.append(channel)
-        caption_channel[element.attrib.get("Caption")] = channel
-        if localname(element) == "Button":
-            function = find_local(element, "Function")
-            button_channel[int(function.attrib["ID"])] = channel
+        for source in findall_local(element, "Input"):
+            assert source.attrib["Universe"] == "0"
+            channel = int(source.attrib["Channel"])
+            channels.append(channel)
+            if localname(element) == "Frame":
+                frame_pages[source.attrib["ID"]] = channel
+                continue
+            assert source.attrib["ID"] == "0"
+            caption_channel[element.attrib.get("Caption")] = channel
+            if localname(element) == "Button":
+                function = find_local(element, "Function")
+                button_channel[int(function.attrib["ID"])] = channel
 
     # Every channel at most once, none the map does not name - and a binding
     # may only be missing when its master is: the seed workspace has no
@@ -606,3 +609,30 @@ def test_the_console_is_bound_to_the_smc_pad(built):
     # ...and the encoders on the widgets that scale, not fire.
     for caption in ("Master General", "Vel. Colores", "Vel. Movimiento"):
         assert caption_channel[caption] == SMC_PAD_BINDINGS[caption]
+    # The transport buttons: arrows page the console, pause and record are
+    # the panic pair - off the pads, where a missed hit cannot reach them.
+    assert frame_pages == {
+        "0": SMC_PAD_BINDINGS["Pagina Siguiente"],
+        "1": SMC_PAD_BINDINGS["Pagina Anterior"],
+    }
+    assert caption_channel["PARAR TODO · Retroceso"] == SMC_PAD_BINDINGS["PARAR TODO"]
+    assert caption_channel["APAGON · Esc"] == SMC_PAD_BINDINGS["APAGON"]
+
+
+def test_tranquilo_rests_the_heads_instead_of_parking_them(built):
+    """2026-08-29: Tranquilo held the heads parked dead at home, and a parked
+    mover in a lull reads as a broken one ("molaría un movimiento suave
+    estilo reposo", owner). The lull now breathes: washes on the Suave
+    shapes, beams in their fan, and home stays out of the moment.
+    """
+    show, out = built
+    root = Workspace.load(out).root
+    functions = _functions(root)
+
+    tranquilo = functions[str(show.master_ids["Momento Tranquilo"])]
+    members = {step.text for step in findall_local(tranquilo, "Step")}
+    names = {functions[m].attrib.get("Name") for m in members}
+
+    assert "Movimientos Suaves" in names
+    assert "Beams Abanico" in names
+    assert str(show.master_ids["Cabezas Centro"]) not in members
