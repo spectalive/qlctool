@@ -559,3 +559,50 @@ def test_the_pixel_intensity_runs_wherever_the_wheel_does(built):
         members = {step.text for step in findall_local(collection, "Step")}
         assert wheel in members, name
         assert base in members, name
+
+
+def test_the_console_is_bound_to_the_smc_pad(built):
+    """2026-08-29: the M-VAVE SMC-PAD became the show's hardware surface.
+
+    Every widget the map names carries its <Input> binding (universe 0,
+    source ID 0), and every channel appears exactly once - a channel bound
+    twice is one pad pressing two widgets at a venue in the dark.
+    """
+    from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
+
+    show, out = built
+    root = Workspace.load(out).root
+
+    channels = []
+    button_channel = {}
+    caption_channel = {}
+    for element in root.iter():
+        if localname(element) not in ("Button", "Slider", "SpeedDial"):
+            continue
+        source = find_local(element, "Input")
+        if source is None:
+            continue
+        assert source.attrib["ID"] == "0"
+        assert source.attrib["Universe"] == "0"
+        channel = int(source.attrib["Channel"])
+        channels.append(channel)
+        caption_channel[element.attrib.get("Caption")] = channel
+        if localname(element) == "Button":
+            function = find_local(element, "Function")
+            button_channel[int(function.attrib["ID"])] = channel
+
+    # Every channel at most once, none the map does not name - and a binding
+    # may only be missing when its master is: the seed workspace has no
+    # vertical smoke machines, so pad 9 has nothing to press there.
+    assert len(channels) == len(set(channels))
+    assert set(channels) <= set(SMC_PAD_BINDINGS.values())
+    inverse = {ch: name for name, ch in SMC_PAD_BINDINGS.items()}
+    for channel in set(SMC_PAD_BINDINGS.values()) - set(channels):
+        assert inverse[channel] not in show.master_ids, inverse[channel]
+
+    # The pads land on the functions the owner put under those fingers...
+    for name in ("AUTO", "Flash 100%", "Humo ON", "Blanco Total", "Rueda Colores"):
+        assert button_channel[show.master_ids[name]] == SMC_PAD_BINDINGS[name]
+    # ...and the encoders on the widgets that scale, not fire.
+    for caption in ("Master General", "Vel. Colores", "Vel. Movimiento"):
+        assert caption_channel[caption] == SMC_PAD_BINDINGS[caption]

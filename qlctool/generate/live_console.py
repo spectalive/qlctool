@@ -42,11 +42,13 @@ from ..vc.button import BLACKOUT, FLASH, STOP_ALL, TOGGLE, build_button
 from ..vc.console_font import console_font
 from ..vc.frame import build_frame
 from ..vc.grand_master_slider import build_grand_master_slider
+from ..vc.input_source import build_input_source
 from ..vc.label import build_label
 from ..vc.level_slider import build_level_slider
 from ..vc.matrix_control import build_matrix_control
 from ..vc.speed_dial import build_speed_dial
 from ..vc.widget_ids import next_widget_id
+from .smc_pad_bindings import SMC_PAD_BINDINGS
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
@@ -312,7 +314,7 @@ def generate_live_console(
         """A button for a master function, with its key and its action."""
         if name not in master:
             return None
-        return button(
+        element = button(
             parent, master[name], caption, x, y, w, h, page=page,
             key=keys.get(name),
             action=FLASH if name in flash else TOGGLE,
@@ -321,6 +323,9 @@ def generate_live_console(
             flash_override=name in flash,
             **kwargs,
         )
+        if name in SMC_PAD_BINDINGS:
+            build_input_source(element, SMC_PAD_BINDINGS[name])
+        return element
 
     outer = frame(
         root_frame, "", OUTER_X, OUTER_Y, OUTER_WIDTH, OUTER_HEIGHT,
@@ -523,6 +528,7 @@ def _page_manual(
         outer, grand_master_id, "Master General",
         RIGHT_X, grand_master_y, GRAND_MASTER_WIDTH, GRAND_MASTER_HEIGHT,
     )
+    build_input_source(grand_master, SMC_PAD_BINDINGS["Master General"])
     _on_page(grand_master, PAGE_MANUAL)
     console.widget_ids.append(grand_master_id)
     for index, line in enumerate(GRAND_MASTER_LINES):
@@ -619,6 +625,8 @@ def _page_manual(
             RIGHT_X + index * 132, 68, 124, 150,
             function_ids=function_ids, time_ms=time_ms,
         )
+        if caption in SMC_PAD_BINDINGS:
+            build_input_source(dial, SMC_PAD_BINDINGS[caption])
         _on_page(dial, PAGE_MANUAL)
         console.widget_ids.append(dial_id)
 
