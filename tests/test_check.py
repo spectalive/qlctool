@@ -532,32 +532,27 @@ def test_a_strobe_that_loops_behind_a_button(library):
     assert "Strobo Rapido" in {f.function for f in findings}
 
 
-def test_a_tap_that_rewrites_the_programmes(library):
+def test_a_tap_that_flattens_every_programme(library):
     """2026-08-29, the owner on the speed dials: "nunca ha funcionado bien
-    ... se vuelven todos los programas locos". The tap dial listed the eight
-    wheel chasers, and qmlui's tap() writes the raw tap interval into every
-    listed function's duration - wheels built for 1900 ms holds went to
-    500 ms flat on the first tap. Reproduced by giving the tempo dial its
-    function list back.
+    ... se vuelven todos los programas locos". A tap dial writes
+    `time x multiplier` into each function it lists, so one shared multiplier
+    makes the colour wheel, the prism and the dimmer pulse exactly as long as
+    each other on the first tap. Reproduced by flattening the tempo dial's
+    multipliers back to one value.
     """
     workspace = _show()
     dial = next(
         d for d in workspace.root.iter()
         if localname(d) == "SpeedDial" and _has_tap(d)
     )
-    ns = dial.tag[: dial.tag.index("}") + 1]
-    for function_id in ("46", "88"):
-        bound = dial.makeelement(f"{ns}Function", {
-            "FadeIn": "0", "FadeOut": "0", "Duration": "6",
-        })
-        bound.text = function_id
-        dial.append(bound)
+    for bound in findall_local(dial, "Function"):
+        bound.set("Duration", "6")
 
     findings = [
         f for f in check_workspace(workspace, library)
-        if f.rule == "tap que pisa duraciones"
+        if f.rule == "tap que aplana los programas"
     ]
-    assert findings, "a tap dial stomping its functions went unnoticed"
+    assert findings, "a tap dial flattening every layer went unnoticed"
 
 
 def _has_tap(dial):
@@ -566,26 +561,47 @@ def _has_tap(dial):
     )
 
 
-def test_a_bpm_dial_with_no_clock_to_govern(library):
-    """2026-08-29, the other half of the same night: the owner found the BPM
-    setting unselected ("aparece interno pero no esta seleccionado") - a
-    ControlBPM tap over a Disabled beat generator sets a number no clock
-    reads, and every Beats chaser freezes. Reproduced by disabling the
-    generator the shipped show turns on.
+def test_a_beats_chaser_driving_millisecond_effects(library):
+    """2026-08-29: "las cabezas van super rapido a 120bpm y no completan los
+    giros". The movement chasers had been switched to Beats, so their 10-beat
+    crossfade reached each EFX as the raw number 10000 - and an EFX subtracts
+    its override fade from its own millisecond duration
+    (`EFX::loopDuration`), turning a 16 s sweep into a 6 s one. Reproduced by
+    putting Movimientos Washes back on Beats with its fade intact.
     """
     workspace = _show()
-    generator = find_local(
-        find_local(find_local(workspace.root, "Engine"), "InputOutputMap"),
-        "BeatGenerator",
-    )
-    generator.set("BeatType", "Disabled")
-    generator.set("BPM", "0")
+    chaser = _functions(workspace)["Movimientos Washes"]
+    ns = chaser.tag[: chaser.tag.index("}") + 1]
+    tempo = chaser.makeelement(f"{ns}Tempo", {})
+    tempo.text = "Beats"
+    chaser.insert(0, tempo)
 
     findings = [
         f for f in check_workspace(workspace, library)
-        if f.rule == "tap sin reloj que gobernar"
+        if f.rule == "unidades de tempo cruzadas"
     ]
-    assert findings, "a BPM tap over a dead beat generator went unnoticed"
+    assert findings, "a beats chaser re-timing its EFX went unnoticed"
+    assert "Movimientos Washes" in {f.function for f in findings}
+
+
+def test_a_collection_carrying_a_tempo_it_cannot_have(library):
+    """2026-08-29, read out of the show Mac's own QLC+ log: "Unknown
+    collection tag: Tempo". A Collection has no tempo - it starts its members
+    and they keep their own - so a <Tempo> on one is a layer silently left on
+    the stopwatch. Reproduced by giving Dimmer Chase the tag back.
+    """
+    workspace = _show()
+    collection = _functions(workspace)["Dimmer Chase"]
+    ns = collection.tag[: collection.tag.index("}") + 1]
+    tempo = collection.makeelement(f"{ns}Tempo", {})
+    tempo.text = "Beats"
+    collection.insert(0, tempo)
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "tempo en una coleccion"
+    ]
+    assert findings, "a Collection carrying a Tempo went unnoticed"
 
 
 def test_a_chaser_that_presses_the_room_state_buttons(library):

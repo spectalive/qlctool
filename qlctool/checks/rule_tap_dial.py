@@ -1,106 +1,82 @@
-"""A tap that rewrites the programmes instead of setting the tempo.
+"""A tap that flattens every programme to one length.
 
 2026-08-29, the owner on the speed dials: "eso no funciona bien, nunca ha
-funcionado bien ... se vuelven todos los programas locos". The mechanism is in
-qmlui's own code: `VCSpeedDial::tap()` calls `setCurrentTime`, which calls
-`applyFunctionsTime`, which writes the raw tap interval into the duration of
-EVERY function the dial lists - tapping a 500 ms beat put wheels built for
-1900 ms holds on 500 ms flat, persistently, and `ControlBPM` does not skip
-that write. The working shape is the opposite: the tap dial lists no
-functions and controls the global BPM, and the layers that follow the music
-count in Beats.
+funcionado bien ... se vuelven todos los programas locos". A tap dial writes
+`dial time x multiplier` into each function it lists
+(`VCSpeedDial::applyFunctionsTime`), so the multiplier is where a layer states
+how long it is in taps. Give every layer the same multiplier and one tap makes
+the colour wheel, the prism and the dimmer pulse exactly as long as each
+other - the show collapses to one length, which is what "locos" looked like.
 
-Two rules, the two halves of that shape:
+The rule reads the wiring: a dial that can be tapped and gives one multiplier
+to everything under it is flattening the show. Two functions may honestly share
+a multiplier; a whole console cannot.
 
-- A dial with a tap binding (a key or an external control on input 1) must
-  list no functions: every listed one gets its duration stomped on the first
-  tap.
-- A dial that controls the BPM needs a clock to set and someone listening: a
-  beat generator that is not Disabled, and at least one function in Beats
-  tempo. Without either, the tap sets a number nothing reads.
+The second half is the tap that does nothing at all. A dial with a tap key and
+no functions under it re-times nothing on this QLC+: the `ControlBPM` tap that
+would drive the global BPM instead is not in 5.2.2 - it says so when it loads
+one ("Unknown speed dial tag: ControlBPM", read out of the show Mac's own log
+the same night) - so a bound tap key needs functions to write into.
 """
 
 from lxml import etree
 
 from ..xmlutil import find_local, findall_local, iter_local
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph
 
-RULE = "tap que pisa duraciones"
-CLOCK_RULE = "tap sin reloj que gobernar"
+RULE = "tap que aplana los programas"
+EMPTY_RULE = "tap que no re-tempa nada"
 
 TAP_CONTROL_ID = "1"
+# Below this many functions, one shared multiplier is a coincidence rather
+# than a flattened console.
+FLATTENING_FROM = 3
 
 
-def check_tap_dial(graph: ShowGraph, root: etree._Element) -> list[Finding]:
+def check_tap_dial(root: etree._Element) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []
     findings: list[Finding] = []
     for dial in iter_local(console, "SpeedDial"):
+        if not _has_tap_binding(dial):
+            continue
         caption = dial.attrib.get("Caption", "SpeedDial")
-        bound = findall_local(dial, "Function")
-        if _has_tap_binding(dial) and bound:
+        multipliers = [
+            function.attrib.get("Duration", "0")
+            for function in findall_local(dial, "Function")
+        ]
+        if not multipliers:
+            findings.append(Finding(
+                rule=EMPTY_RULE,
+                severity=ERROR,
+                function=caption,
+                message=(
+                    "tiene tecla de tap y no lista ninguna funcion: en QLC+ "
+                    "5.2.2 el tap solo escribe en las funciones del dial "
+                    "(«Unknown speed dial tag: ControlBPM» al cargar), asi "
+                    "que asi no re-tempa nada"
+                ),
+            ))
+            continue
+        if len(multipliers) >= FLATTENING_FROM and len(set(multipliers)) == 1:
             findings.append(Finding(
                 rule=RULE,
                 severity=ERROR,
                 function=caption,
                 message=(
-                    f"tiene tap y lista {len(bound)} funciones: cada tap "
-                    f"escribe el intervalo crudo como duracion en todas "
-                    f"(qmlui VCSpeedDial::tap -> applyFunctionsTime) - un "
-                    f"dial con tap gobierna el BPM global y no lista nada"
+                    f"re-tempa {len(multipliers)} funciones con el mismo "
+                    f"multiplicador: un tap las deja a todas de la misma "
+                    f"duracion (VCSpeedDial::applyFunctionsTime escribe "
+                    f"tiempo x multiplicador) - cada capa tiene que decir "
+                    f"cuantos taps dura"
                 ),
             ))
-        if _controls_bpm(dial):
-            if not _beat_generator_on(root):
-                findings.append(Finding(
-                    rule=CLOCK_RULE,
-                    severity=ERROR,
-                    function=caption,
-                    message=(
-                        "gobierna el BPM pero el generador de beat esta en "
-                        "Disabled: el tap fija un numero que ningun reloj "
-                        "lee"
-                    ),
-                ))
-            if not _any_beats_function(graph):
-                findings.append(Finding(
-                    rule=CLOCK_RULE,
-                    severity=ERROR,
-                    function=caption,
-                    message=(
-                        "gobierna el BPM pero ninguna funcion del show va "
-                        "en tempo Beats: el tap no mueve nada"
-                    ),
-                ))
     return findings
 
 
 def _has_tap_binding(dial: etree._Element) -> bool:
-    for source in findall_local(dial, "Input"):
-        if source.attrib.get("ID") == TAP_CONTROL_ID:
-            return True
-    return False
-
-
-def _controls_bpm(dial: etree._Element) -> bool:
-    control = find_local(dial, "ControlBPM")
-    return control is not None and (control.text or "").strip() == "True"
-
-
-def _beat_generator_on(root: etree._Element) -> bool:
-    engine = find_local(root, "Engine")
-    io_map = find_local(engine, "InputOutputMap") if engine is not None else None
-    generator = find_local(io_map, "BeatGenerator") if io_map is not None else None
-    if generator is None:
-        return False
-    return generator.attrib.get("BeatType", "Disabled") != "Disabled"
-
-
-def _any_beats_function(graph: ShowGraph) -> bool:
-    for function in graph.functions.values():
-        tempo = find_local(function, "Tempo")
-        if tempo is not None and (tempo.text or "").strip() == "Beats":
-            return True
-    return False
+    return any(
+        source.attrib.get("ID") == TAP_CONTROL_ID
+        for source in findall_local(dial, "Input")
+    )

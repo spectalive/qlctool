@@ -29,7 +29,9 @@ from ..palette import PALETTE, PRIMARY_COLORS
 from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
 from ..strobe_speed import strobe_speed_pairs
+from ..vc.beat_multiplier import beat_multiplier
 from ..workspace import Workspace
+from ..xmlutil import find_local, findall_local
 from .beam_subsets import generate_beam_subsets
 from .beat_tempo import BeatTiming, apply_beat_tempo
 from .builtin_effects import generate_builtin_effects
@@ -120,8 +122,9 @@ PANEL_MANUAL_HOLD = 4 * 60 * 1000
 # count and one global BPM moves them all together.
 MATRIX_BEATS = BeatTiming(hold=4)
 # Where the internal clock starts. 120 is the middle of the room this show
-# plays; the tap dial re-sets it live from whatever is actually sounding.
+# plays, and the beat the tap dial's multipliers are figured against.
 DEFAULT_BPM = 120
+TAP_BEAT_MS = 60_000 // DEFAULT_BPM
 BEAT_TIMINGS: dict[str, BeatTiming] = {
     "Rueda Colores": BeatTiming(hold=8, fade=1),
     "Movimientos Suaves": BeatTiming(hold=64, fade=10),
@@ -724,35 +727,38 @@ def build_canonical_show(
     ])
     master.update(moments)
 
-    # The layers that should feel the music go on the beat; the energy cycle
-    # stays on the clock, because it measures the night rather than the song -
-    # and because a beat that never arrives would freeze it. The beat itself
-    # comes from the Internal generator (the owner found it and switched it on
-    # by hand, 2026-08-29) so the show advances out of the box and the tap
-    # dial's BPM has a clock to set; `--beats` hands the beat to the audio
-    # input instead, for a night where the PA should drive it.
+    # The show runs on the clock and is re-timed by the tap dial, which is the
+    # only tempo control QLC+ 5.2.2 offers a keyboard key: its `ControlBPM`
+    # tap - the one that would drive the global BPM - is not in that version
+    # at all ("Unknown speed dial tag: ControlBPM", read out of the show Mac's
+    # own log, 2026-08-29). So the layers that read as the room's tempo go
+    # under one dial, each with the multiplier that says how many taps it is
+    # worth, and the beat generator stays Internal for the meters and for
+    # anything the operator switches to Beats by hand.
     set_beat_generator(
         workspace.root, "Audio" if beats else "Internal",
         bpm=0 if beats else DEFAULT_BPM,
     )
-    present = {f.attrib.get("Name") for f in workspace.engine}
-    timings = {
-        name: timing for name, timing in BEAT_TIMINGS.items() if name in present
-    }
+    tempo_functions = _tempo_functions(workspace, master, matrices)
+
     if beats:
-        # Only the PA-driven variant beat-locks the matrix cycles: an
-        # RGBMatrix animation's frame clock is milliseconds, so a flat
-        # beat-held cycle cuts animations short at fast tempos - the
-        # 2026-08-26 "empezamos una animacion pero nunca la terminamos"
-        # night, wearing beats - and the `efecto cortado` rule cannot see a
-        # beats hold. The default shows keep the animation-fitted clock
-        # holds.
+        # The PA-driven variant hands the pace to the audio beat instead. Only
+        # the layers whose steps are Scenes: a chaser in Beats passes its fade
+        # to each step as a raw number, and an EFX subtracts that from its own
+        # millisecond duration (`EFX::loopDuration`), which is how a 16 s head
+        # sweep became a 6 s one and stopped completing its turns (owner,
+        # 2026-08-29). Matrix cycles are the same trap wearing a frame clock.
+        present = {f.attrib.get("Name") for f in workspace.engine}
+        timings = {
+            name: timing for name, timing in BEAT_TIMINGS.items()
+            if name in present and _steps_are_scenes(workspace, name)
+        }
         timings.update({
             name: MATRIX_BEATS
             for name in present
             if name and name.startswith("Ciclo Matrices")
         })
-    apply_beat_tempo(workspace, timings)
+        apply_beat_tempo(workspace, timings)
 
     button_ids: list[int] = []
     if with_layout:
@@ -771,6 +777,7 @@ def build_canonical_show(
             flash_functions=FLASH_FUNCTIONS,
             matrix_algorithms=[a for a in algorithms if a],
             beam_subsets=beam_subsets,
+            tempo_functions=() if beats else tempo_functions,
         )
         button_ids = console.button_ids
 
@@ -860,6 +867,64 @@ def _is_pixel_group(caps, fixture_ids) -> bool:
         for c in caps
         if c.fixture.fixture_id in wanted
     )
+
+
+def _steps_are_scenes(workspace: Workspace, name: str) -> bool:
+    """True when every step of the named chaser is a Scene.
+
+    A chaser hands its own fade and duration to whatever it starts. A Scene
+    has no clock of its own to corrupt; an EFX and an RGBMatrix both do.
+    """
+    by_id = {
+        f.attrib.get("ID"): f for f in workspace.engine
+        if f.tag.endswith("}Function")
+    }
+    function = next(
+        (f for f in workspace.engine if f.attrib.get("Name") == name), None
+    )
+    if function is None:
+        return False
+    steps = [
+        by_id.get(step.text)
+        for step in findall_local(function, "Step")
+        if step.text
+    ]
+    return bool(steps) and all(
+        step is not None and step.attrib.get("Type") == "Scene"
+        for step in steps
+    )
+
+
+def _tempo_functions(workspace, master, matrices) -> list[tuple[int, int]]:
+    """(function id, multiplier) for every layer the tap dial re-times.
+
+    Movement is deliberately absent: a shape takes fifteen seconds and the
+    multipliers QLC+ offers stop at sixteen beats, so it cannot be said in
+    taps at all - and it carries an EFX clock underneath that a re-timed
+    chaser fade would corrupt.
+    """
+    wanted = (
+        "Rueda Colores", "Rueda Mezcla", "Gobo Animacion",
+        "Color Beam Animacion", "Prisma Animacion", "Dimmer PingPong",
+    )
+    by_id = {
+        f.attrib.get("ID"): f for f in workspace.engine
+        if f.tag.endswith("}Function")
+    }
+    functions: list[tuple[int, int]] = []
+    for name in wanted:
+        function_id = master.get(name)
+        element = by_id.get(str(function_id))
+        if element is None:
+            continue
+        speed = find_local(element, "Speed")
+        if speed is None:
+            continue  # a Collection has no speed of its own to re-time
+        duration = int(speed.attrib.get("Duration", 0))
+        functions.append(
+            (function_id, beat_multiplier(duration, TAP_BEAT_MS))
+        )
+    return functions
 
 
 def _flat_scene(

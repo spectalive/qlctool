@@ -176,17 +176,21 @@ HELP_LINES = (
 
 # The tempo dial lives on page 1 since 2026-08-29: the owner taps the room's
 # tempo often enough that it belongs where the operator is looking, on the
-# hand-built console's tap key. It sets the global BPM (ControlBPM) and lists
-# no functions - the duration-writing dials that came before it put the raw
-# tap interval into every bound wheel and "se volvian todos los programas
-# locos"; now each layer keeps its own beat count and the tap moves the one
-# clock they all follow.
+# hand-built console's tap key. Its time is one beat and every layer under it
+# carries its own multiplier, so a tap moves them all and none of them loses
+# its shape - the "se vuelven todos los programas locos" the owner reported
+# was one dial writing the same raw interval into every wheel.
+#
+# It does NOT drive the head movement. A shape takes 15 s and the multipliers
+# QLC+ offers stop at sixteen beats, so movement cannot be said in taps; it
+# also has its own EFX clock underneath, which a re-timed chaser fade
+# corrupts. Movement keeps the stopwatch it has always had.
 TEMPO_TAP_KEY = "M"
-TEMPO_TIME_MS = 500  # the dial's starting display: one 120 BPM beat
+TEMPO_BEAT_MS = 500  # the dial's starting beat: 120 BPM
 TEMPO_LINES = (
     "TEMPO — pulsa M al ritmo de la",
-    "música y todo el show (colores,",
-    "matrices, gobos) sigue el compás.",
+    "música: colores, gobos, prisma y",
+    "dimmer siguen tu compás.",
 )
 
 # The workspace's own GrandMaster - it scales every output - had no widget
@@ -278,6 +282,7 @@ def generate_live_console(
     flash_functions: Sequence[str] = (),
     matrix_algorithms: Sequence[str] = (),
     beam_subsets=None,
+    tempo_functions: Sequence[tuple[int, int]] = (),
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame."""
     root_frame = _root_frame(workspace.root)
@@ -343,7 +348,10 @@ def generate_live_console(
     build_input_source(outer, SMC_PAD_BINDINGS["Pagina Siguiente"])
     build_input_source(outer, SMC_PAD_BINDINGS["Pagina Anterior"], source_id=1)
 
-    _page_show(outer, button, master_button, frame, label, ids, console)
+    _page_show(
+        outer, button, master_button, frame, label, ids, console,
+        tempo_functions,
+    )
     _page_manual(
         outer, button, master_button, frame, label, ids, console, names,
         banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
@@ -372,7 +380,7 @@ def generate_live_console(
 
 
 def _page_show(
-    outer, button, master_button, frame, label, ids, console
+    outer, button, master_button, frame, label, ids, console, tempo_functions
 ) -> None:
     """Page 1: the state the room is in, the hits, and the panic button."""
     label(
@@ -449,13 +457,16 @@ def _page_show(
         )
 
     # The tempo dial, where the operator is looking, with the hand-built
-    # console's tap key. It sets the global BPM and binds no functions: a tap
-    # dial with functions writes the raw tap interval into every one of them.
+    # console's tap key. Each layer carries its own multiplier - see
+    # `beat_multiplier` - so one tap re-times all of them and none of them
+    # loses its proportion to the rest.
+    if not tempo_functions:
+        return
     dial_id = ids.take()
     dial = build_speed_dial(
         outer, dial_id, "Tempo Show", RIGHT_X, 700, RIGHT_WIDTH, 120,
-        function_ids=(), time_ms=TEMPO_TIME_MS,
-        tap_key=TEMPO_TAP_KEY, control_bpm=True,
+        functions=tempo_functions, time_ms=TEMPO_BEAT_MS,
+        tap_key=TEMPO_TAP_KEY,
     )
     build_input_source(dial, SMC_PAD_BINDINGS["Tempo Show"])
     _on_page(dial, PAGE_SHOW)
