@@ -16,6 +16,7 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..color_wheel_match import color_wheel_pairs
 from ..shutter_open import shutter_open_pairs
+from ..zoom_wide import zoom_wide_pairs
 
 
 def wheel_color_values(
@@ -46,5 +47,6 @@ def wheel_color_values(
         if dimmer is not None:
             pairs += [(o, dimmer) for o in capability.offsets_for_role(roles.DIMMER)]
             pairs += shutter_open_pairs(capability)
+            pairs += zoom_wide_pairs(capability)
         values[capability.fixture.fixture_id] = pairs
     return values

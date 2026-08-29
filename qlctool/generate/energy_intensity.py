@@ -24,6 +24,7 @@ from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..shutter_open import shutter_open_pairs
+from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 
@@ -72,6 +73,7 @@ def _scene(
             for offset in capability.offsets_for_role(roles.DIMMER)
         ]
         pairs += shutter_open_pairs(capability)
+        pairs += zoom_wide_pairs(capability)
         # A strobe-only channel is LTP and a released Flash restores nothing:
         # the intensity owner writes the strobe off.
         pairs += strobe_off_pairs(capability)

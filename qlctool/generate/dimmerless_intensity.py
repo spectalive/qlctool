@@ -29,6 +29,7 @@ from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..shutter_open import shutter_open_pairs
+from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 
@@ -49,6 +50,7 @@ def generate_dimmerless_intensity(
             continue
         pairs: list[tuple[int, int]] = []
         pairs += shutter_open_pairs(capability)
+        pairs += zoom_wide_pairs(capability)
         pairs += strobe_off_pairs(capability)
         if pairs:
             values[capability.fixture.fixture_id] = sorted(set(pairs))

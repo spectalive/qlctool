@@ -12,6 +12,7 @@ from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..strobe_speed import strobe_speed_pairs
+from ..zoom_wide import zoom_wide_pairs
 from ..workspace import Workspace
 
 NAME = "Flash Color"
@@ -33,6 +34,11 @@ def generate_flash_color(
         # a flat 255 that the definition labels "Open".
         for offset in capability.offsets_for_role(roles.DIMMER):
             pairs.setdefault(offset, 255)
+        # It flashes whatever colour is running, but the beam's width is not
+        # part of "whatever is running" until some look has stated it: on a
+        # cold desk a zoom nobody wrote is the narrowest the head has.
+        for offset, value in zoom_wide_pairs(capability):
+            pairs.setdefault(offset, value)
         if pairs:
             values[capability.fixture.fixture_id] = sorted(pairs.items())
     function_id = next_function_id(workspace.root)

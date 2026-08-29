@@ -17,6 +17,7 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..shutter_open import shutter_open_pairs
+from ..zoom_wide import zoom_wide_pairs
 from ..workspace import Workspace
 
 
@@ -95,6 +96,7 @@ def generate_wheel_scenes(
                     for offset in capability.offsets_for_role(roles.DIMMER)
                 ]
                 pairs += shutter_open_pairs(capability)
+                pairs += zoom_wide_pairs(capability)
             values[capability.fixture.fixture_id] = pairs
 
         function_id = next_function_id(workspace.root)

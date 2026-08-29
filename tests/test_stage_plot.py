@@ -53,12 +53,15 @@ def _row(plot, depths, prefix):
 
 def test_the_standard_plot_matches_the_patch(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
-    assert len(plot.items) == 32
+    assert len(plot.items) == 34
     # 10 on the back truss, 7 on the front truss, 2 beams beside the DJ table,
     # 1 bar over the booth, 1 smoke machine, 4 vertical fog machines on the
     # floor.
     assert len(plot.rigged) == 25
-    assert len(plot.spare) == 7
+    # 2026-08-29: the two CromoWash that hung at back truss 4 and 7 did not
+    # come to the show, and two Mac Mah MAC WASH 1915Z took their place. They
+    # stay patched, so they park with the other spares.
+    assert len(plot.spare) == 9
 
 
 def test_the_front_truss_reads_left_to_right(workspace):
@@ -125,8 +128,10 @@ def test_the_back_truss_reads_left_to_right(workspace):
     truss = _row(plot, _depths(workspace.root), "Back truss")
     assert len(truss) == 10
     # LED PAR, beam, LED PAR, wash, LED PAR, LED PAR, wash, LED PAR, beam, LED PAR
+    # The two washes are the MAC WASH 1915Z since 2026-08-29; the CromoWash
+    # they replaced are patched but parked.
     assert [item.fixture_id for item in truss] == [
-        6, 20, 7, 0, 8, 9, 1, 10, 21, 11
+        6, 20, 7, 33, 8, 9, 34, 10, 21, 11
     ]
 
 

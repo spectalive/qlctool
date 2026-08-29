@@ -832,6 +832,36 @@ def test_a_shutter_opened_to_the_middle_of_its_open_range(library):
     assert findings, "a shutter opened to a value the hardware ignores went unnoticed"
 
 
+def test_a_wash_lit_by_a_scene_that_never_states_its_zoom(library):
+    """2026-08-29: the two CromoWash did not make it to the show and two Mac Mah
+    MAC WASH 1915Z came instead - the first fixtures in this rig with a zoom on
+    DMX. Nothing here had ever written a zoom channel, so every colour scene lit
+    them at whatever the last look left, which on a cold desk is 0: six degrees,
+    a coin on the back wall from a fixture the plot calls a wash. Reproduced by
+    taking the zoom back out of the scenes that light them.
+    """
+    workspace = _show()
+    washes = {41, 42}
+    zoom = 5
+    for function in _functions(workspace).values():
+        if function.attrib.get("Type") != "Scene":
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            if int(value.attrib["ID"]) not in washes or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            if pairs.pop(zoom, None) is None:
+                continue
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "zoom sin declarar"
+    ]
+    assert findings, "a wash lit with its zoom left at the narrow end went unnoticed"
+
+
 def test_a_quiet_dimmer_shadowed_by_a_full_one_running_beside_it(library):
     """2026-08-27, the finding that sank the first Ambiente plan: intensity
     mixes HTP, so while the colour wheel held every dimmer at 255 all night, a

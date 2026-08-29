@@ -14,6 +14,7 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
 from ..shutter_open import shutter_open_pairs
+from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
 
 RGB = tuple[int, int, int]
@@ -52,6 +53,10 @@ def color_scene_values(
             pairs.append((offset, green))
         for offset in caps.offsets_for_role(roles.BLUE):
             pairs.append((offset, blue))
+        # The beam's width belongs to the colour, not to the intensity: a
+        # caller that leaves the dimmer to the energy levels still owns the
+        # shape of the light it is painting, and nothing else writes zoom.
+        pairs += zoom_wide_pairs(caps)
         if dimmer_full:
             for offset in caps.offsets_for_role(roles.DIMMER):
                 pairs.append((offset, 255))

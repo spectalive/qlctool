@@ -31,6 +31,7 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..shutter_open import shutter_open_pairs
+from ..zoom_wide import zoom_wide_pairs
 from ..workspace import Workspace
 from .movement_efx import spread_offsets
 
@@ -178,6 +179,7 @@ def _half_lit(workspace: Workspace, dimmable, remainder: int, path: str) -> int:
         ]
         if lit:
             pairs += shutter_open_pairs(capability)
+            pairs += zoom_wide_pairs(capability)
         values[capability.fixture.fixture_id] = pairs
     function_id = next_function_id(workspace.root)
     name = "Dimmer Impares" if remainder else "Dimmer Pares"

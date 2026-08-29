@@ -46,6 +46,7 @@ from .rule_strobe_rate import check_strobe_rate
 from .rule_strobe_restore import check_strobe_restore
 from .rule_unfinished_effect import check_unfinished_effects
 from .rule_wheel_colour import check_wheel_colour
+from .rule_zoom_narrow import check_zoom_narrow
 from .show_graph import build_show_graph, group_fixtures
 
 DEFAULT_CANVAS = (1440, 900)
@@ -80,6 +81,7 @@ def check_workspace(
     findings += check_strobe_coverage(graph, groups)
     findings += check_shadowed_intensity(graph, groups, entries)
     findings += check_shutter_endpoint(graph, groups)
+    findings += check_zoom_narrow(graph, groups)
     findings += check_masked_dimmer_efx(graph, groups, entries)
     findings += check_accent_restore(graph, groups, root, states)
     findings += check_strobe_restore(graph, groups, root, states)
