@@ -6,12 +6,18 @@ LED bridge (`tools/smc-pad/qlc_led_bridge.swift`) paints the pad the same colour
 dimmed while the function is idle and full-bright while it is active. Keep the
 two palettes in step: the bridge hard-codes the matching values by physical pad.
 
-Physical pad layout the colours follow (bank A, as the owner arranged it):
+Physical pad layout the colours follow (bank 1, as the owner arranged it):
 
     13 Flash    14 Flash50   15 FlashCol  16 ColorBeam
      9 HumoVert 10 Humo      11 Strobo    12 StroboMed
      5 AUTO      6 Fiesta     7 Locura     8 Tranquilo
      1 Blanco    2 Negro      3 Charla     4 (free)
+
+And bank 2 (PAD BANK), where the manual page moved on 2026-08-29 once SHIFT
+turned out to send no MIDI at all:
+
+    13 RuedaCol 14 RuedaMez  15 Movim     16 Gobo
+     9 Prisma   10 HumoAuto  11 ArcoSim   12 ArcoPasos
 """
 
 RGB = tuple[int, int, int]
@@ -36,6 +42,16 @@ FUNCTION_COLORS: dict[str, RGB] = {
     "Flash 50%": (255, 225, 180),         # pad 14 - warm white
     "Flash Color": (255, 0, 255),         # pad 15 - magenta
     "Color Beam Animacion": (0, 255, 255),# pad 16 - cyan
+    # Bank 2, second row: the effects you layer by hand.
+    "Prisma Animacion": (255, 255, 255),  # pad 9  - white
+    "Humo Auto": (150, 220, 255),         # pad 10 - pale cyan, the smoke family
+    "Arcoiris Simultaneo": (255, 140, 0), # pad 11 - orange
+    "Arcoiris Pasos": (255, 220, 0),      # pad 12 - yellow
+    # Bank 2, top row: the wheels and the movement.
+    "Rueda Colores": (255, 0, 128),       # pad 13 - pink
+    "Rueda Mezcla": (128, 0, 255),        # pad 14 - violet
+    "Movimientos Cabezas": (0, 128, 255), # pad 15 - blue
+    "Gobo Animacion": (0, 255, 128),      # pad 16 - spring green
 }
 
 

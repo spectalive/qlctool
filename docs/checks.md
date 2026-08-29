@@ -60,6 +60,9 @@ beneath it already did.
 | `acento sin dueño` | A Flash scene moving an LTP wheel (gobo, prisma, colour) that some room state lights but never writes: on release the wheel stays where the flash left it | The prism flashed for one drop is still in the beam an hour later (2026-08-27) |
 | `estrobo pegado` | The same LTP latch on the strobe channels: a Flash scene strobing a channel that some room state lights but never writes - on release the strobe simply keeps firing | "Se queda el estrobo para siempre": FLASH latched the four panels, the seven Vortex and the two mini heads until `Strobo OFF` by hand (owner, 2026-08-28) |
 | `familias de movimiento mezcladas` | One EFX moving wash-class and beam-class fixtures (told apart by the gobo wheel) with one geometry | Twelve movers shared a 100x100 EFX; a 7R needle ran wash-sized sweeps through faces (2026-08-27) |
+| `binding a un control que el pad no manda` | A widget listening on a MIDI channel that is not in the pad's input profile - no control on the surface can send it | Eight buttons on the manual page were bound against SHIFT, which turned out to select the pad's own silkscreened functions and put nothing on the wire (2026-08-29) |
+| `consola con bindings y sin entrada MIDI` | A workspace whose widgets carry `<Input>` bindings while no universe patches an input plugin: QLC+ opens the show with nothing listening | No shipped workspace declared the patch, so the pad did nothing until it was built by hand in the Inputs/Outputs tab (2026-08-29) |
+| `un control atado a dos widgets` | Two widgets on one input channel - one pad firing both | Guarded when the pad map was generated (2026-08-29) |
 
 Dimmer and shutter collisions between a bed and a level are **not** reported.
 QLC+ mixes intensity HTP on purpose, and the design - a colour bed underneath,

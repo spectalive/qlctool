@@ -18,6 +18,7 @@ from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_group import fixture_groups
 from .generate.canonical_show import build_canonical_show
 from .generate.channel_probe import generate_channel_probe
+from .generate.input_profile import build_input_profile
 from .generate.color_palette import generate_color_palette
 from .generate.matrix_effects import generate_matrix_effects
 from .generate.movement_efx import generate_movement_efx
@@ -409,6 +410,13 @@ def cmd_check(args: argparse.Namespace) -> int:
     return 1
 
 
+def cmd_input_profile(args: argparse.Namespace) -> int:
+    """Write the SMC-PAD's QLC+ input profile from the map the show uses."""
+    Path(args.out).write_bytes(build_input_profile())
+    print(f"Wrote {args.out}")
+    return 0
+
+
 def cmd_decompose(args: argparse.Namespace) -> int:
     decompose_workspace(args.workspace, args.out_dir)
     print(f"Decomposed {args.workspace} -> {args.out_dir}/ "
@@ -619,6 +627,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_chk.add_argument("--limit", type=int, default=20,
                        help="findings printed per rule (default 20)")
     p_chk.set_defaults(func=cmd_check)
+
+    p_prof = sub.add_parser(
+        "input-profile",
+        help="write the SMC-PAD's QLC+ input profile from the show's own map",
+    )
+    p_prof.add_argument("out", help="destination .qxi file")
+    p_prof.set_defaults(func=cmd_input_profile)
 
     p_dec = sub.add_parser(
         "decompose", help="split a workspace into a git-diffable fragment tree"

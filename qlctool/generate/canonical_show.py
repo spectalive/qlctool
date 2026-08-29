@@ -24,6 +24,7 @@ from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..matrix_algorithms import CURATED_MATRICES
 from ..monitor_positions import house_right_fixture_ids
+from ..input_binding import pin_midi_input
 from ..output_binding import pin_generic_output
 from ..palette import PALETTE, PRIMARY_COLORS
 from ..skeleton import strip_to_skeleton
@@ -243,6 +244,10 @@ def build_canonical_show(
     # shipped files disagreed about serial numbers, old-vs-new audit
     # 2026-08-28).
     pin_generic_output(workspace.root)
+    # ...and to the pad it is driven from, so the console's <Input> bindings
+    # are live the moment the file opens rather than after somebody builds the
+    # patch by hand in the Inputs/Outputs tab (input_binding.py, 2026-08-29).
+    pin_midi_input(workspace.root)
     # The patch carries the rig, not where any of it stands: give the 2D and 3D
     # views a plot to draw, or they stack every fixture on one spot. A workspace
     # whose Monitor already places everything was positioned by hand in QLC+ -

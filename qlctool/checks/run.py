@@ -32,6 +32,7 @@ from .rule_internal_program import check_internal_programs
 from .rule_latched_strobe import check_latched_strobe
 from .rule_masked_dimmer_efx import check_masked_dimmer_efx
 from .rule_movement_families import check_movement_families
+from .rule_pad_input import check_pad_input
 from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_smoke import check_smoke
 from .rule_smoke_light import check_smoke_light
@@ -89,6 +90,7 @@ def check_workspace(
     findings += check_group_grids(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))
     findings += check_audio_triggers(graph, groups, root)
+    findings += check_pad_input(root)
     return sorted(findings, key=lambda f: (f.severity != ERROR, f.rule, f.function))
 
 

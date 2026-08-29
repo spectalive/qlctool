@@ -1180,3 +1180,61 @@ def test_colour_on_the_panels_without_a_mode_owner_still_fires(library):
     ]
     assert findings, "colour with no standing mode owner went unnoticed"
     assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_console_bound_to_a_control_the_pad_cannot_send(library):
+    """2026-08-29: eight buttons on the manual page listened to nothing.
+
+    They were bound against SHIFT, on the notes the pad's factory bank would
+    have sent 48 semitones up. A capture that night, owner pressing, showed
+    SHIFT puts nothing on the wire at all - it selects the functions
+    silkscreened on the pads (SWING, LATCH, SYNC), which never leave the
+    device - so those bindings had never fired and looked identical to the
+    ones that had. The manual layer moved to the pad's second bank, which
+    PAD BANK does send (PAD1 answered note 52 instead of 36).
+
+    Put a binding back on a channel no control sends and the rule must bite.
+    """
+    workspace = _show()
+    console = find_local(workspace.root, "VirtualConsole")
+    moved = None
+    for button in console.iter():
+        if localname(button) != "Button":
+            continue
+        source = find_local(button, "Input")
+        if source is None or "Channel" not in source.attrib:
+            continue
+        # Note 100: a bank the show never selects, so nothing can press it.
+        source.set("Channel", str(36992 + 100))
+        moved = button.attrib.get("Caption")
+        break
+    assert moved, "the shipped console carries no MIDI binding to move"
+
+    findings = check_workspace(workspace, library)
+    unsendable = [
+        f for f in findings if f.rule == "binding a un control que el pad no manda"
+    ]
+    assert unsendable, "a binding on a note the pad cannot send went unnoticed"
+    assert any(f.function == moved for f in unsendable)
+
+
+def test_a_console_full_of_bindings_with_nothing_listening(library):
+    """2026-08-29: no shipped workspace declared a MIDI input patch.
+
+    Every `<Input>` in the file was inert - QLC+ opened the show with no input
+    plugin on the universe, so the pad did nothing until somebody built the
+    patch by hand in the Inputs/Outputs tab. Take the patch away again and the
+    rule must say the surface is dead.
+    """
+    workspace = _show()
+    universe = find_local(
+        find_local(find_local(workspace.root, "Engine"), "InputOutputMap"), "Universe"
+    )
+    patch = find_local(universe, "Input")
+    assert patch is not None, "the shipped show no longer patches its MIDI input"
+    universe.remove(patch)
+
+    findings = check_workspace(workspace, library)
+    assert [
+        f for f in findings if f.rule == "consola con bindings y sin entrada MIDI"
+    ], "a console whose bindings reach no input plugin went unnoticed"
