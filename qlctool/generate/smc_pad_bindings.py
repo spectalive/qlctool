@@ -32,24 +32,24 @@ name for buttons, the widget caption for the sliders and dials.
 
 SMC_PAD_BINDINGS: dict[str, int] = {
     # Top row, pads 13-16 (notes 4-7): the hits you hammer.
-    "Flash 100%": 36996,           # pad 13 - the punch
-    "Flash 50%": 36997,            # pad 14 - the gentler fill
-    "Flash Color": 36998,          # pad 15
-    "Color Beam Animacion": 36999, # pad 16
+    "Flash 100%": 37040,           # pad 13 - the punch
+    "Flash 50%": 37041,            # pad 14 - the gentler fill
+    "Flash Color": 37042,          # pad 15
+    "Color Beam Animacion": 37043, # pad 16
     # Second row, pads 9-12 (notes 8-11): smoke and strobes.
-    "Humo Vertical YA": 37000,     # pad 9 - the punch, under pad 13
-    "Humo ON": 37001,              # pad 10 - the fill, under pad 14
-    "Strobo Rapido": 37002,        # pad 11
-    "Strobo Medio": 37003,         # pad 12
+    "Humo Vertical YA": 37036,     # pad 9 - the punch, under pad 13
+    "Humo ON": 37037,              # pad 10 - the fill, under pad 14
+    "Strobo Rapido": 37038,        # pad 11
+    "Strobo Medio": 37039,         # pad 12
     # Third row, pads 5-8 (notes 12-15): the room's states.
-    "AUTO": 37004,                 # pad 5
-    "Momento Fiesta": 37005,       # pad 6
-    "Momento Locura": 37006,       # pad 7
-    "Momento Tranquilo": 37007,    # pad 8
+    "AUTO": 37032,                 # pad 5
+    "Momento Fiesta": 37033,       # pad 6
+    "Momento Locura": 37034,       # pad 7
+    "Momento Tranquilo": 37035,    # pad 8
     # Bottom row, pads 1-3 (notes 16-18); pad 4 (note 19) stays free.
-    "Blanco Total": 37008,         # pad 1
-    "Todo Negro": 37009,           # pad 2
-    "Momento Charla": 37010,       # pad 3
+    "Blanco Total": 37028,         # pad 1
+    "Todo Negro": 37029,           # pad 2
+    "Momento Charla": 37030,       # pad 3
     # SHIFT + top two rows (notes 52-59): the manual layers.
     "Rueda Colores": 37044,        # shift + pad 13
     "Rueda Mezcla": 37045,         # shift + pad 14

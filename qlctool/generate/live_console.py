@@ -50,6 +50,7 @@ from ..vc.dial_function import DialFunction
 from ..vc.speed_dial import build_speed_dial
 from ..vc.widget_ids import next_widget_id
 from .smc_pad_bindings import SMC_PAD_BINDINGS
+from .smc_pad_colors import FUNCTION_COLORS, readable_foreground
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
@@ -335,6 +336,14 @@ def generate_live_console(
         """A button for a master function, with its key and its action."""
         if name not in master:
             return None
+        # A pad-bound function wears its palette colour, so the console button
+        # and the pad LED read as the same surface.
+        colour = FUNCTION_COLORS.get(name)
+        if colour is not None and "background" not in kwargs:
+            kwargs["background"] = str(argb_from_rgb(colour))
+            kwargs.setdefault(
+                "foreground", str(argb_from_rgb(readable_foreground(colour)))
+            )
         element = button(
             parent, master[name], caption, x, y, w, h, page=page,
             key=keys.get(name),
