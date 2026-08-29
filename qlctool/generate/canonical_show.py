@@ -463,7 +463,13 @@ def build_canonical_show(
     if burst_id is not None:
         master["Humo Vertical YA"] = burst_id
 
-    dimmers = generate_dimmer_chases(workspace, library)
+    # The panels and the matrix-lit groups keep their own intensity owners
+    # (`Ciclo Paneles Mixto`, `Pixeles ON`), and those hold 255: a chase under
+    # a steady 255 can dip nothing - HTP - so they leave the chase entirely.
+    dimmers = generate_dimmer_chases(
+        workspace, library,
+        exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
+    )
     master["Dimmer Chase"] = dimmers.chase_id
     master["Dimmer Chase 2"] = dimmers.chase2_id
     master["Dimmer PingPong"] = dimmers.pingpong_id
@@ -718,14 +724,19 @@ def build_canonical_show(
             prism_off_id, intensity.full_id,
         ]),
         # Everything the rig has, minus the strobe: a strobe belongs to a hit
-        # somebody presses and lets go of, not to a state left running.
+        # somebody presses and lets go of, not to a state left running. The
+        # dimmers belong to the chase, so the intensity base is the dimmerless
+        # one, like the peak level's: `Intensidad Total` beside the chase held
+        # every dimmer at 255 and HTP made the chase cosmetic - which is why
+        # locura opened as a flat white wall ("empieza todo blanco y normal",
+        # owner, 2026-08-29).
         Moment("Momento Locura", [
             master["Rueda Colores"], *pixel_layer,
             master.get("Movimientos Rapidos", master["Movimientos Cabezas"]),
             master["Gobo Animacion"],
             master.get("Prisma Animacion"),
             master["Dimmer Chase"],
-            intensity.full_id,
+            peak_static,
         ]),
     ])
     master.update(moments)

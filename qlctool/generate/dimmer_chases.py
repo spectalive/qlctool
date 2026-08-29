@@ -12,9 +12,14 @@ ways:
 
 Both skip the smoke machines, and both skip any fixture whose definition has no
 dimmer: an EFX in Dimmer mode drives the fixture's intensity channel, and a
-fixture without one would just sit in the list doing nothing.
+fixture without one would just sit in the list doing nothing. Also skipped is
+any fixture whose intensity already has another owner - the panels' dimmer
+belongs to their mode cycle, which holds it at 255, and HTP means a chase
+under a 255 can dip nothing: the fixture would ride along invisibly forever
+("modo locura empieza todo blanco y normal", owner, 2026-08-29).
 """
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 from .. import roles
@@ -50,12 +55,16 @@ def generate_dimmer_chases(
     duration: int = 6000,
     pingpong_hold: int = 400,
     path: str = "Dimmers",
+    exclude_fixture_ids: Sequence[int] = (),
 ) -> GeneratedDimmers:
     """Build both dimmer chases and the ping-pong; raise when nothing dims."""
+    excluded = set(exclude_fixture_ids)
     dimmable = [
         capability
         for capability in capabilities_of(workspace.root, library)
-        if not capability.is_smoke and capability.offsets_for_role(roles.DIMMER)
+        if not capability.is_smoke
+        and capability.fixture.fixture_id not in excluded
+        and capability.offsets_for_role(roles.DIMMER)
     ]
     if not dimmable:
         raise ValueError("no fixture in this workspace has a dimmer")

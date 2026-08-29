@@ -841,6 +841,30 @@ def test_a_quiet_dimmer_shadowed_by_a_full_one_running_beside_it(library):
     assert findings, "a dimmer nobody can ever see went unnoticed"
 
 
+def test_a_dimmer_effect_flattened_by_a_full_scene_beside_it(library):
+    """2026-08-29, "modo locura empieza todo blanco y normal": `Momento
+    Locura` carried `Intensidad Total` beside `Dimmer Chase`, and HTP made
+    every dip the effect drew invisible - the room opened as a flat wall of
+    light. `intensidad tapada` cannot see it because an EFX never states a
+    value, but nothing an effect writes can exceed 255. Reproduced by putting
+    `Intensidad Total` back where the dimmerless peak base now goes.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    locura = functions["Momento Locura"]
+    peak_id = functions["Intensidad Peak"].attrib["ID"]
+    total_id = functions["Intensidad Total"].attrib["ID"]
+    for step in findall_local(locura, "Step"):
+        if step.text == peak_id:
+            step.text = total_id
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "efx de dimmer tapado"
+    ]
+    assert findings, "a dimmer effect nobody can ever see went unnoticed"
+
+
 def test_a_flash_accent_on_a_wheel_no_state_puts_back(library):
     """2026-08-27: wheel channels are LTP - the last write stays. A Flash
     scene that moves the beams' colour wheel releases cleanly only if the

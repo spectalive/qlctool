@@ -13,13 +13,18 @@ that run `Intensidad Ambiente`/`Total` write them off through those scenes,
 but a chase level dropped both - so a flash released during the peak left the
 Vortex and the panels strobing until the next level's intensity base cleared
 it (the same LTP latch `rule_strobe_restore` was written for, one level down).
-This scene is that level's owner for both: shutters open where no dimmer
-exists, strobes off everywhere.
+
+Shutters are opened on *every* fixture, dimmable or not: a shutter is not a
+dimmer value, so opening it fights nothing the chase writes - and skipping it
+on the dimmable ones is how `Momento Locura` coloured four beams whose shutter
+nothing had opened, and left the washes' strobe channel with no owner for a
+released flash to come home to (2026-08-29). Inside the energy cycle the
+previous level's `Intensidad Total` happened to leave those channels right -
+LTP - which is exactly the kind of luck a self-contained moment does not get.
 """
 
 from collections.abc import Sequence
 
-from .. import roles
 from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -43,8 +48,7 @@ def generate_dimmerless_intensity(
         if capability.is_smoke or capability.fixture.fixture_id in excluded:
             continue
         pairs: list[tuple[int, int]] = []
-        if not capability.offsets_for_role(roles.DIMMER):
-            pairs += shutter_open_pairs(capability)
+        pairs += shutter_open_pairs(capability)
         pairs += strobe_off_pairs(capability)
         if pairs:
             values[capability.fixture.fixture_id] = sorted(set(pairs))

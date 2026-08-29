@@ -30,6 +30,7 @@ from .rule_group_grid import check_group_grids
 from .rule_intensity import check_intensity
 from .rule_internal_program import check_internal_programs
 from .rule_latched_strobe import check_latched_strobe
+from .rule_masked_dimmer_efx import check_masked_dimmer_efx
 from .rule_movement_families import check_movement_families
 from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_smoke import check_smoke
@@ -76,6 +77,7 @@ def check_workspace(
     findings += check_flash_speed(graph, groups, root)
     findings += check_strobe_coverage(graph, groups)
     findings += check_shadowed_intensity(graph, groups, entries)
+    findings += check_masked_dimmer_efx(graph, groups, entries)
     findings += check_accent_restore(graph, groups, root, states)
     findings += check_strobe_restore(graph, groups, root, states)
     findings += check_state_proxy(graph, states)
