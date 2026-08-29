@@ -628,13 +628,16 @@ def build_canonical_show(
             EnergyLevel(
                 "Nivel Ambiente",
                 # Alive from the first second - "el auto es eso, como el modo
-                # auto de las cabezas en si" (owner, 2026-08-27). The washes
-                # breathe through wide slow shapes, the beams hold their fan,
-                # and the room sits at the low intensity base. The gobo wheel
-                # is parked open: the quiet level is where the pattern comes
-                # *out*, and a wheel nothing drives keeps what it was left on.
+                # auto de las cabezas en si" (owner, 2026-08-27). Both families
+                # breathe, each through its own slow envelope, and the room
+                # sits at the low intensity base. The beams held the static fan
+                # here until 2026-08-29, when the owner watched AUTO and
+                # reported them not moving: four minutes of a needle nailed to
+                # one spot is the level's whole hold. The gobo wheel is parked
+                # open: the quiet level is where the pattern comes *out*, and a
+                # wheel nothing drives keeps what it was left on.
                 [fid for fid in (
-                    movement.slow_id, movement.fan_id, gobo_open_id,
+                    movement.slow_id, movement.slow_beam_id, gobo_open_id,
                     prism_off_id, intensity.ambient_id,
                 ) if fid is not None],
                 AMBIENT_HOLD,
@@ -712,14 +715,13 @@ def build_canonical_show(
             beam_white_id, intensity.full_id,
         ]),
         # A lull: the colour bed and the pixels keep breathing at the low
-        # intensity base, and the heads rest without freezing - the washes on
-        # the wide slow Suave shapes, the beams parked in their fan. Parked
-        # dead they read as broken ("molaría un movimiento suave estilo
-        # reposo", owner, 2026-08-29); home is only the fallback for a rig
-        # whose movers grew neither family.
+        # intensity base, and the heads rest without freezing - each family on
+        # its own slow shapes. Parked dead they read as broken ("molaría un
+        # movimiento suave estilo reposo", owner, 2026-08-29); home is only the
+        # fallback for a rig whose movers grew neither family.
         Moment("Momento Tranquilo", [
             master["Rueda Colores"], *pixel_layer,
-            *([f for f in (movement.slow_id, movement.fan_id)
+            *([f for f in (movement.slow_id, movement.slow_beam_id)
                if f is not None] or [home_id]),
             gobo_open_id, prism_off_id, intensity.ambient_id,
         ]),

@@ -96,11 +96,14 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
 
     # 2026-08-27, the owner on pressing AUTO and watching parked heads: "el
     # auto es eso, como el modo auto de las cabezas en si". Every level moves
-    # from the first second - the quiet one slowly, on the washes, with the
-    # beams fanned - and every level owns its intensity, low or full.
+    # from the first second - the quiet one slowly, each family on its own slow
+    # envelope - and every level owns its intensity, low or full. The beams
+    # held the static fan through this level until 2026-08-29, when the owner
+    # watched AUTO and reported them not moving: the hold is four minutes.
     ambient = _names("Nivel Ambiente")
     assert "Movimientos Suaves" in ambient
-    assert "Beams Abanico" in ambient
+    assert "Movimientos Suaves Beams" in ambient
+    assert "Beams Abanico" not in ambient
     assert "Intensidad Ambiente" in ambient
 
     party = _names("Nivel Fiesta")
@@ -627,8 +630,10 @@ def test_the_console_is_bound_to_the_smc_pad(built):
 def test_tranquilo_rests_the_heads_instead_of_parking_them(built):
     """2026-08-29: Tranquilo held the heads parked dead at home, and a parked
     mover in a lull reads as a broken one ("molaría un movimiento suave
-    estilo reposo", owner). The lull now breathes: washes on the Suave
-    shapes, beams in their fan, and home stays out of the moment.
+    estilo reposo", owner). The lull now breathes: each family on its own slow
+    shapes, and home stays out of the moment. The beams rested in their fan
+    here until the owner watched AUTO the same day and reported the 7R not
+    moving - a static scene is a rest for a step, not for a whole lull.
     """
     show, out = built
     root = Workspace.load(out).root
@@ -639,7 +644,8 @@ def test_tranquilo_rests_the_heads_instead_of_parking_them(built):
     names = {functions[m].attrib.get("Name") for m in members}
 
     assert "Movimientos Suaves" in names
-    assert "Beams Abanico" in names
+    assert "Movimientos Suaves Beams" in names
+    assert "Beams Abanico" not in names
     assert str(show.master_ids["Cabezas Centro"]) not in members
 
 

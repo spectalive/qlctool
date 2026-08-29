@@ -33,6 +33,7 @@ from .rule_latched_strobe import check_latched_strobe
 from .rule_masked_dimmer_efx import check_masked_dimmer_efx
 from .rule_movement_families import check_movement_families
 from .rule_pad_input import check_pad_input
+from .rule_parked_movers import check_parked_movers
 from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_shutter_endpoint import check_shutter_endpoint
 from .rule_smoke import check_smoke
@@ -46,6 +47,7 @@ from .rule_strobe_rate import check_strobe_rate
 from .rule_strobe_restore import check_strobe_restore
 from .rule_unfinished_effect import check_unfinished_effects
 from .rule_wheel_colour import check_wheel_colour
+from .rule_wheel_rotation import check_wheel_rotation
 from .rule_zoom_narrow import check_zoom_narrow
 from .show_graph import build_show_graph, group_fixtures
 
@@ -68,6 +70,7 @@ def check_workspace(
     findings: list[Finding] = []
     findings += check_intensity(graph, groups, entries, states)
     findings += check_wheel_colour(graph, groups, entries)
+    findings += check_wheel_rotation(graph, groups)
     findings += check_internal_programs(graph, groups, entries, states)
     findings += check_collisions(graph, groups, entries)
     findings += check_colour_clocks(graph, groups, entries, states)
@@ -89,6 +92,7 @@ def check_workspace(
     findings += check_tap_dial(root)
     findings += check_tempo_units(graph)
     findings += check_movement_families(graph)
+    findings += check_parked_movers(graph)
     findings += check_smoke(graph, groups, entries)
     findings += check_smoke_light(graph, groups, entries)
     findings += check_group_grids(graph, root)

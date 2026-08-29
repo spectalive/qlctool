@@ -3,9 +3,15 @@
 Every other step of the rig wheel puts the room on one colour, and the
 contrast pairs stop at two. This is the look past both - "algún modo más loco
 multicolor" (owner, 2026-08-28): each fixture takes its own colour from the
-palette, spread by patch order so neighbours differ, and the beams - whose
-colour is a wheel with no RGB - go onto their rainbow-scroll range, the
-continuous colour run their wheel carries and nothing had ever driven.
+palette, spread by patch order so neighbours differ.
+
+The beams take a detent of their wheel like everybody else. They used to be
+sent to the wheel's rainbow-scroll range instead, which reads as the same idea
+and is not: a scroll range does not name a colour, it spins the wheel, and a
+2-degree beam looking through a wheel that is between two detents shows half of
+one colour and half of the next - "se queda como una media luna" (owner,
+2026-08-29, live under AUTO). The scroll's slow end made it worse, because the
+wheel then sits split for most of a minute.
 
 These are scenes, not a chaser of their own: they enter `Rueda Colores` as
 steps, so the crazy look appears on the wheel's clock the way every colour
@@ -22,10 +28,8 @@ from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..workspace import Workspace
 from .color_scene import color_scene_values
-
-ROTATION_PRESET_PREFIX = "Rotation"
-# How far into a scroll range to sit: just off the edge, on the slow side.
-SCROLL_MARGIN = 5
+from .dealt_wheel_color import dealt_wheel_color
+from .wheel_color_values import wheel_color_values
 
 
 def generate_multicolor_scenes(
@@ -73,12 +77,15 @@ def generate_multicolor_scenes(
                 caps, rgb, fixture_ids=[fixture_id], dimmer_full=False,
                 internal_program_off=fixture_id not in gated,
             ))
-        for capability in wheel_caps:
-            scroll = _scroll_value(capability)
-            if scroll is None:
+        names = [name for name, _ in colors]
+        for index, capability in enumerate(wheel_caps, start=len(rgb_caps)):
+            name = dealt_wheel_color(capability, names, index + offset)
+            if name is None:
                 continue
-            wheel_offset, _ = capability.wheel_for_role(roles.COLOR_MACRO)
-            values[capability.fixture.fixture_id] = [(wheel_offset, scroll)]
+            values.update(wheel_color_values(
+                caps, name,
+                fixture_ids=[capability.fixture.fixture_id], dimmer=None,
+            ))
         if not values:
             continue
         function_id = next_function_id(workspace.root)
@@ -87,21 +94,3 @@ def generate_multicolor_scenes(
         ))
         scene_ids.append(function_id)
     return scene_ids
-
-
-def _scroll_value(capability) -> int | None:
-    """The slow end of the colour wheel's continuous scroll, if it has one.
-
-    Read off the range's preset: FastToSlow puts slow at the top of the range,
-    SlowToFast at the bottom. A wheel with no rotation range returns None and
-    the fixture is left to the wheel's ordinary colour steps.
-    """
-    _, positions = capability.wheel_for_role(roles.COLOR_MACRO)
-    for position in positions:
-        preset = position.preset or ""
-        if not preset.startswith(ROTATION_PRESET_PREFIX):
-            continue
-        if "FastToSlow" in preset:
-            return max(position.minimum, position.maximum - SCROLL_MARGIN)
-        return min(position.maximum, position.minimum + SCROLL_MARGIN)
-    return None

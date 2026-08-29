@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pytest
 
+from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.run import check_workspace
 from qlctool.checks.strobe_written import strobe_capable_offsets
@@ -1298,3 +1299,74 @@ def test_a_console_full_of_bindings_with_nothing_listening(library):
     assert [
         f for f in findings if f.rule == "consola con bindings y sin entrada MIDI"
     ], "a console whose bindings reach no input plugin went unnoticed"
+
+
+def test_a_rig_colour_that_spins_the_beams_wheel_instead_of_naming_one(library):
+    """2026-08-29: "las 7R no se abren del todo, están como una media luna".
+
+    Live under AUTO, nothing else pressed. Nothing was closed: two of the
+    twenty steps of the colour clock - `Rig Multicolor 1` and `Rig Multicolor
+    2` - put the beams' colour wheel at 186, inside its rotation range and near
+    the slow end. A turning wheel spends its time between detents, and a
+    2-degree beam looking through a split wheel shows half of one colour and
+    half of the next. Put the scroll value back and the rule must bite.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    scene = functions["Rig Multicolor 1"]
+    wheel = {
+        capability.fixture.fixture_id:
+            capability.wheel_for_role(roles.COLOR_MACRO)[0]
+        for capability in capabilities_of(workspace.root, library)
+        if capability.fixture.fixture_id in BEAMS
+    }
+    for value in findall_local(scene, "FixtureVal"):
+        fixture_id = int(value.attrib["ID"])
+        if fixture_id not in wheel:
+            continue
+        value.text = f"{wheel[fixture_id]},186"
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "rueda de color girando"
+    ]
+    assert findings, "a rig colour spinning the beams' wheel went unnoticed"
+    assert "Rig Multicolor 1" in {f.function for f in findings}
+    assert all(
+        "BEAM" in fixture for f in findings for fixture in f.fixtures
+    )
+
+
+def test_a_level_of_the_cycle_that_parks_half_the_movers(library):
+    """2026-08-29: "las 7R ... no se mueven", again with only AUTO pressed.
+
+    `Nivel Ambiente` is the first and longest step of `Ciclo Energia`: it ran
+    the washes' slow shapes beside a *static* fan scene for the beams, so the
+    four 7R held one position for the level's whole four-minute hold. Rest that
+    long reads as four broken lights. Swap the beams' slow rotation back for
+    the fan and the rule must bite.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    by_name = {
+        name: int(function.attrib["ID"])
+        for name, function in functions.items()
+        if function.attrib.get("ID")
+    }
+    level = functions["Nivel Ambiente"]
+    slow_beams = str(by_name["Movimientos Suaves Beams"])
+    fan = str(by_name["Beams Abanico"])
+    swapped = False
+    for step in findall_local(level, "Step"):
+        if (step.text or "").strip() == slow_beams:
+            step.text = fan
+            swapped = True
+    assert swapped, "`Nivel Ambiente` no longer moves the beams at all"
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "cabezas paradas en el ciclo"
+    ]
+    assert findings, "a cycle level parking the beams went unnoticed"
+    assert "Nivel Ambiente" in {f.function for f in findings}
+    assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)

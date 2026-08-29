@@ -9,8 +9,12 @@ draws.
 
 Each family gets its own envelope per tempo of the night:
 
-- **Suave** (Ambiente): washes only, two wide slow shapes - the level is calm,
-  not parked. The beams hold a static fan instead: a needle's rest is a look.
+- **Suave** (Ambiente): two wide slow shapes for the washes, and two small
+  slow ones for the beams. The beams used to hold the static fan through this
+  whole level instead - four minutes of a needle nailed to one spot, which the
+  room reads as broken rather than as rest ("las 7R no se mueven", owner,
+  2026-08-29, watching AUTO). The fan is still their rest, but as one step of
+  the Normal rotation, where it lasts a step and not a level.
 - **Normal** (Fiesta): both families move, each at its own size and speed, and
   the fan sits in the beams' rotation as a rest step - stillness between
   moving blocks instead of motion as wallpaper.
@@ -59,6 +63,10 @@ class Envelope:
 # Sizes and durations are QLC+ raw EFX values, not degrees: a starting
 # envelope for on-site tuning, not a universal standard.
 WASH_SLOW = Envelope(("Circle", "Line"), 28000, 45, 28, 56000)
+# The beams' calm level: slower than the washes' slow, and much smaller. A
+# 2-degree needle covers ground the wash's soft edge does not, so the same
+# envelope that reads as breathing on a wash reads as a searchlight on a beam.
+BEAM_SLOW = Envelope(("Circle", "Line"), 34000, 26, 18, 56000)
 WASH = Envelope(
     ("Circle", "Eight", "Line", "Diamond", "Square", "Leaf", "Lissajous"),
     16000, 70, 55, 10000,
@@ -126,6 +134,7 @@ BEAM_UNISON = Envelope(
 @dataclass(frozen=True)
 class GeneratedFamilies:
     slow_id: int | None = None
+    slow_beam_id: int | None = None
     wash_id: int | None = None
     beam_id: int | None = None
     fast_wash_id: int | None = None
@@ -174,6 +183,8 @@ def generate_movement_families(
 
     slow = _family(washes, WASH_SLOW, None, "Suave", "Movimiento Suave",
                    make_chaser=False)
+    slow_beam = _family(beams, BEAM_SLOW, "Movimientos Suaves Beams",
+                        "Beam Suave", "Movimiento Suave")
     ola_suave = _family(washes, WASH_CASCADE, None, "Ola", "Movimiento Suave",
                         make_chaser=False, names={"Line": "Ola Suave"})
     wash = _family(washes, WASH, None, "Wash", "Movimiento", make_chaser=False)
@@ -337,6 +348,7 @@ def generate_movement_families(
     fast_beam_id = fast_beam.chaser_id if fast_beam is not None else None
     return GeneratedFamilies(
         slow_id=slow_id,
+        slow_beam_id=slow_beam.chaser_id if slow_beam is not None else None,
         wash_id=wash_id,
         beam_id=beam_id,
         fast_wash_id=fast_wash_id,
