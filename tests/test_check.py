@@ -1370,3 +1370,32 @@ def test_a_level_of_the_cycle_that_parks_half_the_movers(library):
     assert findings, "a cycle level parking the beams went unnoticed"
     assert "Nivel Ambiente" in {f.function for f in findings}
     assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_beam_figure_centred_on_mid_travel(library):
+    """2026-08-29: "está todo el rato haciendo un circulo pequeño en el suelo".
+
+    Every movement EFX carried QLC+'s own axis default - tilt offset 127, the
+    raw middle of the channel - because nothing had ever overridden it. On this
+    rig mid travel is the floor: tilt 0 is the ceiling (`docs/rig.md`, a
+    CromoWash stuck at coarse zero), ~196 is the stage (the hand-built
+    `Escenario`), and the crowd is below 127. Put the default back on a beam
+    figure and the rule must bite.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    efx = functions["Beam Suave Circulo"]
+    axis = next(
+        a for a in findall_local(efx, "Axis") if a.attrib.get("Name") == "Y"
+    )
+    offset = find_local(axis, "Offset")
+    assert offset.text != "127", "the beams' figure is aimed at mid travel again"
+    offset.text = "127"
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "movimiento sin apuntar"
+    ]
+    assert findings, "a beam figure centred on mid travel went unnoticed"
+    assert "Beam Suave Circulo" in {f.function for f in findings}
+    assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)

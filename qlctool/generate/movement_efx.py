@@ -13,7 +13,7 @@ from .. import roles
 from ..capabilities_of import capabilities_of
 from ..efx_algorithms import EFX_ALGORITHMS, SPANISH_LABELS
 from ..functions.chaser import build_chaser
-from ..functions.efx import EFXFixture, build_efx
+from ..functions.efx import EFXAxis, EFXFixture, build_efx
 from ..ids import next_function_id
 from ..functions.collection import build_collection
 from ..library import FixtureLibrary
@@ -67,6 +67,8 @@ def generate_movement_efx(
     rotation_by_algorithm: dict[str, int] | None = None,
     names: dict[str, str] | None = None,
     spread_phase: bool = True,
+    pan_offset: int = 127,
+    tilt_offset: int = 127,
 ) -> GeneratedMovements:
     """Create one EFX per algorithm over the moving heads.
 
@@ -84,6 +86,11 @@ def generate_movement_efx(
     different angles in the same call). names overrides the generated
     "{label_prefix} {label}" name for an algorithm with a literal one, for a
     figure whose name does not fit that pattern (e.g. "Ola Suave").
+
+    pan_offset and tilt_offset are where the figure is *centred*, in raw DMX -
+    the aim the whole shape is drawn around. QLC+ defaults both to 127, the
+    middle of the channel, which is not an aim but the absence of one: on this
+    rig it puts a beam on the floor (`movement_aim`).
 
     spread_phase=False puts every fixture at StartOffset 0 - the synced push,
     where the whole rig traces the same point of the path at the same instant.
@@ -146,6 +153,10 @@ def generate_movement_efx(
                     f"{name}{suffix}",
                     _members(fixture_ids),
                     algorithm=algorithm,
+                    # The axis defaults QLC+ writes for a plain circle, with
+                    # the centre moved off mid-travel onto the rig's own aim.
+                    x_axis=EFXAxis(offset=pan_offset, phase=90),
+                    y_axis=EFXAxis(offset=tilt_offset, frequency=3),
                     propagation_mode=propagation_mode,
                     rotation=shape_rotation,
                     duration=duration,

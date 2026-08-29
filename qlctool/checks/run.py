@@ -45,6 +45,7 @@ from .rule_strobe_coverage import check_strobe_coverage
 from .rule_strobe_in_cycle import check_strobe_in_cycle
 from .rule_strobe_rate import check_strobe_rate
 from .rule_strobe_restore import check_strobe_restore
+from .rule_unaimed_movement import check_unaimed_movement
 from .rule_unfinished_effect import check_unfinished_effects
 from .rule_wheel_colour import check_wheel_colour
 from .rule_wheel_rotation import check_wheel_rotation
@@ -93,6 +94,7 @@ def check_workspace(
     findings += check_tempo_units(graph)
     findings += check_movement_families(graph)
     findings += check_parked_movers(graph)
+    findings += check_unaimed_movement(graph)
     findings += check_smoke(graph, groups, entries)
     findings += check_smoke_light(graph, groups, entries)
     findings += check_group_grids(graph, root)

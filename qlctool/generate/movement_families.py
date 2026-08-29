@@ -9,12 +9,16 @@ draws.
 
 Each family gets its own envelope per tempo of the night:
 
-- **Suave** (Ambiente): two wide slow shapes for the washes, and two small
-  slow ones for the beams. The beams used to hold the static fan through this
-  whole level instead - four minutes of a needle nailed to one spot, which the
-  room reads as broken rather than as rest ("las 7R no se mueven", owner,
-  2026-08-29, watching AUTO). The fan is still their rest, but as one step of
-  the Normal rotation, where it lasts a step and not a level.
+- **Suave** (Ambiente): two wide slow shapes per family. The beams used to hold
+  the static fan through this whole level instead - four minutes of a needle
+  nailed to one spot, which the room reads as broken rather than as rest ("las
+  7R no se mueven", owner, 2026-08-29, watching AUTO). The fan is still their
+  rest, but as one step of the Normal rotation, where it lasts a step and not a
+  level.
+
+Every beam envelope is centred on `movement_aim.BEAM_TILT_AIM` rather than on
+mid-travel, which is where QLC+ puts a figure nobody aims and where this rig's
+floor is.
 - **Normal** (Fiesta): both families move, each at its own size and speed, and
   the fan sits in the beams' rotation as a rest step - stillness between
   moving blocks instead of motion as wallpaper.
@@ -38,6 +42,7 @@ from ..library import FixtureLibrary
 from ..workspace import Workspace
 from .cross_position import generate_cross_position
 from .fan_position import generate_fan_position
+from .movement_aim import BEAM_TILT_AIM
 from .movement_efx import generate_movement_efx
 
 
@@ -58,22 +63,34 @@ class Envelope:
     propagation: str = "Parallel"
     rotation: int = 0
     rotation_by_algorithm: dict[str, int] = field(default_factory=dict)
+    # Where the figure is centred in raw tilt. 127 is mid-travel, which is what
+    # QLC+ writes when nobody says: on a beam that is the floor (`movement_aim`).
+    tilt_offset: int = 127
 
 
 # Sizes and durations are QLC+ raw EFX values, not degrees: a starting
 # envelope for on-site tuning, not a universal standard.
 WASH_SLOW = Envelope(("Circle", "Line"), 28000, 45, 28, 56000)
-# The beams' calm level: slower than the washes' slow, and much smaller. A
-# 2-degree needle covers ground the wash's soft edge does not, so the same
-# envelope that reads as breathing on a wash reads as a searchlight on a beam.
-BEAM_SLOW = Envelope(("Circle", "Line"), 34000, 26, 18, 56000)
+# The beams' calm level: slower than the washes' slow. It was also much
+# smaller (26x18) for one afternoon, which centred on the floor read as "un
+# circulo pequeño en el suelo" (owner, 2026-08-29) - a needle drawing a coin.
+# Sized to the washes' slow figure now, and aimed off the floor like every
+# beam shape.
+BEAM_SLOW = Envelope(
+    ("Circle", "Line"), 34000, 45, 30, 56000, tilt_offset=BEAM_TILT_AIM,
+)
 WASH = Envelope(
     ("Circle", "Eight", "Line", "Diamond", "Square", "Leaf", "Lissajous"),
     16000, 70, 55, 10000,
 )
-BEAM = Envelope(("Circle", "Eight", "Line"), 11000, 55, 38, 10000)
+BEAM = Envelope(
+    ("Circle", "Eight", "Line"), 11000, 55, 38, 10000,
+    tilt_offset=BEAM_TILT_AIM,
+)
 WASH_FAST = Envelope(WASH.algorithms, 5000, 80, 50, 6000)
-BEAM_FAST = Envelope(BEAM.algorithms, 5000, 70, 40, 6000)
+BEAM_FAST = Envelope(
+    BEAM.algorithms, 5000, 70, 40, 6000, tilt_offset=BEAM_TILT_AIM,
+)
 
 # The rig's 23 EFX all ran Rotation=0 and Parallel propagation, every shape an
 # axis-aligned clone of the others (Codex A6). A Serial EFX delays each
@@ -89,6 +106,7 @@ BEAM_FAST = Envelope(BEAM.algorithms, 5000, 70, 40, 6000)
 BEAM_ROTATED_SHAPES = Envelope(
     ("Diamond", "Leaf"), BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
     rotation_by_algorithm={"Diamond": 90, "Leaf": 45},
+    tilt_offset=BEAM.tilt_offset,
 )
 WASH_CASCADE = Envelope(
     ("Line",), WASH_SLOW.duration, WASH_SLOW.width, WASH_SLOW.height,
@@ -96,7 +114,7 @@ WASH_CASCADE = Envelope(
 )
 BEAM_CASCADE = Envelope(
     BEAM.algorithms[:1], BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
-    propagation="Serial", rotation=45,
+    propagation="Serial", rotation=45, tilt_offset=BEAM.tilt_offset,
 )
 
 # The classic club wave: tilt only. QLC+'s Line traces x=y - a diagonal, and
@@ -109,6 +127,7 @@ WASH_TILT_WAVE = Envelope(
 )
 BEAM_TILT_WAVE = Envelope(
     ("Line",), BEAM.duration, 0, BEAM.height, BEAM.hold, propagation="Serial",
+    tilt_offset=BEAM.tilt_offset,
 )
 
 # The hand-built show kept a "(Simultaneo)" twin of every shape - all heads at
@@ -128,6 +147,7 @@ WASH_UNISON = Envelope(
 )
 BEAM_UNISON = Envelope(
     ("Line",), BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
+    tilt_offset=BEAM.tilt_offset,
 )
 
 
@@ -179,6 +199,7 @@ def generate_movement_families(
             rotation=envelope.rotation,
             rotation_by_algorithm=envelope.rotation_by_algorithm or None,
             names=names, spread_phase=spread_phase,
+            tilt_offset=envelope.tilt_offset,
         )
 
     slow = _family(washes, WASH_SLOW, None, "Suave", "Movimiento Suave",
