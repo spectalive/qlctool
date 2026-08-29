@@ -83,8 +83,12 @@ def _scene(
         # for four minutes (`stepped_dimmer`). It joins the level at full and
         # takes its darkness from the shutter, like the MiN Wash does.
         stepped = set(stepped_dimmer_offsets(capability))
+        # A lit smoke machine's LED sits behind its own nozzle and does not
+        # read below full: "si no pones el canal 2 a 255 no se ven" (owner,
+        # 2026-08-29). The quiet level's 110 left four machines invisible.
+        full = capability.is_lit_smoke
         pairs = [
-            (offset, FULL_LEVEL if offset in stepped else level)
+            (offset, FULL_LEVEL if full or offset in stepped else level)
             for offset in capability.offsets_for_role(roles.DIMMER)
         ]
         pairs += shutter_open_pairs(capability)

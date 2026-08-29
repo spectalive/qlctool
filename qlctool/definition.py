@@ -38,6 +38,11 @@ class Channel:
     name: str
     role: str | None
     capabilities: tuple[Capability, ...] = ()
+    # The QLC+ channel group, verbatim. It is not decoration: QLC+ resets the
+    # channels in the Intensity group every cycle and leaves every other group
+    # holding its last value (`Universe::processFaders`), which is the whole
+    # difference between a Flash that releases and one that latches.
+    group: str = ""
 
 
 @dataclass(frozen=True)
@@ -70,6 +75,10 @@ class FixtureDefinition:
         """Each offset's labelled ranges, index-aligned with mode_roles."""
         return [self.channels[c].capabilities for c in self.modes[mode]]
 
+    def mode_groups(self, mode: str) -> list[str]:
+        """Each offset's QLC+ channel group, index-aligned with mode_roles."""
+        return [self.channels[c].group for c in self.modes[mode]]
+
 
 def load_definition(path: str | Path) -> FixtureDefinition:
     root = etree.parse(str(path)).getroot()
@@ -83,9 +92,17 @@ def load_definition(path: str | Path) -> FixtureDefinition:
         name = ch.attrib.get("Name")
         if name is None:  # <Channel Number=..> refs inside <Mode> have no Name
             continue
+        preset = ch.attrib.get("Preset")
         group_el = find_local(ch, "Group")
         group = group_el.text if group_el is not None else None
-        role = role_of(ch.attrib.get("Preset"), group, name)
+        # A channel written as a preset carries no <Group> of its own: QLC+
+        # fills it in from the preset (`QLCChannel::setPreset`), and the group
+        # is what decides whether QLC+ resets the channel every cycle. Reading
+        # it back as empty would say "this latches" about a channel that does
+        # not.
+        if group is None and preset and preset.startswith("Intensity"):
+            group = "Intensity"
+        role = role_of(preset, group, name)
         capabilities = tuple(
             Capability(
                 minimum=int(cap.attrib["Min"]),
@@ -96,7 +113,9 @@ def load_definition(path: str | Path) -> FixtureDefinition:
             for cap in findall_local(ch, "Capability")
             if "Min" in cap.attrib and "Max" in cap.attrib
         )
-        channels[name] = Channel(name=name, role=role, capabilities=capabilities)
+        channels[name] = Channel(
+            name=name, role=role, capabilities=capabilities, group=group or "",
+        )
 
     modes: dict[str, list[str]] = {}
     for mode in iter_local(root, "Mode"):

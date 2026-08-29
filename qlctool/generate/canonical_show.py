@@ -194,6 +194,8 @@ KEYS = {
 }
 # Held, not latched. The smoke burst is one of them on purpose: a pump on a
 # Toggle button is how a tank ends up empty when somebody walks away from it.
+# Holding it only *releases* because both pumps sit in the Intensity group,
+# which is the group QLC+ resets every cycle - see `Generic-LED-Spray-Fog.qxf`.
 FLASH_FUNCTIONS = (
     "Flash 100%", "Flash 50%", "Flash Color", "Humo ON", "Humo Vertical YA",
     "Golpe Graves",

@@ -20,7 +20,7 @@ from .entry_points import entry_points
 from .finding import ERROR, Finding
 from .rule_accent_restore import check_accent_restore
 from .rule_audio_triggers import check_audio_triggers
-from .rule_beam_window import check_beam_window
+from .rule_movement_window import check_movement_window
 from .rule_collision import check_collisions
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
@@ -99,7 +99,7 @@ def check_workspace(
     findings += check_movement_families(graph)
     findings += check_parked_movers(graph)
     findings += check_unaimed_movement(graph)
-    findings += check_beam_window(graph)
+    findings += check_movement_window(graph)
     findings += check_smoke(graph, groups, entries)
     findings += check_smoke_light(graph, groups, entries)
     findings += check_smoke_restore(graph, groups, root, states)

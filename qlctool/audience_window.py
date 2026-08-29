@@ -11,9 +11,14 @@ The hand-built show's own `Escenario` sits just below it at tilt 189-204 - the
 stage rather than the crowd - and the two bands touching is what says these
 numbers describe the real room.
 
-Only head #1 has been read. The other three sit at their own places on the
-truss and their windows will be shifted in pan; until somebody reads them the
-whole family shares this one, which is why the figures are kept well inside it
+The washes were measured the same way, on MAC WASH 1915Z #1 (DMX 345): pan 76
+to 108, tilt 212 to 230. A raw value is not comparable across models, so the
+two windows are separate numbers - but they describe the same room, and they
+land in the same place, which is the best evidence either of them is right.
+
+Only head #1 of each family has been read. The others sit at their own places
+on the truss and their windows will be shifted in pan; until somebody reads
+them the family shares one window, which is why the figures are drawn inside it
 rather than filling it.
 """
 
@@ -55,3 +60,4 @@ class Window:
 
 
 BEAM_WINDOW = Window(pan_min=62, pan_max=103, tilt_min=207, tilt_max=234)
+WASH_WINDOW = Window(pan_min=76, pan_max=108, tilt_min=212, tilt_max=230)

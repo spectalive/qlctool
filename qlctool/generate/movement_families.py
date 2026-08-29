@@ -20,9 +20,10 @@ Each family gets its own envelope per tempo of the night:
   moving blocks instead of motion as wallpaper.
 - **Rapido** (Peak): both families, twice the pace, sized to their optics.
 
-Every envelope is centred on its family's aim from `movement_aim` rather than
-on mid-travel, which is where QLC+ puts a figure nobody aims - the floor for
-the beams, the back wall for the washes.
+Every envelope is centred on its family's own measured audience window
+(`audience_window`) rather than on mid-travel, which is where QLC+ puts a
+figure nobody aims - the floor for the beams, the back wall for the washes -
+and sized so the whole figure fits inside that window.
 
 `Movimientos Cabezas` and `Movimientos Rapidos` remain the console's names for
 "everything moves": Collections over the family chasers, so the buttons, the
@@ -47,7 +48,10 @@ from .movement_aim import (
     BEAM_PAN_SPAN,
     BEAM_TILT_AIM,
     BEAM_TILT_SPAN,
+    WASH_PAN_AIM,
+    WASH_PAN_SPAN,
     WASH_TILT_AIM,
+    WASH_TILT_SPAN,
 )
 from .movement_efx import generate_movement_efx
 
@@ -77,8 +81,12 @@ class Envelope:
 
 # Sizes and durations are QLC+ raw EFX values, not degrees: a starting
 # envelope for on-site tuning, not a universal standard.
+# Both families are sized by their own measured window, not by taste: a figure
+# bigger than the window is a head pointing out of the room, whatever the
+# optics. Slow draws the same shape smaller, which is the room left to vary.
 WASH_SLOW = Envelope(
-    ("Circle", "Line"), 28000, 45, 24, 56000, tilt_offset=WASH_TILT_AIM,
+    ("Circle", "Line"), 28000, WASH_PAN_SPAN * 2 // 3, WASH_TILT_SPAN * 2 // 3,
+    56000, pan_offset=WASH_PAN_AIM, tilt_offset=WASH_TILT_AIM,
 )
 # The beam sizes are the audience window, not a taste: the window is 41 counts
 # of pan by 27 of tilt, so a figure any bigger walks out of the room. Slow is
@@ -87,21 +95,18 @@ BEAM_SLOW = Envelope(
     ("Circle", "Line"), 34000, BEAM_PAN_SPAN * 2 // 3, BEAM_TILT_SPAN * 2 // 3,
     56000, pan_offset=BEAM_PAN_AIM, tilt_offset=BEAM_TILT_AIM,
 )
-# Heights are smaller than they were before 2026-08-29 (55 and 50) because
-# the figures are aimed now. Unaimed, a wash swept the whole tilt range and
-# the size was free; centred on the room's band, anything over ~30 tall climbs
-# back onto the wall behind the stage at the top of every pass. The pan width
-# is untouched - across is where a wash figure should be wide.
 WASH = Envelope(
     ("Circle", "Eight", "Line", "Diamond", "Square", "Leaf", "Lissajous"),
-    16000, 70, 30, 10000, tilt_offset=WASH_TILT_AIM,
+    16000, WASH_PAN_SPAN, WASH_TILT_SPAN, 10000,
+    pan_offset=WASH_PAN_AIM, tilt_offset=WASH_TILT_AIM,
 )
 BEAM = Envelope(
     ("Circle", "Eight", "Line"), 11000, BEAM_PAN_SPAN, BEAM_TILT_SPAN, 10000,
     pan_offset=BEAM_PAN_AIM, tilt_offset=BEAM_TILT_AIM,
 )
 WASH_FAST = Envelope(
-    WASH.algorithms, 5000, 80, 32, 6000, tilt_offset=WASH_TILT_AIM,
+    WASH.algorithms, 5000, WASH.width, WASH.height, 6000,
+    pan_offset=WASH_PAN_AIM, tilt_offset=WASH_TILT_AIM,
 )
 BEAM_FAST = Envelope(
     BEAM.algorithms, 5000, BEAM.width, BEAM.height, 6000,
@@ -126,7 +131,8 @@ BEAM_ROTATED_SHAPES = Envelope(
 )
 WASH_CASCADE = Envelope(
     ("Line",), WASH_SLOW.duration, WASH_SLOW.width, WASH_SLOW.height,
-    WASH_SLOW.hold, propagation="Serial", tilt_offset=WASH_SLOW.tilt_offset,
+    WASH_SLOW.hold, propagation="Serial",
+    pan_offset=WASH_SLOW.pan_offset, tilt_offset=WASH_SLOW.tilt_offset,
 )
 BEAM_CASCADE = Envelope(
     BEAM.algorithms[:1], BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
@@ -141,7 +147,7 @@ BEAM_CASCADE = Envelope(
 # family, like every other figure: same shape, each family's own size.
 WASH_TILT_WAVE = Envelope(
     ("Line",), WASH.duration, 0, WASH.height, WASH.hold, propagation="Serial",
-    tilt_offset=WASH.tilt_offset,
+    pan_offset=WASH.pan_offset, tilt_offset=WASH.tilt_offset,
 )
 BEAM_TILT_WAVE = Envelope(
     ("Line",), BEAM.duration, 0, BEAM.height, BEAM.hold, propagation="Serial",
@@ -161,7 +167,8 @@ MOVEMENT_CROSSFADE_MS = 5000
 # "push" means on a truss. Slow and wide: the drama is the unison, not speed.
 WASH_UNISON = Envelope(
     ("Line",), WASH_SLOW.duration, WASH_SLOW.width, WASH_SLOW.height,
-    WASH_SLOW.hold, tilt_offset=WASH_SLOW.tilt_offset,
+    WASH_SLOW.hold,
+    pan_offset=WASH_SLOW.pan_offset, tilt_offset=WASH_SLOW.tilt_offset,
 )
 BEAM_UNISON = Envelope(
     ("Line",), BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,

@@ -1,4 +1,4 @@
-"""A beam figure that leaves the part of the room the audience is in.
+"""A movement figure that leaves the part of the room the audience is in.
 
 The aim was guessed twice on 2026-08-29 and was wrong twice - the beams drew a
 circle on the floor, then pointed at the wall behind - because "which way is
@@ -12,13 +12,17 @@ draws a shape of a known half-size around a known centre - both are in the file
 - so whether the whole shape stays on the people is arithmetic:
 `offset - size` and `offset + size`, per axis, inside the window.
 
+Each family is asked about its own window: a raw pan or tilt value means
+nothing across models, and the washes were measured separately (pan 76-108,
+tilt 212-230 on MAC WASH 1915Z #1).
+
 Only EFX are asked. A Scene that aims the heads somewhere on purpose - the
 hand-built `Escenario`, which sits just below the window at tilt 189-204
 because the stage is not the crowd - is a decision, not a figure.
 """
 
 from .. import roles
-from ..audience_window import BEAM_WINDOW
+from ..audience_window import BEAM_WINDOW, WASH_WINDOW
 from ..xmlutil import find_local, findall_local
 from .driven_channels import EFX_PAN_TILT
 from .finding import ERROR, Finding
@@ -27,14 +31,14 @@ from .show_graph import ShowGraph
 RULE = "figura fuera del publico"
 
 
-def check_beam_window(graph: ShowGraph) -> list[Finding]:
+def check_movement_window(graph: ShowGraph) -> list[Finding]:
     findings: list[Finding] = []
     for function_id in sorted(graph.functions):
         function = graph.functions[function_id]
         if function.attrib.get("Type") != "EFX":
             continue
-        beams = _beams_moved(graph, function)
-        if not beams:
+        moved = _heads_by_family(graph, function)
+        if not moved:
             continue
         width = _number(function, "Width")
         height = _number(function, "Height")
@@ -42,27 +46,28 @@ def check_beam_window(graph: ShowGraph) -> list[Finding]:
         tilt = _axis_offset(function, "Y")
         if None in (width, height, pan, tilt):
             continue
-        outside = [
-            f"{axis} {centre - size}..{centre + size}"
-            for axis, centre, size in (
-                ("pan", pan, width), ("tilt", tilt, height)
-            )
-            if not BEAM_WINDOW.holds(centre, size, axis)
-        ]
-        if not outside:
-            continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=graph.name(function_id),
-            message=(
-                f"dibuja {', '.join(outside)}, y el publico esta en pan "
-                f"{BEAM_WINDOW.pan_min}-{BEAM_WINDOW.pan_max} tilt "
-                f"{BEAM_WINDOW.tilt_min}-{BEAM_WINDOW.tilt_max}: parte de la "
-                "figura apunta fuera de la sala"
-            ),
-            fixtures=tuple(sorted(beams)),
-        ))
+        for window, names in moved.items():
+            outside = [
+                f"{axis} {centre - size}..{centre + size}"
+                for axis, centre, size in (
+                    ("pan", pan, width), ("tilt", tilt, height)
+                )
+                if not window.holds(centre, size, axis)
+            ]
+            if not outside:
+                continue
+            findings.append(Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=graph.name(function_id),
+                message=(
+                    f"dibuja {', '.join(outside)}, y el publico esta en pan "
+                    f"{window.pan_min}-{window.pan_max} tilt "
+                    f"{window.tilt_min}-{window.tilt_max}: parte de la figura "
+                    "apunta fuera de la sala"
+                ),
+                fixtures=tuple(sorted(names)),
+            ))
     return findings
 
 
@@ -81,9 +86,14 @@ def _axis_offset(function, name: str) -> int | None:
     return None
 
 
-def _beams_moved(graph: ShowGraph, function) -> set[str]:
-    """The beam-class fixtures this EFX drives on pan and tilt."""
-    beams: set[str] = set()
+def _heads_by_family(graph: ShowGraph, function) -> dict:
+    """The fixtures this EFX moves, grouped by the window their family lives in.
+
+    Told apart the way `rule_movement_families` tells them: a mover with a gobo
+    wheel is a beam, one without is a wash. They are different windows because
+    a raw pan or tilt value means nothing across models.
+    """
+    moved: dict = {}
     for element in findall_local(function, "Fixture"):
         identifier = find_local(element, "ID")
         if identifier is None or not (identifier.text or "").strip().isdigit():
@@ -95,7 +105,10 @@ def _beams_moved(graph: ShowGraph, function) -> set[str]:
         if mode_value != EFX_PAN_TILT:
             continue
         capability = graph.capabilities.get(int(identifier.text))
-        if capability is None or not capability.has_role(roles.GOBO):
+        if capability is None or capability.is_smoke:
             continue
-        beams.add(capability.fixture.name)
-    return beams
+        window = (
+            BEAM_WINDOW if capability.has_role(roles.GOBO) else WASH_WINDOW
+        )
+        moved.setdefault(window, set()).add(capability.fixture.name)
+    return moved

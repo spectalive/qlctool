@@ -20,6 +20,9 @@ class FixtureCapabilities:
     roles_by_offset: list[str | None]
     # the same offsets -> that channel's labelled ranges (gobos, prism, colours)
     capabilities_by_offset: list[tuple[Capability, ...]]
+    # and their QLC+ channel groups, which decide whether QLC+ resets a channel
+    # every cycle or leaves it holding the last value written
+    groups_by_offset: list[str]
     fixture_type: str = ""
     dimensions: Dimensions | None = None
 
@@ -37,6 +40,7 @@ class FixtureCapabilities:
             fixture=fixture,
             roles_by_offset=definition.mode_roles(fixture.mode),
             capabilities_by_offset=definition.mode_capabilities(fixture.mode),
+            groups_by_offset=definition.mode_groups(fixture.mode),
             fixture_type=definition.fixture_type,
             dimensions=definition.dimensions,
         )

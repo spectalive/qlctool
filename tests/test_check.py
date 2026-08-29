@@ -1486,42 +1486,30 @@ def test_a_beam_figure_that_leaves_the_audience(library):
     assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)
 
 
-def test_a_flashed_smoke_pump_no_room_state_writes(library):
-    """2026-08-29, live: "le doy y nunca se para, se supone que solo debe tirar
-    cuando le de".
+def test_a_held_pump_on_a_channel_qlcplus_never_resets(library):
+    """The rest of the same night. Holding the button did not stop it either:
+    "le doy y no para de echar todo el rato".
 
-    `Humo Vertical YA` is a Flash, and a Flash restores nothing on release: the
-    pump channel is LTP and keeps the last value written. No room state wrote
-    it, so the first press fogged until the workspace was reloaded - the same
-    latch `rule_strobe_restore` was written for, on the one channel that empties
-    a tank. Take the pump back out of the room states and the rule must bite.
+    QLC+ rebuilds the universe from the running faders every cycle but only
+    resets the **Intensity** group first (`Universe::processFaders` ->
+    `zeroIntensityChannels`); every other group keeps its last value. The Fog
+    channel was declared in Effect, so releasing the flash removed the flash's
+    fader and changed nothing. Put the pump back outside the reset group and
+    the rule must bite.
     """
+    from dataclasses import replace
+
     workspace = _show()
-    caps = capabilities_of(workspace.root, library)
-    pumps = {
-        capability.fixture.fixture_id: set(fog_offsets(capability))
-        for capability in caps
-        if capability.is_smoke
-    }
-    assert pumps, "this show has no smoke machine"
-    for function in _functions(workspace).values():
-        if function.attrib.get("Type") != "Scene":
-            continue
-        for value in findall_local(function, "FixtureVal"):
-            fixture_id = int(value.attrib["ID"])
-            if fixture_id not in pumps or not value.text:
-                continue
-            numbers = [int(n) for n in value.text.split(",")]
-            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
-            if any(pairs.get(o) for o in pumps[fixture_id]):
-                continue  # the burst itself: it is allowed to fire the pump
-            for offset in pumps[fixture_id]:
-                pairs.pop(offset, None)
-            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+    broken = FixtureLibrary.load()
+    definition = broken.get("Generic", "LED Spray Fog")
+    assert definition is not None, "the vertical fog machines left the library"
+    pump = definition.channels["Fog"]
+    assert pump.group.lower() == "intensity", "the pump left the reset group"
+    definition.channels["Fog"] = replace(pump, group="Effect")
 
     findings = [
-        f for f in check_workspace(workspace, library)
+        f for f in check_workspace(workspace, broken)
         if f.rule == "humo pegado"
     ]
-    assert findings, "a flashed pump no room state writes went unnoticed"
+    assert findings, "a held pump QLC+ never resets went unnoticed"
     assert any("Humo" in fixture for f in findings for fixture in f.fixtures)

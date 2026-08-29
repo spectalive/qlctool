@@ -1,14 +1,20 @@
-"""The vertical fog machines' burst: the column, and the light inside it.
+"""The vertical fog machines' column: the fog, and the light inside it.
 
 These machines have DMX priority: with the controller plugged in, their own
 timer, remote and colour program are dead, so a show that only drives the pump
 gets a column nobody lit - the LED stays dark all night (found against the
-scanned manual, 2026-08-29). One scene owns everything the burst is: the fog,
-the LED dimmer, the colour, and zeros on the strobe and auto-cycle channels so
-nothing latches. White, because a lit column reads as CO2.
+scanned manual, 2026-08-29). One scene owns everything the column is: the fog,
+the LED dimmer at full - "si no pones el canal 2 a 255 no se ven" (owner) - the
+colour, and zeros on the strobe and auto-cycle channels so nothing latches.
 
-Held on a flash button, never latched - the pump fogs while the channel is up,
-and the tank pays for every second the button is forgotten.
+Held on a Flash button, never latched: "pulso el canal de humo o humo vertical,
+debe activar el humo (valor 255), al soltar la tecla debe volver a cero al
+momento" (owner, 2026-08-29). That is exactly what a Flash does *provided the
+pump channel is in the Intensity group* - QLC+ resets those every cycle and
+leaves every other group holding its last value
+(`Universe::processFaders` -> `zeroIntensityChannels`). It was not, and the
+machine fogged until the workspace was reloaded; the definition says Intensity
+now, and the release costs one DMX frame.
 """
 
 from .. import roles
@@ -28,7 +34,7 @@ RGB = (255, 255, 255)
 def generate_vertical_smoke_burst(
     workspace: Workspace, library: FixtureLibrary, path: str = "Humo",
 ) -> int | None:
-    """The held burst scene, or None when the rig has no lit smoke machine."""
+    """The held column scene, or None when the rig has no lit smoke machine."""
     machines = [
         c for c in capabilities_of(workspace.root, library)
         if c.is_smoke and c.has_role(roles.RED)

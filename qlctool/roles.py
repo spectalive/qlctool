@@ -105,6 +105,11 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
         return COLOR_MACRO
     if g == "shutter" or "strob" in n:
         return STROBE
+    # A pump lives in the Intensity group so QLC+ resets it every cycle (see
+    # the LED Spray Fog definition), and it is still a pump: a generator that
+    # says "dimmer" must never reach it.
+    if g == "intensity" and ("fog" in n or "smoke" in n or "humo" in n):
+        return SMOKE
     if g == "intensity" and ("dimmer" in n or "master" in n):
         return DIMMER
     return None

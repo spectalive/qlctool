@@ -22,18 +22,13 @@ the crowd - the two bands touching is what says these numbers are real.
 The beams' figures are therefore sized by the window, not by taste. A 2-degree
 needle that leaves it is not a bigger look, it is a beam in the car park.
 
-The washes have their own scale - a raw tilt value is not comparable across
-models - anchored by the hand-built show and by what the owner saw:
-
-- **128 is the back wall.** `Cabezas Reposo` parks every wash there: "los
-  washes apuntan para atrás a la pared, que no me interesa iluminar".
-- **~46 is the room.** `Escenario` aims CromoWash #1 at tilt 49 and #2 at 43.
-
-Their window has not been measured head by head, so their figures are still
-sized by feel, kept inside 40-120.
+The washes were guessed at twice as well - the back wall at 128 and the
+hand-built `Escenario` at tilt 43-49 were the only anchors, and neither is the
+crowd. They have a measured window of their own now, read off MAC WASH 1915Z
+#1: pan 76-108, tilt 212-230. Same treatment, same arithmetic, its own numbers.
 """
 
-from ..audience_window import BEAM_WINDOW
+from ..audience_window import BEAM_WINDOW, WASH_WINDOW
 
 # The centre of the measured window, and the half-size of a figure drawn around
 # it. Both come off `audience_window` so the check and the generator cannot
@@ -42,5 +37,8 @@ BEAM_PAN_AIM = BEAM_WINDOW.pan_centre
 BEAM_PAN_SPAN = BEAM_WINDOW.pan_span
 BEAM_TILT_AIM = BEAM_WINDOW.tilt_centre
 BEAM_TILT_SPAN = BEAM_WINDOW.tilt_span
-# The washes, on their own scale: off the back wall, down into the room.
-WASH_TILT_AIM = 88
+# The same for the washes, off their own window.
+WASH_PAN_AIM = WASH_WINDOW.pan_centre
+WASH_PAN_SPAN = WASH_WINDOW.pan_span
+WASH_TILT_AIM = WASH_WINDOW.tilt_centre
+WASH_TILT_SPAN = WASH_WINDOW.tilt_span
