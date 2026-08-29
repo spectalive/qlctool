@@ -15,6 +15,12 @@ the hand-built console also made - but the console's fastest flash has to
 actually be fast. Speed is read off capabilities, never off a name: a labelled
 strobing range measures from its slow end, a bare speed channel from zero, and
 a `StrobeFastToSlow` range runs backwards.
+
+And the slower flash has a floor of its own. Same night, same owner: "el flash
+slow para los par es unos 200" - 0.78 of the CLB2.4's run - while the
+generator's 0.45 had it at 115, a crawl no one would call a flash. So: every
+strobing value a hand-pressed Flash button writes sits above the crawl line,
+fast or slow.
 """
 
 from lxml import etree
@@ -35,6 +41,11 @@ RULE = "flash lento"
 # below either.
 FAST_FLASH_FRACTION = 0.93
 
+# Below this, a "flash" is a crawl. The owner's slow flash is ~200 of the
+# CLB2.4's 1-255 (0.78); the 0.45 that shipped (115) is well under, and the
+# floor sits between them with margin to both.
+CRAWL_FLASH_FRACTION = 0.7
+
 FAST_TO_SLOW_PRESET = "StrobeFastToSlow"
 
 
@@ -46,6 +57,8 @@ def check_flash_speed(
         return []
     # (fixture, offset) -> the fastest fraction any flash reaches, and whose.
     best: dict[tuple[int, int], tuple[float, str]] = {}
+    # scene -> the writes that sit below the crawl line, fast flash or not.
+    crawl_by_scene: dict[str, list[tuple[int, float]]] = {}
     for function_id in _hand_flash_scenes(graph, console):
         scene = graph.functions[function_id]
         for fixture_id, written in driven_channels(
@@ -62,6 +75,10 @@ def check_flash_speed(
                 key = (fixture_id, offset)
                 if key not in best or fraction > best[key][0]:
                     best[key] = (fraction, graph.name(function_id))
+                if fraction < CRAWL_FLASH_FRACTION:
+                    crawl_by_scene.setdefault(
+                        graph.name(function_id), []
+                    ).append((fixture_id, fraction))
     slow_by_scene: dict[str, list[tuple[int, float]]] = {}
     for (fixture_id, offset), (fraction, scene_name) in sorted(best.items()):
         if fraction < FAST_FLASH_FRACTION:
@@ -83,6 +100,24 @@ def check_flash_speed(
                 f"estrobo y se queda al {slowest:.0%} de su carrera "
                 f"slow-to-fast - un flash a toda velocidad vive del "
                 f"{FAST_FLASH_FRACTION:.0%} para arriba"
+            ),
+        ))
+    for scene_name, crawling in sorted(crawl_by_scene.items()):
+        names = sorted({
+            graph.capabilities[fixture_id].fixture.name or str(fixture_id)
+            for fixture_id, _ in crawling
+        })
+        slowest = min(fraction for _, fraction in crawling)
+        findings.append(Finding(
+            rule=RULE,
+            severity=ERROR,
+            function=scene_name,
+            fixtures=tuple(names),
+            message=(
+                f"escribe {len(crawling)} canales de estrobo por debajo del "
+                f"{CRAWL_FLASH_FRACTION:.0%} de su carrera slow-to-fast (el "
+                f"peor al {slowest:.0%}) - eso ya no es un flash, es un "
+                f"parpadeo a paso de tortuga"
             ),
         ))
     return findings

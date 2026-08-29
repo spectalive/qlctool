@@ -596,6 +596,44 @@ def test_a_flash_that_strobes_at_a_stroll(library):
     ), "the PAR heads the owner was watching are not in the finding"
 
 
+def test_a_slow_flash_that_crawls(library):
+    """2026-08-29, same night as the fast flash: "el flash slow para los par
+    es unos 200, no lo que esta ahora". FLASH_STROBE_SLOW at 0.45 put the
+    CLB2.4's strobe at 115 of 1-255 where the owner's slow flash lives at
+    ~200 (0.78) - a crawl nobody would call a flash. Reproduced by dropping
+    the Flash 50% strobe values back to 0.45 of their run.
+    """
+    workspace = _show()
+    capabilities = {
+        capability.fixture.fixture_id: capability
+        for capability in capabilities_of(workspace.root, library)
+    }
+    for value in findall_local(_functions(workspace)["Flash 50%"], "FixtureVal"):
+        capability = capabilities.get(int(value.attrib["ID"]))
+        if capability is None or not value.text:
+            continue
+        numbers = [int(n) for n in value.text.split(",")]
+        pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+        for offset, strobing in strobe_capable_offsets(capability).items():
+            if offset not in pairs:
+                continue
+            if strobing is None:
+                pairs[offset] = round(0.45 * 255)
+            else:
+                span = strobing.maximum - strobing.minimum
+                pairs[offset] = strobing.minimum + round(0.45 * span)
+        value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "flash lento"
+    ]
+    assert findings, "a slow flash crawling went unnoticed"
+    assert "Flash 50%" in {f.function for f in findings}
+    assert any(
+        "CLB2.4" in fixture for f in findings for fixture in f.fixtures
+    ), "the PAR heads the owner was watching are not in the finding"
+
+
 def test_a_strobe_scene_that_skips_half_the_rig(library):
     """2026-08-27, found in the same session: `Strobo ON` drove only the
     channels with a labelled strobing range, so the seven Vortex PARs and the

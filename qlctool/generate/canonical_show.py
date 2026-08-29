@@ -187,9 +187,11 @@ FLASH_FUNCTIONS = (
 # hacia". 0.85 was still a stroll next to those numbers - the owner clocked it
 # on the PARs on 2026-08-29, "el flash es entre 246-248, como lo tenemos ahora
 # es muy lento" - and 0.97 is that: 247 on the CLB2.4's 1-255, 248 on the
-# CromoWash's 10-255.
+# CromoWash's 10-255. Same night for the slow one: "el flash slow para los par
+# es unos 200, no lo que esta ahora" - 0.45 had it at 115, and 0.785 is the
+# 200 the owner asked for (CromoWash 202).
 FLASH_STROBE_FAST = 0.97
-FLASH_STROBE_SLOW = 0.45
+FLASH_STROBE_SLOW = 0.785
 
 
 @dataclass(frozen=True)
