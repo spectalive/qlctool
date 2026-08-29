@@ -804,6 +804,34 @@ def test_a_flash_button_pointed_at_something_qlcplus_cannot_flash(library):
     assert findings, "a Flash button over a Collection went unnoticed"
 
 
+def test_a_shutter_opened_to_the_middle_of_its_open_range(library):
+    """2026-08-29, live at the show: "si no tenemos el canal de strobe al 255
+    no se muestra la luz". Every scene wrote 248 to the beams' shutter - dead
+    centre of the range the manual calls "241-255 Open" - and the four 7R
+    stayed black; at 255 they lit. A published range is a promise about its
+    endpoint only. Reproduced by putting the middle value back.
+    """
+    workspace = _show()
+    for function in _functions(workspace).values():
+        if function.attrib.get("Type") != "Scene":
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            if int(value.attrib["ID"]) not in BEAMS or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            if pairs.get(5) != 255:
+                continue
+            pairs[5] = 248
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "obturador a medio abrir"
+    ]
+    assert findings, "a shutter opened to a value the hardware ignores went unnoticed"
+
+
 def test_a_quiet_dimmer_shadowed_by_a_full_one_running_beside_it(library):
     """2026-08-27, the finding that sank the first Ambiente plan: intensity
     mixes HTP, so while the colour wheel held every dimmer at 255 all night, a

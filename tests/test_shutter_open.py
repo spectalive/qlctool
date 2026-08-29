@@ -43,16 +43,18 @@ def test_the_beam_shutter_opens_at_the_top_of_the_channel(rig):
     assert len(pairs) == 1
     offset, value = pairs[0]
     assert offset == 5
-    # 241-255 "Open", the range clear of "Closed" at the bottom - and the value
-    # the hand-built show used.
-    assert value >= 241
+    # 241-255 "Open", the range clear of "Closed" at the bottom - and 255 is the
+    # value the hand-built show used. The show of 2026-08-29 found out why: on
+    # 248, the middle of that same "open" range, the beams stayed dark. The
+    # endpoint is the only value in a published range the hardware honours.
+    assert value == 255
 
 
 def test_a_wash_with_no_dimmer_still_gets_opened(rig):
     _, caps = rig
     wash = _by_model(caps, "MiN Wash")
     assert wash.offsets_for_role(roles.DIMMER) == []
-    assert shutter_open_pairs(wash) == [(5, 247)]
+    assert shutter_open_pairs(wash) == [(5, 255)]
 
 
 def test_a_led_par_with_only_a_strobe_channel_is_left_alone(rig):
@@ -66,7 +68,7 @@ def test_a_colour_scene_opens_the_shutters_it_lights(rig):
     _, caps = rig
     values = color_scene_values(caps, (255, 0, 0))
     wash = _by_model(caps, "MiN Wash")
-    assert (5, 247) in values[wash.fixture.fixture_id]
+    assert (5, 255) in values[wash.fixture.fixture_id]
 
 
 def test_a_colour_scene_with_the_dimmers_left_alone_opens_nothing(rig):

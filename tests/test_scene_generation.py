@@ -34,11 +34,13 @@ def test_red_scene_encoding():
     values = color_scene_values(caps, (255, 0, 0))
 
     # CromoWash (Advanced): red@5, green@6, blue@7, dimmer@9, and @10 the
-    # shutter channel put in its open range - here "No function", which on this
-    # fixture means "not strobing" and clears whatever the last scene left.
+    # shutter channel put at the endpoint of its open range - here 0, the
+    # bottom of "0-9 No function", which on this fixture means "not strobing"
+    # and clears whatever the last scene left. The endpoint, not the middle:
+    # see shutter_open_value, and the beams that stayed dark on 248.
     crom = next(c for c in caps if "CromoWash" in c.fixture.model)
     assert values[crom.fixture.fixture_id] == [
-        (5, 255), (6, 0), (7, 0), (9, 255), (10, 4),
+        (5, 255), (6, 0), (7, 0), (9, 255), (10, 0),
     ]
 
     # LED Bar: eight red segments all at 255.

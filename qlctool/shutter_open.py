@@ -16,14 +16,19 @@ whose shutter channel is only a strobe - is left alone.
 from . import roles
 from .capability import FixtureCapabilities
 from .definition import Capability
+from .shutter_open_value import shutter_open_value
 
 OPEN_PRESET = "ShutterOpen"
 
 
 def shutter_open_pairs(capabilities: FixtureCapabilities) -> list[tuple[int, int]]:
-    """(offset, value) putting every shutter this fixture has into its open range."""
+    """(offset, value) putting every shutter this fixture has into its open range.
+
+    Which value inside that range is `shutter_open_value`'s question: not the
+    middle, which is where the beams stayed dark on 2026-08-29.
+    """
     return [
-        (offset, opening.middle)
+        (offset, shutter_open_value(opening))
         for offset, opening in shutter_open_ranges(capabilities)
     ]
 

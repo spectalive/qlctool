@@ -34,6 +34,7 @@ from .rule_masked_dimmer_efx import check_masked_dimmer_efx
 from .rule_movement_families import check_movement_families
 from .rule_pad_input import check_pad_input
 from .rule_shadowed_intensity import check_shadowed_intensity
+from .rule_shutter_endpoint import check_shutter_endpoint
 from .rule_smoke import check_smoke
 from .rule_smoke_light import check_smoke_light
 from .rule_state_proxy import check_state_proxy
@@ -78,6 +79,7 @@ def check_workspace(
     findings += check_flash_speed(graph, groups, root)
     findings += check_strobe_coverage(graph, groups)
     findings += check_shadowed_intensity(graph, groups, entries)
+    findings += check_shutter_endpoint(graph, groups)
     findings += check_masked_dimmer_efx(graph, groups, entries)
     findings += check_accent_restore(graph, groups, root, states)
     findings += check_strobe_restore(graph, groups, root, states)
