@@ -24,6 +24,7 @@ from .rule_collision import check_collisions
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
 from .rule_flash_scene import check_flash_scene
+from .rule_flash_speed import check_flash_speed
 from .rule_flash_strobe import check_flash_strobe
 from .rule_group_grid import check_group_grids
 from .rule_intensity import check_intensity
@@ -69,6 +70,7 @@ def check_workspace(
     findings += check_latched_strobe(graph, groups, entries)
     findings += check_flash_scene(graph, root)
     findings += check_flash_strobe(graph, groups, root)
+    findings += check_flash_speed(graph, groups, root)
     findings += check_strobe_coverage(graph, groups)
     findings += check_shadowed_intensity(graph, groups, entries)
     findings += check_accent_restore(graph, groups, root, states)

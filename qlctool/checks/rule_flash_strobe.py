@@ -26,6 +26,7 @@ from lxml import etree
 
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
+from .audio_pressed_widgets import audio_pressed_widgets
 from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
@@ -41,7 +42,7 @@ def check_flash_strobe(
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []
-    audio_pressed = _audio_pressed_widgets(console)
+    audio_pressed = audio_pressed_widgets(console)
     findings: list[Finding] = []
     seen: set[int] = set()
     for button in iter_local(console, "Button"):
@@ -85,17 +86,6 @@ def check_flash_strobe(
                 ),
             ))
     return findings
-
-
-def _audio_pressed_widgets(console) -> set[str]:
-    """Widget IDs some AudioTriggers spectrum bar presses."""
-    pressed: set[str] = set()
-    for triggers in iter_local(console, "AudioTriggers"):
-        for bar in iter_local(triggers, "SpectrumBar"):
-            widget_id = bar.attrib.get("WidgetID")
-            if widget_id is not None:
-                pressed.add(widget_id)
-    return pressed
 
 
 def _strobe_writes(graph: ShowGraph, groups, scene) -> tuple[list[str], bool]:

@@ -184,8 +184,11 @@ FLASH_FUNCTIONS = (
 # full white at roughly half the strobe speed (Vortex 220, panels 140, beams
 # 120) - not half the brightness. Space without the strobe is the regression
 # the owner caught at home on 2026-08-27: "esto no hace estrobo y antes lo
-# hacia".
-FLASH_STROBE_FAST = 0.85
+# hacia". 0.85 was still a stroll next to those numbers - the owner clocked it
+# on the PARs on 2026-08-29, "el flash es entre 246-248, como lo tenemos ahora
+# es muy lento" - and 0.97 is that: 247 on the CLB2.4's 1-255, 248 on the
+# CromoWash's 10-255.
+FLASH_STROBE_FAST = 0.97
 FLASH_STROBE_SLOW = 0.45
 
 

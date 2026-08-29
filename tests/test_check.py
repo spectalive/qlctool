@@ -15,7 +15,9 @@ from pathlib import Path
 
 import pytest
 
+from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.run import check_workspace
+from qlctool.checks.strobe_written import strobe_capable_offsets
 from qlctool.fixture_group import fixture_groups
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
@@ -553,6 +555,45 @@ def test_a_flash_that_lights_the_room_without_strobing_it(library):
     ]
     assert findings, "a flash with its shutters parked open went unnoticed"
     assert "Flash 100%" in {f.function for f in findings}
+
+
+def test_a_flash_that_strobes_at_a_stroll(library):
+    """2026-08-29, the owner watching the PARs: "el flash para las par leds
+    es entre 246-248 (strobo), como lo tenemos ahora es muy lento". The
+    generator sat every fast flash at 0.85 of the slow-to-fast run - 217 on
+    the CLB2.4's 1-255 strobe channel, where the hand-built show lived at
+    246-250 - and no rule asked how fast a flash flashes. Reproduced by
+    dropping every strobe value in the flash scenes back to 0.85 of its run.
+    """
+    workspace = _show()
+    capabilities = {
+        capability.fixture.fixture_id: capability
+        for capability in capabilities_of(workspace.root, library)
+    }
+    for name in ("Flash 100%", "Flash 50%", "Flash Color"):
+        for value in findall_local(_functions(workspace)[name], "FixtureVal"):
+            capability = capabilities.get(int(value.attrib["ID"]))
+            if capability is None or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            for offset, strobing in strobe_capable_offsets(capability).items():
+                if offset not in pairs:
+                    continue
+                if strobing is None:
+                    pairs[offset] = round(0.85 * 255)
+                else:
+                    span = strobing.maximum - strobing.minimum
+                    pairs[offset] = strobing.minimum + round(0.85 * span)
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "flash lento"
+    ]
+    assert findings, "a whole rig flashing at a stroll went unnoticed"
+    assert any(
+        "CLB2.4" in fixture for f in findings for fixture in f.fixtures
+    ), "the PAR heads the owner was watching are not in the finding"
 
 
 def test_a_strobe_scene_that_skips_half_the_rig(library):
