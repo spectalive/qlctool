@@ -46,7 +46,13 @@ def build_speed_dial(
 
     etree.SubElement(dial, f"{{{QLC_NS}}}Time").text = str(time_ms)
     if tap_key is not None:
-        etree.SubElement(dial, f"{{{QLC_NS}}}Key").text = tap_key
+        # A bare <Key> child is not a thing qmlui loads ("Unknown speed dial
+        # tag"): the tap is the dial's external control 1, and a key reaches
+        # it as an <Input> carrying that ID (VCSpeedDial::loadXML ->
+        # loadXMLInputSource; slotInputValueChanged INPUT_TAP_ID -> tap()).
+        tap = etree.SubElement(dial, f"{{{QLC_NS}}}Input")
+        tap.set("ID", "1")
+        tap.set("Key", tap_key)
 
     for function_id in function_ids:
         function = etree.SubElement(dial, f"{{{QLC_NS}}}Function")

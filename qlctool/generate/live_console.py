@@ -174,13 +174,24 @@ HELP_LINES = (
     ),
 )
 
-# The two dials are the only widgets on the console whose effect is invisible
+# The colour dial lives on page 1 since 2026-08-29: the owner taps the room's
+# tempo often enough that it belongs where the operator is looking, on the
+# hand-built console's tap key. The movement dial stays on page 2 - its 10 s
+# durations are not something anybody taps to music.
+COLOR_DIAL_TAP_KEY = "M"
+COLOR_DIAL_LINES = (
+    "VEL. COLORES — pulsa M al ritmo y",
+    "la rueda de color sigue tu tempo.",
+    "Solo se nota con la rueda en marcha.",
+)
+
+# The movement dial is the only widget on page 2 whose effect is invisible
 # until something is already running.
 DIAL_LINES = (
-    "Velocidad de las ruedas de color",
-    "y del movimiento de las cabezas.",
-    "Solo se nota con la rueda o el",
-    "movimiento encendidos.",
+    "Velocidad del movimiento de las",
+    "cabezas. Solo se nota con el",
+    "movimiento encendido. La de los",
+    "colores está en la página 1.",
 )
 
 # The workspace's own GrandMaster - it scales every output - had no widget
@@ -337,7 +348,7 @@ def generate_live_console(
     build_input_source(outer, SMC_PAD_BINDINGS["Pagina Siguiente"])
     build_input_source(outer, SMC_PAD_BINDINGS["Pagina Anterior"], source_id=1)
 
-    _page_show(outer, button, master_button, frame, label)
+    _page_show(outer, button, master_button, frame, label, ids, console, banks)
     _page_manual(
         outer, button, master_button, frame, label, ids, console, names,
         banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
@@ -365,7 +376,9 @@ def generate_live_console(
     return console
 
 
-def _page_show(outer, button, master_button, frame, label) -> None:
+def _page_show(
+    outer, button, master_button, frame, label, ids, console, banks
+) -> None:
     """Page 1: the state the room is in, the hits, and the panic button."""
     label(
         outer, "1 · SHOW — pulsa AUTO y ya está. PgDn para el resto.",
@@ -436,9 +449,30 @@ def _page_show(outer, button, master_button, frame, label) -> None:
 
     for index, line in enumerate(HELP_LINES):
         label(
-            outer, line, LEFT_X, 700 + index * 26, OUTER_WIDTH - 16, 24,
+            outer, line, LEFT_X, 700 + index * 26, RIGHT_X - LEFT_X - GAP, 24,
             page=PAGE_SHOW, font=HELP_FONT,
         )
+
+    # The colour-wheel speed dial, where the operator is looking, with the
+    # hand-built console's tap key. Tapping the pace of the room is a page-1
+    # move; the movement dial's 10 s durations are not, and stay on page 2.
+    wheel_ids = [b.wheel_id for b in banks if b.wheel_id is not None]
+    wheel_ids += [b.mix_wheel_id for b in banks if b.mix_wheel_id is not None]
+    if wheel_ids:
+        dial_id = ids.take()
+        dial = build_speed_dial(
+            outer, dial_id, "Vel. Colores", RIGHT_X, 700, RIGHT_WIDTH, 120,
+            function_ids=wheel_ids, time_ms=1900,
+            tap_key=COLOR_DIAL_TAP_KEY,
+        )
+        build_input_source(dial, SMC_PAD_BINDINGS["Vel. Colores"])
+        _on_page(dial, PAGE_SHOW)
+        console.widget_ids.append(dial_id)
+        for index, line in enumerate(COLOR_DIAL_LINES):
+            label(
+                outer, line, RIGHT_X, 824 + index * 20, RIGHT_WIDTH, 20,
+                page=PAGE_SHOW, font=HELP_FONT,
+            )
 
 
 def _page_manual(
@@ -510,7 +544,7 @@ def _page_manual(
         ("Dimmer Chase", "Barrido de intensidad · V"),
         ("Dimmer Chase 2", "Barrido inverso · B"),
         ("Dimmer PingPong", "Pares / impares · Z"),
-        ("Dimmer Secuencia", "Rotación de barridos · M"),
+        ("Dimmer Secuencia", "Rotación de barridos · K"),
         ("Strobo ON", "Strobo del fixture · S"),
         ("Strobo OFF", "Parar ese strobo · D"),
     )):
@@ -619,22 +653,15 @@ def _page_manual(
     _on_page(pad, PAGE_MANUAL)
     console.widget_ids.append(pad_id)
 
-    wheel_ids = [b.wheel_id for b in banks if b.wheel_id is not None]
-    wheel_ids += [b.mix_wheel_id for b in banks if b.mix_wheel_id is not None]
-    for index, (caption, function_ids, time_ms) in enumerate((
-        ("Vel. Colores", wheel_ids, 1900),
-        ("Vel. Movimiento", list(movement.dial_ids), 10000),
-    )):
-        if not function_ids:
-            continue
+    # The colour dial moved to page 1 (tap tempo is a page-1 move); the
+    # movement dial keeps this spot.
+    if movement.dial_ids:
         dial_id = ids.take()
         dial = build_speed_dial(
-            outer, dial_id, caption,
-            RIGHT_X + index * 132, 68, 124, 150,
-            function_ids=function_ids, time_ms=time_ms,
+            outer, dial_id, "Vel. Movimiento", RIGHT_X, 68, 124, 150,
+            function_ids=list(movement.dial_ids), time_ms=10000,
         )
-        if caption in SMC_PAD_BINDINGS:
-            build_input_source(dial, SMC_PAD_BINDINGS[caption])
+        build_input_source(dial, SMC_PAD_BINDINGS["Vel. Movimiento"])
         _on_page(dial, PAGE_MANUAL)
         console.widget_ids.append(dial_id)
 

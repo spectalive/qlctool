@@ -532,6 +532,34 @@ def test_a_strobe_that_loops_behind_a_button(library):
     assert "Strobo Rapido" in {f.function for f in findings}
 
 
+def test_a_chaser_that_presses_the_room_state_buttons(library):
+    """2026-08-29, the owner pressing the strobes: "strobo y strobo suave
+    alternan entre parar y apagon y luego se para el show". The burst
+    chasers stepped `Blanco Total` and `Todo Negro` - the room-state solo
+    frame's own functions - and a qmlui Toggle button hears its function
+    start no matter who started it, so each pulse pressed a state button by
+    proxy and the solo frame killed AUTO. Reproduced by pointing the
+    Strobo Rapido steps back at the state scenes instead of its twins.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    state_ids = {
+        name: functions[name].attrib["ID"]
+        for name in ("Blanco Total", "Todo Negro")
+    }
+    for index, step in enumerate(
+        findall_local(functions["Strobo Rapido"], "Step")
+    ):
+        step.text = state_ids["Blanco Total" if index % 2 == 0 else "Todo Negro"]
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "estado pulsado por otra funcion"
+    ]
+    assert findings, "a chaser pressing the room-state buttons went unnoticed"
+    assert "Strobo Rapido" in {f.function for f in findings}
+
+
 def test_a_flash_that_lights_the_room_without_strobing_it(library):
     """2026-08-27, the owner testing at home over the FT232R card: "esto no
     hace estrobo y antes lo hacia cuando le daba al espacio". The hand-built

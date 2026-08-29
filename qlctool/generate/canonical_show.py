@@ -164,9 +164,14 @@ KEYS = {
     "Arcoiris Pasos": "¡",
     # Live-only looks. The hand-built console has these on V/B/C/Z; C is
     # already Color Beam here, so the sequence moves rather than clashes.
+    # M is NOT in this family: it was the hand-built console's tap-tempo key
+    # on every speed dial, and the owner's tapping hand remembers it - so the
+    # sequence sits on K and M goes back to the colour dial's tap
+    # (2026-08-29, "ajustar la velocidad con tap ... es algo que usamos
+    # bastante").
     "Dimmer Chase": "V",
     "Dimmer Chase 2": "B",
-    "Dimmer Secuencia": "M",
+    "Dimmer Secuencia": "K",
     "Dimmer PingPong": "Z",
     "Strobo ON": "S",
     "Strobo OFF": "D",
@@ -448,13 +453,22 @@ def build_canonical_show(
     master["Dimmer Chase 2"] = dimmers.chase2_id
     master["Dimmer PingPong"] = dimmers.pingpong_id
 
-    # The burst chasers step the *plain* white and black - not "Flash 100%",
-    # which now carries the hardware strobe: a chaser latching that scene for
-    # 125 ms a step would stack a ~17 Hz shutter strobe on top of its own
-    # 4 Hz chop.
+    # The burst chasers step a white and a black of their own. They used to
+    # step `Blanco Total` and `Todo Negro` directly - and a qmlui Toggle
+    # button hears its function start no matter who started it
+    # (VCButton::slotFunctionRunning emits functionStarting), so every pulse
+    # pressed a room-state button by proxy and the solo frame stopped AUTO
+    # mid-burst (owner, 2026-08-29: "alternan entre parar y apagon y luego se
+    # para el show"). Not "Flash 100%" either: that scene carries the
+    # hardware strobe, and a chaser latching it for 125 ms a step would stack
+    # a ~17 Hz shutter strobe on top of its own 4 Hz chop.
     strobes = generate_strobe_effects(
         workspace, library,
-        full_id=master["Blanco Total"], black_id=master["Todo Negro"],
+        full_id=_flat_scene(
+            workspace, caps, "Strobo Blanco", (255, 255, 255),
+            wheel_color="Blanco",
+        ),
+        black_id=_blackout(workspace, caps, name="Strobo Negro"),
     )
     master["Strobo Rapido"] = strobes.fast_id
     master["Strobo Medio"] = strobes.medium_id
@@ -860,7 +874,7 @@ def _flat_scene(
     return function_id
 
 
-def _blackout(workspace, caps) -> int:
+def _blackout(workspace, caps, name: str = "Todo Negro") -> int:
     """Everything to zero - except the smoke pumps, which are never touched.
 
     A lit fog machine's LED is part of the room's light and goes dark with the
@@ -885,7 +899,7 @@ def _blackout(workspace, caps) -> int:
             values[capability.fixture.fixture_id] = sorted(pairs)
     function_id = next_function_id(workspace.root)
     workspace.add_function(
-        build_scene(function_id, "Todo Negro", values, path=SHOW_PATH)
+        build_scene(function_id, name, values, path=SHOW_PATH)
     )
     return function_id
 

@@ -582,6 +582,11 @@ def test_the_console_is_bound_to_the_smc_pad(built):
         if localname(element) not in ("Button", "Slider", "SpeedDial", "Frame"):
             continue
         for source in findall_local(element, "Input"):
+            if "Universe" not in source.attrib:
+                # A key-only <Input> (the colour dial's tap on M,
+                # 2026-08-29) binds a keyboard key, not a pad channel.
+                assert "Key" in source.attrib
+                continue
             assert source.attrib["Universe"] == "0"
             channel = int(source.attrib["Channel"])
             channels.append(channel)
