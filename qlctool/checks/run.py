@@ -39,6 +39,7 @@ from .rule_shutter_endpoint import check_shutter_endpoint
 from .rule_smoke import check_smoke
 from .rule_smoke_light import check_smoke_light
 from .rule_state_proxy import check_state_proxy
+from .rule_stepped_dimmer import check_stepped_dimmer
 from .rule_tap_dial import check_tap_dial
 from .rule_tempo_units import check_tempo_units
 from .rule_strobe_coverage import check_strobe_coverage
@@ -85,6 +86,7 @@ def check_workspace(
     findings += check_strobe_coverage(graph, groups)
     findings += check_shadowed_intensity(graph, groups, entries)
     findings += check_shutter_endpoint(graph, groups)
+    findings += check_stepped_dimmer(graph, groups)
     findings += check_zoom_narrow(graph, groups)
     findings += check_masked_dimmer_efx(graph, groups, entries)
     findings += check_accent_restore(graph, groups, root, states)

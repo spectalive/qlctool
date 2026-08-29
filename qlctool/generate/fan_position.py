@@ -20,13 +20,17 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from .movement_aim import BEAM_TILT_AIM
 from ..workspace import Workspace
 
 MID = 127
 # Half the total pan spread of the fan, in raw DMX around mid-travel.
 SPREAD = 45
-# Slightly up from mid tilt: over the crowd, not into it.
-TILT = 105
+# Out over the crowd. This was 105 - the other side of mid travel - on the
+# guess that the numbers fall as the beam rises. They do not on a 7R: 127 is
+# the floor and 88 put them on the wall behind ("ahora los 7R apuntan a la
+# pared", owner, 2026-08-29). The fan rests where the figures are drawn.
+TILT = BEAM_TILT_AIM
 
 
 def generate_fan_position(

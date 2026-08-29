@@ -1,9 +1,11 @@
 """The static base a chase-driven level stands on: what the chase cannot own.
 
-`Dimmer Chase` only takes fixtures with a dimmer role - the same walk
-`generate_dimmer_chases` makes to build its member list. A fixture with none,
-like the Chauvet MiN Wash, has no channel the chase could ever touch: its light
-lives behind a shutter range instead (`shutter_open_pairs`). So a level that
+`Dimmer Chase` only takes fixtures whose dimmer is a fader - the same walk
+`generate_dimmer_chases` makes to build its member list. A fixture with no
+dimmer role, like the Chauvet MiN Wash, has no channel the chase could ever
+touch: its light lives behind a shutter range instead (`shutter_open_pairs`).
+A fixture whose dimmer is a mechanical blade, like the BEAM 230W 7R, is left
+out on purpose (`stepped_dimmer`) and gets its one usable value, full, here. So a level that
 hands its dimmer fixtures to the chase and drops its old flat intensity scene
 would leave that fixture with no owner at all in that level - not shadowed,
 just dark, the moment nothing keeps writing its shutter open.
@@ -29,6 +31,7 @@ from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..shutter_open import shutter_open_pairs
+from ..stepped_dimmer import stepped_dimmer_offsets
 from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
@@ -49,6 +52,9 @@ def generate_dimmerless_intensity(
         if capability.is_smoke or capability.fixture.fixture_id in excluded:
             continue
         pairs: list[tuple[int, int]] = []
+        # A blade dimmer is out of the chase (`stepped_dimmer`), so this level
+        # is the only thing that can own it - at full, the one value it has.
+        pairs += [(offset, 255) for offset in stepped_dimmer_offsets(capability)]
         pairs += shutter_open_pairs(capability)
         pairs += zoom_wide_pairs(capability)
         pairs += strobe_off_pairs(capability)

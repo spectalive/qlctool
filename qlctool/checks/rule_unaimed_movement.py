@@ -1,24 +1,23 @@
-"""A beam figure centred on mid-travel, which is where an unaimed figure lands.
+"""A figure centred on mid-travel, which is where an unaimed figure lands.
 
-2026-08-29: "está todo el rato haciendo un circulo pequeño en el suelo". Every
-movement EFX this repo had ever generated carried QLC+'s own axis default -
-`<Axis Name="Y"><Offset>127`, the raw middle of the tilt channel - because
-`EFXAxis.offset` defaults there and no generator had ever overridden it. The
-old hand-built show was no better aimed; it got away with it by drawing figures
-100 wide, so the sweep crossed the room on its way past the floor.
+2026-08-29, one night, both families: "está todo el rato haciendo un circulo
+pequeño en el suelo" (the beams) and "los washes apuntan para atrás a la pared,
+que no me interesa iluminar". Every movement EFX this repo had ever generated
+carried QLC+'s own axis default - `<Axis Name="Y"><Offset>127`, the raw middle
+of the tilt channel - because `EFXAxis.offset` defaults there and no generator
+had ever overridden it. The old hand-built show was no better aimed; it got
+away with it by drawing figures 100 wide, so the sweep crossed the room on its
+way past whatever mid-travel pointed at.
 
-Mid-travel is not an aim. It is the number you get when nobody chose, and on
-this rig it is the floor: tilt 0 is the ceiling (a CromoWash stuck at coarse
-zero "sat pointing at the ceiling", `docs/rig.md`), tilt ~196 is the stage
-(the hand-built `Escenario`), and the audience lives below 127.
+Mid-travel is not an aim. It is the number you get when nobody chose, and where
+it lands is per model, not per rig: on the 7R it is the floor, on the washes it
+is the wall behind the stage. Both anchored by the hand-built show and by what
+the owner saw - see `generate/movement_aim`.
 
-Asked of the beam family only, and told apart the way `rule_movement_families`
-tells it - a mover with a gobo wheel is a beam. A wash's wide cone at mid
-travel still lights a room; a 2-degree needle at mid travel is a coin on the
-floor, and the narrower the optics the more the aim is the whole look.
+Asked of anything an EFX moves on pan and tilt. A wash's wide cone is more
+forgiving than a 2-degree needle, but neither of them is aimed by a default.
 """
 
-from .. import roles
 from ..xmlutil import find_local, findall_local
 from .driven_channels import EFX_PAN_TILT
 from .finding import WARNING, Finding
@@ -37,8 +36,8 @@ def check_unaimed_movement(graph: ShowGraph) -> list[Finding]:
             continue
         if _tilt_offset(function) != MID_TRAVEL:
             continue
-        beams = _beams_moved(graph, function)
-        if not beams:
+        heads = _heads_moved(graph, function)
+        if not heads:
             continue
         findings.append(Finding(
             rule=RULE,
@@ -47,9 +46,10 @@ def check_unaimed_movement(graph: ShowGraph) -> list[Finding]:
             message=(
                 f"dibuja la figura centrada en el tilt {MID_TRAVEL}, que es el "
                 "centro del recorrido y no un sitio: es donde queda una figura "
-                "que nadie ha apuntado, y en este rig es el suelo"
+                "que nadie ha apuntado - el suelo en las 7R, la pared del fondo "
+                "en los washes"
             ),
-            fixtures=tuple(sorted(beams)),
+            fixtures=tuple(sorted(heads)),
         ))
     return findings
 
@@ -66,9 +66,9 @@ def _tilt_offset(function) -> int | None:
     return None
 
 
-def _beams_moved(graph: ShowGraph, function) -> set[str]:
-    """The beam-class fixtures this EFX drives on pan and tilt."""
-    beams: set[str] = set()
+def _heads_moved(graph: ShowGraph, function) -> set[str]:
+    """The fixtures this EFX drives on pan and tilt."""
+    heads: set[str] = set()
     for element in findall_local(function, "Fixture"):
         identifier = find_local(element, "ID")
         if identifier is None or not (identifier.text or "").strip().isdigit():
@@ -80,7 +80,7 @@ def _beams_moved(graph: ShowGraph, function) -> set[str]:
         if mode_value != EFX_PAN_TILT:
             continue
         capability = graph.capabilities.get(int(identifier.text))
-        if capability is None or not capability.has_role(roles.GOBO):
+        if capability is None:
             continue
-        beams.add(capability.fixture.name)
-    return beams
+        heads.add(capability.fixture.name)
+    return heads

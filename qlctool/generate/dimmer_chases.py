@@ -30,6 +30,7 @@ from ..functions.efx import EFXFixture, build_efx
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..stepped_dimmer import stepped_dimmer_offsets
 from ..shutter_open import shutter_open_pairs
 from ..zoom_wide import zoom_wide_pairs
 from ..workspace import Workspace
@@ -60,12 +61,17 @@ def generate_dimmer_chases(
 ) -> GeneratedDimmers:
     """Build both dimmer chases and the ping-pong; raise when nothing dims."""
     excluded = set(exclude_fixture_ids)
+    # A blade dimmer is not a fader: an EFX sweeping it does not dip the beam,
+    # it slides a blade across the lens and the head shows a crescent for most
+    # of every pass (`stepped_dimmer`). Those fixtures stay out of the chase
+    # rather than run a chase of half-moons.
     dimmable = [
         capability
         for capability in capabilities_of(workspace.root, library)
         if not capability.is_smoke
         and capability.fixture.fixture_id not in excluded
         and capability.offsets_for_role(roles.DIMMER)
+        and not stepped_dimmer_offsets(capability)
     ]
     if not dimmable:
         raise ValueError("no fixture in this workspace has a dimmer")

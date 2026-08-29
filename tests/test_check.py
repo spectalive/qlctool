@@ -1399,3 +1399,57 @@ def test_a_beam_figure_centred_on_mid_travel(library):
     assert findings, "a beam figure centred on mid travel went unnoticed"
     assert "Beam Suave Circulo" in {f.function for f in findings}
     assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_fraction_written_to_a_blade_dimmer(library):
+    """2026-08-29, the owner reading the desk during the show: "el canal 7 de
+    cada 7R está a la mitad en vez de abierto del todo".
+
+    Channel 7 is the BEAM 230W 7R's dimmer, and on a 7R that is a mechanical
+    blade, not a fader. `Intensidad Ambiente` wrote 110 to every dimmer in the
+    rig and the quiet level held it for four minutes, so the blade sat half
+    across the lens: "están como una media luna". Put the fraction back and the
+    rule must bite.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    scene = functions["Intensidad Ambiente"]
+    dimmers = {
+        capability.fixture.fixture_id: capability.offsets_for_role(roles.DIMMER)
+        for capability in capabilities_of(workspace.root, library)
+        if capability.fixture.fixture_id in BEAMS
+    }
+    for value in findall_local(scene, "FixtureVal"):
+        fixture_id = int(value.attrib["ID"])
+        if fixture_id not in dimmers:
+            continue
+        numbers = [int(n) for n in (value.text or "").split(",") if n != ""]
+        pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+        for offset in dimmers[fixture_id]:
+            pairs[offset] = 110
+        value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "dimmer a medias"
+    ]
+    assert findings, "a fraction on a blade dimmer went unnoticed"
+    assert "Intensidad Ambiente" in {f.function for f in findings}
+    assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_dimmer_efx_sweeping_a_blade_dimmer(library):
+    """The same fault in motion: an EFX in Dimmer mode over the blade sweeps it,
+    so most of every pass is a half-moon rather than a dip (2026-08-29).
+    """
+    workspace = _show()
+    efx = _functions(workspace)["Dimmer Chase CromoWash100"]
+    member = findall_local(efx, "Fixture")[0]
+    find_local(member, "ID").text = str(BEAMS[0])
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "dimmer a medias"
+    ]
+    assert findings, "a dimmer EFX sweeping a blade went unnoticed"
+    assert any("BEAM" in fixture for f in findings for fixture in f.fixtures)

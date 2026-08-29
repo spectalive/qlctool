@@ -15,14 +15,14 @@ Each family gets its own envelope per tempo of the night:
   7R no se mueven", owner, 2026-08-29, watching AUTO). The fan is still their
   rest, but as one step of the Normal rotation, where it lasts a step and not a
   level.
-
-Every beam envelope is centred on `movement_aim.BEAM_TILT_AIM` rather than on
-mid-travel, which is where QLC+ puts a figure nobody aims and where this rig's
-floor is.
 - **Normal** (Fiesta): both families move, each at its own size and speed, and
   the fan sits in the beams' rotation as a rest step - stillness between
   moving blocks instead of motion as wallpaper.
 - **Rapido** (Peak): both families, twice the pace, sized to their optics.
+
+Every envelope is centred on its family's aim from `movement_aim` rather than
+on mid-travel, which is where QLC+ puts a figure nobody aims - the floor for
+the beams, the back wall for the washes.
 
 `Movimientos Cabezas` and `Movimientos Rapidos` remain the console's names for
 "everything moves": Collections over the family chasers, so the buttons, the
@@ -42,7 +42,7 @@ from ..library import FixtureLibrary
 from ..workspace import Workspace
 from .cross_position import generate_cross_position
 from .fan_position import generate_fan_position
-from .movement_aim import BEAM_TILT_AIM
+from .movement_aim import BEAM_TILT_AIM, WASH_TILT_AIM
 from .movement_efx import generate_movement_efx
 
 
@@ -70,7 +70,9 @@ class Envelope:
 
 # Sizes and durations are QLC+ raw EFX values, not degrees: a starting
 # envelope for on-site tuning, not a universal standard.
-WASH_SLOW = Envelope(("Circle", "Line"), 28000, 45, 28, 56000)
+WASH_SLOW = Envelope(
+    ("Circle", "Line"), 28000, 45, 24, 56000, tilt_offset=WASH_TILT_AIM,
+)
 # The beams' calm level: slower than the washes' slow. It was also much
 # smaller (26x18) for one afternoon, which centred on the floor read as "un
 # circulo pequeño en el suelo" (owner, 2026-08-29) - a needle drawing a coin.
@@ -79,15 +81,22 @@ WASH_SLOW = Envelope(("Circle", "Line"), 28000, 45, 28, 56000)
 BEAM_SLOW = Envelope(
     ("Circle", "Line"), 34000, 45, 30, 56000, tilt_offset=BEAM_TILT_AIM,
 )
+# Heights are smaller than they were before 2026-08-29 (55 and 50) because
+# the figures are aimed now. Unaimed, a wash swept the whole tilt range and
+# the size was free; centred on the room's band, anything over ~30 tall climbs
+# back onto the wall behind the stage at the top of every pass. The pan width
+# is untouched - across is where a wash figure should be wide.
 WASH = Envelope(
     ("Circle", "Eight", "Line", "Diamond", "Square", "Leaf", "Lissajous"),
-    16000, 70, 55, 10000,
+    16000, 70, 30, 10000, tilt_offset=WASH_TILT_AIM,
 )
 BEAM = Envelope(
     ("Circle", "Eight", "Line"), 11000, 55, 38, 10000,
     tilt_offset=BEAM_TILT_AIM,
 )
-WASH_FAST = Envelope(WASH.algorithms, 5000, 80, 50, 6000)
+WASH_FAST = Envelope(
+    WASH.algorithms, 5000, 80, 32, 6000, tilt_offset=WASH_TILT_AIM,
+)
 BEAM_FAST = Envelope(
     BEAM.algorithms, 5000, 70, 40, 6000, tilt_offset=BEAM_TILT_AIM,
 )
@@ -110,7 +119,7 @@ BEAM_ROTATED_SHAPES = Envelope(
 )
 WASH_CASCADE = Envelope(
     ("Line",), WASH_SLOW.duration, WASH_SLOW.width, WASH_SLOW.height,
-    WASH_SLOW.hold, propagation="Serial",
+    WASH_SLOW.hold, propagation="Serial", tilt_offset=WASH_SLOW.tilt_offset,
 )
 BEAM_CASCADE = Envelope(
     BEAM.algorithms[:1], BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
@@ -124,6 +133,7 @@ BEAM_CASCADE = Envelope(
 # family, like every other figure: same shape, each family's own size.
 WASH_TILT_WAVE = Envelope(
     ("Line",), WASH.duration, 0, WASH.height, WASH.hold, propagation="Serial",
+    tilt_offset=WASH.tilt_offset,
 )
 BEAM_TILT_WAVE = Envelope(
     ("Line",), BEAM.duration, 0, BEAM.height, BEAM.hold, propagation="Serial",
@@ -143,7 +153,7 @@ MOVEMENT_CROSSFADE_MS = 5000
 # "push" means on a truss. Slow and wide: the drama is the unison, not speed.
 WASH_UNISON = Envelope(
     ("Line",), WASH_SLOW.duration, WASH_SLOW.width, WASH_SLOW.height,
-    WASH_SLOW.hold,
+    WASH_SLOW.hold, tilt_offset=WASH_SLOW.tilt_offset,
 )
 BEAM_UNISON = Envelope(
     ("Line",), BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,

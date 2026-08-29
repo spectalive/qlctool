@@ -24,13 +24,15 @@ from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..shutter_open import shutter_open_pairs
+from ..stepped_dimmer import stepped_dimmer_offsets
 from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 
 PATH = "Niveles"
 # The quiet level's dimmer: visibly down from full, nowhere near dark. A first
-# guess for the venue, like the level holds themselves.
+# guess for the venue, like the level holds themselves. It reaches every dimmer
+# that is a fader; the ones that are a blade go to full instead.
 AMBIENT_LEVEL = 110
 FULL_LEVEL = 255
 
@@ -68,8 +70,13 @@ def _scene(
             capability.fixture.fixture_id in excluded
         ):
             continue
+        # A blade dimmer has no fraction to give: between the ends it covers
+        # part of the lens instead of dimming, and the quiet level held that
+        # for four minutes (`stepped_dimmer`). It joins the level at full and
+        # takes its darkness from the shutter, like the MiN Wash does.
+        stepped = set(stepped_dimmer_offsets(capability))
         pairs = [
-            (offset, level)
+            (offset, FULL_LEVEL if offset in stepped else level)
             for offset in capability.offsets_for_role(roles.DIMMER)
         ]
         pairs += shutter_open_pairs(capability)

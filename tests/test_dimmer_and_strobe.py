@@ -182,14 +182,21 @@ def test_the_ping_pong_scenes_are_complements(library):
 
 
 def test_the_lit_half_of_the_ping_pong_opens_its_shutter(library):
-    """A beam at full dimmer behind a closed shutter shows nothing."""
+    """A fixture at full dimmer behind a closed shutter shows nothing.
+
+    The BEAM 230W 7R used to be the example here. Since 2026-08-29 it is the
+    counter-example instead: its dimmer is a mechanical blade, a chase that
+    sweeps it draws half-moons rather than dips, and it is kept out of the
+    chase entirely (`stepped_dimmer`).
+    """
     ws = Workspace.load(SHOW)
     generated = generate_dimmer_chases(ws, library)
     functions = _functions(ws.root)
-    beams = [
-        c for c in capabilities_of(ws.root, library)
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, library)}
+    beams = {
+        c.fixture.fixture_id for c in caps.values()
         if c.fixture.model == "BEAM 230W 7R"
-    ]
+    }
     assert beams
 
     seen_lit = False
@@ -203,11 +210,15 @@ def test_the_lit_half_of_the_ping_pong_opens_its_shutter(library):
             )
             for v in findall_local(functions[scene_id], "FixtureVal")
         }
-        for beam in beams:
-            values = pairs[beam.fixture.fixture_id]
-            dimmer = beam.offsets_for_role(roles.DIMMER)[0]
-            shutter, opening = shutter_open_pairs(beam)[0]
-            if values[dimmer] == 255:
+        assert not (beams & pairs.keys()), "a blade dimmer joined the ping-pong"
+        for fixture_id, values in pairs.items():
+            capability = caps[fixture_id]
+            dimmers = capability.offsets_for_role(roles.DIMMER)
+            shutters = shutter_open_pairs(capability)
+            if not dimmers or not shutters:
+                continue
+            shutter, opening = shutters[0]
+            if values[dimmers[0]] == 255:
                 seen_lit = True
                 assert values[shutter] == opening
             else:
