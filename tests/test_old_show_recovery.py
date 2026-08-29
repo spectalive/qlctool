@@ -238,8 +238,10 @@ def test_movement_keeps_the_simultaneo_twins_and_the_crossfade(built):
             f for f in functions.values() if f.attrib.get("Name") == name
         )
         speed = find_local(chaser, "Speed")
-        assert speed.attrib["FadeIn"] == "5000", name
-        assert speed.attrib["FadeOut"] == "5000", name
+        # The movement chasers count in beats since 2026-08-29: the old 5 s
+        # crossfade is 10 beats (10000 thousandths) at the default 120 BPM.
+        assert speed.attrib["FadeIn"] == "10000", name
+        assert speed.attrib["FadeOut"] == "10000", name
         step_ids = {s.text for s in findall_local(chaser, "Step")}
         assert any(
             functions[sid].attrib["Name"].endswith("Simultaneo")

@@ -174,24 +174,19 @@ HELP_LINES = (
     ),
 )
 
-# The colour dial lives on page 1 since 2026-08-29: the owner taps the room's
+# The tempo dial lives on page 1 since 2026-08-29: the owner taps the room's
 # tempo often enough that it belongs where the operator is looking, on the
-# hand-built console's tap key. The movement dial stays on page 2 - its 10 s
-# durations are not something anybody taps to music.
-COLOR_DIAL_TAP_KEY = "M"
-COLOR_DIAL_LINES = (
-    "VEL. COLORES — pulsa M al ritmo y",
-    "la rueda de color sigue tu tempo.",
-    "Solo se nota con la rueda en marcha.",
-)
-
-# The movement dial is the only widget on page 2 whose effect is invisible
-# until something is already running.
-DIAL_LINES = (
-    "Velocidad del movimiento de las",
-    "cabezas. Solo se nota con el",
-    "movimiento encendido. La de los",
-    "colores está en la página 1.",
+# hand-built console's tap key. It sets the global BPM (ControlBPM) and lists
+# no functions - the duration-writing dials that came before it put the raw
+# tap interval into every bound wheel and "se volvian todos los programas
+# locos"; now each layer keeps its own beat count and the tap moves the one
+# clock they all follow.
+TEMPO_TAP_KEY = "M"
+TEMPO_TIME_MS = 500  # the dial's starting display: one 120 BPM beat
+TEMPO_LINES = (
+    "TEMPO — pulsa M al ritmo de la",
+    "música y todo el show (colores,",
+    "matrices, gobos) sigue el compás.",
 )
 
 # The workspace's own GrandMaster - it scales every output - had no widget
@@ -348,7 +343,7 @@ def generate_live_console(
     build_input_source(outer, SMC_PAD_BINDINGS["Pagina Siguiente"])
     build_input_source(outer, SMC_PAD_BINDINGS["Pagina Anterior"], source_id=1)
 
-    _page_show(outer, button, master_button, frame, label, ids, console, banks)
+    _page_show(outer, button, master_button, frame, label, ids, console)
     _page_manual(
         outer, button, master_button, frame, label, ids, console, names,
         banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
@@ -377,7 +372,7 @@ def generate_live_console(
 
 
 def _page_show(
-    outer, button, master_button, frame, label, ids, console, banks
+    outer, button, master_button, frame, label, ids, console
 ) -> None:
     """Page 1: the state the room is in, the hits, and the panic button."""
     label(
@@ -453,26 +448,23 @@ def _page_show(
             page=PAGE_SHOW, font=HELP_FONT,
         )
 
-    # The colour-wheel speed dial, where the operator is looking, with the
-    # hand-built console's tap key. Tapping the pace of the room is a page-1
-    # move; the movement dial's 10 s durations are not, and stay on page 2.
-    wheel_ids = [b.wheel_id for b in banks if b.wheel_id is not None]
-    wheel_ids += [b.mix_wheel_id for b in banks if b.mix_wheel_id is not None]
-    if wheel_ids:
-        dial_id = ids.take()
-        dial = build_speed_dial(
-            outer, dial_id, "Vel. Colores", RIGHT_X, 700, RIGHT_WIDTH, 120,
-            function_ids=wheel_ids, time_ms=1900,
-            tap_key=COLOR_DIAL_TAP_KEY,
+    # The tempo dial, where the operator is looking, with the hand-built
+    # console's tap key. It sets the global BPM and binds no functions: a tap
+    # dial with functions writes the raw tap interval into every one of them.
+    dial_id = ids.take()
+    dial = build_speed_dial(
+        outer, dial_id, "Tempo Show", RIGHT_X, 700, RIGHT_WIDTH, 120,
+        function_ids=(), time_ms=TEMPO_TIME_MS,
+        tap_key=TEMPO_TAP_KEY, control_bpm=True,
+    )
+    build_input_source(dial, SMC_PAD_BINDINGS["Tempo Show"])
+    _on_page(dial, PAGE_SHOW)
+    console.widget_ids.append(dial_id)
+    for index, line in enumerate(TEMPO_LINES):
+        label(
+            outer, line, RIGHT_X, 824 + index * 20, RIGHT_WIDTH, 20,
+            page=PAGE_SHOW, font=HELP_FONT,
         )
-        build_input_source(dial, SMC_PAD_BINDINGS["Vel. Colores"])
-        _on_page(dial, PAGE_SHOW)
-        console.widget_ids.append(dial_id)
-        for index, line in enumerate(COLOR_DIAL_LINES):
-            label(
-                outer, line, RIGHT_X, 824 + index * 20, RIGHT_WIDTH, 20,
-                page=PAGE_SHOW, font=HELP_FONT,
-            )
 
 
 def _page_manual(
@@ -653,23 +645,9 @@ def _page_manual(
     _on_page(pad, PAGE_MANUAL)
     console.widget_ids.append(pad_id)
 
-    # The colour dial moved to page 1 (tap tempo is a page-1 move); the
-    # movement dial keeps this spot.
-    if movement.dial_ids:
-        dial_id = ids.take()
-        dial = build_speed_dial(
-            outer, dial_id, "Vel. Movimiento", RIGHT_X, 68, 124, 150,
-            function_ids=list(movement.dial_ids), time_ms=10000,
-        )
-        build_input_source(dial, SMC_PAD_BINDINGS["Vel. Movimiento"])
-        _on_page(dial, PAGE_MANUAL)
-        console.widget_ids.append(dial_id)
-
-    for index, line in enumerate(DIAL_LINES):
-        label(
-            outer, line, RIGHT_X, 228 + index * 22, RIGHT_WIDTH, 20,
-            page=PAGE_MANUAL, font=HELP_FONT,
-        )
+    # No speed dials here since 2026-08-29: the movement dial wrote raw
+    # milliseconds into chasers that now count in beats, and the tempo they
+    # all follow is the page-1 tap dial's global BPM.
 
 
 def _page_library(

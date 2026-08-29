@@ -532,6 +532,62 @@ def test_a_strobe_that_loops_behind_a_button(library):
     assert "Strobo Rapido" in {f.function for f in findings}
 
 
+def test_a_tap_that_rewrites_the_programmes(library):
+    """2026-08-29, the owner on the speed dials: "nunca ha funcionado bien
+    ... se vuelven todos los programas locos". The tap dial listed the eight
+    wheel chasers, and qmlui's tap() writes the raw tap interval into every
+    listed function's duration - wheels built for 1900 ms holds went to
+    500 ms flat on the first tap. Reproduced by giving the tempo dial its
+    function list back.
+    """
+    workspace = _show()
+    dial = next(
+        d for d in workspace.root.iter()
+        if localname(d) == "SpeedDial" and _has_tap(d)
+    )
+    ns = dial.tag[: dial.tag.index("}") + 1]
+    for function_id in ("46", "88"):
+        bound = dial.makeelement(f"{ns}Function", {
+            "FadeIn": "0", "FadeOut": "0", "Duration": "6",
+        })
+        bound.text = function_id
+        dial.append(bound)
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "tap que pisa duraciones"
+    ]
+    assert findings, "a tap dial stomping its functions went unnoticed"
+
+
+def _has_tap(dial):
+    return any(
+        localname(s) == "Input" and s.attrib.get("ID") == "1" for s in dial
+    )
+
+
+def test_a_bpm_dial_with_no_clock_to_govern(library):
+    """2026-08-29, the other half of the same night: the owner found the BPM
+    setting unselected ("aparece interno pero no esta seleccionado") - a
+    ControlBPM tap over a Disabled beat generator sets a number no clock
+    reads, and every Beats chaser freezes. Reproduced by disabling the
+    generator the shipped show turns on.
+    """
+    workspace = _show()
+    generator = find_local(
+        find_local(find_local(workspace.root, "Engine"), "InputOutputMap"),
+        "BeatGenerator",
+    )
+    generator.set("BeatType", "Disabled")
+    generator.set("BPM", "0")
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "tap sin reloj que gobernar"
+    ]
+    assert findings, "a BPM tap over a dead beat generator went unnoticed"
+
+
 def test_a_chaser_that_presses_the_room_state_buttons(library):
     """2026-08-29, the owner pressing the strobes: "strobo y strobo suave
     alternan entre parar y apagon y luego se para el show". The burst

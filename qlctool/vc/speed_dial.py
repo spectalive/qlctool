@@ -32,6 +32,7 @@ def build_speed_dial(
     function_ids: Sequence[int],
     time_ms: int,
     tap_key: str | None = None,
+    control_bpm: bool = False,
 ) -> etree._Element:
     dial = etree.SubElement(parent, f"{{{QLC_NS}}}SpeedDial")
     dial.set("Caption", caption)
@@ -45,6 +46,13 @@ def build_speed_dial(
     absolute.set("Maximum", str(max(time_ms * 4, 1000)))
 
     etree.SubElement(dial, f"{{{QLC_NS}}}Time").text = str(time_ms)
+    if control_bpm:
+        # The tap sets the workspace's global BPM instead of this widget's
+        # time (VCSpeedDial::tap -> InputOutputMap::setBpmNumber). Only a
+        # function in Beats tempo hears it - and a dial that controls the BPM
+        # should list no functions at all, because tap() still writes the raw
+        # tap interval into every listed function's duration on the way.
+        etree.SubElement(dial, f"{{{QLC_NS}}}ControlBPM").text = "True"
     if tap_key is not None:
         # A bare <Key> child is not a thing qmlui loads ("Unknown speed dial
         # tag"): the tap is the dial's external control 1, and a key reaches

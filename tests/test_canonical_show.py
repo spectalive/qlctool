@@ -612,7 +612,7 @@ def test_the_console_is_bound_to_the_smc_pad(built):
     for name in ("AUTO", "Flash 100%", "Humo ON", "Blanco Total", "Rueda Colores"):
         assert button_channel[show.master_ids[name]] == SMC_PAD_BINDINGS[name]
     # ...and the encoders on the widgets that scale, not fire.
-    for caption in ("Master General", "Vel. Colores", "Vel. Movimiento"):
+    for caption in ("Master General", "Tempo Show"):
         assert caption_channel[caption] == SMC_PAD_BINDINGS[caption]
     # The transport buttons: arrows page the console, pause and record are
     # the panic pair - off the pads, where a missed hit cannot reach them.

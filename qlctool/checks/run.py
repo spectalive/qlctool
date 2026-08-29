@@ -35,6 +35,7 @@ from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_smoke import check_smoke
 from .rule_smoke_light import check_smoke_light
 from .rule_state_proxy import check_state_proxy
+from .rule_tap_dial import check_tap_dial
 from .rule_strobe_coverage import check_strobe_coverage
 from .rule_strobe_in_cycle import check_strobe_in_cycle
 from .rule_strobe_rate import check_strobe_rate
@@ -77,6 +78,7 @@ def check_workspace(
     findings += check_accent_restore(graph, groups, root, states)
     findings += check_strobe_restore(graph, groups, root, states)
     findings += check_state_proxy(graph, states)
+    findings += check_tap_dial(graph, root)
     findings += check_movement_families(graph)
     findings += check_smoke(graph, groups, entries)
     findings += check_smoke_light(graph, groups, entries)

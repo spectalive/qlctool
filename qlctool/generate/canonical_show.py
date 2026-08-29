@@ -111,15 +111,24 @@ DYNAMIC_PINGPONG_HOLD = 8 * 1000
 PANEL_EFFECTS_HOLD = 8 * 60 * 1000
 PANEL_MANUAL_HOLD = 4 * 60 * 1000
 
-# Beat-locked timings, in beats, for `newshow --beats`. Two bars of colour, one
-# bar of matrix, eight bars of one movement shape: the counts a chase is
-# actually written in.
+# Beat-locked timings, in beats, for every generated show. Two bars of colour,
+# one bar of matrix, eight bars of one movement shape: the counts a chase is
+# actually written in. On the clock these ratios were fixed milliseconds and
+# the only way to re-time them live was a dial writing raw durations - which is
+# how tapping a 500 ms beat put every wheel on 500 ms flat ("se vuelven todos
+# los programas locos", owner, 2026-08-29). In Beats each layer keeps its own
+# count and one global BPM moves them all together.
 MATRIX_BEATS = BeatTiming(hold=4)
+# Where the internal clock starts. 120 is the middle of the room this show
+# plays; the tap dial re-sets it live from whatever is actually sounding.
+DEFAULT_BPM = 120
 BEAT_TIMINGS: dict[str, BeatTiming] = {
     "Rueda Colores": BeatTiming(hold=8, fade=1),
-    "Movimientos Suaves": BeatTiming(hold=64),
-    "Movimientos Washes": BeatTiming(hold=32),
-    "Movimientos Beams": BeatTiming(hold=32),
+    "Movimientos Suaves": BeatTiming(hold=64, fade=10),
+    # The 5 s crossfade between movement blocks (old Chaser 23, restored
+    # 2026-08-28) is 10 beats at the default 120 BPM.
+    "Movimientos Washes": BeatTiming(hold=32, fade=10),
+    "Movimientos Beams": BeatTiming(hold=32, fade=10),
     "Rapidos Washes": BeatTiming(hold=16),
     "Rapidos Beams": BeatTiming(hold=16),
     "Gobo Animacion": BeatTiming(hold=16),
@@ -715,21 +724,35 @@ def build_canonical_show(
     ])
     master.update(moments)
 
+    # The layers that should feel the music go on the beat; the energy cycle
+    # stays on the clock, because it measures the night rather than the song -
+    # and because a beat that never arrives would freeze it. The beat itself
+    # comes from the Internal generator (the owner found it and switched it on
+    # by hand, 2026-08-29) so the show advances out of the box and the tap
+    # dial's BPM has a clock to set; `--beats` hands the beat to the audio
+    # input instead, for a night where the PA should drive it.
+    set_beat_generator(
+        workspace.root, "Audio" if beats else "Internal",
+        bpm=0 if beats else DEFAULT_BPM,
+    )
+    present = {f.attrib.get("Name") for f in workspace.engine}
+    timings = {
+        name: timing for name, timing in BEAT_TIMINGS.items() if name in present
+    }
     if beats:
-        # The layers that should feel the music go on the beat; the energy cycle
-        # stays on the clock, because it measures the night rather than the song
-        # - and because a beat that never arrives would freeze it.
-        set_beat_generator(workspace.root, "Audio")
-        present = {f.attrib.get("Name") for f in workspace.engine}
-        timings = {
-            name: timing for name, timing in BEAT_TIMINGS.items() if name in present
-        }
+        # Only the PA-driven variant beat-locks the matrix cycles: an
+        # RGBMatrix animation's frame clock is milliseconds, so a flat
+        # beat-held cycle cuts animations short at fast tempos - the
+        # 2026-08-26 "empezamos una animacion pero nunca la terminamos"
+        # night, wearing beats - and the `efecto cortado` rule cannot see a
+        # beats hold. The default shows keep the animation-fitted clock
+        # holds.
         timings.update({
             name: MATRIX_BEATS
             for name in present
             if name and name.startswith("Ciclo Matrices")
         })
-        apply_beat_tempo(workspace, timings)
+    apply_beat_tempo(workspace, timings)
 
     button_ids: list[int] = []
     if with_layout:
