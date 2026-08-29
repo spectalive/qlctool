@@ -7,9 +7,9 @@ a device-internal modifier - it picks the functions silkscreened on the pads
 binding to a channel that never arrives looks exactly like a binding that
 works: the widget is there, the number is there, and the pad is simply silent.
 
-The same night showed the second half of it. No workspace declared a MIDI input
-patch at all, so QLC+ loaded the show with nothing listening and every binding
-in the file was inert until an operator built the patch by hand in the
+The same night showed the second half of it. `Vibra-split.qxw` declared no MIDI
+input patch at all, so QLC+ loaded that show with nothing listening and every
+binding in the file was inert until an operator built the patch by hand in the
 Inputs/Outputs tab.
 
 So the rule reads the wiring against the device, not against names:

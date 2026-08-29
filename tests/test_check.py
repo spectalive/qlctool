@@ -1219,12 +1219,14 @@ def test_a_console_bound_to_a_control_the_pad_cannot_send(library):
 
 
 def test_a_console_full_of_bindings_with_nothing_listening(library):
-    """2026-08-29: no shipped workspace declared a MIDI input patch.
+    """2026-08-29: `Vibra-split.qxw` shipped with no MIDI input patch.
 
-    Every `<Input>` in the file was inert - QLC+ opened the show with no input
+    Every `<Input>` in that file was inert - QLC+ opened the show with no input
     plugin on the universe, so the pad did nothing until somebody built the
-    patch by hand in the Inputs/Outputs tab. Take the patch away again and the
-    rule must say the surface is dead.
+    patch by hand in the Inputs/Outputs tab. (The other two shows carried the
+    owner's own patch, which is why regenerating must preserve it rather than
+    write one of its own - see `test_input_profile.py`.) Take the patch away
+    again and the rule must say the surface is dead.
     """
     workspace = _show()
     universe = find_local(

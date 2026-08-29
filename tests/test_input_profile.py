@@ -14,7 +14,7 @@ from lxml import etree
 from qlctool.generate.input_profile import PROFILE_NAME, build_input_profile
 from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
 from qlctool.generate.smc_pad_device import pad_channel
-from qlctool.input_binding import INPUT_LINE_NAME, pin_midi_input
+from qlctool.input_binding import DEFAULT_LINE_NAME, pin_midi_input
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, localname
 
@@ -63,11 +63,57 @@ def test_the_workspaces_patch_the_pad_in_with_that_profile():
         patch = find_local(universe, "Input")
         assert patch is not None, f"{name} has no MIDI input patch"
         assert patch.attrib["Profile"] == PROFILE_NAME, name
-        assert patch.attrib["Name"] == INPUT_LINE_NAME, name
+        assert patch.attrib["Plugin"] == "MIDI", name
+        assert patch.attrib["Name"], f"{name} patches a nameless port"
         parameters = find_local(patch, "PluginParameters")
         # Omni, or QLC+ never ORs the MIDI channel into the channel number and
         # every pad binding in the file addresses the wrong control.
         assert parameters.attrib["midichannel"] == "16", name
+
+
+def test_regenerating_keeps_the_port_the_owner_picked():
+    """2026-08-29, and the reason this test exists: the first version of
+    `pin_midi_input` wrote a port name of its own over the one in the file.
+
+    The owner runs the pad over Bluetooth, where QLC+ calls it "ble device"
+    (its CoreMIDI `Model`, not the display name); the invented "SINCO
+    SMC-PAD-Master" matched no port, QLC+ fell through to the saved line
+    number, and nothing on the surface worked. Which port the pad is on is the
+    machine's business and changes with the night - the workspace is where QLC+
+    remembers it, so regenerating must not touch it.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "Vibra-split.qxw")
+    universe = find_local(
+        find_local(find_local(workspace.root, "Engine"), "InputOutputMap"), "Universe"
+    )
+    patch = find_local(universe, "Input")
+    patch.set("Name", "some other port the owner picked")
+    patch.set("UID", "-12345")
+    patch.set("Line", "3")
+
+    pin_midi_input(workspace.root)
+
+    patch = find_local(universe, "Input")
+    assert patch.attrib["Name"] == "some other port the owner picked"
+    assert patch.attrib["UID"] == "-12345"
+    assert patch.attrib["Line"] == "3"
+    # ...but the two things that are the show's business are stated anyway.
+    assert patch.attrib["Profile"] == PROFILE_NAME
+    assert find_local(patch, "PluginParameters").attrib["midichannel"] == "16"
+
+
+def test_a_show_with_no_patch_at_all_is_seeded_with_the_bluetooth_port():
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "Vibra-split.qxw")
+    universe = find_local(
+        find_local(find_local(workspace.root, "Engine"), "InputOutputMap"), "Universe"
+    )
+    universe.remove(find_local(universe, "Input"))
+
+    pin_midi_input(workspace.root)
+
+    patch = find_local(universe, "Input")
+    assert patch.attrib["Name"] == DEFAULT_LINE_NAME
+    assert list(universe).index(patch) == 0, "QLC+ writes <Input> before <Output>"
 
 
 def test_patching_twice_leaves_one_input():

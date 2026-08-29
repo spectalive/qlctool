@@ -1,26 +1,32 @@
-"""Patch the SMC-PAD in as the show's MIDI input, so the pads work on load.
+"""Keep the show's MIDI input patch: name the profile, force omni, touch nothing else.
 
-Every `<Input>` binding the console carries was dead in the shipped files: no
-universe declared a MIDI input patch, so QLC+ opened the show with nothing
-listening and the pad did nothing until somebody walked to the Inputs/Outputs
-tab and set it up by hand. At a venue, in the dark, that is a show that does
-not start.
+`Vibra-split.qxw` shipped with no input patch at all, so QLC+ opened it with
+nothing listening and every `<Input>` binding in the file was inert until
+somebody built the patch by hand in the Inputs/Outputs tab. The other two shows
+did carry one - the owner's, `Name="ble device"`, the pad over Bluetooth - and
+the first version of this module **overwrote it** with a port name invented
+from CoreMIDI's display name. That broke the surface completely (2026-08-29):
+QLC+ names a MIDI port by its `kMIDIPropertyModel`, falling back to the display
+name (`plugins/midi/src/macx/coremidienumerator.cpp`), so "SINCO
+SMC-PAD-Master" matched nothing, the match fell through to the saved line
+number, and the universe listened to the wrong port.
 
-Two details make the patch portable rather than a snapshot of one machine, the
-same argument `output_binding` makes for the DMX side:
+The lesson is in the shape of this file now: **which port the pad is on is not
+the show's business.** It changes with the night - USB is three ports, Bluetooth
+is a fourth called "ble device" - and the workspace is where QLC+ remembers the
+one that worked. So an existing patch is left exactly as it is. What this does
+set is the two things that *are* the show's business and that a person cannot
+be expected to re-pick every time:
 
-- The line is matched **by name**, not by the line number QLC+ happened to save
-  (`InputOutputMap::setInputPatch` tries the UID, then the display name, then
-  the stored number). `Line="0"` is only the fallback.
-- `midichannel="16"` is omni. The pad speaks on MIDI channel 10 for the pads
-  and 1 for the knobs, and a patch pinned to either channel hears half the
-  surface; omni is also what makes the channel numbers in `smc_pad_device`
-  correct, since QLC+ only ORs the MIDI channel into the channel number in
-  omni mode.
+- the input profile's name, so QLC+'s tab names the controls; and
+- `midichannel="16"`, omni. The pad speaks on MIDI channel 10 for the pads and
+  1 for the knobs, so a patch pinned to either channel hears half the surface -
+  and QLC+ only ORs the MIDI channel into the input channel number in omni
+  mode, which is what makes every number in `smc_pad_device` correct.
 
-The port name is the USB one. Over Bluetooth the pad appears as a different
-CoreMIDI source ("SMC-PAD Bluetooth"), so a wireless night needs the input
-re-picked in the tab - `docs/show-operation.md` says so.
+A workspace with no patch at all is seeded with the pad's Bluetooth port, which
+is how the owner runs it. That is a starting point, not a claim: QLC+ matches
+it by name, and re-picking the port in the tab is a normal thing to do.
 """
 
 from lxml import etree
@@ -30,14 +36,20 @@ from .generate.input_profile import PROFILE_NAME
 from .xmlutil import find_local, iter_local
 
 INPUT_PLUGIN = "MIDI"
-# The pad's USB CoreMIDI source, as macOS names it on the show Mac.
-INPUT_LINE_NAME = "SINCO SMC-PAD-Master"
+# What QLC+ calls the pad's Bluetooth port - its CoreMIDI `Model` property, not
+# the display name macOS shows ("SMC-PAD Bluetooth"). Read off the running
+# machine 2026-08-29 with the enumerator's own property order.
+DEFAULT_LINE_NAME = "ble device"
 FALLBACK_LINE = "0"
 OMNI_MIDI_CHANNEL = "16"
 
 
 def pin_midi_input(root: etree._Element) -> None:
-    """Give universe 0 the SMC-PAD input patch, in place."""
+    """Give universe 0 a MIDI input patch on the pad's profile, in place.
+
+    An existing patch keeps its plugin, port name, UID and line: only the
+    profile and the MIDI channel are ours to state.
+    """
     engine = find_local(root, "Engine")
     io_map = find_local(engine, "InputOutputMap") if engine is not None else None
     if io_map is None:
@@ -45,21 +57,24 @@ def pin_midi_input(root: etree._Element) -> None:
     universe = find_local(io_map, "Universe")
     if universe is None:
         return
-    existing = find_local(universe, "Input")
-    if existing is not None:
-        universe.remove(existing)
-    patch = etree.Element(
-        f"{{{QLC_NS}}}Input",
-        Plugin=INPUT_PLUGIN,
-        Name=INPUT_LINE_NAME,
-        UID="",
-        Line=FALLBACK_LINE,
-        Profile=PROFILE_NAME,
-    )
-    parameters = etree.SubElement(patch, f"{{{QLC_NS}}}PluginParameters")
+
+    patch = find_local(universe, "Input")
+    if patch is None:
+        patch = etree.Element(
+            f"{{{QLC_NS}}}Input",
+            Plugin=INPUT_PLUGIN,
+            Name=DEFAULT_LINE_NAME,
+            UID="",
+            Line=FALLBACK_LINE,
+        )
+        # QLC+ writes the input patch first inside <Universe>, ahead of <Output>.
+        universe.insert(0, patch)
+
+    patch.set("Profile", PROFILE_NAME)
+    parameters = find_local(patch, "PluginParameters")
+    if parameters is None:
+        parameters = etree.SubElement(patch, f"{{{QLC_NS}}}PluginParameters")
     parameters.set("midichannel", OMNI_MIDI_CHANNEL)
-    # QLC+ writes the input patch first inside <Universe>, ahead of <Output>.
-    universe.insert(0, patch)
 
 
 def midi_input_patch(root: etree._Element) -> etree._Element | None:
