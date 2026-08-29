@@ -46,6 +46,7 @@ from ..vc.input_source import build_input_source
 from ..vc.label import build_label
 from ..vc.level_slider import build_level_slider
 from ..vc.matrix_control import build_matrix_control
+from ..vc.dial_function import DialFunction
 from ..vc.speed_dial import build_speed_dial
 from ..vc.widget_ids import next_widget_id
 from .smc_pad_bindings import SMC_PAD_BINDINGS
@@ -181,16 +182,23 @@ HELP_LINES = (
 # its shape - the "se vuelven todos los programas locos" the owner reported
 # was one dial writing the same raw interval into every wheel.
 #
-# It does NOT drive the head movement. A shape takes 15 s and the multipliers
-# QLC+ offers stop at sixteen beats, so movement cannot be said in taps; it
-# also has its own EFX clock underneath, which a re-timed chaser fade
-# corrupts. Movement keeps the stopwatch it has always had.
+# The head movement gets a dial of its own, on page 2 and on the SAME tap key
+# (a key press reaches every widget bound to it - VCPage::handleKeyEvent walks
+# all matches - which is how the hand-built console had one M for three
+# dials). It is separate because its numbers are: a shape is sixteen taps
+# where a colour is eight, and its EFX have to be re-timed alongside their
+# chaser or the figure stops being a proportion of the step.
 TEMPO_TAP_KEY = "M"
 TEMPO_BEAT_MS = 500  # the dial's starting beat: 120 BPM
 TEMPO_LINES = (
-    "TEMPO — pulsa M al ritmo de la",
-    "música: colores, gobos, prisma y",
-    "dimmer siguen tu compás.",
+    "TEMPO — pulsa M al ritmo: colores,",
+    "gobos, prisma y dimmer siguen tu",
+    "compás. Las cabezas también (pág. 2).",
+)
+MOVEMENT_DIAL_LINES = (
+    "Velocidad de las cabezas. La misma",
+    "tecla M que el tempo de la página 1:",
+    "una figura son 16 taps.",
 )
 
 # The workspace's own GrandMaster - it scales every output - had no widget
@@ -282,7 +290,9 @@ def generate_live_console(
     flash_functions: Sequence[str] = (),
     matrix_algorithms: Sequence[str] = (),
     beam_subsets=None,
-    tempo_functions: Sequence[tuple[int, int]] = (),
+    tempo_functions: Sequence[DialFunction] = (),
+    movement_functions: Sequence[DialFunction] = (),
+    bpm_tap: bool = False,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame."""
     root_frame = _root_frame(workspace.root)
@@ -350,12 +360,12 @@ def generate_live_console(
 
     _page_show(
         outer, button, master_button, frame, label, ids, console,
-        tempo_functions,
+        tempo_functions, bpm_tap,
     )
     _page_manual(
         outer, button, master_button, frame, label, ids, console, names,
         banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
-        beam_subsets,
+        beam_subsets, movement_functions,
     )
     _page_library(
         outer, button, master_button, frame, label, ids, console, names,
@@ -380,7 +390,8 @@ def generate_live_console(
 
 
 def _page_show(
-    outer, button, master_button, frame, label, ids, console, tempo_functions
+    outer, button, master_button, frame, label, ids, console, tempo_functions,
+    bpm_tap,
 ) -> None:
     """Page 1: the state the room is in, the hits, and the panic button."""
     label(
@@ -460,13 +471,13 @@ def _page_show(
     # console's tap key. Each layer carries its own multiplier - see
     # `beat_multiplier` - so one tap re-times all of them and none of them
     # loses its proportion to the rest.
-    if not tempo_functions:
+    if not tempo_functions and not bpm_tap:
         return
     dial_id = ids.take()
     dial = build_speed_dial(
         outer, dial_id, "Tempo Show", RIGHT_X, 700, RIGHT_WIDTH, 120,
         functions=tempo_functions, time_ms=TEMPO_BEAT_MS,
-        tap_key=TEMPO_TAP_KEY,
+        tap_key=TEMPO_TAP_KEY, control_bpm=bpm_tap,
     )
     build_input_source(dial, SMC_PAD_BINDINGS["Tempo Show"])
     _on_page(dial, PAGE_SHOW)
@@ -481,7 +492,7 @@ def _page_show(
 def _page_manual(
     outer, button, master_button, frame, label, ids, console, names,
     banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
-    beam_subsets,
+    beam_subsets, movement_functions,
 ) -> None:
     """Page 2: the layers, for somebody who wants to drive it by hand."""
     label(
@@ -656,9 +667,25 @@ def _page_manual(
     _on_page(pad, PAGE_MANUAL)
     console.widget_ids.append(pad_id)
 
-    # No speed dials here since 2026-08-29: the movement dial wrote raw
-    # milliseconds into chasers that now count in beats, and the tempo they
-    # all follow is the page-1 tap dial's global BPM.
+    # The movement dial, on the page where the shapes are chosen and on the
+    # same tap key as page 1's tempo. It re-times each rotation AND the EFX
+    # under it, chaser fade included, so the figure stays the same fraction
+    # of its step whatever the room is doing.
+    if movement_functions:
+        dial_id = ids.take()
+        dial = build_speed_dial(
+            outer, dial_id, "Vel. Movimiento", RIGHT_X, 68, 124, 150,
+            functions=movement_functions, time_ms=TEMPO_BEAT_MS,
+            tap_key=TEMPO_TAP_KEY,
+        )
+        build_input_source(dial, SMC_PAD_BINDINGS["Vel. Movimiento"])
+        _on_page(dial, PAGE_MANUAL)
+        console.widget_ids.append(dial_id)
+        for index, line in enumerate(MOVEMENT_DIAL_LINES):
+            label(
+                outer, line, RIGHT_X, 228 + index * 22, RIGHT_WIDTH, 20,
+                page=PAGE_MANUAL, font=HELP_FONT,
+            )
 
 
 def _page_library(

@@ -30,6 +30,8 @@ from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
 from ..strobe_speed import strobe_speed_pairs
 from ..vc.beat_multiplier import beat_multiplier
+from ..vc.dial_function import DialFunction
+from ..vc.speed_dial import MULTIPLIER_NONE
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
 from .beam_subsets import generate_beam_subsets
@@ -232,6 +234,7 @@ def build_canonical_show(
     with_layout: bool = True,
     plot_path: str | None = None,
     beats: bool = False,
+    bpm_tap: bool = False,
 ) -> CanonicalShow:
     """Strip the workspace to its patch and generate a self-running show on it."""
     strip_to_skeleton(workspace)
@@ -735,13 +738,19 @@ def build_canonical_show(
     # under one dial, each with the multiplier that says how many taps it is
     # worth, and the beat generator stays Internal for the meters and for
     # anything the operator switches to Beats by hand.
+    #
+    # `bpm_tap` is that future build, ready for the QLC+ that has ControlBPM:
+    # the layers go on Beats, the generator is Internal, and page 1's tap sets
+    # the BPM they all count against. It is opt-in precisely because 5.2.2
+    # would load it and silently do nothing.
     set_beat_generator(
         workspace.root, "Audio" if beats else "Internal",
         bpm=0 if beats else DEFAULT_BPM,
     )
     tempo_functions = _tempo_functions(workspace, master, matrices)
+    movement_functions = _movement_tempo_functions(workspace)
 
-    if beats:
+    if beats or bpm_tap:
         # The PA-driven variant hands the pace to the audio beat instead. Only
         # the layers whose steps are Scenes: a chaser in Beats passes its fade
         # to each step as a raw number, and an EFX subtracts that from its own
@@ -777,7 +786,9 @@ def build_canonical_show(
             flash_functions=FLASH_FUNCTIONS,
             matrix_algorithms=[a for a in algorithms if a],
             beam_subsets=beam_subsets,
-            tempo_functions=() if beats else tempo_functions,
+            tempo_functions=() if beats or bpm_tap else tempo_functions,
+            movement_functions=() if beats or bpm_tap else movement_functions,
+            bpm_tap=bpm_tap,
         )
         button_ids = console.button_ids
 
@@ -895,7 +906,64 @@ def _steps_are_scenes(workspace: Workspace, name: str) -> bool:
     )
 
 
-def _tempo_functions(workspace, master, matrices) -> list[tuple[int, int]]:
+def _movement_tempo_functions(workspace) -> list[DialFunction]:
+    """(function, multipliers) for the movement dial - rotations and their EFX.
+
+    Both halves, because they are one clock: the chaser says how long a shape
+    is shown and the EFX how long its figure takes, and QLC+ subtracts the
+    chaser's fade from the EFX's duration to get what it draws
+    (`EFX::loopDuration`). Re-time one and not the others and the figure stops
+    being a proportion of its step - which is exactly the 6 s sweep of
+    2026-08-29. So the fade is re-timed too, as its own multiple of the tap.
+
+    `Movimientos Suaves` is left out: it holds a shape for a minute on
+    purpose, which is off this dial's scale and not something anybody taps.
+    """
+    wanted = (
+        "Movimientos Washes", "Movimientos Beams",
+        "Rapidos Washes", "Rapidos Beams",
+    )
+    by_id = {
+        f.attrib.get("ID"): f for f in workspace.engine
+        if f.tag.endswith("}Function")
+    }
+    by_name = {
+        f.attrib.get("Name"): f for f in workspace.engine
+        if f.tag.endswith("}Function")
+    }
+    functions: dict[int, DialFunction] = {}
+    for name in wanted:
+        chaser = by_name.get(name)
+        if chaser is None:
+            continue
+        speed = find_local(chaser, "Speed")
+        if speed is None:
+            continue
+        duration = int(speed.attrib.get("Duration", 0))
+        fade = int(speed.attrib.get("FadeIn", 0))
+        functions[int(chaser.attrib["ID"])] = DialFunction(
+            function_id=int(chaser.attrib["ID"]),
+            duration=beat_multiplier(duration, TAP_BEAT_MS),
+            fade=beat_multiplier(fade, TAP_BEAT_MS) if fade else MULTIPLIER_NONE,
+        )
+        for step in findall_local(chaser, "Step"):
+            shape = by_id.get(step.text)
+            if shape is None or shape.attrib.get("Type") != "EFX":
+                continue
+            shape_speed = find_local(shape, "Speed")
+            if shape_speed is None:
+                continue
+            shape_id = int(shape.attrib["ID"])
+            functions[shape_id] = DialFunction(
+                function_id=shape_id,
+                duration=beat_multiplier(
+                    int(shape_speed.attrib.get("Duration", 0)), TAP_BEAT_MS
+                ),
+            )
+    return [functions[key] for key in sorted(functions)]
+
+
+def _tempo_functions(workspace, master, matrices) -> list[DialFunction]:
     """(function id, multiplier) for every layer the tap dial re-times.
 
     Movement is deliberately absent: a shape takes fifteen seconds and the
@@ -911,7 +979,7 @@ def _tempo_functions(workspace, master, matrices) -> list[tuple[int, int]]:
         f.attrib.get("ID"): f for f in workspace.engine
         if f.tag.endswith("}Function")
     }
-    functions: list[tuple[int, int]] = []
+    functions: list[DialFunction] = []
     for name in wanted:
         function_id = master.get(name)
         element = by_id.get(str(function_id))
@@ -921,9 +989,10 @@ def _tempo_functions(workspace, master, matrices) -> list[tuple[int, int]]:
         if speed is None:
             continue  # a Collection has no speed of its own to re-time
         duration = int(speed.attrib.get("Duration", 0))
-        functions.append(
-            (function_id, beat_multiplier(duration, TAP_BEAT_MS))
-        )
+        functions.append(DialFunction(
+            function_id=function_id,
+            duration=beat_multiplier(duration, TAP_BEAT_MS),
+        ))
     return functions
 
 

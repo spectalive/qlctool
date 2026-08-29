@@ -46,6 +46,8 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
             function.attrib.get("Duration", "0")
             for function in findall_local(dial, "Function")
         ]
+        if not multipliers and _controls_bpm(dial):
+            continue  # the `--bpm-tap` build: its tap drives the global BPM
         if not multipliers:
             findings.append(Finding(
                 rule=EMPTY_RULE,
@@ -80,3 +82,13 @@ def _has_tap_binding(dial: etree._Element) -> bool:
         source.attrib.get("ID") == TAP_CONTROL_ID
         for source in findall_local(dial, "Input")
     )
+
+
+def _controls_bpm(dial: etree._Element) -> bool:
+    """The dial taps the global BPM rather than writing into functions.
+
+    Only a QLC+ newer than the 5.2.2 this show runs honours it, which is why
+    `qlctool newshow --bpm-tap` is a build of its own rather than the default.
+    """
+    control = find_local(dial, "ControlBPM")
+    return control is not None and (control.text or "").strip() == "True"

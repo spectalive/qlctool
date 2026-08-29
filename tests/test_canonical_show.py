@@ -641,3 +641,98 @@ def test_tranquilo_rests_the_heads_instead_of_parking_them(built):
     assert "Movimientos Suaves" in names
     assert "Beams Abanico" in names
     assert str(show.master_ids["Cabezas Centro"]) not in members
+
+
+def test_both_tap_dials_share_one_key_and_scale_by_layer(built):
+    """2026-08-29: the owner asked for the movement on the tap too.
+
+    A key press reaches every widget bound to it (VCPage::handleKeyEvent walks
+    all matches), so one M taps both dials - the hand-built console's design.
+    What each dial must NOT do is give every layer the same multiplier: QLC+
+    writes `dial time x multiplier` into each function, so one shared value
+    flattens the show to a single length ("se vuelven todos los programas
+    locos").
+    """
+    _, out = built
+    root = Workspace.load(out).root
+
+    dials = {
+        d.attrib["Caption"]: d
+        for d in root.iter() if localname(d) == "SpeedDial"
+    }
+    assert set(dials) == {"Tempo Show", "Vel. Movimiento"}
+
+    for caption, dial in dials.items():
+        taps = [
+            source for source in findall_local(dial, "Input")
+            if source.attrib.get("ID") == "1"
+        ]
+        assert [t.attrib.get("Key") for t in taps] == ["M"], caption
+
+        multipliers = [
+            int(f.attrib["Duration"]) for f in findall_local(dial, "Function")
+        ]
+        assert len(multipliers) >= 3, caption
+        assert len(set(multipliers)) > 1, (
+            f"{caption} re-times every layer to the same length"
+        )
+
+    # The movement dial carries the EFX as well as the rotations, and re-times
+    # the crossfade too: QLC+ subtracts a chaser's fade from its EFX's own
+    # duration to get the figure it draws (EFX::loopDuration), so a fade left
+    # at fixed milliseconds stops the figure being a proportion of the step.
+    functions = _functions(root)
+    movement = {
+        functions[f.text].attrib["Name"]: f
+        for f in findall_local(dials["Vel. Movimiento"], "Function")
+    }
+    assert any(
+        functions_by_name(functions, name).attrib["Type"] == "EFX"
+        for name in movement
+    )
+    assert int(movement["Movimientos Washes"].attrib["FadeIn"]) > 0
+
+
+def functions_by_name(functions, name):
+    return next(f for f in functions.values() if f.attrib.get("Name") == name)
+
+
+def test_the_build_for_a_newer_qlcplus_taps_the_global_bpm(tmp_path):
+    """Ready for the QLC+ that has ControlBPM - 5.2.2 does not.
+
+    5.2.2 logs "Unknown speed dial tag: ControlBPM" and ignores the element,
+    which is why this is `newshow --bpm-tap` and not the default. There the
+    tap sets one global BPM and every layer counts its own beats against it,
+    so nothing needs a multiplier at all.
+    """
+    ws = Workspace.load(SHOW)
+    build_canonical_show(ws, FixtureLibrary.load(), bpm_tap=True)
+    out = tmp_path / "future.qxw"
+    ws.save(out)
+    root = Workspace.load(out).root
+
+    dial = next(d for d in root.iter() if localname(d) == "SpeedDial")
+    assert dial.attrib["Caption"] == "Tempo Show"
+    assert find_local(dial, "ControlBPM").text == "True"
+    assert findall_local(dial, "Function") == []
+
+    generator = find_local(
+        find_local(find_local(root, "Engine"), "InputOutputMap"), "BeatGenerator"
+    )
+    assert generator.attrib["BeatType"] == "Internal"
+    assert generator.attrib["BPM"] == "120"
+
+    beats = [
+        f for f in _functions(root).values()
+        if (tempo := find_local(f, "Tempo")) is not None and tempo.text == "Beats"
+    ]
+    assert beats, "nothing counts beats for the BPM to move"
+    # Never an EFX-stepping chaser: it hands its fade to the EFX as a raw
+    # number and the figure collapses (2026-08-29, the 6 s head sweep).
+    by_id = _functions(root)
+    for chaser in beats:
+        kinds = {
+            by_id[s.text].attrib["Type"]
+            for s in findall_local(chaser, "Step") if s.text in by_id
+        }
+        assert "EFX" not in kinds, chaser.attrib["Name"]

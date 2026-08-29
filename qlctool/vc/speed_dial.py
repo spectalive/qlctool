@@ -40,11 +40,19 @@ def build_speed_dial(
     y: int,
     width: int,
     height: int,
-    functions: Sequence[tuple[int, int]],
+    functions: Sequence["DialFunction"],
     time_ms: int,
     tap_key: str | None = None,
+    control_bpm: bool = False,
 ) -> etree._Element:
-    """`functions` is (function id, multiplier) - see MULTIPLIERS."""
+    """`functions` are `DialFunction`s - a function id and its multipliers.
+
+    `control_bpm` makes the tap set the workspace's global BPM instead
+    (`VCSpeedDial::tap` -> `InputOutputMap::setBpmNumber`), which is what a
+    show whose layers count in Beats wants. **QLC+ 5.2.2 does not have it** -
+    it logs "Unknown speed dial tag: ControlBPM" and ignores the element - so
+    it is only for the build meant for a newer QLC+.
+    """
     dial = etree.SubElement(parent, f"{{{QLC_NS}}}SpeedDial")
     dial.set("Caption", caption)
     dial.set("ID", str(widget_id))
@@ -57,6 +65,8 @@ def build_speed_dial(
     absolute.set("Maximum", str(max(time_ms * 4, 1000)))
 
     etree.SubElement(dial, f"{{{QLC_NS}}}Time").text = str(time_ms)
+    if control_bpm:
+        etree.SubElement(dial, f"{{{QLC_NS}}}ControlBPM").text = "True"
     if tap_key is not None:
         # A bare <Key> child is not a thing qmlui loads ("Unknown speed dial
         # tag"): the tap is the dial's external control 1, and a key reaches
@@ -66,11 +76,11 @@ def build_speed_dial(
         tap.set("ID", "1")
         tap.set("Key", tap_key)
 
-    for function_id, multiplier in functions:
+    for bound in functions:
         function = etree.SubElement(dial, f"{{{QLC_NS}}}Function")
-        function.set("FadeIn", str(MULTIPLIER_NONE))
-        function.set("FadeOut", str(MULTIPLIER_NONE))
-        function.set("Duration", str(multiplier))
-        function.text = str(function_id)
+        function.set("FadeIn", str(bound.fade))
+        function.set("FadeOut", str(bound.fade))
+        function.set("Duration", str(bound.duration))
+        function.text = str(bound.function_id)
 
     return dial

@@ -62,9 +62,8 @@ SMC_PAD_BINDINGS: dict[str, int] = {
     # Encoders (CC on channel 1, absolute 0-127). The device numbers its
     # knobs bottom-up too: knob 1 is bottom-left, labeled RATE on the panel.
     "Master General": 30,          # encoder 1 - the whole room's intensity
-    "Tempo Show": 31,              # encoder 2 - the BPM dial's time wheel
-    # Encoder 3 (CC 32) is free: the movement dial it drove wrote raw
-    # milliseconds into chasers that count in beats now (2026-08-29).
+    "Tempo Show": 31,              # encoder 2 - the tap dial's time wheel
+    "Vel. Movimiento": 32,         # encoder 3 - the movement dial's
     # The small buttons on the right edge (CC on channel 1, 127/0).
     "Pagina Anterior": 25,         # "<" - the console's PgUp
     "Pagina Siguiente": 26,        # ">" - the console's PgDown

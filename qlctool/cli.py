@@ -273,7 +273,7 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     ws = Workspace.load(src)
     show = build_canonical_show(
         ws, FixtureLibrary.load(), with_layout=not args.no_buttons,
-        plot_path=args.plot, beats=args.beats,
+        plot_path=args.plot, beats=args.beats, bpm_tap=args.bpm_tap,
     )
     ws.save(out)
 
@@ -289,6 +289,10 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     if args.beats:
         print("Chases are on Beats tempo and the beat generator is the audio "
               "input: pick one under QLC+ Configuration, or nothing advances.")
+    if args.bpm_tap:
+        print("Chases are on Beats tempo and page 1's tap dial sets the global "
+              "BPM. QLC+ 5.2.2 does NOT support that dial ('Unknown speed dial "
+              "tag: ControlBPM') - this build is for a newer QLC+.")
     return _finish(out, args.validate)
 
 
@@ -536,6 +540,10 @@ def build_parser() -> argparse.ArgumentParser:
                        help="run the chases on the music's beat: Beats tempo "
                             "plus the audio input as beat generator (needs an "
                             "audio input picked in QLC+, or nothing advances)")
+    p_new.add_argument("--bpm-tap", action="store_true",
+                       help="the build for a QLC+ newer than 5.2.2: chases in "
+                            "Beats tempo and page 1's tap dial driving the "
+                            "global BPM (ControlBPM), which 5.2.2 ignores")
     p_new.add_argument("--validate", action="store_true",
                        help="load the result in QLC+ and fail on any problem")
     p_new.set_defaults(func=cmd_newshow)
