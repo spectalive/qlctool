@@ -20,6 +20,7 @@ from .entry_points import entry_points
 from .finding import ERROR, Finding
 from .rule_accent_restore import check_accent_restore
 from .rule_audio_triggers import check_audio_triggers
+from .rule_beam_window import check_beam_window
 from .rule_collision import check_collisions
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
@@ -38,6 +39,7 @@ from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_shutter_endpoint import check_shutter_endpoint
 from .rule_smoke import check_smoke
 from .rule_smoke_light import check_smoke_light
+from .rule_smoke_restore import check_smoke_restore
 from .rule_state_proxy import check_state_proxy
 from .rule_stepped_dimmer import check_stepped_dimmer
 from .rule_tap_dial import check_tap_dial
@@ -97,8 +99,10 @@ def check_workspace(
     findings += check_movement_families(graph)
     findings += check_parked_movers(graph)
     findings += check_unaimed_movement(graph)
+    findings += check_beam_window(graph)
     findings += check_smoke(graph, groups, entries)
     findings += check_smoke_light(graph, groups, entries)
+    findings += check_smoke_restore(graph, groups, root, states)
     findings += check_group_grids(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))
     findings += check_audio_triggers(graph, groups, root)

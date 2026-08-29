@@ -20,16 +20,16 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
-from .movement_aim import BEAM_TILT_AIM
 from ..workspace import Workspace
+from .movement_aim import BEAM_PAN_AIM, BEAM_PAN_SPAN, BEAM_TILT_AIM
 
-MID = 127
-# Half the total pan spread of the fan, in raw DMX around mid-travel.
-SPREAD = 45
-# Out over the crowd. This was 105 - the other side of mid travel - on the
-# guess that the numbers fall as the beam rises. They do not on a 7R: 127 is
-# the floor and 88 put them on the wall behind ("ahora los 7R apuntan a la
-# pared", owner, 2026-08-29). The fan rests where the figures are drawn.
+# The centre of the audience window in pan, and half its width.
+MID = BEAM_PAN_AIM
+SPREAD = BEAM_PAN_SPAN
+# The fan opens across the audience window the owner measured off the desk,
+# and rests at its centre in tilt. It used to be built around mid travel with
+# a 90-count spread, which was two guesses at once: mid travel is the floor on
+# a 7R, and the spread was wider than the whole window (`movement_aim`).
 TILT = BEAM_TILT_AIM
 
 

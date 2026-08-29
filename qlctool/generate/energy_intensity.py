@@ -21,6 +21,7 @@ from dataclasses import dataclass
 
 from .. import roles
 from ..capability import FixtureCapabilities
+from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..shutter_open import shutter_open_pairs
@@ -64,11 +65,18 @@ def _scene(
 ) -> int | None:
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:
+        if capability.fixture.fixture_id in excluded:
+            continue
+        # The pump is owned at zero by whatever is running, on every machine
+        # including the fog-only ones: a Flash restores nothing on release, and
+        # on a pump that is the tank (`fog_off`).
+        if capability.is_smoke:
+            off = fog_off_pairs(capability)
+            if off:
+                values[capability.fixture.fixture_id] = sorted(set(off))
         # Fog-only machines have no light to own; the lit ones' LED dimmer is
         # intensity like any other - the pump is a different role entirely.
-        if (capability.is_smoke and not capability.is_lit_smoke) or (
-            capability.fixture.fixture_id in excluded
-        ):
+        if capability.is_smoke and not capability.is_lit_smoke:
             continue
         # A blade dimmer has no fraction to give: between the ends it covers
         # part of the lens instead of dimming, and the quiet level held that
@@ -84,6 +92,7 @@ def _scene(
         # A strobe-only channel is LTP and a released Flash restores nothing:
         # the intensity owner writes the strobe off.
         pairs += strobe_off_pairs(capability)
+        pairs += fog_off_pairs(capability)
         if pairs:
             values[capability.fixture.fixture_id] = sorted(set(pairs))
     if not values:

@@ -16,10 +16,12 @@ from pathlib import Path
 import pytest
 
 from qlctool import roles
+from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.run import check_workspace
 from qlctool.checks.strobe_written import strobe_capable_offsets
 from qlctool.fixture_group import fixture_groups
+from qlctool.fog_offsets import fog_offsets
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
@@ -1376,11 +1378,10 @@ def test_a_beam_figure_centred_on_mid_travel(library):
     """2026-08-29: "está todo el rato haciendo un circulo pequeño en el suelo".
 
     Every movement EFX carried QLC+'s own axis default - tilt offset 127, the
-    raw middle of the channel - because nothing had ever overridden it. On this
-    rig mid travel is the floor: tilt 0 is the ceiling (`docs/rig.md`, a
-    CromoWash stuck at coarse zero), ~196 is the stage (the hand-built
-    `Escenario`), and the crowd is below 127. Put the default back on a beam
-    figure and the rule must bite.
+    raw middle of the channel - because nothing had ever overridden it. Mid
+    travel is not a place: on the 7R it is the floor, on the washes the wall
+    behind the stage. Put the default back on a beam figure and the rule must
+    bite.
     """
     workspace = _show()
     functions = _functions(workspace)
@@ -1453,3 +1454,74 @@ def test_a_dimmer_efx_sweeping_a_blade_dimmer(library):
     ]
     assert findings, "a dimmer EFX sweeping a blade went unnoticed"
     assert any("BEAM" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_beam_figure_that_leaves_the_audience(library):
+    """2026-08-29: the aim was guessed twice and was wrong twice - the beams
+    drew a circle on the floor, then pointed at the wall behind.
+
+    It ended with the owner putting BEAM 230W 7R #1 on the desk and sending the
+    corners of where the people are: "eso son los rangos del publico, todo lo
+    fuera de eso ya apunta a fuera". With the window written down the question
+    is arithmetic. Grow a figure past it and the rule must bite.
+    """
+    workspace = _show()
+    efx = _functions(workspace)["Beam Circulo"]
+    height = find_local(efx, "Height")
+    inside = int(height.text)
+    assert BEAM_WINDOW.holds(
+        int(find_local(
+            next(a for a in findall_local(efx, "Axis")
+                 if a.attrib.get("Name") == "Y"), "Offset").text),
+        inside, "tilt",
+    ), "the shipped beam figure already leaves the audience window"
+    height.text = str(inside + 40)
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "figura fuera del publico"
+    ]
+    assert findings, "a beam figure sweeping out of the room went unnoticed"
+    assert "Beam Circulo" in {f.function for f in findings}
+    assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_flashed_smoke_pump_no_room_state_writes(library):
+    """2026-08-29, live: "le doy y nunca se para, se supone que solo debe tirar
+    cuando le de".
+
+    `Humo Vertical YA` is a Flash, and a Flash restores nothing on release: the
+    pump channel is LTP and keeps the last value written. No room state wrote
+    it, so the first press fogged until the workspace was reloaded - the same
+    latch `rule_strobe_restore` was written for, on the one channel that empties
+    a tank. Take the pump back out of the room states and the rule must bite.
+    """
+    workspace = _show()
+    caps = capabilities_of(workspace.root, library)
+    pumps = {
+        capability.fixture.fixture_id: set(fog_offsets(capability))
+        for capability in caps
+        if capability.is_smoke
+    }
+    assert pumps, "this show has no smoke machine"
+    for function in _functions(workspace).values():
+        if function.attrib.get("Type") != "Scene":
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            fixture_id = int(value.attrib["ID"])
+            if fixture_id not in pumps or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            if any(pairs.get(o) for o in pumps[fixture_id]):
+                continue  # the burst itself: it is allowed to fire the pump
+            for offset in pumps[fixture_id]:
+                pairs.pop(offset, None)
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "humo pegado"
+    ]
+    assert findings, "a flashed pump no room state writes went unnoticed"
+    assert any("Humo" in fixture for f in findings for fixture in f.fixtures)

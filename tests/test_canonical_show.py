@@ -12,6 +12,7 @@ import pytest
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.fixture_group import fixture_groups
+from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.canonical_show import KEYS, build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.patch_conflicts import patch_conflicts
@@ -213,7 +214,16 @@ def test_dimmer_chase_owns_peak_and_nothing_is_left_dark(built):
     # their strobe-off (2026-08-28): a flash released during a chase level
     # used to latch the strobe until the next level's intensity base cleared
     # it, because nothing in the level wrote the channel back.
+    # A smoke machine is not in the chase at all, and on a plain fog machine
+    # the pump *is* typed as the dimmer - what this level writes there is the
+    # pump held shut, which is the point (2026-08-29, `fog_off`).
     for fixture_id, written in static_writes.items():
+        if caps[fixture_id].is_smoke:
+            assert set(written) <= set(fog_offsets(caps[fixture_id])), (
+                "the static owner touches a smoke machine beyond its pump"
+            )
+            assert not any(written.values()), "the static owner fires a pump"
+            continue
         dimmers = set(caps[fixture_id].offsets_for_role(roles.DIMMER))
         assert not (dimmers & set(written)), (
             "the static owner must not contest the chase's dimmers"
@@ -297,7 +307,6 @@ def test_no_scene_but_the_smoke_ones_touches_the_smoke_pump(built):
     """The pump, not the fixture: a lit fog machine's LED joins the colour bed
     like a floor PAR, so ordinary scenes may write it - but a value above zero
     on any pump channel outside the smoke scenes is a tank emptying itself."""
-    from qlctool.fog_offsets import fog_offsets
 
     show, out = built
     root = Workspace.load(out).root

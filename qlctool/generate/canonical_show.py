@@ -16,6 +16,7 @@ from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
 from ..fixture_group import fixture_groups
+from ..fog_off import fog_off_pairs
 from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..functions.scene import build_scene
@@ -1027,6 +1028,14 @@ def _flat_scene(
     what turns the work light into a flash.
     """
     values = color_scene_values(caps, rgb)
+    # The pump, shut. A work light is a room state, and a room state that never
+    # writes the pump is what a released smoke flash latches against.
+    for capability in caps:
+        off = fog_off_pairs(capability)
+        if off:
+            merged = dict(values.get(capability.fixture.fixture_id, []))
+            merged.update(off)
+            values[capability.fixture.fixture_id] = sorted(merged.items())
     if wheel_color is not None:
         values.update(
             wheel_color_values(caps, wheel_color, dimmer=wheel_dimmer)
@@ -1050,14 +1059,20 @@ def _flat_scene(
 
 
 def _blackout(workspace, caps, name: str = "Todo Negro") -> int:
-    """Everything to zero - except the smoke pumps, which are never touched.
+    """Everything to zero, the smoke pumps included - at zero, which is shut.
 
     A lit fog machine's LED is part of the room's light and goes dark with the
-    rest; its pump is a different role, so zeroing the dimmer cannot stop - or
-    start - the fog.
+    rest; its pump is a different role, so zeroing the dimmer cannot stop the
+    fog. The pump is therefore written by name, at zero: a blackout that leaves
+    a machine fogging is not a blackout, and a room state that never writes the
+    pump is a room state a released smoke flash latches against (`fog_off`).
     """
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in caps:
+        if capability.is_smoke:
+            off = fog_off_pairs(capability)
+            if off:
+                values[capability.fixture.fixture_id] = sorted(set(off))
         if capability.is_smoke and not capability.is_lit_smoke:
             continue
         offsets = [
@@ -1070,8 +1085,9 @@ def _blackout(workspace, caps, name: str = "Todo Negro") -> int:
         # animating in the dark is a blackout that ends the moment somebody
         # raises a dimmer.
         pairs += internal_program_off_pairs(capability)
+        pairs += fog_off_pairs(capability)
         if pairs:
-            values[capability.fixture.fixture_id] = sorted(pairs)
+            values[capability.fixture.fixture_id] = sorted(set(pairs))
     function_id = next_function_id(workspace.root)
     workspace.add_function(
         build_scene(function_id, name, values, path=SHOW_PATH)

@@ -42,7 +42,13 @@ from ..library import FixtureLibrary
 from ..workspace import Workspace
 from .cross_position import generate_cross_position
 from .fan_position import generate_fan_position
-from .movement_aim import BEAM_TILT_AIM, WASH_TILT_AIM
+from .movement_aim import (
+    BEAM_PAN_AIM,
+    BEAM_PAN_SPAN,
+    BEAM_TILT_AIM,
+    BEAM_TILT_SPAN,
+    WASH_TILT_AIM,
+)
 from .movement_efx import generate_movement_efx
 
 
@@ -63,8 +69,9 @@ class Envelope:
     propagation: str = "Parallel"
     rotation: int = 0
     rotation_by_algorithm: dict[str, int] = field(default_factory=dict)
-    # Where the figure is centred in raw tilt. 127 is mid-travel, which is what
-    # QLC+ writes when nobody says: on a beam that is the floor (`movement_aim`).
+    # Where the figure is centred in raw pan and tilt. 127 is mid-travel, which
+    # is what QLC+ writes when nobody says - not a place (`movement_aim`).
+    pan_offset: int = 127
     tilt_offset: int = 127
 
 
@@ -73,13 +80,12 @@ class Envelope:
 WASH_SLOW = Envelope(
     ("Circle", "Line"), 28000, 45, 24, 56000, tilt_offset=WASH_TILT_AIM,
 )
-# The beams' calm level: slower than the washes' slow. It was also much
-# smaller (26x18) for one afternoon, which centred on the floor read as "un
-# circulo pequeño en el suelo" (owner, 2026-08-29) - a needle drawing a coin.
-# Sized to the washes' slow figure now, and aimed off the floor like every
-# beam shape.
+# The beam sizes are the audience window, not a taste: the window is 41 counts
+# of pan by 27 of tilt, so a figure any bigger walks out of the room. Slow is
+# the same shape drawn smaller and slower, which is the only room left to vary.
 BEAM_SLOW = Envelope(
-    ("Circle", "Line"), 34000, 45, 30, 56000, tilt_offset=BEAM_TILT_AIM,
+    ("Circle", "Line"), 34000, BEAM_PAN_SPAN * 2 // 3, BEAM_TILT_SPAN * 2 // 3,
+    56000, pan_offset=BEAM_PAN_AIM, tilt_offset=BEAM_TILT_AIM,
 )
 # Heights are smaller than they were before 2026-08-29 (55 and 50) because
 # the figures are aimed now. Unaimed, a wash swept the whole tilt range and
@@ -91,14 +97,15 @@ WASH = Envelope(
     16000, 70, 30, 10000, tilt_offset=WASH_TILT_AIM,
 )
 BEAM = Envelope(
-    ("Circle", "Eight", "Line"), 11000, 55, 38, 10000,
-    tilt_offset=BEAM_TILT_AIM,
+    ("Circle", "Eight", "Line"), 11000, BEAM_PAN_SPAN, BEAM_TILT_SPAN, 10000,
+    pan_offset=BEAM_PAN_AIM, tilt_offset=BEAM_TILT_AIM,
 )
 WASH_FAST = Envelope(
     WASH.algorithms, 5000, 80, 32, 6000, tilt_offset=WASH_TILT_AIM,
 )
 BEAM_FAST = Envelope(
-    BEAM.algorithms, 5000, 70, 40, 6000, tilt_offset=BEAM_TILT_AIM,
+    BEAM.algorithms, 5000, BEAM.width, BEAM.height, 6000,
+    pan_offset=BEAM_PAN_AIM, tilt_offset=BEAM_TILT_AIM,
 )
 
 # The rig's 23 EFX all ran Rotation=0 and Parallel propagation, every shape an
@@ -115,7 +122,7 @@ BEAM_FAST = Envelope(
 BEAM_ROTATED_SHAPES = Envelope(
     ("Diamond", "Leaf"), BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
     rotation_by_algorithm={"Diamond": 90, "Leaf": 45},
-    tilt_offset=BEAM.tilt_offset,
+    pan_offset=BEAM.pan_offset, tilt_offset=BEAM.tilt_offset,
 )
 WASH_CASCADE = Envelope(
     ("Line",), WASH_SLOW.duration, WASH_SLOW.width, WASH_SLOW.height,
@@ -123,7 +130,8 @@ WASH_CASCADE = Envelope(
 )
 BEAM_CASCADE = Envelope(
     BEAM.algorithms[:1], BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
-    propagation="Serial", rotation=45, tilt_offset=BEAM.tilt_offset,
+    propagation="Serial", rotation=45,
+    pan_offset=BEAM.pan_offset, tilt_offset=BEAM.tilt_offset,
 )
 
 # The classic club wave: tilt only. QLC+'s Line traces x=y - a diagonal, and
@@ -137,7 +145,7 @@ WASH_TILT_WAVE = Envelope(
 )
 BEAM_TILT_WAVE = Envelope(
     ("Line",), BEAM.duration, 0, BEAM.height, BEAM.hold, propagation="Serial",
-    tilt_offset=BEAM.tilt_offset,
+    pan_offset=BEAM.pan_offset, tilt_offset=BEAM.tilt_offset,
 )
 
 # The hand-built show kept a "(Simultaneo)" twin of every shape - all heads at
@@ -157,7 +165,7 @@ WASH_UNISON = Envelope(
 )
 BEAM_UNISON = Envelope(
     ("Line",), BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
-    tilt_offset=BEAM.tilt_offset,
+    pan_offset=BEAM.pan_offset, tilt_offset=BEAM.tilt_offset,
 )
 
 
@@ -209,7 +217,7 @@ def generate_movement_families(
             rotation=envelope.rotation,
             rotation_by_algorithm=envelope.rotation_by_algorithm or None,
             names=names, spread_phase=spread_phase,
-            tilt_offset=envelope.tilt_offset,
+            pan_offset=envelope.pan_offset, tilt_offset=envelope.tilt_offset,
         )
 
     slow = _family(washes, WASH_SLOW, None, "Suave", "Movimiento Suave",

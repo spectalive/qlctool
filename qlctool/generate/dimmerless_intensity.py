@@ -28,6 +28,7 @@ LTP - which is exactly the kind of luck a self-contained moment does not get.
 from collections.abc import Sequence
 
 from ..capability import FixtureCapabilities
+from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..shutter_open import shutter_open_pairs
@@ -49,7 +50,15 @@ def generate_dimmerless_intensity(
     excluded = set(exclude_fixture_ids)
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:
-        if capability.is_smoke or capability.fixture.fixture_id in excluded:
+        if capability.fixture.fixture_id in excluded:
+            continue
+        if capability.is_smoke:
+            # Only the pump, and only to hold it shut: this level runs under
+            # the smoke flashes like every other, and a released flash needs
+            # something writing zero to come home to (`fog_off`).
+            off = fog_off_pairs(capability)
+            if off:
+                values[capability.fixture.fixture_id] = sorted(set(off))
             continue
         pairs: list[tuple[int, int]] = []
         # A blade dimmer is out of the chase (`stepped_dimmer`), so this level
