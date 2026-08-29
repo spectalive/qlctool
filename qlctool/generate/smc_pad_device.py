@@ -7,6 +7,14 @@ drifted: the shipped profile still declared the pad's factory notes 4-19 while
 the workspace was bound to 36-51, and eight of the console's bindings sat on
 notes no button on the device can send.
 
+**This is the pad's factory map, which is the whole point.** Re-measured
+2026-08-29 immediately after a factory reset from MidiSuite, and every number
+below came back identical - so the show needs no pad configuration at all, and
+a pad knocked out of shape is restored by resetting it rather than by
+reconfiguring it control by control. (An earlier capture that day read notes
+4-19 and got written into the shipped input profile; that was the pad sitting
+in some non-factory preset, not the default.)
+
 Measured 2026-08-29 with `tools/smc-pad/midicap.swift`, owner pressing:
 
 - The pads speak on MIDI channel 10 and are numbered as the panel silkscreens
