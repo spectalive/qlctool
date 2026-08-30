@@ -160,7 +160,11 @@ def test_the_prism_animation_is_the_old_choreography(built):
 
     chaser = functions[str(show.master_ids["Prisma Animacion"])]
     names = [functions[s.text].attrib["Name"] for s in findall_local(chaser, "Step")]
-    assert names == [
+    # The dance is the first eight steps and stays that way. Since 2026-08-30
+    # the same prism keeps turning after it at the other two speeds the
+    # rotation channel can do - extra steps, never a reordering.
+    assert names[8:] == ["Prisma Giro Rapido", "Prisma Giro Inverso"]
+    assert names[:8] == [
         "Prisma - 4", "Prisma - 2 y 4", "Prisma - 1", "Prisma - 2",
         names[4], "Prisma - 3", "Prisma - 1 y 3", names[7],
     ]

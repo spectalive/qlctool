@@ -32,6 +32,10 @@ PRISM = "prism"
 PRISM_ROTATION = "prism_rotation"
 GOBO_SHAKE = "gobo_shake"
 EFFECT = "effect"
+# The beam's own edge. A 7R projects a gobo, and a projection nobody focuses is
+# a smudge: the channel sits at DMX 0 - one end of its travel - for as long as
+# nothing writes it, which is how this rig ran its seventeen gobos for years.
+FOCUS = "focus"
 # The beam's own width. A wash with a zoom channel and nobody writing it sits at
 # whatever DMX 0 means on that model - on the MAC WASH 1915Z, a pencil - so the
 # looks that light it have to state it, the way they state the shutter.
@@ -81,12 +85,16 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
         return PRISM
     if p.startswith("BeamZoom") and "Fine" not in p:
         return ZOOM
+    if p.startswith("BeamFocus"):
+        return FOCUS
 
     # Fallback: no usable preset, read the group and the human name.
     g = (group or "").lower()
     n = (name or "").lower()
     if g == "beam" and "zoom" in n:
         return ZOOM
+    if g == "beam" and "focus" in n:
+        return FOCUS
     if g == "gobo":
         return GOBO
     if g == "prism":

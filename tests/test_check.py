@@ -24,7 +24,7 @@ from qlctool.fixture_group import fixture_groups
 from qlctool.fog_offsets import fog_offsets
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, localname
+from qlctool.xmlutil import find_local, findall_local, iter_local, localname
 
 REPO = Path(__file__).resolve().parents[3]
 SHOWS = ("Vibra.qxw", "Vibra-beats.qxw", "Vibra-split.qxw")
@@ -1513,3 +1513,89 @@ def test_a_held_pump_on_a_channel_qlcplus_never_resets(library):
     ]
     assert findings, "a held pump QLC+ never resets went unnoticed"
     assert any("Humo" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_head_nothing_takes_off_its_own_programme(library):
+    """2026-08-30, the two MAC WASH 1915Z on their first night: "se quedaban
+    mirando para abajo y hacian cosas raras como una especie de cambios de
+    colores muy rapidos".
+
+    The movement was aimed at the measured audience window and the colour was
+    a wheel stepping every eight beats, so what the room saw was not the show
+    at all: the fixture was running itself. Its `Function Mode` channel is one
+    blanket 000-255 range - nothing for `rule_internal_program` to match on -
+    and no function in the show wrote it, so it kept whatever the last
+    controller left there. Take the parked value back out and the rule must
+    bite.
+    """
+    workspace = _show()
+    capabilities = {
+        capability.fixture.fixture_id: capability
+        for capability in capabilities_of(workspace.root, library)
+    }
+    victims = {
+        fixture_id: capability.offsets_for_role(roles.EFFECT)
+        for fixture_id, capability in capabilities.items()
+        if capability.has_role(roles.EFFECT) and capability.has_role(roles.PAN)
+        and capability.has_role(roles.RED)
+    }
+    assert victims, "no RGB moving head in the show carries a mode channel"
+
+    stripped = 0
+    for function in find_local(workspace.root, "Engine"):
+        for element in findall_local(function, "FixtureVal"):
+            offsets = victims.get(int(element.attrib.get("ID", -1)))
+            if not offsets or not element.text:
+                continue
+            numbers = [int(n) for n in element.text.split(",") if n != ""]
+            kept = [
+                (channel, value)
+                for channel, value in zip(numbers[::2], numbers[1::2], strict=True)
+                if channel not in offsets
+            ]
+            if len(kept) * 2 != len(numbers):
+                stripped += 1
+            element.text = ",".join(
+                str(n) for pair in kept for n in pair
+            )
+    assert stripped, "the show never parked the mode channel to begin with"
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "modo sin dueño"
+    ]
+    assert findings, "a head left running its own programme went unnoticed"
+    assert any(
+        capabilities[fixture_id].fixture.name in f.fixtures
+        for f in findings
+        for fixture_id in victims
+    )
+
+
+def test_a_smoke_column_a_latched_button_can_fire(library):
+    """2026-08-30: "el humo vertical nunca debe dispararse solo" (owner).
+
+    The four vertical machines fire a lit column and empty a tank doing it,
+    which is why their button is a Flash and their pump is in the group QLC+
+    resets every cycle. Neither helps if the same scene is reachable from a
+    button that latches - AUTO, a level, a Toggle - so the wiring is the rule:
+    turn the column's own button into a Toggle and it must bite.
+    """
+    workspace = _show()
+    console = find_local(workspace.root, "VirtualConsole")
+    switched = 0
+    for button in iter_local(console, "Button"):
+        if "HUMO VERT ·" not in (button.attrib.get("Caption") or ""):
+            continue
+        action = find_local(button, "Action")
+        assert action is not None and action.text == "Flash"
+        action.text = "Toggle"
+        switched += 1
+    assert switched, "the console lost its vertical smoke button"
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "columna automatica"
+    ]
+    assert findings, "a latched smoke column went unnoticed"
+    assert any("Humo Vertical" in fixture for f in findings for fixture in f.fixtures)

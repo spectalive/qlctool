@@ -47,6 +47,7 @@ from .dimmerless_intensity import generate_dimmerless_intensity
 from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
 from .flash_color import generate_flash_color
+from .dealt_gobo_scenes import generate_dealt_gobo_scenes
 from .gobo_shake import generate_gobo_shake
 from .home_position import generate_home_position
 from .live_console import generate_live_console
@@ -59,6 +60,7 @@ from .multicolor_scene import generate_multicolor_scenes
 from .panel_manual import generate_panel_manual
 from .panel_speed_auto import generate_panel_speed_auto
 from .pixel_base import generate_pixel_base
+from .prism_spins import generate_prism_spins
 from .quad_color_scenes import generate_quad_color_scenes
 from .rainbow_efx import generate_rainbow_efx
 from .pixel_wheel_matrices import generate_pixel_wheel_matrices
@@ -89,6 +91,14 @@ CHARLA_WHITE = (255, 214, 170)
 # Slow forward on the 7R prism rotation's 0-127 slow-to-fast run: the inserted
 # prism turns, which is what makes it read as a kaleidoscope and not a smudge.
 PRISM_SPIN_SLOW = 25
+# Where the beams' focus channel sits. Nothing wrote it until 2026-08-30, which
+# means it sat at DMX 0 - one end of the travel - for every gobo this rig has
+# ever projected: seventeen patterns thrown out of focus, which is most of why
+# "se echaba en falta mas variedad" (owner). Mid-travel is a starting point and
+# nothing more; the number that is *right* depends on the throw, so it is one
+# constant, it travels with the gobo scenes, and TODO.md carries the job of
+# reading it off the room.
+BEAM_FOCUS = 127
 
 # How long the night spends at each level, in milliseconds. A wave rather than a
 # ramp: the cycle comes down through the middle level instead of jumping from
@@ -422,11 +432,18 @@ def build_canonical_show(
     # a step, never a concurrent layer - and every plain gobo scene parks the
     # jitter channel at zero, so the burst always has somebody to end it.
     shake = generate_gobo_shake(workspace, library)
+    # Four heads, four different patterns, turning over together: the wheel's
+    # own walk shows one shape at a time, and a room with four beams in it
+    # should not look like one beam repeated (owner, 2026-08-30).
+    dealt = generate_dealt_gobo_scenes(
+        workspace, library,
+        companions=((roles.GOBO_SHAKE, 0), (roles.FOCUS, BEAM_FOCUS)),
+    )
     gobos = generate_wheel_scenes(
         workspace, library, role=roles.GOBO, label="Gobo", path="Gobos",
         dimmer_full=False,
-        companion=(roles.GOBO_SHAKE, 0, 0),
-        extra_step_ids=shake.scene_ids,
+        companions=((roles.GOBO_SHAKE, 0, 0), (roles.FOCUS, BEAM_FOCUS, BEAM_FOCUS)),
+        extra_step_ids=shake.scene_ids + dealt,
     )
     if gobos.chaser_id is not None:
         master["Gobo Animacion"] = gobos.chaser_id
@@ -451,17 +468,24 @@ def build_canonical_show(
     prisms = generate_wheel_scenes(
         workspace, library, role=roles.PRISM, label="Prisma", run_order="Loop",
         hold=8000, path="Prisma", dimmer_full=False, make_chaser=False,
-        companion=(roles.PRISM_ROTATION, PRISM_SPIN_SLOW, 0),
+        companions=((roles.PRISM_ROTATION, PRISM_SPIN_SLOW, 0),),
     )
+    # And the same prism turning fast, and turning the other way: one rotation
+    # channel, three looks, none of which the show used before 2026-08-30.
+    spins = generate_prism_spins(workspace, library)
     beam_subsets = generate_beam_subsets(workspace, library)
     prism_animation_id = _prism_choreography(
-        workspace, prisms.scene_ids, beam_subsets.prism_scene_ids
+        workspace, prisms.scene_ids, beam_subsets.prism_scene_ids,
+        extra_step_ids=spins.scene_ids,
     )
     if prism_animation_id is not None:
         master["Prisma Animacion"] = prism_animation_id
 
     smoke = generate_smoke_auto(workspace, library)
-    master["Humo Auto"] = smoke.chaser_id
+    # The haze timer, one function per rhythm. AUTO starts the default and the
+    # console puts all four in a solo frame, so the operator can change how
+    # often the room hazes without leaving the show page.
+    master.update(smoke.interval_ids)
     # The burst on its own, for the console: a held button, never a latched one.
     master["Humo ON"] = smoke.on_id
     # The vertical machines' column, fog and its own LED in one held scene -
@@ -647,9 +671,17 @@ def build_canonical_show(
             ),
             EnergyLevel(
                 "Nivel Fiesta",
+                # The prism runs here too since 2026-08-30. It used to be
+                # held back for the 40-second peak, which meant the room saw
+                # it for forty seconds out of every twenty-four minutes:
+                # "le faltaba usar mas los gobos los prismas etc" (owner).
+                # The dance takes it in and out on its own, so a level that
+                # runs it is not a level stuck inside a kaleidoscope.
                 [fid for fid in (
                     movement.wash_id, movement.beam_id,
-                    master["Gobo Animacion"], prism_off_id, intensity.full_id,
+                    master["Gobo Animacion"],
+                    master.get("Prisma Animacion", prism_off_id),
+                    intensity.full_id,
                 ) if fid is not None],
                 PARTY_HOLD,
             ),
@@ -670,7 +702,8 @@ def build_canonical_show(
                 "Nivel Fiesta Dinamico",
                 [fid for fid in (
                     movement.wash_id, movement.beam_id,
-                    master["Gobo Animacion"], prism_off_id,
+                    master["Gobo Animacion"],
+                    master.get("Prisma Animacion", prism_off_id),
                     dimmer_programs_id, peak_static,
                 ) if fid is not None],
                 DYNAMIC_HOLD,
@@ -728,10 +761,13 @@ def build_canonical_show(
                if f is not None] or [home_id]),
             gobo_open_id, prism_off_id, intensity.ambient_id,
         ]),
+        # The party moment carries the prism from 2026-08-30 for the same
+        # reason the party level does: the dance takes it in and out, and a
+        # room somebody put into FIESTA by hand should get the whole rig.
         Moment("Momento Fiesta", [
             master["Rueda Colores"], *pixel_layer,
             master["Movimientos Cabezas"], master["Gobo Animacion"],
-            prism_off_id, intensity.full_id,
+            master.get("Prisma Animacion", prism_off_id), intensity.full_id,
         ]),
         # Everything the rig has, minus the strobe: a strobe belongs to a hit
         # somebody presses and lets go of, not to a state left running. The
@@ -849,12 +885,16 @@ PRISM_STEP_HOLD_MS = 8000
 
 def _prism_choreography(
     workspace, wheel_scene_ids: list[int], subset_scene_ids: list[int],
+    extra_step_ids: list[int] | None = None,
 ) -> int | None:
     """The old eight-step prism dance, or the plain out/in walk as fallback.
 
     The dance needs the full set of subset scenes (a rig with fewer than four
     prism beams generates fewer) and both wheel positions; anything less falls
     back to walking the wheel scenes the way the generator always did.
+
+    extra_step_ids ride at the end of the dance: the same prism turning at the
+    other speeds, which is one channel's worth of variety the room never saw.
     """
     if len(wheel_scene_ids) < 2:
         return None
@@ -867,6 +907,7 @@ def _prism_choreography(
         ]
     else:
         steps = list(wheel_scene_ids)
+    steps += list(extra_step_ids or [])
     function_id = next_function_id(workspace.root)
     workspace.add_function(build_chaser(
         function_id, "Prisma Animacion", steps, hold=PRISM_STEP_HOLD_MS,

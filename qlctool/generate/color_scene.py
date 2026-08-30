@@ -13,6 +13,7 @@ from collections.abc import Sequence
 from .. import roles
 from ..capability import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
+from ..mode_park import mode_park_pairs
 from ..shutter_open import shutter_open_pairs
 from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
@@ -74,6 +75,10 @@ def color_scene_values(
         # everyone else to writing the mode off right here.
         if internal_program_off:
             pairs += internal_program_off_pairs(caps)
+        # And the fixtures whose self-running channel has no names to match on
+        # - the MAC WASH's `Function Mode`, the MiN Wash's macros, the fog
+        # machines' colour cycle. Same trap, parked the same way.
+        pairs += mode_park_pairs(caps)
 
         result[caps.fixture.fixture_id] = pairs
 

@@ -39,7 +39,7 @@ def generate_wheel_scenes(
     run_order: str = "Random",
     make_chaser: bool = True,
     path: str | None = None,
-    companion: tuple[str, int, int] | None = None,
+    companions: Sequence[tuple[str, int, int]] = (),
     off_presets: tuple[str, ...] = ("PrismEffectOff",),
     extra_step_ids: Sequence[int] = (),
 ) -> GeneratedWheel:
@@ -50,12 +50,12 @@ def generate_wheel_scenes(
     mechanical shutter shows nothing on dimmer alone. Raises when no fixture
     carries the role.
 
-    companion is (role, on_value, off_value): a channel that belongs to this
-    wheel and is LTP like it - the prism's own rotation, the gobo's shake -
-    written in every scene so the wheel's owner owns it too, instead of the
-    channel keeping whatever the last look left there. A position whose
-    capability preset is in off_presets counts as the wheel disengaged and
-    gets off_value; every other position gets on_value.
+    companions are (role, on_value, off_value): channels that belong to this
+    wheel and are LTP like it - the prism's own rotation, the gobo's shake,
+    the beam's focus - written in every scene so the wheel's owner owns them
+    too, instead of the channel keeping whatever the last look left there. A
+    position whose capability preset is in off_presets counts as the wheel
+    disengaged and gets off_value; every other position gets on_value.
 
     extra_step_ids appends ready-made scenes to the chaser - steps that
     belong to this wheel's clock (a gobo shake burst) without being one of
@@ -81,9 +81,8 @@ def generate_wheel_scenes(
             # the role stays where it is - see wheel_for_role.
             offset, _ = capability.wheel_for_role(role)
             pairs = [(offset, position.middle)]
-            if companion is not None:
-                companion_role, on_value, off_value = companion
-                engaged = (position.preset or "") not in off_presets
+            engaged = (position.preset or "") not in off_presets
+            for companion_role, on_value, off_value in companions:
                 pairs += [
                     (companion_offset, on_value if engaged else off_value)
                     for companion_offset in capability.offsets_for_role(

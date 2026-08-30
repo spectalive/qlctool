@@ -7,6 +7,16 @@ scanned manual, 2026-08-29). One scene owns everything the column is: the fog,
 the LED dimmer at full - "si no pones el canal 2 a 255 no se ven" (owner) - the
 colour, and zeros on the strobe and auto-cycle channels so nothing latches.
 
+The colour is **not** this scene's to state. It forced full white for exactly
+one night and the owner watched the result: "salia humo bien pero la luz solo
+salia la blanca, no hacia las transiciones de colores" (2026-08-30). Of course
+it did - the scene is flashed with `Override`, which is the top fader priority
+in QLC+ (`Universe::Flashing`), so its white beat the colour wheel every time
+the button went down. The column is a floor PAR that happens to fog: the rig's
+colour wheel owns its red, green and blue like everything else, and this scene
+raises the pump and the LED master so whatever colour the room is in shows up
+inside the fog.
+
 Held on a Flash button, never latched: "pulso el canal de humo o humo vertical,
 debe activar el humo (valor 255), al soltar la tecla debe volver a cero al
 momento" (owner, 2026-08-29). That is exactly what a Flash does *provided the
@@ -26,15 +36,16 @@ from ..library import FixtureLibrary
 from ..workspace import Workspace
 
 NAME = "Humo Vertical YA"
-# Full white: the brightest the column gets, and the CO2 look the machines
-# were bought for.
-RGB = (255, 255, 255)
 
 
 def generate_vertical_smoke_burst(
     workspace: Workspace, library: FixtureLibrary, path: str = "Humo",
 ) -> int | None:
-    """The held column scene, or None when the rig has no lit smoke machine."""
+    """The held column scene, or None when the rig has no lit smoke machine.
+
+    Pump and LED master only: the colour comes from whatever the room is
+    running, which is the whole point of a lit column.
+    """
     machines = [
         c for c in capabilities_of(workspace.root, library)
         if c.is_smoke and c.has_role(roles.RED)
@@ -45,10 +56,6 @@ def generate_vertical_smoke_burst(
     for caps in machines:
         pairs = [(offset, 255) for offset in fog_offsets(caps)]
         pairs += [(offset, 255) for offset in caps.offsets_for_role(roles.DIMMER)]
-        for role, level in zip(
-            (roles.RED, roles.GREEN, roles.BLUE), RGB, strict=True
-        ):
-            pairs += [(offset, level) for offset in caps.offsets_for_role(role)]
         # Parked, explicitly: the strobe and the auto colour cycle are LTP and
         # keep whatever a stray value left on them.
         for role in (roles.STROBE, roles.EFFECT):

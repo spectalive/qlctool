@@ -176,6 +176,17 @@ HELP_LINES = (
     ),
 )
 
+# The haze rhythms, under the help text on page 1. The captions say minutes
+# because that is the question being asked - "cada cuanto" - and the first one
+# carries the key the hand-built console had on the haze.
+SMOKE_ROW_Y = 830
+SMOKE_RHYTHMS = (
+    ("Humo Auto", "HUMO cada 1 min · J"),
+    ("Humo Auto 2 min", "cada 2 min"),
+    ("Humo Auto 4 min", "cada 4 min"),
+    ("Humo Auto 8 min", "cada 8 min"),
+)
+
 # The tempo dial lives on page 1 since 2026-08-29: the owner taps the room's
 # tempo often enough that it belongs where the operator is looking, on the
 # hand-built console's tap key. Its time is one beat and every layer under it
@@ -476,6 +487,23 @@ def _page_show(
             page=PAGE_SHOW, font=HELP_FONT,
         )
 
+    # The haze rhythm, on the page the operator is looking at. Solo, because
+    # two timers on one pump is twice the haze: pressing a rhythm stops the one
+    # that was running, and pressing the running one again stops the haze
+    # altogether. The vertical columns are not here and never will be - those
+    # only fire while HUMO VERT is held down (`rule_held_column`).
+    smoke = frame(
+        outer, "HUMO AMBIENTE — cada cuánto dispara solo",
+        LEFT_X, SMOKE_ROW_Y, RIGHT_X - LEFT_X - GAP, 60,
+        page=PAGE_SHOW, solo=True, font=TITLE_FONT,
+    )
+    pitch = (RIGHT_X - LEFT_X - GAP - 2 * GAP) // len(SMOKE_RHYTHMS)
+    for index, (name, caption) in enumerate(SMOKE_RHYTHMS):
+        master_button(
+            smoke, name, caption,
+            GAP + index * pitch, HEADER + 2, pitch - 6, 28, font=SMALL_FONT,
+        )
+
     # The tempo dial, where the operator is looking, with the hand-built
     # console's tap key. Each layer carries its own multiplier - see
     # `beat_multiplier` - so one tap re-times all of them and none of them
@@ -521,7 +549,6 @@ def _page_manual(
         ("Movimientos Cabezas", "Mover cabezas · A"),
         ("Gobo Animacion", "Gobos girando · G"),
         ("Prisma Animacion", "Prisma · P"),
-        ("Humo Auto", "Humo automático · J"),
         ("Arcoiris Simultaneo", "Arcoiris junto · '"),
         ("Arcoiris Pasos", "Arcoiris fases · ¡"),
     )

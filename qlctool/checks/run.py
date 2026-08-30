@@ -28,10 +28,12 @@ from .rule_flash_scene import check_flash_scene
 from .rule_flash_speed import check_flash_speed
 from .rule_flash_strobe import check_flash_strobe
 from .rule_group_grid import check_group_grids
+from .rule_held_column import check_held_column
 from .rule_intensity import check_intensity
 from .rule_internal_program import check_internal_programs
 from .rule_latched_strobe import check_latched_strobe
 from .rule_masked_dimmer_efx import check_masked_dimmer_efx
+from .rule_mode_owner import check_mode_owner
 from .rule_movement_families import check_movement_families
 from .rule_pad_input import check_pad_input
 from .rule_parked_movers import check_parked_movers
@@ -76,6 +78,7 @@ def check_workspace(
     findings += check_wheel_colour(graph, groups, entries)
     findings += check_wheel_rotation(graph, groups)
     findings += check_internal_programs(graph, groups, entries, states)
+    findings += check_mode_owner(graph, groups, entries)
     findings += check_collisions(graph, groups, entries)
     findings += check_colour_clocks(graph, groups, entries, states)
     findings += check_unfinished_effects(graph, groups, entries)
@@ -103,6 +106,7 @@ def check_workspace(
     findings += check_smoke(graph, groups, entries)
     findings += check_smoke_light(graph, groups, entries)
     findings += check_smoke_restore(graph, groups, root, states)
+    findings += check_held_column(graph, groups, root)
     findings += check_group_grids(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))
     findings += check_audio_triggers(graph, groups, root)
