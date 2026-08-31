@@ -79,8 +79,11 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
 # ...or let it arrange the fixtures by what they can do, when there is no plot
 .venv/bin/qlctool stage "../../QLC+ Setups/Vibra.qxw" --stage 12x6x8 --pov front
 
-# build a fresh show on the same rig: patch kept, content regenerated
-.venv/bin/qlctool newshow "../../QLC+ Setups/DeluxeEventos2.qxw" \
+# build a fresh show on the same rig: patch kept, content regenerated.
+# The source is Vibra.qxw itself, not DeluxeEventos2.qxw - the plot describes
+# the patch the show actually has, and the old workspace is two fixtures behind
+# it ("the plot places fixtures that are not patched: [27, 28]").
+.venv/bin/qlctool newshow "../../QLC+ Setups/Vibra.qxw" \
   --plot "../../QLC+ Setups/vibra-stage-plot.json" \
   --out "../../QLC+ Setups/Vibra.qxw" --validate
 
