@@ -36,6 +36,7 @@ from .repatch.add import add_fixture
 from .repatch.address import set_fixture_address
 from .repatch.group_add import add_fixture_group
 from .repatch.group_head import add_group_head
+from .repatch.group_head_move import move_group_head
 from .repatch.group_head_remove import remove_group_head
 from .repatch.group_reshape import reshape_group
 from .repatch.group_size import set_group_size
@@ -182,6 +183,7 @@ def cmd_patch(args: argparse.Namespace) -> int:
 
     edits = (args.add or args.set_address or args.rename or args.remove
              or args.group_size or args.group_add or args.group_remove
+             or args.group_move
              or args.group_new or args.group_reshape)
     if not edits:
         conflicts = patch_conflicts(ws.root)
@@ -246,6 +248,18 @@ def cmd_patch(args: argparse.Namespace) -> int:
         x, y = cell.split(",", 1)
         add_group_head(ws.root, int(group), int(fixture), int(x), int(y))
         print(f"group {group} cell ({x},{y}) now holds fixture {fixture}")
+
+    for spec in args.group_move or []:
+        group, placement = spec.split("=", 1)
+        fixture, cell = placement.split("@", 1)
+        fixture, _, head = fixture.partition(":")
+        x, y = cell.split(",", 1)
+        was = move_group_head(
+            ws.root, int(group), int(fixture), int(x), int(y),
+            int(head or 0),
+        )
+        print(f"group {group}: fixture {fixture} head {head or 0} "
+              f"moved from {was} to ({x},{y})")
 
     for spec in args.group_remove or []:
         group, fixture = spec.split("=", 1)
@@ -521,6 +535,12 @@ def build_parser() -> argparse.ArgumentParser:
                          metavar="GROUP=FIXTURE@X,Y",
                          help="put a fixture's head in a group cell - without "
                               "it a fixture gets no colour bank and no matrix")
+    p_patch.add_argument("--group-move", action="append",
+                         metavar="GROUP=FIXTURE[:HEAD]@X,Y",
+                         help="move a head already in the group to another "
+                              "cell; the target cell must be free. HEAD "
+                              "defaults to 0 - name it for a bar or a panel, "
+                              "whose heads are all one fixture")
     p_patch.add_argument("--group-remove", action="append",
                          metavar="GROUP=FIXTURE",
                          help="take a fixture out of a group - it then gets no "
