@@ -30,6 +30,22 @@ from pathlib import Path
 # makes a background launch readable: `open -g` does not give us its stdout.
 QML_LOG_FILE = Path.home() / "QLC+.log"
 
+# QLC+ opens that file in *append* mode and its name is hard-coded in
+# `qmlui/main.cpp`, so every run of every process shares one file. Truncating it
+# before a launch is not enough: a QLC+ still shutting down from the previous
+# validation keeps writing into it, and its complaints then read as this
+# workspace's. This is the first line QLC+ logs, so the text after its last
+# occurrence is the session this call started - and nobody else's. It is what
+# made `test_qlcplus_loads_the_show` fail under the full suite with an
+# "overlapping with fixture" a neighbouring test had deliberately built
+# (2026-08-25, fixed 2026-08-31). The signature is spelled out because
+# `loadMap` is logged on the very next line and would win a prefix match.
+SESSION_START_MARKER = "QLCFixtureDefCache::load(const QDir &)"
+
+# QLC+ processes this module started that had not exited when the call gave up
+# waiting. The next launch waits for them first.
+_UNREAPED: set[int] = set()
+
 DEFAULT_BINARIES = (
     # 4.x first: it is the only build that loads with no GUI at all.
     "/Applications/QLC+ 4.app/Contents/MacOS/qlcplus",
@@ -130,6 +146,19 @@ def validate_workspace(
     return _verdict(output)
 
 
+def current_session(log: str) -> str:
+    """The part of the shared log file this call's QLC+ wrote.
+
+    Everything before the last `SESSION_START_MARKER` belongs to an earlier
+    process. Returns the whole text when the marker never appears, so a build
+    that logs something else cannot silently drop a real complaint.
+    """
+    index = log.rfind(SESSION_START_MARKER)
+    if index == -1:
+        return log
+    return log[log.rfind("\n", 0, index) + 1:]
+
+
 def _verdict(output: str) -> ValidationResult:
     if not (output or "").strip():
         # QLC+ prints its banner before it does anything else, so an empty log
@@ -169,6 +198,10 @@ def _run_in_background(
     told to log to a file (-g) and only the processes this call started are
     killed afterwards - a QLC+ the owner has open stays open.
     """
+    # A previous call's QLC+ that outlived its five seconds is still appending
+    # to the shared log. Let it go before truncating, or its dying lines land
+    # inside this call's slice and read as this workspace's complaints.
+    _wait_for_exit(_UNREAPED & _running_pids(executable), executable)
     before = _running_pids(executable)
     QML_LOG_FILE.write_text("")
     launched = subprocess.run(
@@ -187,7 +220,9 @@ def _run_in_background(
     deadline = time.monotonic() + timeout
     loaded_at: float | None = None
     while time.monotonic() < deadline:
-        text = QML_LOG_FILE.read_text(errors="replace")
+        # Only this launch's slice: a previous QLC+ going down keeps appending,
+        # and its end-of-load markers would otherwise stop the wait early.
+        text = current_session(QML_LOG_FILE.read_text(errors="replace"))
         if loaded_at is None and any(m in text for m in QML_LOADED_MARKERS):
             loaded_at = time.monotonic()
         if loaded_at is not None and time.monotonic() - loaded_at > quiet_period:
@@ -206,18 +241,21 @@ def _run_in_background(
         _wait_for_exit(started, executable)
         return None
     _wait_for_exit(started, executable)
-    return QML_LOG_FILE.read_text(errors="replace")
+    return current_session(QML_LOG_FILE.read_text(errors="replace"))
 
 
 def _wait_for_exit(started: set[int], executable: str) -> None:
     """Let the processes this call started actually go.
 
     `open` answers -600 if asked to launch the bundle again while a copy is
-    still shutting down.
+    still shutting down. Whatever has not gone by the deadline is remembered,
+    so the next launch waits for it instead of sharing the log file with it.
     """
     gone_by = time.monotonic() + 5.0
     while started & _running_pids(executable) and time.monotonic() < gone_by:
         time.sleep(0.1)
+    _UNREAPED.difference_update(started)
+    _UNREAPED.update(started & _running_pids(executable))
 
 
 def _running_pids(executable: str) -> set[int]:
