@@ -23,6 +23,10 @@ class FixtureCapabilities:
     # and their QLC+ channel groups, which decide whether QLC+ resets a channel
     # every cycle or leaves it holding the last value written
     groups_by_offset: list[str]
+    # the <Head> blocks this mode declares, as channel offsets. Empty means the
+    # definition declares none and QLC+ will invent a single head holding every
+    # channel - see FixtureDefinition.heads.
+    declared_heads: tuple[tuple[int, ...], ...] = ()
     fixture_type: str = ""
     dimensions: Dimensions | None = None
 
@@ -41,6 +45,7 @@ class FixtureCapabilities:
             roles_by_offset=definition.mode_roles(fixture.mode),
             capabilities_by_offset=definition.mode_capabilities(fixture.mode),
             groups_by_offset=definition.mode_groups(fixture.mode),
+            declared_heads=definition.mode_heads(fixture.mode),
             fixture_type=definition.fixture_type,
             dimensions=definition.dimensions,
         )

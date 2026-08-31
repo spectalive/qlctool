@@ -27,6 +27,7 @@ from .rule_console import check_console
 from .rule_flash_scene import check_flash_scene
 from .rule_flash_speed import check_flash_speed
 from .rule_flash_strobe import check_flash_strobe
+from .rule_grid_order import check_grid_order
 from .rule_group_grid import check_group_grids
 from .rule_held_column import check_held_column
 from .rule_intensity import check_intensity
@@ -46,6 +47,7 @@ from .rule_state_proxy import check_state_proxy
 from .rule_stepped_dimmer import check_stepped_dimmer
 from .rule_tap_dial import check_tap_dial
 from .rule_tempo_units import check_tempo_units
+from .rule_undeclared_heads import check_undeclared_heads
 from .rule_strobe_coverage import check_strobe_coverage
 from .rule_strobe_in_cycle import check_strobe_in_cycle
 from .rule_strobe_rate import check_strobe_rate
@@ -108,6 +110,8 @@ def check_workspace(
     findings += check_smoke_restore(graph, groups, root, states)
     findings += check_held_column(graph, groups, root)
     findings += check_group_grids(graph, root)
+    findings += check_grid_order(root)
+    findings += check_undeclared_heads(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))
     findings += check_audio_triggers(graph, groups, root)
     findings += check_pad_input(root)

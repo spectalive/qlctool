@@ -5,7 +5,7 @@ role) and the modes that order a subset of them. A patched fixture in a workspac
 only records manufacturer/model/mode, so this is where channel roles come from.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from lxml import etree
@@ -65,7 +65,18 @@ class FixtureDefinition:
     channels: dict[str, Channel]
     # mode name -> ordered list of channel names
     modes: dict[str, list[str]]
+    # mode name -> each declared <Head>'s channel offsets. Empty when the mode
+    # declares none, which is not the same as "one head": QLC+ then builds a
+    # single head holding every channel, and a head keeps only the *last*
+    # channel of each colour it finds (`QLCFixtureHead::cacheChannels`). A
+    # fixture with three RGB rings and no heads therefore offers a matrix one
+    # ring, silently.
+    heads: dict[str, tuple[tuple[int, ...], ...]] = field(default_factory=dict)
     dimensions: Dimensions | None = None
+
+    def mode_heads(self, mode: str) -> tuple[tuple[int, ...], ...]:
+        """The channel offsets of each <Head> the mode declares."""
+        return self.heads.get(mode, ())
 
     def mode_roles(self, mode: str) -> list[str | None]:
         """Roles in channel order for a mode, index-aligned with DMX offset."""
@@ -118,6 +129,7 @@ def load_definition(path: str | Path) -> FixtureDefinition:
         )
 
     modes: dict[str, list[str]] = {}
+    heads: dict[str, tuple[tuple[int, ...], ...]] = {}
     for mode in iter_local(root, "Mode"):
         ordered = sorted(
             (
@@ -127,6 +139,14 @@ def load_definition(path: str | Path) -> FixtureDefinition:
             key=lambda pair: pair[0],
         )
         modes[mode.attrib["Name"]] = [name for _, name in ordered]
+        heads[mode.attrib["Name"]] = tuple(
+            tuple(
+                int(channel.text)
+                for channel in findall_local(head, "Channel")
+                if channel.text and channel.text.strip().isdigit()
+            )
+            for head in findall_local(mode, "Head")
+        )
 
     physical = find_local(root, "Physical")
     size = find_local(physical, "Dimensions") if physical is not None else None
@@ -143,6 +163,7 @@ def load_definition(path: str | Path) -> FixtureDefinition:
         dimensions=dimensions,
         channels=channels,
         modes=modes,
+        heads=heads,
     )
 
 
