@@ -22,7 +22,8 @@ from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .driven_channels import driven_channels
 from .finding import WARNING, Finding
-from .show_graph import ShowGraph, lit, reach
+from .show_graph import ShowGraph
+from .unowned_instant import unowned_while_lit
 
 RULE = "acento sin dueño"
 WHEEL_ROLES = (roles.COLOR_MACRO, roles.GOBO, roles.PRISM)
@@ -34,9 +35,6 @@ def check_accent_restore(
     console = find_local(root, "VirtualConsole")
     if console is None or not states:
         return []
-    state_reach = {
-        state_id: reach(graph, groups, state_id) for state_id in states
-    }
     findings: list[Finding] = []
     for button in iter_local(console, "Button"):
         action = find_local(button, "Action")
@@ -50,14 +48,14 @@ def check_accent_restore(
         if scene is None:
             continue
         findings += _orphaned(
-            graph, function_id, scene, state_reach,
+            graph, groups, function_id, scene, states,
             button.attrib.get("Caption", ""),
         )
     return findings
 
 
 def _orphaned(
-    graph: ShowGraph, function_id: int, scene, state_reach, caption: str
+    graph: ShowGraph, groups, function_id: int, scene, states, caption: str
 ) -> list[Finding]:
     findings: list[Finding] = []
     for fixture_id, written in driven_channels(
@@ -77,9 +75,11 @@ def _orphaned(
         dimmers = capability.offsets_for_role(roles.DIMMER)
         orphan_states = sorted(
             graph.name(state_id)
-            for state_id, driven in state_reach.items()
-            if _lights(driven.get(fixture_id, {}), dimmers)
-            and touched - set(driven.get(fixture_id, {}))
+            for state_id in states
+            if unowned_while_lit(
+                graph, groups, state_id, fixture_id,
+                frozenset(touched), tuple(dimmers),
+            )
         )
         if not orphan_states:
             continue
@@ -95,8 +95,3 @@ def _orphaned(
             fixtures=(capability.fixture.name,),
         ))
     return findings
-
-
-def _lights(written: dict[int, int | None], dimmers) -> bool:
-    """Whether this state has the fixture visible at all."""
-    return any(lit(written.get(offset, 0)) for offset in dimmers)

@@ -18,7 +18,14 @@ import pytest
 from qlctool import roles
 from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
+from qlctool.checks.console_states import room_states
 from qlctool.checks.run import check_workspace
+from qlctool.checks.show_graph import (
+    build_show_graph,
+    group_fixtures,
+    lit,
+    reach,
+)
 from qlctool.checks.strobe_written import strobe_capable_offsets
 from qlctool.fixture_group import fixture_groups
 from qlctool.fog_offsets import fog_offsets
@@ -1599,3 +1606,60 @@ def test_a_smoke_column_a_latched_button_can_fire(library):
     ]
     assert findings, "a latched smoke column went unnoticed"
     assert any("Humo Vertical" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_one_wheel_step_cannot_switch_the_strobe_off_for_all_of_them(library):
+    """2026-08-28, from the Codex review of `estrobo pegado`: the rule merged
+    the reach of everything hanging off a state, so a strobe-off written under
+    one alternative read as though it were written under all of them.
+
+    A chaser's steps are not concurrent - they are different rooms, one at a
+    time. Reproduced by leaving the panels' strobe-off in a single step of
+    `Ciclo Paneles` and taking it out of everywhere else: AUTO's merged reach
+    still finds a strobe-off, which is what made the old rule pass, while the
+    room spends the other 41 steps latched.
+    """
+    workspace = _show()
+    panels = {24, 25, 27, 28}
+    # The two states that are a Scene themselves keep theirs, so that under the
+    # old merged reach every lit state still had an owner and the rule was
+    # silent - which is what this test is here to break.
+    kept = {"Paneles - Effect 1", "Blanco Total", "Luz Charla"}
+    stripped = 0
+    for name, function in _functions(workspace).items():
+        if function.attrib.get("Type") != "Scene" or name in kept:
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            if int(value.attrib["ID"]) not in panels or not value.text:
+                continue
+            numbers = [int(n) for n in value.text.split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            if pairs.get(4) == 0:  # channel 5 is the strobe; leave the
+                pairs.pop(4)      # flash scenes' own strobing value alone
+                stripped += 1
+            value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+    assert stripped, "the repro changed nothing; the scene shape moved"
+
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    states = room_states(workspace.root, graph, groups)
+    merged = {
+        state_id: reach(graph, groups, state_id).get(24, {})
+        for state_id in states
+    }
+    assert all(
+        4 in written
+        for written in merged.values()
+        if lit(written.get(0, 0))
+    ), "the old merged reach would have caught this on its own; repro too broad"
+
+    findings = [
+        f for f in check_workspace(workspace, library)
+        if f.rule == "estrobo pegado"
+    ]
+
+    assert findings, (
+        "a strobe-off surviving in one wheel step masked every step that lost "
+        "it - the union is back"
+    )
+    assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)

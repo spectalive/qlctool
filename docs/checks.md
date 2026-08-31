@@ -28,6 +28,15 @@ once, so they are concurrent. A **Chaser** plays its steps one at a time, so
 steps are alternatives and never collide - which is exactly why the energy
 levels are safe inside `Ciclo Energia` and were dangerous as three buttons.
 
+That cuts both ways, and the second edge took longer to notice. "Can these two
+fight over a channel" is a question about a state's whole **reach** - everything
+it can drive at any step. "Is somebody owning this channel right now" is not:
+merge the steps and the one that parks a wheel parks it on behalf of every step
+that does not. The LTP restore rules therefore read a state one **instant** at a
+time (`unowned_instant.py`), which is answered without enumerating instants -
+two booleans per node, `any` over a chaser's steps and `all` over a collection's
+members.
+
 **What answers for what.** The console is built around a solo frame: the room
 is in exactly one **state** (AUTO, a moment, the work light, the blackout) and
 everything else is a **layer** pressed on top. A state runs with nothing
@@ -57,8 +66,8 @@ beneath it already did.
 | `estrobo en manos del audio` | The other half of the same rule: a Flash button an AudioTriggers bar presses must *not* strobe - a strobe fired by whatever the PA does is a strobe nobody chose | Guarded when the flashes got their strobe back (2026-08-27) |
 | `estrobo incompleto` | A strobe scene (all writes on strobe channels, at least one strobing) that skips patched fixtures which have a strobe-capable channel | `Strobo ON` drove only the labelled shutters: ten fixtures flashed, the seven Vortex and the panels held steady (2026-08-27) |
 | `intensidad tapada` | Two concurrent members of one Collection writing the same dimmer channel to different definite values: HTP, the higher wins, the lower is dead code | "Ambiente = dimmer bajo" could never have worked while the colour wheel held every dimmer at 255 (2026-08-27) |
-| `acento sin dueño` | A Flash scene moving an LTP wheel (gobo, prisma, colour) that some room state lights but never writes: on release the wheel stays where the flash left it | The prism flashed for one drop is still in the beam an hour later (2026-08-27) |
-| `estrobo pegado` | The same LTP latch on the strobe channels: a Flash scene strobing a channel that some room state lights but never writes - on release the strobe simply keeps firing | "Se queda el estrobo para siempre": FLASH latched the four panels, the seven Vortex and the two mini heads until `Strobo OFF` by hand (owner, 2026-08-28) |
+| `acento sin dueño` | A Flash scene moving an LTP wheel (gobo, prisma, colour) that some **instant** of a room state lights but never writes: on release the wheel stays where the flash left it | The prism flashed for one drop is still in the beam an hour later (2026-08-27) |
+| `estrobo pegado` | The same LTP latch on the strobe channels: a Flash scene strobing a channel that some **instant** of a room state lights but never writes - on release the strobe simply keeps firing | "Se queda el estrobo para siempre": FLASH latched the four panels, the seven Vortex and the two mini heads until `Strobo OFF` by hand (owner, 2026-08-28) |
 | `familias de movimiento mezcladas` | One EFX moving wash-class and beam-class fixtures (told apart by the gobo wheel) with one geometry | Twelve movers shared a 100x100 EFX; a 7R needle ran wash-sized sweeps through faces (2026-08-27) |
 | `binding a un control que el pad no manda` | A widget listening on a MIDI channel that is not in the pad's input profile - no control on the surface can send it | Eight buttons on the manual page were bound against SHIFT, which turned out to select the pad's own silkscreened functions and put nothing on the wire (2026-08-29) |
 | `consola con bindings y sin entrada MIDI` | A workspace whose widgets carry `<Input>` bindings while no universe patches an input plugin: QLC+ opens the show with nothing listening | No shipped workspace declared the patch, so the pad did nothing until it was built by hand in the Inputs/Outputs tab (2026-08-29) |

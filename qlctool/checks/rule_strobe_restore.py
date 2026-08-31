@@ -16,6 +16,12 @@ be driven by each room state that lights the fixture. A state that keeps the
 fixture dark is excused - the latch is invisible until a lit state runs, and
 that lit state is the one required to clear it.
 
+A state is read one **instant** at a time (`unowned_while_lit`), not as the
+union of everything it reaches. A chaser's steps are alternatives, so a level
+that never writes the strobe channel is a latch of its own even when the level
+beside it writes strobe-off; merging them would let one level cover for the
+next (2026-08-28, from the Codex review of `estrobo pegado`).
+
 Sibling of `rule_accent_restore`, which reads the same LTP latch off the wheel
 channels; this one is an error, not a warning, because a strobe nobody can
 stop in a dark room full of people is a hazard, not a parked gobo.
@@ -28,8 +34,9 @@ from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .driven_channels import driven_channels
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit, reach
+from .show_graph import ShowGraph
 from .strobe_written import strobe_capable_offsets, value_strobes
+from .unowned_instant import unowned_while_lit
 
 RULE = "estrobo pegado"
 
@@ -40,9 +47,6 @@ def check_strobe_restore(
     console = find_local(root, "VirtualConsole")
     if console is None or not states:
         return []
-    state_reach = {
-        state_id: reach(graph, groups, state_id) for state_id in states
-    }
     findings: list[Finding] = []
     for button in iter_local(console, "Button"):
         action = find_local(button, "Action")
@@ -56,14 +60,14 @@ def check_strobe_restore(
         if scene is None:
             continue
         findings += _latched(
-            graph, groups, function_id, scene, state_reach,
+            graph, groups, function_id, scene, states,
             button.attrib.get("Caption", ""),
         )
     return findings
 
 
 def _latched(
-    graph: ShowGraph, groups, function_id: int, scene, state_reach, caption: str
+    graph: ShowGraph, groups, function_id: int, scene, states, caption: str
 ) -> list[Finding]:
     findings: list[Finding] = []
     for fixture_id, written in driven_channels(
@@ -83,9 +87,11 @@ def _latched(
         dimmers = capability.offsets_for_role(roles.DIMMER)
         orphan_states = sorted(
             graph.name(state_id)
-            for state_id, driven in state_reach.items()
-            if _lights(driven.get(fixture_id, {}), dimmers)
-            and strobed - set(driven.get(fixture_id, {}))
+            for state_id in states
+            if unowned_while_lit(
+                graph, groups, state_id, fixture_id,
+                frozenset(strobed), tuple(dimmers),
+            )
         )
         if not orphan_states:
             continue
@@ -101,8 +107,3 @@ def _latched(
             fixtures=(capability.fixture.name,),
         ))
     return findings
-
-
-def _lights(written: dict[int, int | None], dimmers) -> bool:
-    """Whether this state has the fixture visible at all."""
-    return any(lit(written.get(offset, 0)) for offset in dimmers)
