@@ -39,6 +39,7 @@ from .repatch.group_head import add_group_head
 from .repatch.group_head_move import move_group_head
 from .repatch.group_head_remove import remove_group_head
 from .repatch.group_reshape import reshape_group
+from .repatch.group_sort import sort_group_by_stage
 from .repatch.group_size import set_group_size
 from .repatch.remove import remove_fixture
 from .repatch.rename import rename_fixture
@@ -183,7 +184,7 @@ def cmd_patch(args: argparse.Namespace) -> int:
 
     edits = (args.add or args.set_address or args.rename or args.remove
              or args.group_size or args.group_add or args.group_remove
-             or args.group_move
+             or args.group_move or args.group_sort
              or args.group_new or args.group_reshape)
     if not edits:
         conflicts = patch_conflicts(ws.root)
@@ -245,9 +246,18 @@ def cmd_patch(args: argparse.Namespace) -> int:
     for spec in args.group_add or []:
         group, placement = spec.split("=", 1)
         fixture, cell = placement.split("@", 1)
+        fixture, _, head = fixture.partition(":")
         x, y = cell.split(",", 1)
-        add_group_head(ws.root, int(group), int(fixture), int(x), int(y))
-        print(f"group {group} cell ({x},{y}) now holds fixture {fixture}")
+        add_group_head(
+            ws.root, int(group), int(fixture), int(x), int(y), int(head or 0),
+        )
+        print(f"group {group} cell ({x},{y}) now holds fixture {fixture} "
+              f"head {head or 0}")
+
+    for spec in args.group_sort or []:
+        moved = sort_group_by_stage(ws.root, int(spec))
+        print(f"group {spec} re-laid in stage order, {len(moved)} cell(s) moved"
+              if moved else f"group {spec} was already in stage order")
 
     for spec in args.group_move or []:
         group, placement = spec.split("=", 1)
@@ -532,9 +542,15 @@ def build_parser() -> argparse.ArgumentParser:
                          help="resize a fixture group's grid; refuses a size "
                               "that would leave its own heads unreachable")
     p_patch.add_argument("--group-add", action="append",
-                         metavar="GROUP=FIXTURE@X,Y",
+                         metavar="GROUP=FIXTURE[:HEAD]@X,Y",
                          help="put a fixture's head in a group cell - without "
-                              "it a fixture gets no colour bank and no matrix")
+                              "it a fixture gets no colour bank and no matrix. "
+                              "HEAD defaults to 0; name it for a bar, a panel "
+                              "or a wash whose rings are all one fixture")
+    p_patch.add_argument("--group-sort", action="append", metavar="GROUP",
+                         help="re-lay the group's cells in the order the "
+                              "fixtures stand in the room, so a sweep across "
+                              "the grid sweeps the stage")
     p_patch.add_argument("--group-move", action="append",
                          metavar="GROUP=FIXTURE[:HEAD]@X,Y",
                          help="move a head already in the group to another "
