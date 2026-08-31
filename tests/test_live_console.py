@@ -350,3 +350,31 @@ def test_a_mix_button_is_not_ambiguous(console):
     assert by_page
     for page, captions in by_page.items():
         assert len(captions) == len(set(captions)), page
+
+
+def test_the_colour_banks_shrink_instead_of_running_off_the_screen():
+    """2026-08-31: a fifth fixture group (the two MAC WASH) added a fifth
+    colour bank to the manual page's left column, and the column was stacked at
+    a hard-coded 128px pitch. Everything under it - the four dimmer chases and
+    both strobe buttons - went off the bottom of a 900px screen, unreachable,
+    while the generator's own summary still said "on one 1440x900 screen".
+
+    The pitch now comes from the room left between the layers above and the
+    dimmer frame below, so the column fits whatever the rig grows into.
+    """
+    from qlctool.vc.bank_pitch import (
+        BANK_COLUMN_TOP,
+        BANK_PITCH_TOP,
+        DIMMER_FRAME_HEIGHT,
+        OUTER_HEIGHT,
+        bank_pitch_for,
+    )
+
+    for banks in range(1, 12):
+        pitch = bank_pitch_for(banks)
+        assert pitch <= BANK_PITCH_TOP
+        bottom = BANK_COLUMN_TOP + banks * pitch + DIMMER_FRAME_HEIGHT
+        assert bottom <= OUTER_HEIGHT, (
+            f"{banks} colour banks push the column {bottom - OUTER_HEIGHT}px "
+            f"past the bottom of the screen"
+        )

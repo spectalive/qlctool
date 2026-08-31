@@ -95,10 +95,33 @@ def test_every_colour_look_takes_the_washes_off_their_own_programme(
     assert movers, "no RGB moving head in this patch carries a mode channel"
     for capability in movers:
         offsets = capability.offsets_for_role(roles.EFFECT)
-        for name in ("Blanco Total", "Rig Rojo", "Luz Charla"):
-            written = _values(functions[name], capability.fixture.fixture_id)
+        fixture_id = capability.fixture.fixture_id
+        # 2026-08-31: a mover can now live in a fixture group of its own, and a
+        # rig-wide look deliberately skips a group that has its own colour bank
+        # - two colour clocks on one fixture is its own bug. So a look that does
+        # not reach this fixture is not a look that abandoned it; what matters
+        # is that everything which *lights* it owns the mode channel.
+        reaching = [
+            name for name in ("Blanco Total", "Rig Rojo", "Luz Charla")
+            if _values(functions[name], fixture_id)
+        ]
+        assert reaching, f"no room look reaches {capability.fixture.name} at all"
+        for name in reaching:
+            written = _values(functions[name], fixture_id)
             assert all(written.get(offset) == 0 for offset in offsets), (
                 f"{name} leaves {capability.fixture.name} on its own programme"
+            )
+
+        # And the scene that owns a matrix-lit fixture, which is the only thing
+        # holding it open under AUTO once it is in a group of its own. Missing
+        # this is what let the two MAC WASH run their own programme under a
+        # matrix that thought it was painting them.
+        base = functions.get("Pixeles ON")
+        if base is not None and _values(base, fixture_id):
+            written = _values(base, fixture_id)
+            assert all(written.get(offset) == 0 for offset in offsets), (
+                f"Pixeles ON lights {capability.fixture.name} and leaves it on "
+                f"its own programme"
             )
 
     # The beams have no RGB, so the colour generator never reaches them: their

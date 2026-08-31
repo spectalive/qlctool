@@ -36,6 +36,11 @@ from lxml import etree
 
 from ..argb import argb_from_rgb
 from ..palette import PALETTE
+from ..vc.bank_pitch import (
+    BANK_COLUMN_TOP,
+    DIMMER_FRAME_HEIGHT,
+    bank_pitch_for,
+)
 from ..vc.appearance import DEFAULT
 from ..vc.audio_triggers import build_audio_triggers
 from ..vc.button import BLACKOUT, FLASH, STOP_ALL, TOGGLE, build_button
@@ -559,11 +564,18 @@ def _page_manual(
             GAP + column * 129, HEADER + row * 52, 124, 46, font=SMALL_FONT,
         )
 
-    y = 216
+    # The banks are one frame per fixture group, and the number of groups is
+    # not a constant: a fifth group (the two MAC WASH, 2026-08-31) pushed this
+    # column and everything under it off the bottom of the screen, which the
+    # `consola` rule reported and the generator's own "fits on one screen" line
+    # had cheerfully denied. So the pitch comes from the room left between the
+    # layers above and the dimmer frame below, never from a number typed here.
+    y = BANK_COLUMN_TOP
+    bank_pitch = bank_pitch_for(len(banks))
     for bank in banks:
         element = frame(
             outer, f"Colores {bank.group_name} — teclas 1-0",
-            LEFT_X, y, LEFT_WIDTH, 122, page=PAGE_MANUAL, solo=True,
+            LEFT_X, y, LEFT_WIDTH, bank_pitch - 6, page=PAGE_MANUAL, solo=True,
             font=TITLE_FONT,
         )
         # Keys 1-0 follow the bank's key list - eight solids, then the old
@@ -584,10 +596,11 @@ def _page_manual(
                 foreground=_swatch(name, second=True) if split else DEFAULT,
                 font=TINY_FONT if split else SMALL_FONT,
             )
-        y += 128
+        y += bank_pitch
 
     dimmers = frame(
-        outer, "Intensidad y strobo de fixture", LEFT_X, y, LEFT_WIDTH, 136,
+        outer, "Intensidad y strobo de fixture", LEFT_X, y, LEFT_WIDTH,
+        DIMMER_FRAME_HEIGHT,
         page=PAGE_MANUAL, font=TITLE_FONT,
     )
     for index, (name, caption) in enumerate((

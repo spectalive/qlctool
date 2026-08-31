@@ -11,6 +11,7 @@ rule. New rules therefore have to be true of all three shows at once, which is
 what stops a check from being written to fit one file.
 """
 
+import re
 from pathlib import Path
 
 import pytest
@@ -20,6 +21,7 @@ from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.console_states import room_states
 from qlctool.checks.run import check_workspace
+from qlctool.checks.rule_undeclared_heads import check_undeclared_heads
 from qlctool.checks.show_graph import (
     build_show_graph,
     group_fixtures,
@@ -1663,3 +1665,90 @@ def test_one_wheel_step_cannot_switch_the_strobe_off_for_all_of_them(library):
         "it - the union is back"
     )
     assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_fixture_with_three_rings_and_one_head_is_caught(tmp_path):
+    """2026-08-31: the two MAC WASH 1915Z were about to be put in a fixture
+    group so they would finally get a colour bank and a matrix. Their 23-channel
+    mode has `Red/Green/Blue ring 1..3` and declared no `<Head>` at all.
+
+    QLC+ does not read that as "no heads": it builds one head holding every
+    channel, and that head keeps only the last channel of each colour. A matrix
+    would have painted the outer ring and left the other two holding whatever
+    was written last - the panels' bug, on part of a fixture. Reproduced by
+    taking the heads back out of the definition.
+    """
+    for qxf in (REPO / "QLC+ Fixtures").glob("*.qxf"):
+        text = qxf.read_text(encoding="utf-8")
+        if qxf.name.startswith("Mac-Mah-MAC-WASH"):
+            text = re.sub(r" *<Head>.*?</Head>\n", "", text, flags=re.S)
+            assert "<Head>" not in text
+        (tmp_path / qxf.name).write_text(text, encoding="utf-8")
+    headless = FixtureLibrary.load(tmp_path)
+
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+
+    workspace = _show()
+    group = next(
+        element for element in workspace.root.iter()
+        if localname(element) == "FixtureGroup"
+        and (find_local(element, "Name").text or "") == "Cabezas"
+    )
+    size = find_local(group, "Size")
+    size.set("X", str(int(size.attrib["X"]) + 2))
+    for cell, fixture_id in enumerate((41, 42)):
+        head = etree.SubElement(group, f"{{{QLC_NS}}}Head")
+        head.set("X", str(int(size.attrib["X"]) - 2 + cell))
+        head.set("Y", "0")
+        head.set("Fixture", str(fixture_id))
+        head.text = "0"
+
+    findings = [
+        f for f in check_workspace(workspace, headless)
+        if f.rule == "cabezas sin declarar"
+    ]
+
+    assert findings, (
+        "a fixture offering a matrix one of its three rings went unnoticed"
+    )
+    assert any("MAC WASH" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_the_shipped_definitions_declare_a_head_per_colour_set(library):
+    """The other half of the rule: every fixture the show patches must already
+    satisfy it, or the rule is only true of the one file it was written for."""
+    for name in SHOWS:
+        workspace = _show(name)
+        graph = build_show_graph(
+            workspace.root, capabilities_of(workspace.root, library)
+        )
+        assert not check_undeclared_heads(graph, workspace.root)
+
+
+def test_three_empty_head_blocks_do_not_satisfy_the_rule(tmp_path):
+    """Found in review, 2026-08-31: counting `<Head>` elements is not the same
+    as counting heads that hold a colour. Three blocks listing the pan and tilt
+    channels satisfy a count and leave the matrix exactly as broken."""
+    for qxf in (REPO / "QLC+ Fixtures").glob("*.qxf"):
+        text = qxf.read_text(encoding="utf-8")
+        if qxf.name.startswith("Mac-Mah-MAC-WASH"):
+            text = re.sub(
+                r"( *<Head>\n)(?: *<Channel>\d+</Channel>\n)+",
+                r"\1   <Channel>0</Channel>\n   <Channel>2</Channel>\n",
+                text,
+            )
+            assert text.count("<Head>") == 3
+        (tmp_path / qxf.name).write_text(text, encoding="utf-8")
+    colourless = FixtureLibrary.load(tmp_path)
+
+    workspace = _show()
+    graph = build_show_graph(
+        workspace.root, capabilities_of(workspace.root, colourless)
+    )
+
+    findings = check_undeclared_heads(graph, workspace.root)
+
+    assert findings, "three heads holding no colour passed the head count"
+    assert any("MAC WASH" in fixture for f in findings for fixture in f.fixtures)

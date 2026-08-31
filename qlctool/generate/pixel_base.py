@@ -20,9 +20,12 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..internal_program import internal_program_off_pairs
+from ..mode_park import mode_park_pairs
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
+from ..zoom_wide import zoom_wide_pairs
 
 NAME = "Pixeles ON"
 PATH = "Show"
@@ -57,6 +60,19 @@ def generate_pixel_base(
         # A strobe-only channel is LTP and a released Flash restores nothing:
         # the scene that owns the light writes the strobe off.
         pairs += strobe_off_pairs(capability)
+        # A wash head in a matrix group is still a head: nothing else writes
+        # its zoom, and an unwritten zoom is 0 - the narrowest beam it has.
+        pairs += zoom_wide_pairs(capability)
+        # And nothing else holds its mode channel either. This scene is what
+        # lights a matrix-painted fixture, so it is the one that has to say
+        # "listen to DMX" - otherwise the head is free to run its own programme
+        # under a matrix that thinks it is painting it. That is what the two
+        # MAC WASH did on the night of 2026-08-29, "cambios de colores muy
+        # rapidos", and what put them in a group in the first place.
+        pairs += internal_program_off_pairs(capability)
+        # And the ones whose self-running channel has no names to match
+        # on - the MAC WASH's blanket `Function Mode` is exactly that.
+        pairs += mode_park_pairs(capability)
         if pairs:
             values[capability.fixture.fixture_id] = pairs
 

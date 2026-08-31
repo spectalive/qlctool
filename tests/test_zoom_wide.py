@@ -14,6 +14,7 @@ from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
+from qlctool.xmlutil import find_local, findall_local, localname
 from qlctool.zoom_wide import zoom_wide_pairs
 
 REPO = Path(__file__).resolve().parents[3]
@@ -51,3 +52,42 @@ def test_a_zoom_that_does_not_say_which_end_is_wide_is_left_alone(caps):
     silent = list(wash.capabilities_by_offset)
     silent[5] = (Capability(minimum=0, maximum=255, name="Zoom"),)
     assert zoom_wide_pairs(replace(wash, capabilities_by_offset=silent)) == []
+
+
+def test_the_matrix_base_scene_writes_zoom_too():
+    """2026-08-31: the two MAC WASH joined a fixture group so they would get a
+    colour bank and a matrix. `Pixeles ON` is what holds a matrix-lit fixture
+    open - a matrix writes RGB and nothing else - and it wrote dimmer, shutter
+    and strobe-off but not zoom.
+
+    Every other scene that owns the light writes it. On a cold desk an
+    unwritten zoom is 0, which on these heads is the narrowest beam they have,
+    so the wash would have come up as a pencil. `qlctool check`'s
+    `zoom sin declarar` reported it the moment the group existed.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "Vibra-split.qxw")
+    library = FixtureLibrary.load()
+    capabilities = capabilities_of(workspace.root, library)
+    washes = [
+        c for c in capabilities
+        if zoom_wide_pairs(c) and "MAC WASH" in c.fixture.name
+    ]
+    assert washes, "the MAC WASH lost their zoom channel; this test is stale"
+
+    scene = next(
+        function for function in find_local(workspace.root, "Engine")
+        if localname(function) == "Function"
+        and function.attrib.get("Name") == "Pixeles ON"
+    )
+    written = {
+        int(value.attrib["ID"]): {
+            int(n) for n in (value.text or "").split(",")[0::2]
+        }
+        for value in findall_local(scene, "FixtureVal")
+    }
+
+    for capability in washes:
+        offsets = {offset for offset, _ in zoom_wide_pairs(capability)}
+        assert offsets <= written.get(capability.fixture.fixture_id, set()), (
+            f"{capability.fixture.name} is lit by Pixeles ON with no zoom"
+        )
