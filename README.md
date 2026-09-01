@@ -48,6 +48,11 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
 ## Use
 
 ```bash
+# hand the installed QLC+ the repo's definitions, input profile and gobos
+# (--check only reports what is stale or missing, exit 1 on any)
+.venv/bin/qlctool install --check
+.venv/bin/qlctool install
+
 # list patched fixtures and the roles resolved for each
 .venv/bin/qlctool info "../../QLC+ Setups/DeluxeEventos2.qxw"
 

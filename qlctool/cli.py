@@ -8,6 +8,7 @@ copy. Never overwrites the input - it always writes a new file.
 import argparse
 from pathlib import Path
 
+from .apply_install import apply_install
 from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
 from .checks.entry_points import entry_points
@@ -26,10 +27,13 @@ from .generate.movement_efx import generate_movement_efx
 from .generate.stage_layout import DEFAULT_STAGE, generate_stage_layout
 from .generate.stage_plot_layout import apply_stage_plot
 from .generate.vc_layout import generate_vc_layout
+from .install_plan import install_plan
 from .library import FixtureLibrary
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .monitor_node import POINTS_OF_VIEW
 from .patch_conflicts import patch_conflicts
+from .qlc_gobo_dir import qlc_gobo_dir
+from .qlc_user_dir import qlc_user_dir
 from .repatch.add import add_fixture
 from .repatch.address import set_fixture_address
 from .repatch.group_add import add_fixture_group
@@ -472,6 +476,31 @@ def cmd_check(args: argparse.Namespace) -> int:
     return 1
 
 
+def cmd_install(args: argparse.Namespace) -> int:
+    """Hand QLC+ the repo's definitions, profile and gobos - or say what it lacks.
+
+    A definition the repo fixed and QLC+ never received is the silent failure
+    this exists for: the show loads, validates and runs on last week's channel
+    map. `--check` is the question, exit 1 is the answer.
+    """
+    items = install_plan(user_dir=qlc_user_dir(), gobo_dir=qlc_gobo_dir())
+    behind = [item for item in items if item.needs_copy]
+    if not args.check:
+        for item in apply_install(behind):
+            print(f"  {item.state:<8} {item.source.name} -> {item.destination}")
+        print(f"{len(behind)} file(s) copied, {len(items) - len(behind)} already in sync")
+        return 0
+    for item in behind:
+        print(f"  {item.state:<8} {item.source.name} -> {item.destination}")
+    if behind:
+        print(
+            f"QLC+ is behind the repo on {len(behind)} of {len(items)} file(s); run qlctool install"
+        )
+        return 1
+    print(f"QLC+ has every one of the repo's {len(items)} file(s)")
+    return 0
+
+
 def cmd_input_profile(args: argparse.Namespace) -> int:
     """Write the SMC-PAD's QLC+ input profile from the map the show uses."""
     Path(args.out).write_bytes(build_input_profile())
@@ -770,6 +799,18 @@ def build_parser() -> argparse.ArgumentParser:
         "--limit", type=int, default=20, help="findings printed per rule (default 20)"
     )
     p_chk.set_defaults(func=cmd_check)
+
+    p_inst = sub.add_parser(
+        "install",
+        help="copy the repo's fixture definitions, input profile and gobos "
+        "into the installed QLC+; --check only reports what it is missing",
+    )
+    p_inst.add_argument(
+        "--check",
+        action="store_true",
+        help="report stale or missing copies and exit 1 on any, copy nothing",
+    )
+    p_inst.set_defaults(func=cmd_install)
 
     p_prof = sub.add_parser(
         "input-profile",

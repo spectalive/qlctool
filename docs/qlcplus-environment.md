@@ -9,7 +9,7 @@
 
 ## Custom fixture definitions must be installed
 
-The seven `.qxf` in `QLC+ Fixtures/` are not part of QLC+'s library. Until they
+The eleven `.qxf` in `QLC+ Fixtures/` are not part of QLC+'s library. Until they
 are copied into the QLC+ **user fixture folder**, opening a show reports
 `No fixture definition found` for every fixture that uses them - except
 CromoWash100, which QLC+ 5 ships itself.
@@ -36,6 +36,18 @@ cp -R "QLC+ Setups/Gobos/BEAM-LIGHT-230W-7R" \
 
 Redo it after a QLC+ upgrade - upgrading replaces the bundle. A missing file
 costs a thumbnail and nothing else; QLC+ does not complain.
+
+All three copies - definitions, input profile, gobos - are one command since
+2026-09-01, and `--check` says whether QLC+ has the repo's current files:
+
+```bash
+cd tools/qlctool
+.venv/bin/qlctool install --check   # lists stale or missing copies, exit 1 on any
+.venv/bin/qlctool install           # copies them (gobos into the bundle)
+```
+
+The check exists because the copies drift silently: four definitions on the
+author's Mac were a week behind the repo when it was first run.
 
 QLC+ caches the library at start, so **restart it** after copying definitions in.
 A definition present in both the user folder and the bundled library logs
