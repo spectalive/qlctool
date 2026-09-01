@@ -35,9 +35,7 @@ ALL_FORMATS = [
 
 
 def _efx(root):
-    return [
-        f for f in iter_local(root, "Function") if f.attrib.get("Type") == "EFX"
-    ]
+    return [f for f in iter_local(root, "Function") if f.attrib.get("Type") == "EFX"]
 
 
 def _text_of(parent, name):
@@ -78,12 +76,8 @@ def test_builder_reproduces_every_real_efx(show):
         # ones are the direct children, which find_local returns first only
         # because the Fixture blocks are nested - read them explicitly.
         top = [c for c in original]
-        efx_direction = next(
-            c for c in top if c.tag.endswith("}Direction")
-        ).text.strip()
-        efx_start_offset = [
-            c for c in top if c.tag.endswith("}StartOffset")
-        ][0].text.strip()
+        efx_direction = next(c for c in top if c.tag.endswith("}Direction")).text.strip()
+        efx_start_offset = [c for c in top if c.tag.endswith("}StartOffset")][0].text.strip()
 
         rebuilt = build_efx(
             int(original.attrib["ID"]),
@@ -126,12 +120,8 @@ def test_moving_heads_found_in_real_show():
     assert len(ids) == 12
     assert len(set(ids)) == len(ids)
 
-    hand_built = next(
-        f for f in _efx(ws.root) if f.attrib["Name"] == "Movimiento Circulo"
-    )
-    assert set(ids) == {
-        int(_text_of(m, "ID")) for m in findall_local(hand_built, "Fixture")
-    }
+    hand_built = next(f for f in _efx(ws.root) if f.attrib["Name"] == "Movimiento Circulo")
+    assert set(ids) == {int(_text_of(m, "ID")) for m in findall_local(hand_built, "Fixture")}
 
 
 def test_generate_movement_into_real_show(tmp_path):
@@ -156,9 +146,7 @@ def test_generate_movement_into_real_show(tmp_path):
     assert len(functions) == before_count + len(result.part_ids)
 
     by_name = {
-        f.attrib["Name"]: f
-        for f in functions
-        if int(f.attrib["ID"]) in set(result.part_ids)
+        f.attrib["Name"]: f for f in functions if int(f.attrib["ID"]) in set(result.part_ids)
     }
     assert "Movimiento Circulo (16 bit)" in by_name
     assert "Movimiento Circulo (8 bit)" in by_name
@@ -175,19 +163,16 @@ def test_generate_movement_into_real_show(tmp_path):
 
     # What the console and the chaser see is still one function per shape.
     collection = next(
-        f for f in iter_local(reloaded, "Function")
-        if f.attrib.get("Name") == "Movimiento Circulo"
-        and f.attrib.get("Type") == "Collection"
+        f
+        for f in iter_local(reloaded, "Function")
+        if f.attrib.get("Name") == "Movimiento Circulo" and f.attrib.get("Type") == "Collection"
     )
     assert int(collection.attrib["ID"]) in set(result.efx_ids)
 
     chaser = next(
-        f for f in iter_local(reloaded, "Function")
-        if f.attrib.get("ID") == str(result.chaser_id)
+        f for f in iter_local(reloaded, "Function") if f.attrib.get("ID") == str(result.chaser_id)
     )
-    assert [s.text for s in findall_local(chaser, "Step")] == [
-        str(i) for i in result.efx_ids
-    ]
+    assert [s.text for s in findall_local(chaser, "Step")] == [str(i) for i in result.efx_ids]
 
 
 def test_generate_rejects_workspace_without_movers():

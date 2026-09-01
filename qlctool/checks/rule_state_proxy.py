@@ -28,22 +28,23 @@ RULE = "estado pulsado por otra funcion"
 def check_state_proxy(graph: ShowGraph, states: set[int]) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, members in sorted(graph.members.items()):
-        pressed = sorted({
-            member for member in members
-            if member in states and member != function_id
-        })
+        pressed = sorted(
+            {member for member in members if member in states and member != function_id}
+        )
         for state_id in pressed:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    f"arranca «{graph.name(state_id)}», que es un boton del "
-                    f"marco de estados de la sala: el boton se entera aunque "
-                    f"lo arranque un chaser (qmlui "
-                    f"VCButton::slotFunctionRunning) y el solo frame para el "
-                    f"estado que estuviera sonando - el show se muere a "
-                    f"mitad de rafaga"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        f"arranca «{graph.name(state_id)}», que es un boton del "
+                        f"marco de estados de la sala: el boton se entera aunque "
+                        f"lo arranque un chaser (qmlui "
+                        f"VCButton::slotFunctionRunning) y el solo frame para el "
+                        f"estado que estuviera sonando - el show se muere a "
+                        f"mitad de rafaga"
+                    ),
+                )
+            )
     return findings

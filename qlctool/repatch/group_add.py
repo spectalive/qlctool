@@ -17,9 +17,7 @@ from ..constants import QLC_NS
 from ..xmlutil import find_local, iter_local
 
 
-def add_fixture_group(
-    root: etree._Element, name: str, width: int, height: int
-) -> int:
+def add_fixture_group(root: etree._Element, name: str, width: int, height: int) -> int:
     """Append an empty fixture group; returns the ID it was given."""
     if width < 1 or height < 1:
         raise ValueError(f"a {width}x{height} grid holds nothing")
@@ -30,10 +28,7 @@ def add_fixture_group(
     if engine is None:
         raise ValueError("workspace has no <Engine>")
 
-    existing = [
-        element for element in iter_local(root, "FixtureGroup")
-        if "ID" in element.attrib
-    ]
+    existing = [element for element in iter_local(root, "FixtureGroup") if "ID" in element.attrib]
     for element in existing:
         if _name(element) == name.strip():
             raise ValueError(f"a fixture group named {name!r} already exists")

@@ -43,45 +43,45 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
             continue
         caption = dial.attrib.get("Caption", "SpeedDial")
         multipliers = [
-            function.attrib.get("Duration", "0")
-            for function in findall_local(dial, "Function")
+            function.attrib.get("Duration", "0") for function in findall_local(dial, "Function")
         ]
         if not multipliers and _controls_bpm(dial):
             continue  # the `--bpm-tap` build: its tap drives the global BPM
         if not multipliers:
-            findings.append(Finding(
-                rule=EMPTY_RULE,
-                severity=ERROR,
-                function=caption,
-                message=(
-                    "tiene tecla de tap y no lista ninguna funcion: en QLC+ "
-                    "5.2.2 el tap solo escribe en las funciones del dial "
-                    "(«Unknown speed dial tag: ControlBPM» al cargar), asi "
-                    "que asi no re-tempa nada"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=EMPTY_RULE,
+                    severity=ERROR,
+                    function=caption,
+                    message=(
+                        "tiene tecla de tap y no lista ninguna funcion: en QLC+ "
+                        "5.2.2 el tap solo escribe en las funciones del dial "
+                        "(«Unknown speed dial tag: ControlBPM» al cargar), asi "
+                        "que asi no re-tempa nada"
+                    ),
+                )
+            )
             continue
         if len(multipliers) >= FLATTENING_FROM and len(set(multipliers)) == 1:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=caption,
-                message=(
-                    f"re-tempa {len(multipliers)} funciones con el mismo "
-                    f"multiplicador: un tap las deja a todas de la misma "
-                    f"duracion (VCSpeedDial::applyFunctionsTime escribe "
-                    f"tiempo x multiplicador) - cada capa tiene que decir "
-                    f"cuantos taps dura"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=caption,
+                    message=(
+                        f"re-tempa {len(multipliers)} funciones con el mismo "
+                        f"multiplicador: un tap las deja a todas de la misma "
+                        f"duracion (VCSpeedDial::applyFunctionsTime escribe "
+                        f"tiempo x multiplicador) - cada capa tiene que decir "
+                        f"cuantos taps dura"
+                    ),
+                )
+            )
     return findings
 
 
 def _has_tap_binding(dial: etree._Element) -> bool:
-    return any(
-        source.attrib.get("ID") == TAP_CONTROL_ID
-        for source in findall_local(dial, "Input")
-    )
+    return any(source.attrib.get("ID") == TAP_CONTROL_ID for source in findall_local(dial, "Input"))
 
 
 def _controls_bpm(dial: etree._Element) -> bool:

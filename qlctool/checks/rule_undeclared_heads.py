@@ -39,49 +39,43 @@ RULE = "cabezas sin declarar"
 COLOUR_ROLES = (roles.RED, roles.GREEN, roles.BLUE)
 
 
-def check_undeclared_heads(
-    graph: ShowGraph, root: etree._Element
-) -> list[Finding]:
+def check_undeclared_heads(graph: ShowGraph, root: etree._Element) -> list[Finding]:
     findings: list[Finding] = []
     grouped = {
-        fixture_id: group.name
-        for group in fixture_groups(root)
-        for fixture_id in group.fixture_ids
+        fixture_id: group.name for group in fixture_groups(root) for fixture_id in group.fixture_ids
     }
     for fixture_id, group_name in sorted(grouped.items()):
         capability = graph.capabilities.get(fixture_id)
         if capability is None:
             continue
-        sets = min(
-            len(capability.offsets_for_role(role)) for role in COLOUR_ROLES
-        )
+        sets = min(len(capability.offsets_for_role(role)) for role in COLOUR_ROLES)
         if sets < 2:
             continue
         declared = _colour_heads(capability)
         if declared >= sets:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=group_name,
-            message=(
-                f"la definicion le da {sets} juegos de RGB y solo {declared} "
-                f"<Head> con rojo, verde y azul dentro: QLC+ fabrica una sola "
-                f"cabeza y se queda "
-                f"con el ultimo rojo, verde y azul, asi que una matriz sobre "
-                f"«{group_name}» solo pinta uno de los juegos y los demas se "
-                f"quedan con lo ultimo que alguien escribio"
-            ),
-            fixtures=(capability.fixture.name,),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=group_name,
+                message=(
+                    f"la definicion le da {sets} juegos de RGB y solo {declared} "
+                    f"<Head> con rojo, verde y azul dentro: QLC+ fabrica una sola "
+                    f"cabeza y se queda "
+                    f"con el ultimo rojo, verde y azul, asi que una matriz sobre "
+                    f"«{group_name}» solo pinta uno de los juegos y los demas se "
+                    f"quedan con lo ultimo que alguien escribio"
+                ),
+                fixtures=(capability.fixture.name,),
+            )
+        )
     return findings
 
 
 def _colour_heads(capability) -> int:
     """How many declared heads carry a full RGB set of their own."""
-    by_role = {
-        role: set(capability.offsets_for_role(role)) for role in COLOUR_ROLES
-    }
+    by_role = {role: set(capability.offsets_for_role(role)) for role in COLOUR_ROLES}
     return sum(
         1
         for head in capability.declared_heads

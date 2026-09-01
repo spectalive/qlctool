@@ -25,31 +25,31 @@ def check_smoke(graph: ShowGraph, groups, entries) -> list[Finding]:
     for function_id, function in sorted(graph.functions.items()):
         driven = driven_channels(function, graph.capabilities, groups)
         smoke = [
-            fixture_id for fixture_id, written in driven.items()
+            fixture_id
+            for fixture_id, written in driven.items()
             if _pump_lit(graph, fixture_id, written)
         ]
         if not smoke:
             continue
-        others = [
-            fixture_id for fixture_id in driven
-            if not _is_smoke(graph, fixture_id)
-        ]
+        others = [fixture_id for fixture_id in driven if not _is_smoke(graph, fixture_id)]
         if others:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    "enciende la maquina de humo dentro de una escena que "
-                    "toca otros fixtures: el humo se queda abierto mientras "
-                    "esa escena corra"
-                ),
-                fixtures=tuple(
-                    graph.capabilities[fixture_id].fixture.name
-                    for fixture_id in smoke
-                    if fixture_id in graph.capabilities
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        "enciende la maquina de humo dentro de una escena que "
+                        "toca otros fixtures: el humo se queda abierto mientras "
+                        "esa escena corra"
+                    ),
+                    fixtures=tuple(
+                        graph.capabilities[fixture_id].fixture.name
+                        for fixture_id in smoke
+                        if fixture_id in graph.capabilities
+                    ),
+                )
+            )
     return findings
 
 

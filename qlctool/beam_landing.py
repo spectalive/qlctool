@@ -49,9 +49,13 @@ STANDING = 180
 
 # Fixture types QLC+ draws itself rather than loading a mesh for. Their light
 # leaves the top face, not the bottom - see the module docstring.
-UPWARD_TYPES = frozenset({
-    "led bar (pixels)", "led bar (beams)", "strobe",
-})
+UPWARD_TYPES = frozenset(
+    {
+        "led bar (pixels)",
+        "led bar (beams)",
+        "strobe",
+    }
+)
 
 
 @dataclass(frozen=True)

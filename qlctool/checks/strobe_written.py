@@ -21,7 +21,7 @@ from ..strobe_range import strobe_range
 def strobe_capable_offsets(
     capabilities: FixtureCapabilities,
 ) -> dict[int, Capability | None]:
-    """offset -> its strobing range, or None for a bare speed channel."""
+    """Offset -> its strobing range, or None for a bare speed channel."""
     found: dict[int, Capability | None] = {}
     for offset, ranges in capabilities.capabilities_for_role(roles.STROBE):
         if not ranges:

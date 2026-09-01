@@ -26,24 +26,28 @@ def check_strobe_in_cycle(graph: ShowGraph, groups, entries) -> list[Finding]:
     for function_id, function in sorted(graph.functions.items()):
         if function.attrib.get("Type") != "Chaser":
             continue
-        strobes = sorted({
-            member.attrib.get("Name", "")
-            for step in findall_local(function, "Step")
-            if (step.text or "").strip().isdigit()
-            and (member := graph.functions.get(int(step.text))) is not None
-            and _is_strobe(member)
-        })
+        strobes = sorted(
+            {
+                member.attrib.get("Name", "")
+                for step in findall_local(function, "Step")
+                if (step.text or "").strip().isdigit()
+                and (member := graph.functions.get(int(step.text))) is not None
+                and _is_strobe(member)
+            }
+        )
         if strobes:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    f"lleva {len(strobes)} efecto(s) de estrobo entre sus "
-                    f"pasos, asi que el rig parpadea sin que nadie lo haya "
-                    f"pedido; un estrobo va en su propio boton"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        f"lleva {len(strobes)} efecto(s) de estrobo entre sus "
+                        f"pasos, asi que el rig parpadea sin que nadie lo haya "
+                        f"pedido; un estrobo va en su propio boton"
+                    ),
+                )
+            )
     return findings
 
 

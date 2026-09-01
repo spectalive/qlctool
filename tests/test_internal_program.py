@@ -17,10 +17,7 @@ PANELS = {24, 25, 27, 28}
 
 def _capabilities():
     workspace = Workspace.load(SHOW)
-    return {
-        c.fixture.fixture_id: c
-        for c in capabilities_of(workspace.root, FixtureLibrary.load())
-    }
+    return {c.fixture.fixture_id: c for c in capabilities_of(workspace.root, FixtureLibrary.load())}
 
 
 def test_the_panels_carry_forty_two_programmes_of_their_own():
@@ -31,7 +28,7 @@ def test_the_panels_carry_forty_two_programmes_of_their_own():
     # Channel 6 chooses the mode, channel 7 the programme, channel 8 the speed.
     assert (program.mode_offset, program.effect_offset) == (5, 6)
     assert program.speed_offset == 7
-    assert program.off_value == 0        # "No function": obey DMX colour
+    assert program.off_value == 0  # "No function": obey DMX colour
     assert 86 <= program.auto_value <= 171  # "Auto Mode": run its own show
 
 
@@ -39,7 +36,8 @@ def test_only_the_panels_have_them():
     """A wash with a colour macro is not a fixture that animates itself."""
     caps = _capabilities()
     with_programs = {
-        fixture_id for fixture_id, capability in caps.items()
+        fixture_id
+        for fixture_id, capability in caps.items()
         if internal_program(capability) is not None
     }
     assert with_programs == PANELS
@@ -47,7 +45,7 @@ def test_only_the_panels_have_them():
 
 def test_a_fixture_with_no_programmes_needs_nothing_switched_off():
     caps = _capabilities()
-    assert internal_program_off_pairs(caps[6]) == []   # a plain LED PAR
+    assert internal_program_off_pairs(caps[6]) == []  # a plain LED PAR
     assert internal_program_off_pairs(caps[24]) == [(5, 0)]
 
 
@@ -58,7 +56,8 @@ def test_the_number_counter_stays_out_of_the_cycle():
     that is the counter: generated for the library page, never cycled.
     """
     from qlctool.generate.builtin_effects import (
-        EXCLUDED_FROM_CYCLE, generate_builtin_effects,
+        EXCLUDED_FROM_CYCLE,
+        generate_builtin_effects,
     )
     from qlctool.xmlutil import find_local, findall_local, localname
 
@@ -112,6 +111,7 @@ def test_the_vertical_smoke_light_is_the_old_chaser_verbatim():
     assert find_local(chaser, "RunOrder").text == "Loop"
     steps = findall_local(chaser, "Step")
     assert [int(s.text) for s in steps] == [
-        builtins.scene_ids[0], builtins.scene_ids[2],
+        builtins.scene_ids[0],
+        builtins.scene_ids[2],
     ]
     assert [int(s.attrib["Hold"]) for s in steps] == [60000, 600000]

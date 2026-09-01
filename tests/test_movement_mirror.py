@@ -30,8 +30,7 @@ def test_the_plot_says_which_fixtures_are_house_right():
     # pass every other check here and mirror nothing.
     monitor = find_local(find_local(root, "Engine"), "Monitor")
     visible = [
-        item for item in monitor
-        if localname(item) == "FxItem" and item.get("Hidden") is None
+        item for item in monitor if localname(item) == "FxItem" and item.get("Hidden") is None
     ]
     assert 0 < len(right) < len(visible)
 
@@ -67,7 +66,8 @@ def test_the_heads_have_somewhere_to_be_when_nothing_moves_them():
     function_id = generate_home_position(ws, library)
 
     scene = next(
-        f for f in ws.engine
+        f
+        for f in ws.engine
         if localname(f) == "Function" and f.attrib.get("ID") == str(function_id)
     )
     driven = {int(v.attrib["ID"]) for v in findall_local(scene, "FixtureVal")}

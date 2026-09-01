@@ -31,6 +31,14 @@ PALETTE: dict[str, tuple[int, int, int]] = {
 # The colours the show leans on hardest, for banks that must stay one screen
 # wide (the original's colour buttons are keys 1-9 and 0).
 PRIMARY_COLORS: tuple[str, ...] = (
-    "Rojo", "Verde", "Azul", "UltraVioleta", "Amarillo", "Cyan", "Magenta",
-    "Blanco", "Naranja", "Rosa",
+    "Rojo",
+    "Verde",
+    "Azul",
+    "UltraVioleta",
+    "Amarillo",
+    "Cyan",
+    "Magenta",
+    "Blanco",
+    "Naranja",
+    "Rosa",
 )

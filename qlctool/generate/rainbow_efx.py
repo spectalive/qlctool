@@ -52,33 +52,35 @@ def generate_rainbow_efx(
         if caps.is_smoke or internal_program(caps) is not None:
             continue
         head_count = len(caps.offsets_for_role(roles.RED))
-        heads += [
-            (caps.fixture.fixture_id, head) for head in range(head_count)
-        ]
+        heads += [(caps.fixture.fixture_id, head) for head in range(head_count)]
     if not heads:
         return GeneratedRainbows()
 
     def _rainbow(name: str, width: int, height: int, offsets) -> int:
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_efx(
-            function_id,
-            name,
-            [
-                EFXFixture(
-                    fixture_id=fixture_id, head=head, mode=MODE_RGB,
-                    start_offset=offset,
-                )
-                for (fixture_id, head), offset in zip(heads, offsets)
-            ],
-            algorithm="Circle",
-            x_axis=X_AXIS,
-            y_axis=Y_AXIS,
-            width=width,
-            height=height,
-            is_relative=1,
-            duration=DURATION_MS,
-            path=path,
-        ))
+        workspace.add_function(
+            build_efx(
+                function_id,
+                name,
+                [
+                    EFXFixture(
+                        fixture_id=fixture_id,
+                        head=head,
+                        mode=MODE_RGB,
+                        start_offset=offset,
+                    )
+                    for (fixture_id, head), offset in zip(heads, offsets)
+                ],
+                algorithm="Circle",
+                x_axis=X_AXIS,
+                y_axis=Y_AXIS,
+                width=width,
+                height=height,
+                is_relative=1,
+                duration=DURATION_MS,
+                path=path,
+            )
+        )
         return function_id
 
     name, width, height = SIMULTANEO

@@ -36,24 +36,24 @@ def check_zoom_narrow(graph: ShowGraph, groups) -> list[Finding]:
         silent = _lit_without_zoom(graph, groups, function_id)
         if not silent:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=WARNING,
-            function=graph.name(function_id),
-            message=(
-                "enciende la cabeza pero no escribe su zoom: se queda con el "
-                "que dejo el ultimo look, y sin nadie que lo escriba eso es 0 - "
-                "el haz mas cerrado que tiene"
-            ),
-            fixtures=tuple(sorted(silent)),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=WARNING,
+                function=graph.name(function_id),
+                message=(
+                    "enciende la cabeza pero no escribe su zoom: se queda con el "
+                    "que dejo el ultimo look, y sin nadie que lo escriba eso es 0 - "
+                    "el haz mas cerrado que tiene"
+                ),
+                fixtures=tuple(sorted(silent)),
+            )
+        )
     return findings
 
 
 def _lit_without_zoom(graph: ShowGraph, groups, function_id: int) -> list[str]:
-    driven = driven_channels(
-        graph.functions[function_id], graph.capabilities, groups
-    )
+    driven = driven_channels(graph.functions[function_id], graph.capabilities, groups)
     names: list[str] = []
     for fixture_id, written in driven.items():
         capability = graph.capabilities.get(fixture_id)

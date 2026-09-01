@@ -38,7 +38,7 @@ def generate_pixel_wheel_matrices(
     fit_ms: int = WHEEL_HOLD,
     path: str = "Colores Rig",
 ) -> dict[str, list[int]]:
-    """colour name -> the matrices a wheel step of that colour also starts.
+    """Colour name -> the matrices a wheel step of that colour also starts.
 
     One matrix per (pixel group, colour); the algorithm walks `algorithms` as
     the colour list advances, so consecutive wheel colours draw differently.

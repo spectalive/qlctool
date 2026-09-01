@@ -71,54 +71,54 @@ def _check_widget(
     graph: ShowGraph, groups, widget, widgets_by_id: dict, solo_frames: dict
 ) -> list[Finding]:
     caption = widget.attrib.get("Caption", "") or "AudioTriggers"
-    bars = [
-        bar for bar in iter_local(widget, "SpectrumBar")
-        if _is_bound(bar, widgets_by_id)
-    ]
+    bars = [bar for bar in iter_local(widget, "SpectrumBar") if _is_bound(bar, widgets_by_id)]
     if not bars:
-        return [Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=caption,
-            message=(
-                "no tiene ninguna banda enlazada a canal, funcion o widget: "
-                "no hace nada"
-            ),
-        )]
+        return [
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=caption,
+                message=("no tiene ninguna banda enlazada a canal, funcion o widget: no hace nada"),
+            )
+        ]
     findings: list[Finding] = []
     for bar in bars:
         target = _target_widget(bar, widgets_by_id)
         if target is not None:
             solo_frame = solo_frames.get(target.attrib.get("ID"))
             if solo_frame is not None and _solo_frame_conflict(target, solo_frame):
-                findings.append(Finding(
-                    rule=RULE,
-                    severity=ERROR,
-                    function=target.attrib.get("Caption", "") or caption,
-                    message=(
-                        f"la banda «{bar.attrib.get('Name', '')}» de «{caption}» "
-                        f"presiona «{target.attrib.get('Caption', '')}», que "
-                        f"comparte un marco solo con otras funciones: la "
-                        f"musica para lo que estuviera sonando y nada lo "
-                        f"recupera"
-                    ),
-                ))
+                findings.append(
+                    Finding(
+                        rule=RULE,
+                        severity=ERROR,
+                        function=target.attrib.get("Caption", "") or caption,
+                        message=(
+                            f"la banda «{bar.attrib.get('Name', '')}» de «{caption}» "
+                            f"presiona «{target.attrib.get('Caption', '')}», que "
+                            f"comparte un marco solo con otras funciones: la "
+                            f"musica para lo que estuviera sonando y nada lo "
+                            f"recupera"
+                        ),
+                    )
+                )
         function_id = _bound_function(bar, target)
         if function_id is None:
             continue
         reached = _strobe_reached(graph, groups, function_id)
         if reached is None:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=graph.name(reached),
-            message=(
-                f"la banda «{bar.attrib.get('Name', '')}» de «{caption}» "
-                f"lo arranca: la musica lo dispara sola, sin que nadie "
-                f"decida cuando"
-            ),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=graph.name(reached),
+                message=(
+                    f"la banda «{bar.attrib.get('Name', '')}» de «{caption}» "
+                    f"lo arranca: la musica lo dispara sola, sin que nadie "
+                    f"decida cuando"
+                ),
+            )
+        )
     return findings
 
 

@@ -30,7 +30,7 @@ def build_level_slider(
     channels: Sequence[tuple[int, int]],
     value: int = 0,
 ) -> etree._Element:
-    """channels is one (fixture id, channel offset) per channel the fader owns."""
+    """Channels is one (fixture id, channel offset) per channel the fader owns."""
     slider = etree.SubElement(parent, f"{{{QLC_NS}}}Slider")
     slider.set("Caption", caption)
     slider.set("ID", str(widget_id))

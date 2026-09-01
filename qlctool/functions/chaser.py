@@ -30,14 +30,10 @@ def build_chaser(
     - the values QLC+ accepts.
     """
     holds = (
-        [int(hold)] * len(step_function_ids)
-        if isinstance(hold, int)
-        else [int(h) for h in hold]
+        [int(hold)] * len(step_function_ids) if isinstance(hold, int) else [int(h) for h in hold]
     )
     if len(holds) != len(step_function_ids):
-        raise ValueError(
-            f"{len(holds)} holds for {len(step_function_ids)} steps"
-        )
+        raise ValueError(f"{len(holds)} holds for {len(step_function_ids)} steps")
 
     function = etree.Element(f"{{{QLC_NS}}}Function")
     function.set("ID", str(function_id))

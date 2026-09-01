@@ -40,9 +40,7 @@ def add_group_head(
                 f"cell ({x}, {y}) of group {group_id} already holds fixture "
                 f"{existing.attrib['Fixture']}"
             )
-        if (int(existing.attrib["Fixture"]), int(existing.text or 0)) == (
-            fixture_id, head
-        ):
+        if (int(existing.attrib["Fixture"]), int(existing.text or 0)) == (fixture_id, head):
             raise ValueError(
                 f"head {head} of fixture {fixture_id} is already in group "
                 f"{group_id} at ({existing.attrib['X']}, "

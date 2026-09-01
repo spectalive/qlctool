@@ -46,18 +46,20 @@ def check_stepped_dimmer(graph: ShowGraph, groups) -> list[Finding]:
                     continue
                 caught.add(capability.fixture.name)
         if caught:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    "escribe un valor intermedio en un dimmer que no es un "
-                    "fader sino una pala mecanica: a medio recorrido tapa "
-                    "media lente y el haz sale como una media luna - o abierto "
-                    "del todo o cerrado"
-                ),
-                fixtures=tuple(sorted(caught)),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        "escribe un valor intermedio en un dimmer que no es un "
+                        "fader sino una pala mecanica: a medio recorrido tapa "
+                        "media lente y el haz sale como una media luna - o abierto "
+                        "del todo o cerrado"
+                    ),
+                    fixtures=tuple(sorted(caught)),
+                )
+            )
     return findings
 
 

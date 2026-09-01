@@ -30,7 +30,7 @@ def build_audio_triggers(
     bars: Sequence[tuple[str, int | None]],
     key: str | None = None,
 ) -> etree._Element:
-    """bars is one (name, widget id to press) per spectrum band; None = unbound."""
+    """Bars is one (name, widget id to press) per spectrum band; None = unbound."""
     triggers = etree.SubElement(parent, f"{{{QLC_NS}}}AudioTriggers")
     triggers.set("BarsNumber", str(len(bars)))
     triggers.set("Caption", caption)

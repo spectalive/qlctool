@@ -76,6 +76,4 @@ def generate_channel_probe(
             )
         )
 
-    return GeneratedProbe(
-        fixture_id=fixture_id, scene_ids=scene_ids, chaser_id=chaser_id
-    )
+    return GeneratedProbe(fixture_id=fixture_id, scene_ids=scene_ids, chaser_id=chaser_id)

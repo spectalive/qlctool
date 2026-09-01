@@ -18,9 +18,7 @@ from lxml import etree
 from ..xmlutil import find_local, findall_local, iter_local
 
 
-def remove_group_head(
-    root: etree._Element, group_id: int, fixture_id: int
-) -> int:
+def remove_group_head(root: etree._Element, group_id: int, fixture_id: int) -> int:
     """Remove every head of one fixture from a group; returns how many.
 
     Raises when the group does not exist, when the fixture is not in it, or
@@ -29,15 +27,9 @@ def remove_group_head(
     """
     group = _group(root, group_id)
     heads = findall_local(group, "Head")
-    doomed = [
-        head for head in heads
-        if head.attrib.get("Fixture") == str(fixture_id)
-    ]
+    doomed = [head for head in heads if head.attrib.get("Fixture") == str(fixture_id)]
     if not doomed:
-        raise ValueError(
-            f"fixture {fixture_id} is not in group {group_id} "
-            f"({_name(group)!r})"
-        )
+        raise ValueError(f"fixture {fixture_id} is not in group {group_id} ({_name(group)!r})")
     if len(doomed) == len(heads):
         raise ValueError(
             f"removing fixture {fixture_id} would leave group {group_id} "

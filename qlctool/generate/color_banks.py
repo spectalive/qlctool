@@ -24,7 +24,12 @@ from .wheel_color_values import wheel_color_values
 
 # Enough pairs to keep a mix wheel interesting without hundreds of scenes.
 SPLIT_COLORS: tuple[str, ...] = (
-    "Rojo", "Azul", "Verde", "Amarillo", "Magenta", "Blanco",
+    "Rojo",
+    "Azul",
+    "Verde",
+    "Amarillo",
+    "Magenta",
+    "Blanco",
 )
 
 # The hand-built console's keys 9 and 0 were not solid colours: on every bank
@@ -61,9 +66,7 @@ def generate_color_banks(
     banks: list[GeneratedBank] = []
 
     for group in fixture_groups(workspace.root):
-        bank = _bank_for_group(
-            workspace, caps, group, colors, split_colors, hold, fade
-        )
+        bank = _bank_for_group(workspace, caps, group, colors, split_colors, hold, fade)
         if bank is not None:
             banks.append(bank)
     return banks
@@ -81,21 +84,15 @@ def _bank_for_group(
     path = f"Colores {group.name}"
     scene_ids: list[int] = []
     for name in colors:
-        values = color_scene_values(
-            caps, PALETTE[name], fixture_ids=group.fixture_ids
-        )
+        values = color_scene_values(caps, PALETTE[name], fixture_ids=group.fixture_ids)
         # A group holding a BEAM 230W 7R holds a fixture with no red channel at
         # all. Colouring the group and skipping it is how the beams sat on last
         # night's colour while everything around them changed.
-        values.update(
-            wheel_color_values(caps, name, fixture_ids=group.fixture_ids)
-        )
+        values.update(wheel_color_values(caps, name, fixture_ids=group.fixture_ids))
         if not values:
             return None  # no colour-capable fixture in this group
         function_id = next_function_id(workspace.root)
-        workspace.add_function(
-            build_scene(function_id, f"{name} {group.name}", values, path=path)
-        )
+        workspace.add_function(build_scene(function_id, f"{name} {group.name}", values, path=path))
         scene_ids.append(function_id)
 
     split_ids: list[int] = []
@@ -105,7 +102,9 @@ def _bank_for_group(
             if first == second:
                 continue
             values = split_color_scene_values(
-                caps, PALETTE[first], PALETTE[second],
+                caps,
+                PALETTE[first],
+                PALETTE[second],
                 fixture_ids=group.fixture_ids,
                 color_names=(first, second),
             )
@@ -131,12 +130,8 @@ def _bank_for_group(
     else:
         key_ids = list(scene_ids)
 
-    wheel_id = _wheel(
-        workspace, f"Rueda Colores {group.name}", scene_ids, hold, fade, path
-    )
-    mix_wheel_id = _wheel(
-        workspace, f"Rueda Mezcla {group.name}", split_ids, hold, fade, path
-    )
+    wheel_id = _wheel(workspace, f"Rueda Colores {group.name}", scene_ids, hold, fade, path)
+    mix_wheel_id = _wheel(workspace, f"Rueda Mezcla {group.name}", split_ids, hold, fade, path)
     return GeneratedBank(
         group_name=group.name,
         scene_ids=scene_ids,

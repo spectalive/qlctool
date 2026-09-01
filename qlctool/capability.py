@@ -74,8 +74,7 @@ class FixtureCapabilities:
     def capabilities_for_role(self, role: str) -> list[tuple[int, tuple[Capability, ...]]]:
         """(offset, ranges) for every channel carrying this role."""
         return [
-            (offset, self.capabilities_by_offset[offset])
-            for offset in self.offsets_for_role(role)
+            (offset, self.capabilities_by_offset[offset]) for offset in self.offsets_for_role(role)
         ]
 
     def wheel_for_role(self, role: str) -> tuple[int, tuple[Capability, ...]] | None:

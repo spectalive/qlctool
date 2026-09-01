@@ -120,14 +120,13 @@ def validate_workspace(
     path = Path(path).resolve()
     executable = binary or qlcplus_binary()
     if executable is None:
-        raise FileNotFoundError(
-            "no QLC+ executable found; set QLCTOOL_QLCPLUS to its path"
-        )
+        raise FileNotFoundError("no QLC+ executable found; set QLCTOOL_QLCPLUS to its path")
 
     qml = Path(executable).name.endswith("-qml")
     # The QML build has no --nogui and takes -d without a level.
     arguments = (
-        [executable, "-d", "-m", "-o", str(path)] if qml
+        [executable, "-d", "-m", "-o", str(path)]
+        if qml
         else [executable, "--nowm", "--nogui", "-d", "1", "-o", str(path)]
     )
     bundle = _app_bundle(executable)
@@ -156,7 +155,7 @@ def current_session(log: str) -> str:
     index = log.rfind(SESSION_START_MARKER)
     if index == -1:
         return log
-    return log[log.rfind("\n", 0, index) + 1:]
+    return log[log.rfind("\n", 0, index) + 1 :]
 
 
 def _verdict(output: str) -> ValidationResult:
@@ -164,9 +163,7 @@ def _verdict(output: str) -> ValidationResult:
         # QLC+ prints its banner before it does anything else, so an empty log
         # means it never ran. Reporting that as "no complaints" is the one
         # failure this whole safety net exists to avoid.
-        raise RuntimeError(
-            "QLC+ produced no output; the workspace was never actually loaded"
-        )
+        raise RuntimeError("QLC+ produced no output; the workspace was never actually loaded")
     errors = [
         line.strip()
         for line in (output or "").splitlines()
@@ -187,8 +184,11 @@ def _app_bundle(executable: str) -> str | None:
 
 
 def _run_in_background(
-    bundle: str, executable: str, path: str | Path,
-    timeout: float, quiet_period: float,
+    bundle: str,
+    executable: str,
+    path: str | Path,
+    timeout: float,
+    quiet_period: float,
 ) -> str | None:
     """Load the workspace without QLC+ taking the screen, and return its log.
 
@@ -205,8 +205,7 @@ def _run_in_background(
     before = _running_pids(executable)
     QML_LOG_FILE.write_text("")
     launched = subprocess.run(
-        ["open", "-g", "-a", bundle, "--args",
-         "-d", "-g", "-m", "-o", str(path)],
+        ["open", "-g", "-a", bundle, "--args", "-d", "-g", "-m", "-o", str(path)],
         capture_output=True,
         text=True,
         check=False,
@@ -310,9 +309,7 @@ def _read_until_loaded(
             if line:
                 lines.append(line)
                 last_line_at = time.monotonic()
-                if loaded_at is None and any(
-                    marker in line for marker in QML_LOADED_MARKERS
-                ):
+                if loaded_at is None and any(marker in line for marker in QML_LOADED_MARKERS):
                     loaded_at = last_line_at
     process.stdout.close()
     return "".join(lines)

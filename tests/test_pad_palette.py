@@ -17,13 +17,11 @@ from qlctool.generate.smc_pad_device import (
     FIRST_PAD_NOTE,
     NOTE_OFFSET,
     OMNI_CHANNEL_SHIFT,
-    PADS,
     PAD_MIDI_CHANNEL,
+    PADS,
 )
 
-BRIDGE = (
-    Path(__file__).resolve().parents[3] / "tools" / "smc-pad" / "qlc_led_bridge.swift"
-)
+BRIDGE = Path(__file__).resolve().parents[3] / "tools" / "smc-pad" / "qlc_led_bridge.swift"
 FREE_PAD = (20, 20, 20)
 ENTRY = re.compile(r"\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)")
 
@@ -82,6 +80,5 @@ def test_the_pads_with_no_function_stay_dark():
         for pad in range(1, PADS + 1):
             if (bank, pad) not in coloured:
                 assert palette[pad - 1] == FREE_PAD, (
-                    f"bank {bank} pad {pad} glows {palette[pad - 1]} and no "
-                    f"function is bound to it"
+                    f"bank {bank} pad {pad} glows {palette[pad - 1]} and no function is bound to it"
                 )

@@ -15,8 +15,8 @@ from ..capability import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
 from ..mode_park import mode_park_pairs
 from ..shutter_open import shutter_open_pairs
-from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
+from ..zoom_wide import zoom_wide_pairs
 
 RGB = tuple[int, int, int]
 
@@ -41,9 +41,7 @@ def color_scene_values(
         if caps.is_smoke and not caps.is_lit_smoke:
             continue
         if not (
-            caps.has_role(roles.RED)
-            or caps.has_role(roles.GREEN)
-            or caps.has_role(roles.BLUE)
+            caps.has_role(roles.RED) or caps.has_role(roles.GREEN) or caps.has_role(roles.BLUE)
         ):
             continue
 

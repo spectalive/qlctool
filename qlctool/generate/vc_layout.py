@@ -80,9 +80,7 @@ def generate_vc_layout(
         # A plain frame, not a solo one: this groups by UI folder, and a folder
         # holds a chaser next to the scenes it steps through. In a solo frame
         # the first step starting would stop the chaser - see live_console.
-        frame = build_frame(
-            console_frame, frame_id, caption, PADDING, y, width, height
-        )
+        frame = build_frame(console_frame, frame_id, caption, PADDING, y, width, height)
         frame_ids.append(frame_id)
 
         for index, function in enumerate(members):

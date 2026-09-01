@@ -48,7 +48,11 @@ def check_accent_restore(
         if scene is None:
             continue
         findings += _orphaned(
-            graph, groups, function_id, scene, states,
+            graph,
+            groups,
+            function_id,
+            scene,
+            states,
             button.attrib.get("Caption", ""),
         )
     return findings
@@ -58,17 +62,11 @@ def _orphaned(
     graph: ShowGraph, groups, function_id: int, scene, states, caption: str
 ) -> list[Finding]:
     findings: list[Finding] = []
-    for fixture_id, written in driven_channels(
-        scene, graph.capabilities, {}
-    ).items():
+    for fixture_id, written in driven_channels(scene, graph.capabilities, {}).items():
         capability = graph.capabilities.get(fixture_id)
         if capability is None:
             continue
-        wheels = {
-            offset
-            for role in WHEEL_ROLES
-            for offset in capability.offsets_for_role(role)
-        }
+        wheels = {offset for role in WHEEL_ROLES for offset in capability.offsets_for_role(role)}
         touched = wheels & set(written)
         if not touched:
             continue
@@ -77,21 +75,27 @@ def _orphaned(
             graph.name(state_id)
             for state_id in states
             if unowned_while_lit(
-                graph, groups, state_id, fixture_id,
-                frozenset(touched), tuple(dimmers),
+                graph,
+                groups,
+                state_id,
+                fixture_id,
+                frozenset(touched),
+                tuple(dimmers),
             )
         )
         if not orphan_states:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=WARNING,
-            function=graph.name(function_id),
-            message=(
-                f"el flash «{caption}» mueve una rueda (gobo, prisma o "
-                f"color) que {', '.join(orphan_states)} no escribe: al soltar, "
-                f"la rueda se queda donde el flash la dejo y nadie la devuelve"
-            ),
-            fixtures=(capability.fixture.name,),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=WARNING,
+                function=graph.name(function_id),
+                message=(
+                    f"el flash «{caption}» mueve una rueda (gobo, prisma o "
+                    f"color) que {', '.join(orphan_states)} no escribe: al soltar, "
+                    f"la rueda se queda donde el flash la dejo y nadie la devuelve"
+                ),
+                fixtures=(capability.fixture.name,),
+            )
+        )
     return findings

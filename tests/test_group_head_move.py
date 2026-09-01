@@ -29,7 +29,8 @@ def _group(root, name):
 
 def _element(root, group_id):
     return next(
-        element for element in root.iter()
+        element
+        for element in root.iter()
         if element.tag.rpartition("}")[2] == "FixtureGroup"
         and int(element.attrib["ID"]) == group_id
     )
@@ -38,9 +39,7 @@ def _element(root, group_id):
 def _cells(root, name):
     group = _element(root, _group(root, name).group_id)
     return {
-        (int(head.attrib["X"]), int(head.attrib["Y"])): int(
-            head.attrib["Fixture"]
-        )
+        (int(head.attrib["X"]), int(head.attrib["Y"])): int(head.attrib["Fixture"])
         for head in group.iter()
         if head.tag.rpartition("}")[2] == "Head"
     }
@@ -48,10 +47,7 @@ def _cells(root, name):
 
 def _declared_size(root, name):
     element = _element(root, _group(root, name).group_id)
-    size = next(
-        child for child in element
-        if child.tag.rpartition("}")[2] == "Size"
-    )
+    size = next(child for child in element if child.tag.rpartition("}")[2] == "Size")
     return int(size.attrib["X"]), int(size.attrib["Y"])
 
 
@@ -70,16 +66,13 @@ def test_a_head_moves_to_a_free_cell_and_nothing_else_shifts():
     target = _with_a_free_cell(workspace.root, "BarrasLed")
     origin, fixture_id = next(iter(before.items()))
 
-    was = move_group_head(
-        workspace.root, group.group_id, fixture_id, *target
-    )
+    was = move_group_head(workspace.root, group.group_id, fixture_id, *target)
 
     after = _cells(workspace.root, "BarrasLed")
     assert was == origin
     assert after[target] == fixture_id
     assert origin not in after
-    assert after == {**{c: f for c, f in before.items() if c != origin},
-                     target: fixture_id}
+    assert after == {**{c: f for c, f in before.items() if c != origin}, target: fixture_id}
 
 
 def test_moving_onto_an_occupied_cell_is_refused():
@@ -105,7 +98,11 @@ def test_moving_off_the_grid_is_refused():
 
     with pytest.raises(ValueError, match="outside group"):
         move_group_head(
-            workspace.root, group.group_id, fixture_id, width, height - 1,
+            workspace.root,
+            group.group_id,
+            fixture_id,
+            width,
+            height - 1,
         )
 
 
@@ -128,9 +125,7 @@ def test_a_named_head_moves_and_its_siblings_stay():
     target = _with_a_free_cell(workspace.root, "BarrasLed")
     fixture_id = before[(5, 0)]
 
-    was = move_group_head(
-        workspace.root, group.group_id, fixture_id, *target, head=5
-    )
+    was = move_group_head(workspace.root, group.group_id, fixture_id, *target, head=5)
 
     after = _cells(workspace.root, "BarrasLed")
     assert was == (5, 0)

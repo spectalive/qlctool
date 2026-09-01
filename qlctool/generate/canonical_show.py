@@ -21,11 +21,11 @@ from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..input_binding import pin_midi_input
 from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..matrix_algorithms import CURATED_MATRICES
 from ..monitor_positions import house_right_fixture_ids
-from ..input_binding import pin_midi_input
 from ..output_binding import pin_generic_output
 from ..palette import PALETTE, PRIMARY_COLORS
 from ..skeleton import strip_to_skeleton
@@ -41,13 +41,13 @@ from .beat_tempo import BeatTiming, apply_beat_tempo
 from .builtin_effects import generate_builtin_effects
 from .color_banks import GeneratedBank, generate_color_banks
 from .color_scene import color_scene_values
+from .dealt_gobo_scenes import generate_dealt_gobo_scenes
 from .dimmer_chases import generate_dimmer_chases
 from .dimmer_sequence import generate_dimmer_sequence
 from .dimmerless_intensity import generate_dimmerless_intensity
 from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
 from .flash_color import generate_flash_color
-from .dealt_gobo_scenes import generate_dealt_gobo_scenes
 from .gobo_shake import generate_gobo_shake
 from .home_position import generate_home_position
 from .live_console import generate_live_console
@@ -60,10 +60,10 @@ from .multicolor_scene import generate_multicolor_scenes
 from .panel_manual import generate_panel_manual
 from .panel_speed_auto import generate_panel_speed_auto
 from .pixel_base import generate_pixel_base
+from .pixel_wheel_matrices import generate_pixel_wheel_matrices
 from .prism_spins import generate_prism_spins
 from .quad_color_scenes import generate_quad_color_scenes
 from .rainbow_efx import generate_rainbow_efx
-from .pixel_wheel_matrices import generate_pixel_wheel_matrices
 from .smoke_auto import generate_smoke_auto
 from .stage_aim import generate_stage_aim
 from .stage_layout import generate_stage_layout, unplaced_fixtures
@@ -207,7 +207,11 @@ KEYS = {
 # Holding it only *releases* because both pumps sit in the Intensity group,
 # which is the group QLC+ resets every cycle - see `Generic-LED-Spray-Fog.qxf`.
 FLASH_FUNCTIONS = (
-    "Flash 100%", "Flash 50%", "Flash Color", "Humo ON", "Humo Vertical YA",
+    "Flash 100%",
+    "Flash 50%",
+    "Flash Color",
+    "Humo ON",
+    "Humo Vertical YA",
     "Golpe Graves",
 )
 
@@ -268,9 +272,9 @@ def build_canonical_show(
     # on a measured one.
     stage_placed = 0
     if plot_path:
-        stage_placed = len(apply_stage_plot(
-            workspace, load_stage_plot(plot_path, workspace.root)
-        ).rigged)
+        stage_placed = len(
+            apply_stage_plot(workspace, load_stage_plot(plot_path, workspace.root)).rigged
+        )
     elif unplaced_fixtures(workspace):
         stage_placed = generate_stage_layout(workspace, library).placed
     caps = capabilities_of(workspace.root, library)
@@ -292,18 +296,24 @@ def build_canonical_show(
     # driven, fast on Space and at half speed on `-` - which is what "50%"
     # meant on the hand-built console, not half the brightness.
     master["Flash 100%"] = _flat_scene(
-        workspace, caps, "Flash 100%", (255, 255, 255), wheel_color="Blanco",
+        workspace,
+        caps,
+        "Flash 100%",
+        (255, 255, 255),
+        wheel_color="Blanco",
         strobe=FLASH_STROBE_FAST,
     )
     master["Flash 50%"] = _flat_scene(
-        workspace, caps, "Flash 50%", (255, 255, 255), wheel_color="Blanco",
+        workspace,
+        caps,
+        "Flash 50%",
+        (255, 255, 255),
+        wheel_color="Blanco",
         strobe=FLASH_STROBE_SLOW,
     )
     # And the third flash the old console had on `.`: the strobe over whatever
     # colour is already running - dimmer and shutter only, RGB untouched.
-    master["Flash Color"] = generate_flash_color(
-        workspace, caps, fraction=FLASH_STROBE_FAST
-    )
+    master["Flash Color"] = generate_flash_color(workspace, caps, fraction=FLASH_STROBE_FAST)
     # The bass bar's hit. It was `Flash 100%` - but that scene now strobes,
     # and a strobe fired by whatever the PA does is a strobe nobody chose. So
     # the bass keeps its own plain white: same look, shutters open, no strobe.
@@ -325,7 +335,8 @@ def build_canonical_show(
     panel_cycle_id = builtins.chaser_id
     if builtins.chaser_id is not None and panel_manual_id is not None:
         panel_cycle_id = _chaser(
-            workspace, "Ciclo Paneles Mixto",
+            workspace,
+            "Ciclo Paneles Mixto",
             [builtins.chaser_id, panel_manual_id],
             holds=[PANEL_EFFECTS_HOLD, PANEL_MANUAL_HOLD],
             path="Efectos Propios",
@@ -388,19 +399,21 @@ def build_canonical_show(
     # Everything the pixel groups need beside the wheel: their intensity, and
     # the panels' own programmes. Their colour is not here - the wheel's steps
     # carry it, matrix included. Wherever the wheel goes, this goes.
-    pixel_layer = [
-        fid for fid in (pixel_base_id, panel_cycle_id) if fid is not None
-    ]
+    pixel_layer = [fid for fid in (pixel_base_id, panel_cycle_id) if fid is not None]
 
     # The wheel colours the pixel groups too, but through a matrix of its own
     # colour started by each step - never through the scene, whose RGB would
     # mix HTP with the matrix and land on a colour nobody chose.
-    step_matrices = generate_pixel_wheel_matrices(
-        workspace,
-        pixel_group_ids,
-        _wheel_colors(),
-        CYCLE_ALGORITHMS,
-    ) if pixel_group_ids else {}
+    step_matrices = (
+        generate_pixel_wheel_matrices(
+            workspace,
+            pixel_group_ids,
+            _wheel_colors(),
+            CYCLE_ALGORITHMS,
+        )
+        if pixel_group_ids
+        else {}
+    )
 
     # Symmetry comes from reversing one side: with every head going the same way
     # round the room sweeps in parallel, and with house right backwards the
@@ -408,9 +421,7 @@ def build_canonical_show(
     # washes wide and slow, beams narrow and shorter - because one geometry
     # over both tuned the show for neither (Codex review, 2026-08-27).
     mirrored = house_right_fixture_ids(workspace.root)
-    movement = generate_movement_families(
-        workspace, library, mirrored_ids=mirrored
-    )
+    movement = generate_movement_families(workspace, library, mirrored_ids=mirrored)
     if movement.cabezas_id is not None:
         master["Movimientos Cabezas"] = movement.cabezas_id
     if movement.rapidos_id is not None:
@@ -436,11 +447,16 @@ def build_canonical_show(
     # own walk shows one shape at a time, and a room with four beams in it
     # should not look like one beam repeated (owner, 2026-08-30).
     dealt = generate_dealt_gobo_scenes(
-        workspace, library,
+        workspace,
+        library,
         companions=((roles.GOBO_SHAKE, 0), (roles.FOCUS, BEAM_FOCUS)),
     )
     gobos = generate_wheel_scenes(
-        workspace, library, role=roles.GOBO, label="Gobo", path="Gobos",
+        workspace,
+        library,
+        role=roles.GOBO,
+        label="Gobo",
+        path="Gobos",
         dimmer_full=False,
         companions=((roles.GOBO_SHAKE, 0, 0), (roles.FOCUS, BEAM_FOCUS, BEAM_FOCUS)),
         extra_step_ids=shake.scene_ids + dealt,
@@ -455,8 +471,14 @@ def build_canonical_show(
         if c.has_role(roles.GOBO)
     ]
     beam_colors = generate_wheel_scenes(
-        workspace, library, role=roles.COLOR_MACRO, label="Color Beam",
-        fixture_ids=beams, hold=6000, path="Color Beam", dimmer_full=False,
+        workspace,
+        library,
+        role=roles.COLOR_MACRO,
+        label="Color Beam",
+        fixture_ids=beams,
+        hold=6000,
+        path="Color Beam",
+        dimmer_full=False,
     )
     if beam_colors.chaser_id is not None:
         master["Color Beam Animacion"] = beam_colors.chaser_id
@@ -466,8 +488,15 @@ def build_canonical_show(
     # inserted, stopped on the "None" position. Without this the channel kept
     # whatever the last look left, and a parked prism does not kaleidoscope.
     prisms = generate_wheel_scenes(
-        workspace, library, role=roles.PRISM, label="Prisma", run_order="Loop",
-        hold=8000, path="Prisma", dimmer_full=False, make_chaser=False,
+        workspace,
+        library,
+        role=roles.PRISM,
+        label="Prisma",
+        run_order="Loop",
+        hold=8000,
+        path="Prisma",
+        dimmer_full=False,
+        make_chaser=False,
         companions=((roles.PRISM_ROTATION, PRISM_SPIN_SLOW, 0),),
     )
     # And the same prism turning fast, and turning the other way: one rotation
@@ -475,7 +504,9 @@ def build_canonical_show(
     spins = generate_prism_spins(workspace, library)
     beam_subsets = generate_beam_subsets(workspace, library)
     prism_animation_id = _prism_choreography(
-        workspace, prisms.scene_ids, beam_subsets.prism_scene_ids,
+        workspace,
+        prisms.scene_ids,
+        beam_subsets.prism_scene_ids,
         extra_step_ids=spins.scene_ids,
     )
     if prism_animation_id is not None:
@@ -499,7 +530,8 @@ def build_canonical_show(
     # (`Ciclo Paneles Mixto`, `Pixeles ON`), and those hold 255: a chase under
     # a steady 255 can dip nothing - HTP - so they leave the chase entirely.
     dimmers = generate_dimmer_chases(
-        workspace, library,
+        workspace,
+        library,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
     )
     master["Dimmer Chase"] = dimmers.chase_id
@@ -516,9 +548,13 @@ def build_canonical_show(
     # hardware strobe, and a chaser latching it for 125 ms a step would stack
     # a ~17 Hz shutter strobe on top of its own 4 Hz chop.
     strobes = generate_strobe_effects(
-        workspace, library,
+        workspace,
+        library,
         full_id=_flat_scene(
-            workspace, caps, "Strobo Blanco", (255, 255, 255),
+            workspace,
+            caps,
+            "Strobo Blanco",
+            (255, 255, 255),
             wheel_color="Blanco",
         ),
         black_id=_blackout(workspace, caps, name="Strobo Negro"),
@@ -544,7 +580,8 @@ def build_canonical_show(
     # scroll, the bars under a rainbow plasma - entering the wheel as ordinary
     # steps, so "de vez en cuando" is the Random rotation doing its job.
     multicolor_ids = generate_multicolor_scenes(
-        workspace, library,
+        workspace,
+        library,
         colors=list(_wheel_colors().items()),
         exclude_fixture_ids=sorted(matrix_lit_ids),
         program_gated_ids=program_gated,
@@ -552,29 +589,32 @@ def build_canonical_show(
     # The hand-built "4 Colores" rotations, back beside the wild steps: the
     # same deal of blue/red/green/white walked one seat per scene.
     quad_ids = generate_quad_color_scenes(
-        workspace, library,
+        workspace,
+        library,
         exclude_fixture_ids=sorted(matrix_lit_ids),
         program_gated_ids=program_gated,
     )
-    multicolor_matrix_ids = generate_multicolor_matrices(
-        workspace, pixel_group_ids
-    ) if pixel_group_ids and (multicolor_ids or quad_ids) else []
+    multicolor_matrix_ids = (
+        generate_multicolor_matrices(workspace, pixel_group_ids)
+        if pixel_group_ids and (multicolor_ids or quad_ids)
+        else []
+    )
     wild_scenes = [
-        (scene_id, f"Rig Multicolor {n}")
-        for n, scene_id in enumerate(multicolor_ids, start=1)
-    ] + [
-        (scene_id, f"Rig 4 Colores {n}")
-        for n, scene_id in enumerate(quad_ids, start=1)
-    ]
+        (scene_id, f"Rig Multicolor {n}") for n, scene_id in enumerate(multicolor_ids, start=1)
+    ] + [(scene_id, f"Rig 4 Colores {n}") for n, scene_id in enumerate(quad_ids, start=1)]
     multicolor_steps = [
         _collection(
-            workspace, f"{graph_name} + Pixeles",
+            workspace,
+            f"{graph_name} + Pixeles",
             [scene_id, *multicolor_matrix_ids],
-        ) if multicolor_matrix_ids else scene_id
+        )
+        if multicolor_matrix_ids
+        else scene_id
         for scene_id, graph_name in wild_scenes
     ]
     unison = generate_unison_colors(
-        workspace, library,
+        workspace,
+        library,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
         step_extras=step_matrices,
         program_gated_ids=program_gated,
@@ -583,7 +623,8 @@ def build_canonical_show(
     if unison.wheel_id is not None:
         master["Rueda Colores"] = unison.wheel_id
     master["Rueda Mezcla"] = _collection(
-        workspace, "Rueda Mezcla",
+        workspace,
+        "Rueda Mezcla",
         [b.mix_wheel_id for b in banks if b.mix_wheel_id is not None],
     )
     # The two whole-rig rainbows the hand-built console kept on keys of their
@@ -614,7 +655,8 @@ def build_canonical_show(
     # dimmer than "Fiesta" for the first time. The pixel groups stay out -
     # `Pixeles ON` owns them.
     intensity = generate_energy_intensity(
-        workspace, caps,
+        workspace,
+        caps,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
     )
     if intensity.ambient_id is not None:
@@ -625,7 +667,9 @@ def build_canonical_show(
             workspace,
             breath_id=intensity.full_id,
             program_ids=[
-                dimmers.chase_id, dimmers.pingpong_id, dimmers.chase2_id,
+                dimmers.chase_id,
+                dimmers.pingpong_id,
+                dimmers.chase2_id,
             ],
         )
     # Peak hands its dimmers to the chase instead: `Intensidad Total` beside it
@@ -634,7 +678,8 @@ def build_canonical_show(
     # cannot reach - no dimmer role, like the MiN Wash - still need an owner or
     # they go dark the moment the level's old flat scene leaves; this is theirs.
     peak_static = generate_dimmerless_intensity(
-        workspace, caps,
+        workspace,
+        caps,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
     )
     if peak_static is not None:
@@ -643,7 +688,8 @@ def build_canonical_show(
     # ping-pong taking turns in one chaser - steps are alternatives, so the
     # dimmers always have exactly one owner.
     dimmer_programs_id = _chaser(
-        workspace, "Dimmer Programas",
+        workspace,
+        "Dimmer Programas",
         [dimmers.chase2_id, dimmers.pingpong_id],
         holds=[DYNAMIC_CHASE_HOLD, DYNAMIC_PINGPONG_HOLD],
         path="Dimmers",
@@ -663,10 +709,17 @@ def build_canonical_show(
                 # one spot is the level's whole hold. The gobo wheel is parked
                 # open: the quiet level is where the pattern comes *out*, and a
                 # wheel nothing drives keeps what it was left on.
-                [fid for fid in (
-                    movement.slow_id, movement.slow_beam_id, gobo_open_id,
-                    prism_off_id, intensity.ambient_id,
-                ) if fid is not None],
+                [
+                    fid
+                    for fid in (
+                        movement.slow_id,
+                        movement.slow_beam_id,
+                        gobo_open_id,
+                        prism_off_id,
+                        intensity.ambient_id,
+                    )
+                    if fid is not None
+                ],
                 AMBIENT_HOLD,
             ),
             EnergyLevel(
@@ -677,22 +730,33 @@ def build_canonical_show(
                 # "le faltaba usar mas los gobos los prismas etc" (owner).
                 # The dance takes it in and out on its own, so a level that
                 # runs it is not a level stuck inside a kaleidoscope.
-                [fid for fid in (
-                    movement.wash_id, movement.beam_id,
-                    master["Gobo Animacion"],
-                    master.get("Prisma Animacion", prism_off_id),
-                    intensity.full_id,
-                ) if fid is not None],
+                [
+                    fid
+                    for fid in (
+                        movement.wash_id,
+                        movement.beam_id,
+                        master["Gobo Animacion"],
+                        master.get("Prisma Animacion", prism_off_id),
+                        intensity.full_id,
+                    )
+                    if fid is not None
+                ],
                 PARTY_HOLD,
             ),
             EnergyLevel(
                 "Nivel Peak",
-                [fid for fid in (
-                    movement.fast_wash_id, movement.fast_beam_id,
-                    master["Gobo Animacion"],
-                    master.get("Prisma Animacion"),
-                    master["Dimmer Chase"], peak_static,
-                ) if fid is not None],
+                [
+                    fid
+                    for fid in (
+                        movement.fast_wash_id,
+                        movement.fast_beam_id,
+                        master["Gobo Animacion"],
+                        master.get("Prisma Animacion"),
+                        master["Dimmer Chase"],
+                        peak_static,
+                    )
+                    if fid is not None
+                ],
                 PEAK_HOLD,
             ),
             # The way down from the peak: party movement, but the dimmers
@@ -700,17 +764,25 @@ def build_canonical_show(
             # instead of a flat wall.
             EnergyLevel(
                 "Nivel Fiesta Dinamico",
-                [fid for fid in (
-                    movement.wash_id, movement.beam_id,
-                    master["Gobo Animacion"],
-                    master.get("Prisma Animacion", prism_off_id),
-                    dimmer_programs_id, peak_static,
-                ) if fid is not None],
+                [
+                    fid
+                    for fid in (
+                        movement.wash_id,
+                        movement.beam_id,
+                        master["Gobo Animacion"],
+                        master.get("Prisma Animacion", prism_off_id),
+                        dimmer_programs_id,
+                        peak_static,
+                    )
+                    if fid is not None
+                ],
                 DYNAMIC_HOLD,
             ),
         ],
         order=(
-            "Nivel Ambiente", "Nivel Fiesta", "Nivel Peak",
+            "Nivel Ambiente",
+            "Nivel Fiesta",
+            "Nivel Peak",
             "Nivel Fiesta Dinamico",
         ),
     )
@@ -737,54 +809,80 @@ def build_canonical_show(
     # a lull, the last track - and they are the reason the energy levels are no
     # longer buttons: pressing two of those at once is what put the room on
     # every colour at once.
-    master["Luz Charla"] = _flat_scene(
-        workspace, caps, "Luz Charla", CHARLA_WHITE
-    )
+    master["Luz Charla"] = _flat_scene(workspace, caps, "Luz Charla", CHARLA_WHITE)
     beam_white_id = _first(beam_colors.scene_ids)
     # Every moment brings its own intensity base beside its colour, because
     # the colour scenes no longer open anything on their own.
-    moments = generate_moments(workspace, [
-        # Somebody is talking: steady warm light, heads parked, nothing moving,
-        # no wheel and no matrix - the one state where change is the enemy.
-        Moment("Momento Charla", [
-            home_id, master["Luz Charla"], gobo_open_id, prism_off_id,
-            beam_white_id, intensity.full_id,
-        ]),
-        # A lull: the colour bed and the pixels keep breathing at the low
-        # intensity base, and the heads rest without freezing - each family on
-        # its own slow shapes. Parked dead they read as broken ("molaría un
-        # movimiento suave estilo reposo", owner, 2026-08-29); home is only the
-        # fallback for a rig whose movers grew neither family.
-        Moment("Momento Tranquilo", [
-            master["Rueda Colores"], *pixel_layer,
-            *([f for f in (movement.slow_id, movement.slow_beam_id)
-               if f is not None] or [home_id]),
-            gobo_open_id, prism_off_id, intensity.ambient_id,
-        ]),
-        # The party moment carries the prism from 2026-08-30 for the same
-        # reason the party level does: the dance takes it in and out, and a
-        # room somebody put into FIESTA by hand should get the whole rig.
-        Moment("Momento Fiesta", [
-            master["Rueda Colores"], *pixel_layer,
-            master["Movimientos Cabezas"], master["Gobo Animacion"],
-            master.get("Prisma Animacion", prism_off_id), intensity.full_id,
-        ]),
-        # Everything the rig has, minus the strobe: a strobe belongs to a hit
-        # somebody presses and lets go of, not to a state left running. The
-        # dimmers belong to the chase, so the intensity base is the dimmerless
-        # one, like the peak level's: `Intensidad Total` beside the chase held
-        # every dimmer at 255 and HTP made the chase cosmetic - which is why
-        # locura opened as a flat white wall ("empieza todo blanco y normal",
-        # owner, 2026-08-29).
-        Moment("Momento Locura", [
-            master["Rueda Colores"], *pixel_layer,
-            master.get("Movimientos Rapidos", master["Movimientos Cabezas"]),
-            master["Gobo Animacion"],
-            master.get("Prisma Animacion"),
-            master["Dimmer Chase"],
-            peak_static,
-        ]),
-    ])
+    moments = generate_moments(
+        workspace,
+        [
+            # Somebody is talking: steady warm light, heads parked, nothing moving,
+            # no wheel and no matrix - the one state where change is the enemy.
+            Moment(
+                "Momento Charla",
+                [
+                    home_id,
+                    master["Luz Charla"],
+                    gobo_open_id,
+                    prism_off_id,
+                    beam_white_id,
+                    intensity.full_id,
+                ],
+            ),
+            # A lull: the colour bed and the pixels keep breathing at the low
+            # intensity base, and the heads rest without freezing - each family on
+            # its own slow shapes. Parked dead they read as broken ("molaría un
+            # movimiento suave estilo reposo", owner, 2026-08-29); home is only the
+            # fallback for a rig whose movers grew neither family.
+            Moment(
+                "Momento Tranquilo",
+                [
+                    master["Rueda Colores"],
+                    *pixel_layer,
+                    *(
+                        [f for f in (movement.slow_id, movement.slow_beam_id) if f is not None]
+                        or [home_id]
+                    ),
+                    gobo_open_id,
+                    prism_off_id,
+                    intensity.ambient_id,
+                ],
+            ),
+            # The party moment carries the prism from 2026-08-30 for the same
+            # reason the party level does: the dance takes it in and out, and a
+            # room somebody put into FIESTA by hand should get the whole rig.
+            Moment(
+                "Momento Fiesta",
+                [
+                    master["Rueda Colores"],
+                    *pixel_layer,
+                    master["Movimientos Cabezas"],
+                    master["Gobo Animacion"],
+                    master.get("Prisma Animacion", prism_off_id),
+                    intensity.full_id,
+                ],
+            ),
+            # Everything the rig has, minus the strobe: a strobe belongs to a hit
+            # somebody presses and lets go of, not to a state left running. The
+            # dimmers belong to the chase, so the intensity base is the dimmerless
+            # one, like the peak level's: `Intensidad Total` beside the chase held
+            # every dimmer at 255 and HTP made the chase cosmetic - which is why
+            # locura opened as a flat white wall ("empieza todo blanco y normal",
+            # owner, 2026-08-29).
+            Moment(
+                "Momento Locura",
+                [
+                    master["Rueda Colores"],
+                    *pixel_layer,
+                    master.get("Movimientos Rapidos", master["Movimientos Cabezas"]),
+                    master["Gobo Animacion"],
+                    master.get("Prisma Animacion"),
+                    master["Dimmer Chase"],
+                    peak_static,
+                ],
+            ),
+        ],
+    )
     master.update(moments)
 
     # The show runs on the clock and is re-timed by the tap dial, which is the
@@ -801,7 +899,8 @@ def build_canonical_show(
     # the BPM they all count against. It is opt-in precisely because 5.2.2
     # would load it and silently do nothing.
     set_beat_generator(
-        workspace.root, "Audio" if beats else "Internal",
+        workspace.root,
+        "Audio" if beats else "Internal",
         bpm=0 if beats else DEFAULT_BPM,
     )
     tempo_functions = _tempo_functions(workspace, master, matrices)
@@ -816,14 +915,13 @@ def build_canonical_show(
         # 2026-08-29). Matrix cycles are the same trap wearing a frame clock.
         present = {f.attrib.get("Name") for f in workspace.engine}
         timings = {
-            name: timing for name, timing in BEAT_TIMINGS.items()
+            name: timing
+            for name, timing in BEAT_TIMINGS.items()
             if name in present and _steps_are_scenes(workspace, name)
         }
-        timings.update({
-            name: MATRIX_BEATS
-            for name in present
-            if name and name.startswith("Ciclo Matrices")
-        })
+        timings.update(
+            {name: MATRIX_BEATS for name in present if name and name.startswith("Ciclo Matrices")}
+        )
         apply_beat_tempo(workspace, timings)
 
     button_ids: list[int] = []
@@ -849,9 +947,7 @@ def build_canonical_show(
         )
         button_ids = console.button_ids
 
-    functions = [
-        f for f in workspace.engine if f.tag.endswith("}Function")
-    ]
+    functions = [f for f in workspace.engine if f.tag.endswith("}Function")]
     return CanonicalShow(
         banks=banks,
         matrix_ids=matrix_ids,
@@ -884,7 +980,9 @@ PRISM_STEP_HOLD_MS = 8000
 
 
 def _prism_choreography(
-    workspace, wheel_scene_ids: list[int], subset_scene_ids: list[int],
+    workspace,
+    wheel_scene_ids: list[int],
+    subset_scene_ids: list[int],
     extra_step_ids: list[int] | None = None,
 ) -> int | None:
     """The old eight-step prism dance, or the plain out/in walk as fallback.
@@ -901,18 +999,22 @@ def _prism_choreography(
     out_id, in_id = wheel_scene_ids[0], wheel_scene_ids[1]
     if len(subset_scene_ids) >= 6:
         steps = [
-            (in_id if step is True else out_id if step is False
-             else subset_scene_ids[step])
+            (in_id if step is True else out_id if step is False else subset_scene_ids[step])
             for step in _PRISM_CHOREOGRAPHY
         ]
     else:
         steps = list(wheel_scene_ids)
     steps += list(extra_step_ids or [])
     function_id = next_function_id(workspace.root)
-    workspace.add_function(build_chaser(
-        function_id, "Prisma Animacion", steps, hold=PRISM_STEP_HOLD_MS,
-        path="Prisma",
-    ))
+    workspace.add_function(
+        build_chaser(
+            function_id,
+            "Prisma Animacion",
+            steps,
+            hold=PRISM_STEP_HOLD_MS,
+            path="Prisma",
+        )
+    )
     return function_id
 
 
@@ -936,9 +1038,7 @@ def _is_pixel_group(caps, fixture_ids) -> bool:
     """
     wanted = set(fixture_ids)
     return any(
-        len(c.offsets_for_role(roles.RED)) > 1
-        for c in caps
-        if c.fixture.fixture_id in wanted
+        len(c.offsets_for_role(roles.RED)) > 1 for c in caps if c.fixture.fixture_id in wanted
     )
 
 
@@ -948,23 +1048,13 @@ def _steps_are_scenes(workspace: Workspace, name: str) -> bool:
     A chaser hands its own fade and duration to whatever it starts. A Scene
     has no clock of its own to corrupt; an EFX and an RGBMatrix both do.
     """
-    by_id = {
-        f.attrib.get("ID"): f for f in workspace.engine
-        if f.tag.endswith("}Function")
-    }
-    function = next(
-        (f for f in workspace.engine if f.attrib.get("Name") == name), None
-    )
+    by_id = {f.attrib.get("ID"): f for f in workspace.engine if f.tag.endswith("}Function")}
+    function = next((f for f in workspace.engine if f.attrib.get("Name") == name), None)
     if function is None:
         return False
-    steps = [
-        by_id.get(step.text)
-        for step in findall_local(function, "Step")
-        if step.text
-    ]
+    steps = [by_id.get(step.text) for step in findall_local(function, "Step") if step.text]
     return bool(steps) and all(
-        step is not None and step.attrib.get("Type") == "Scene"
-        for step in steps
+        step is not None and step.attrib.get("Type") == "Scene" for step in steps
     )
 
 
@@ -982,17 +1072,13 @@ def _movement_tempo_functions(workspace) -> list[DialFunction]:
     purpose, which is off this dial's scale and not something anybody taps.
     """
     wanted = (
-        "Movimientos Washes", "Movimientos Beams",
-        "Rapidos Washes", "Rapidos Beams",
+        "Movimientos Washes",
+        "Movimientos Beams",
+        "Rapidos Washes",
+        "Rapidos Beams",
     )
-    by_id = {
-        f.attrib.get("ID"): f for f in workspace.engine
-        if f.tag.endswith("}Function")
-    }
-    by_name = {
-        f.attrib.get("Name"): f for f in workspace.engine
-        if f.tag.endswith("}Function")
-    }
+    by_id = {f.attrib.get("ID"): f for f in workspace.engine if f.tag.endswith("}Function")}
+    by_name = {f.attrib.get("Name"): f for f in workspace.engine if f.tag.endswith("}Function")}
     functions: dict[int, DialFunction] = {}
     for name in wanted:
         chaser = by_name.get(name)
@@ -1018,9 +1104,7 @@ def _movement_tempo_functions(workspace) -> list[DialFunction]:
             shape_id = int(shape.attrib["ID"])
             functions[shape_id] = DialFunction(
                 function_id=shape_id,
-                duration=beat_multiplier(
-                    int(shape_speed.attrib.get("Duration", 0)), TAP_BEAT_MS
-                ),
+                duration=beat_multiplier(int(shape_speed.attrib.get("Duration", 0)), TAP_BEAT_MS),
             )
     return [functions[key] for key in sorted(functions)]
 
@@ -1034,13 +1118,14 @@ def _tempo_functions(workspace, master, matrices) -> list[DialFunction]:
     chaser fade would corrupt.
     """
     wanted = (
-        "Rueda Colores", "Rueda Mezcla", "Gobo Animacion",
-        "Color Beam Animacion", "Prisma Animacion", "Dimmer PingPong",
+        "Rueda Colores",
+        "Rueda Mezcla",
+        "Gobo Animacion",
+        "Color Beam Animacion",
+        "Prisma Animacion",
+        "Dimmer PingPong",
     )
-    by_id = {
-        f.attrib.get("ID"): f for f in workspace.engine
-        if f.tag.endswith("}Function")
-    }
+    by_id = {f.attrib.get("ID"): f for f in workspace.engine if f.tag.endswith("}Function")}
     functions: list[DialFunction] = []
     for name in wanted:
         function_id = master.get(name)
@@ -1051,16 +1136,23 @@ def _tempo_functions(workspace, master, matrices) -> list[DialFunction]:
         if speed is None:
             continue  # a Collection has no speed of its own to re-time
         duration = int(speed.attrib.get("Duration", 0))
-        functions.append(DialFunction(
-            function_id=function_id,
-            duration=beat_multiplier(duration, TAP_BEAT_MS),
-        ))
+        functions.append(
+            DialFunction(
+                function_id=function_id,
+                duration=beat_multiplier(duration, TAP_BEAT_MS),
+            )
+        )
     return functions
 
 
 def _flat_scene(
-    workspace, caps, name, rgb, wheel_color: str | None = None,
-    wheel_dimmer: int = 255, strobe: float | None = None,
+    workspace,
+    caps,
+    name,
+    rgb,
+    wheel_color: str | None = None,
+    wheel_dimmer: int = 255,
+    strobe: float | None = None,
 ) -> int:
     """One colour on every colour-capable fixture; smoke machines excluded.
 
@@ -1080,9 +1172,7 @@ def _flat_scene(
             merged.update(off)
             values[capability.fixture.fixture_id] = sorted(merged.items())
     if wheel_color is not None:
-        values.update(
-            wheel_color_values(caps, wheel_color, dimmer=wheel_dimmer)
-        )
+        values.update(wheel_color_values(caps, wheel_color, dimmer=wheel_dimmer))
     if strobe is not None:
         for capability in caps:
             if capability.is_smoke:
@@ -1095,9 +1185,7 @@ def _flat_scene(
             merged.update(strobing)
             values[fixture_id] = sorted(merged.items())
     function_id = next_function_id(workspace.root)
-    workspace.add_function(
-        build_scene(function_id, name, values, path=SHOW_PATH)
-    )
+    workspace.add_function(build_scene(function_id, name, values, path=SHOW_PATH))
     return function_id
 
 
@@ -1132,28 +1220,25 @@ def _blackout(workspace, caps, name: str = "Todo Negro") -> int:
         if pairs:
             values[capability.fixture.fixture_id] = sorted(set(pairs))
     function_id = next_function_id(workspace.root)
-    workspace.add_function(
-        build_scene(function_id, name, values, path=SHOW_PATH)
-    )
+    workspace.add_function(build_scene(function_id, name, values, path=SHOW_PATH))
     return function_id
 
 
 def _chaser(
-    workspace: Workspace, name: str, steps: list[int],
-    holds: list[int], path: str,
+    workspace: Workspace,
+    name: str,
+    steps: list[int],
+    holds: list[int],
+    path: str,
 ) -> int:
     function_id = next_function_id(workspace.root)
-    workspace.add_function(
-        build_chaser(function_id, name, steps, hold=holds, path=path)
-    )
+    workspace.add_function(build_chaser(function_id, name, steps, hold=holds, path=path))
     return function_id
 
 
 def _collection(workspace: Workspace, name: str, members: list[int]) -> int:
     function_id = next_function_id(workspace.root)
-    workspace.add_function(
-        build_collection(function_id, name, members, path=SHOW_PATH)
-    )
+    workspace.add_function(build_collection(function_id, name, members, path=SHOW_PATH))
     return function_id
 
 
@@ -1161,6 +1246,4 @@ def _all_self_animating(caps, fixture_ids) -> bool:
     """True when every colour-capable member runs programmes of its own."""
     wanted = set(fixture_ids)
     members = [c for c in caps if c.fixture.fixture_id in wanted]
-    return bool(members) and all(
-        internal_program(capability) is not None for capability in members
-    )
+    return bool(members) and all(internal_program(capability) is not None for capability in members)

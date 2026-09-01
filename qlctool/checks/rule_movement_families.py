@@ -38,9 +38,7 @@ def check_movement_families(graph: ShowGraph) -> list[Finding]:
             # element is an intensity wave, and a dimmer does not care what
             # optics it sits behind.
             mode = find_local(element, "Mode")
-            mode_value = (
-                int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
-            )
+            mode_value = int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
             if mode_value != EFX_PAN_TILT:
                 continue
             capability = graph.capabilities.get(int(identifier.text))
@@ -50,15 +48,17 @@ def check_movement_families(graph: ShowGraph) -> list[Finding]:
             side.append(capability.fixture.name)
         if not washes or not beams:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=WARNING,
-            function=graph.name(function_id),
-            message=(
-                f"mueve {len(washes)} wash(es) y {len(beams)} beam(s) con la "
-                f"misma geometria; un haz de 2 grados y un wash ancho no "
-                f"comparten tamaño ni velocidad - un EFX por familia"
-            ),
-            fixtures=tuple(sorted(washes + beams)),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=WARNING,
+                function=graph.name(function_id),
+                message=(
+                    f"mueve {len(washes)} wash(es) y {len(beams)} beam(s) con la "
+                    f"misma geometria; un haz de 2 grados y un wash ancho no "
+                    f"comparten tamaño ni velocidad - un EFX por familia"
+                ),
+                fixtures=tuple(sorted(washes + beams)),
+            )
+        )
     return findings

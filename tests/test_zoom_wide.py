@@ -68,21 +68,16 @@ def test_the_matrix_base_scene_writes_zoom_too():
     workspace = Workspace.load(REPO / "QLC+ Setups" / "Vibra-split.qxw")
     library = FixtureLibrary.load()
     capabilities = capabilities_of(workspace.root, library)
-    washes = [
-        c for c in capabilities
-        if zoom_wide_pairs(c) and "MAC WASH" in c.fixture.name
-    ]
+    washes = [c for c in capabilities if zoom_wide_pairs(c) and "MAC WASH" in c.fixture.name]
     assert washes, "the MAC WASH lost their zoom channel; this test is stale"
 
     scene = next(
-        function for function in find_local(workspace.root, "Engine")
-        if localname(function) == "Function"
-        and function.attrib.get("Name") == "Pixeles ON"
+        function
+        for function in find_local(workspace.root, "Engine")
+        if localname(function) == "Function" and function.attrib.get("Name") == "Pixeles ON"
     )
     written = {
-        int(value.attrib["ID"]): {
-            int(n) for n in (value.text or "").split(",")[0::2]
-        }
+        int(value.attrib["ID"]): {int(n) for n in (value.text or "").split(",")[0::2]}
         for value in findall_local(scene, "FixtureVal")
     }
 

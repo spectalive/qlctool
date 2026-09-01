@@ -47,7 +47,9 @@ def test_a_truncated_workspace_is_rejected(tmp_path):
 def test_generated_functions_load_in_qlcplus(tmp_path):
     ws = Workspace.load(SHOW)
     generate_matrix_effects(
-        ws, group_id=0, algorithms=["Strobe", None],
+        ws,
+        group_id=0,
+        algorithms=["Strobe", None],
         palette={"Rojo": (255, 0, 0)},
     )
     generate_movement_efx(ws, FixtureLibrary.load())
@@ -78,9 +80,9 @@ def test_a_dying_qlcplus_does_not_hand_its_errors_to_the_next_workspace():
     the session this call started.
     """
     log = (
-        "bool QLCFixtureDefCache::load(const QDir &) \"/x/Fixtures\"\n"
+        'bool QLCFixtureDefCache::load(const QDir &) "/x/Fixtures"\n'
         "Fixture 13 overlapping with fixture 12\n"
-        "bool QLCFixtureDefCache::load(const QDir &) \"/x/Fixtures\"\n"
+        'bool QLCFixtureDefCache::load(const QDir &) "/x/Fixtures"\n'
         "1730 fixtures found in map\n"
         "renderPage\n"
     )

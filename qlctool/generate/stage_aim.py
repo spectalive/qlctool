@@ -27,8 +27,8 @@ NAME = "Escenario"
 # DMX address (0-based, as patched) -> (pan, tilt), read verbatim out of
 # DeluxeEventos2's `Escenario` scene (ID 376) on 2026-08-27.
 MEASURED_AIMS: dict[int, tuple[int, int]] = {
-    0: (161, 49),     # CromoWash100 #1
-    12: (176, 43),    # CromoWash100 #2
+    0: (161, 49),  # CromoWash100 #1
+    12: (176, 43),  # CromoWash100 #2
     218: (156, 196),  # BEAM 230W 7R #1
     234: (159, 204),  # BEAM 230W 7R #2
     250: (159, 192),  # BEAM 230W 7R #3

@@ -30,10 +30,10 @@ from ..functions.efx import EFXFixture, build_efx
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
-from ..stepped_dimmer import stepped_dimmer_offsets
 from ..shutter_open import shutter_open_pairs
-from ..zoom_wide import zoom_wide_pairs
+from ..stepped_dimmer import stepped_dimmer_offsets
 from ..workspace import Workspace
+from ..zoom_wide import zoom_wide_pairs
 from .movement_efx import spread_offsets
 
 MODE_DIMMER = 1  # EFXFixture::Mode - PanTilt, Dimmer, RGB
@@ -89,9 +89,7 @@ def generate_dimmer_chases(
     families: dict[tuple[str, str], list] = {}
     for capability in dimmable:
         fixture = capability.fixture
-        families.setdefault((fixture.manufacturer, fixture.model), []).append(
-            capability
-        )
+        families.setdefault((fixture.manufacturer, fixture.model), []).append(capability)
     parts = list(families.values())
     split = len(parts) > 1
 
@@ -108,9 +106,7 @@ def generate_dimmer_chases(
                         direction=direction,
                         start_offset=offset,
                     )
-                    for capability, offset in zip(
-                        members, spread_offsets(len(members))
-                    )
+                    for capability, offset in zip(members, spread_offsets(len(members)))
                 ],
                 # The old family EFX, verbatim in shape: Line with the pan
                 # term killed (Width 0), full-height sweep, cascaded Serial
@@ -133,25 +129,23 @@ def generate_dimmer_chases(
 
         chase_part_ids: list[int] = []
         for members in parts:
-            chase_part_ids.append(_efx(
-                f"{name} {members[0].fixture.model}",
-                members,
-                f"{path}/Partes",
-                direction,
-            ))
+            chase_part_ids.append(
+                _efx(
+                    f"{name} {members[0].fixture.model}",
+                    members,
+                    f"{path}/Partes",
+                    direction,
+                )
+            )
         part_ids.extend(chase_part_ids)
         function_id = next_function_id(workspace.root)
-        workspace.add_function(
-            build_collection(function_id, name, chase_part_ids, path=path)
-        )
+        workspace.add_function(build_collection(function_id, name, chase_part_ids, path=path))
         return function_id
 
     chase_id = _chase("Dimmer Chase", "Forward")
     chase2_id = _chase("Dimmer Chase 2", "Backward")
 
-    scene_ids = [
-        _half_lit(workspace, dimmable, remainder, path) for remainder in (0, 1)
-    ]
+    scene_ids = [_half_lit(workspace, dimmable, remainder, path) for remainder in (0, 1)]
     pingpong_id = next_function_id(workspace.root)
     workspace.add_function(
         build_chaser(
@@ -163,8 +157,11 @@ def generate_dimmer_chases(
         )
     )
     return GeneratedDimmers(
-        chase_id=chase_id, chase2_id=chase2_id, pingpong_id=pingpong_id,
-        scene_ids=scene_ids, part_ids=part_ids,
+        chase_id=chase_id,
+        chase2_id=chase2_id,
+        pingpong_id=pingpong_id,
+        scene_ids=scene_ids,
+        part_ids=part_ids,
     )
 
 
@@ -180,8 +177,7 @@ def _half_lit(workspace: Workspace, dimmable, remainder: int, path: str) -> int:
     for index, capability in enumerate(dimmable):
         lit = index % 2 == remainder
         pairs = [
-            (offset, 255 if lit else 0)
-            for offset in capability.offsets_for_role(roles.DIMMER)
+            (offset, 255 if lit else 0) for offset in capability.offsets_for_role(roles.DIMMER)
         ]
         if lit:
             pairs += shutter_open_pairs(capability)

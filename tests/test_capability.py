@@ -42,8 +42,7 @@ def test_library_covers_patch(fixtures, library):
         {
             (f.manufacturer, f.model)
             for f in fixtures
-            if library.get(f.manufacturer, f.model) is None
-            and f.manufacturer != "Generic"
+            if library.get(f.manufacturer, f.model) is None and f.manufacturer != "Generic"
         }
     )
     assert missing == [], f"definitions missing for {missing}"

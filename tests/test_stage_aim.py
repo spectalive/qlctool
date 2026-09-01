@@ -25,12 +25,10 @@ def test_the_measured_aims_land_on_the_patched_fixtures():
     function_id = generate_stage_aim(workspace, library)
     assert function_id is not None
 
-    by_id = {
-        c.fixture.fixture_id: c
-        for c in capabilities_of(workspace.root, library)
-    }
+    by_id = {c.fixture.fixture_id: c for c in capabilities_of(workspace.root, library)}
     scene = next(
-        f for f in find_local(workspace.root, "Engine")
+        f
+        for f in find_local(workspace.root, "Engine")
         if localname(f) == "Function" and f.attrib.get("ID") == str(function_id)
     )
     assert scene.attrib["Name"] == "Escenario"
@@ -44,8 +42,10 @@ def test_the_measured_aims_land_on_the_patched_fixtures():
         numbers = [int(n) for n in value.text.split(",")]
         written = dict(zip(numbers[0::2], numbers[1::2], strict=True))
         for role, expected in (
-            (roles.PAN, pan), (roles.TILT, tilt),
-            (roles.PAN_FINE, 0), (roles.TILT_FINE, 0),
+            (roles.PAN, pan),
+            (roles.TILT, tilt),
+            (roles.PAN_FINE, 0),
+            (roles.TILT_FINE, 0),
         ):
             for offset in capability.offsets_for_role(role):
                 assert written[offset] == expected, (address, role)

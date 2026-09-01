@@ -30,7 +30,8 @@ def _console_frame(root):
 def _generated_frames(root, frame_ids):
     wanted = {str(i) for i in frame_ids}
     return [
-        child for child in _console_frame(root)
+        child
+        for child in _console_frame(root)
         if localname(child) == "Frame" and child.attrib.get("ID") in wanted
     ]
 
@@ -57,7 +58,8 @@ def test_layout_gives_every_function_one_button(tmp_path):
 
     frames = _generated_frames(reloaded, layout.frame_ids)
     assert sorted(f.attrib["Caption"] for f in frames) == [
-        "Colores (generado)", "Movimiento (generado)"
+        "Colores (generado)",
+        "Movimiento (generado)",
     ]
     wired = [
         int(find_local(button, "Function").attrib["ID"])
@@ -74,9 +76,7 @@ def test_colour_buttons_carry_their_colour(tmp_path):
 
     frame = _generated_frames(ws.root, layout.frame_ids)[0]
     buttons = {b.attrib["Caption"]: b for b in findall_local(frame, "Button")}
-    background = find_local(
-        find_local(buttons["Color Rojo"], "Appearance"), "BackgroundColor"
-    )
+    background = find_local(find_local(buttons["Color Rojo"], "Appearance"), "BackgroundColor")
     assert background.text == str(argb_from_rgb((255, 0, 0)))
 
 
@@ -98,9 +98,7 @@ def test_layout_lands_below_the_existing_console(tmp_path):
     # The console canvas grew to fit what we added.
     properties = find_local(find_local(ws.root, "VirtualConsole"), "Properties")
     size = find_local(properties, "Size")
-    assert int(size.attrib["Height"]) >= int(
-        find_local(new_frame, "WindowState").attrib["Y"]
-    )
+    assert int(size.attrib["Height"]) >= int(find_local(new_frame, "WindowState").attrib["Y"])
 
 
 def test_layout_refuses_an_empty_selection():
@@ -109,9 +107,7 @@ def test_layout_refuses_an_empty_selection():
         generate_vc_layout(ws, function_ids=[])
 
 
-@pytest.mark.skipif(
-    qlcplus_binary() is None, reason="QLC+ is not installed on this machine"
-)
+@pytest.mark.skipif(qlcplus_binary() is None, reason="QLC+ is not installed on this machine")
 def test_qlcplus_loads_a_generated_layout(tmp_path):
     ws = Workspace.load(SHOW)
     library = FixtureLibrary.load()

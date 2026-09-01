@@ -16,9 +16,9 @@ from lxml import etree
 
 from ..constants import XML_DECLARATION
 from .smc_pad_device import (
-    PADS,
-    PAD_MIDI_CHANNEL,
     OMNI_CHANNEL_SHIFT,
+    PAD_MIDI_CHANNEL,
+    PADS,
     control_channel,
     pad_channel,
 )
@@ -83,9 +83,7 @@ def build_input_profile() -> bytes:
             label = f"Pad {pad}" if bank == 1 else f"Banco 2 - Pad {pad}"
             _channel(root, pad_channel(pad, bank=bank), label, "Button")
     for knob in range(1, KNOBS + 1):
-        _channel(
-            root, control_channel(FIRST_KNOB_CC + knob - 1), f"Knob {knob}", "Knob"
-        )
+        _channel(root, control_channel(FIRST_KNOB_CC + knob - 1), f"Knob {knob}", "Knob")
     for cc, label in EDGE_BUTTONS:
         _channel(root, control_channel(cc), label, "Button")
     _channel(
@@ -96,7 +94,7 @@ def build_input_profile() -> bytes:
     )
 
     body = etree.tostring(root, pretty_print=True, encoding="unicode")
-    return f"{XML_DECLARATION}\n{PROFILE_DOCTYPE}\n{body}".encode("utf-8")
+    return f"{XML_DECLARATION}\n{PROFILE_DOCTYPE}\n{body}".encode()
 
 
 def _pads_top_down() -> list[int]:
@@ -110,8 +108,6 @@ def _pads_top_down() -> list[int]:
 
 
 def _channel(root: etree._Element, number: int, name: str, type_: str) -> None:
-    channel = etree.SubElement(
-        root, f"{{{PROFILE_NS}}}Channel", Number=str(number)
-    )
+    channel = etree.SubElement(root, f"{{{PROFILE_NS}}}Channel", Number=str(number))
     etree.SubElement(channel, f"{{{PROFILE_NS}}}Name").text = name
     etree.SubElement(channel, f"{{{PROFILE_NS}}}Type").text = type_

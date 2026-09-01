@@ -12,8 +12,8 @@ from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..strobe_speed import strobe_speed_pairs
-from ..zoom_wide import zoom_wide_pairs
 from ..workspace import Workspace
+from ..zoom_wide import zoom_wide_pairs
 
 NAME = "Flash Color"
 

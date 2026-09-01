@@ -39,7 +39,9 @@ NAME = "Humo Vertical YA"
 
 
 def generate_vertical_smoke_burst(
-    workspace: Workspace, library: FixtureLibrary, path: str = "Humo",
+    workspace: Workspace,
+    library: FixtureLibrary,
+    path: str = "Humo",
 ) -> int | None:
     """The held column scene, or None when the rig has no lit smoke machine.
 
@@ -47,8 +49,7 @@ def generate_vertical_smoke_burst(
     running, which is the whole point of a lit column.
     """
     machines = [
-        c for c in capabilities_of(workspace.root, library)
-        if c.is_smoke and c.has_role(roles.RED)
+        c for c in capabilities_of(workspace.root, library) if c.is_smoke and c.has_role(roles.RED)
     ]
     if not machines:
         return None

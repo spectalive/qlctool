@@ -14,7 +14,5 @@ from ..workspace import Workspace
 
 def apply_stage_plot(workspace: Workspace, plot: StagePlot) -> StagePlot:
     """Replace the Monitor node with the plot, and hand the plot back."""
-    write_monitor(
-        workspace, plot.stage, plot.point_of_view, plot.items, plot.props
-    )
+    write_monitor(workspace, plot.stage, plot.point_of_view, plot.items, plot.props)
     return plot

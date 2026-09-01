@@ -65,15 +65,9 @@ def test_prism_subsets_follow_dmx_address_and_park_every_other_beam(generated):
         for index, beam in enumerate(beams):
             offset, positions = beam.wheel_for_role(roles.PRISM)
             inserted = next(
-                position
-                for position in positions
-                if position.preset == "PrismEffectOn"
+                position for position in positions if position.preset == "PrismEffectOn"
             )
-            parked = next(
-                position
-                for position in positions
-                if position.preset == "PrismEffectOff"
-            )
+            parked = next(position for position in positions if position.preset == "PrismEffectOff")
             expected = inserted.middle if index in selected else parked.middle
             assert values[beam.fixture.fixture_id] == {offset: expected}
 
@@ -87,9 +81,7 @@ def test_multicolor_uses_the_half_colour_channel_without_moving_the_wheel(
 
     for index, beam in enumerate(beams):
         wheel_offset, _ = beam.wheel_for_role(roles.COLOR_MACRO)
-        half_colour_offsets = set(
-            beam.offsets_for_role(roles.COLOR_MACRO)
-        ) - {wheel_offset}
+        half_colour_offsets = set(beam.offsets_for_role(roles.COLOR_MACRO)) - {wheel_offset}
         assert len(half_colour_offsets) == 1
         half_colour_offset = half_colour_offsets.pop()
         assert values[beam.fixture.fixture_id] == {
@@ -103,10 +95,7 @@ def test_every_restored_subset_is_reachable_from_the_generated_console():
     workspace = Workspace.load(SHOW)
     build_canonical_show(workspace, FixtureLibrary.load())
     functions = _functions(workspace.root)
-    function_ids = {
-        name: int(function.attrib["ID"])
-        for name, function in functions.items()
-    }
+    function_ids = {name: int(function.attrib["ID"]) for name, function in functions.items()}
     button_function_ids = {
         int(target.attrib["ID"])
         for button in iter_local(workspace.root, "Button")

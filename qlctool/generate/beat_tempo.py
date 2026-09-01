@@ -37,9 +37,7 @@ class BeatTiming:
     fade: float = 0.0
 
 
-def apply_beat_tempo(
-    workspace: Workspace, timings: dict[str, BeatTiming]
-) -> list[str]:
+def apply_beat_tempo(workspace: Workspace, timings: dict[str, BeatTiming]) -> list[str]:
     """Switch the named functions to Beats tempo. Returns the names it changed.
 
     A name the workspace does not carry raises: the timings are written against
@@ -60,14 +58,9 @@ def apply_beat_tempo(
     # <Tempo> - "Unknown collection tag: Tempo", read out of the show Mac's
     # log on 2026-08-29 - and ignores it, which is a layer silently left on
     # the stopwatch.
-    tempoless = sorted(
-        name for name in timings
-        if by_name[name].attrib.get("Type") == "Collection"
-    )
+    tempoless = sorted(name for name in timings if by_name[name].attrib.get("Type") == "Collection")
     if tempoless:
-        raise ValueError(
-            f"a Collection has no tempo to set: {', '.join(tempoless)}"
-        )
+        raise ValueError(f"a Collection has no tempo to set: {', '.join(tempoless)}")
 
     for name, timing in timings.items():
         _to_beats(by_name[name], timing)

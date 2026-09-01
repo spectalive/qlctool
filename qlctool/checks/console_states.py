@@ -44,17 +44,14 @@ def room_states(root: etree._Element, graph: ShowGraph, groups) -> set[int]:
         inside = {
             function_id
             for button in frame
-            if localname(button) == "Button"
-            and (function_id := _function_of(button)) is not None
+            if localname(button) == "Button" and (function_id := _function_of(button)) is not None
         }
         if len(inside) < 2:
             continue
         if startup is not None and startup in inside:
             return inside
         touched = {
-            fixture_id
-            for function_id in inside
-            for fixture_id in reach(graph, groups, function_id)
+            fixture_id for function_id in inside for fixture_id in reach(graph, groups, function_id)
         } & lightable
         if len(touched) > best_reach:
             best, best_reach = inside, len(touched)

@@ -68,14 +68,13 @@ def _values(function, fixture_id: int) -> dict[int, int]:
 
 def _fixtures_with(workspace, library, role):
     return [
-        capability for capability in capabilities_of(workspace.root, library)
+        capability
+        for capability in capabilities_of(workspace.root, library)
         if capability.has_role(role)
     ]
 
 
-def test_every_colour_look_takes_the_washes_off_their_own_programme(
-    built, library
-):
+def test_every_colour_look_takes_the_washes_off_their_own_programme(built, library):
     """2026-08-30: the two new washes ignored the show all night.
 
     Their `Function Mode` channel - one blanket 000-255 range, no names for
@@ -102,7 +101,8 @@ def test_every_colour_look_takes_the_washes_off_their_own_programme(
         # not reach this fixture is not a look that abandoned it; what matters
         # is that everything which *lights* it owns the mode channel.
         reaching = [
-            name for name in ("Blanco Total", "Rig Rojo", "Luz Charla")
+            name
+            for name in ("Blanco Total", "Rig Rojo", "Luz Charla")
             if _values(functions[name], fixture_id)
         ]
         assert reaching, f"no room look reaches {capability.fixture.name} at all"
@@ -120,8 +120,7 @@ def test_every_colour_look_takes_the_washes_off_their_own_programme(
         if base is not None and _values(base, fixture_id):
             written = _values(base, fixture_id)
             assert all(written.get(offset) == 0 for offset in offsets), (
-                f"Pixeles ON lights {capability.fixture.name} and leaves it on "
-                f"its own programme"
+                f"Pixeles ON lights {capability.fixture.name} and leaves it on its own programme"
             )
 
     # The beams have no RGB, so the colour generator never reaches them: their
@@ -161,14 +160,10 @@ def test_the_gobos_are_focused_and_the_four_beams_differ(built, library):
     for capability in beams:
         offset, _ = capability.wheel_for_role(roles.GOBO)
         positions.add(_values(dealt, capability.fixture.fixture_id)[offset])
-    assert len(positions) == len(beams), (
-        "the dealt gobo puts the same pattern on every head"
-    )
+    assert len(positions) == len(beams), "the dealt gobo puts the same pattern on every head"
 
 
-def test_the_prism_turns_more_than_one_way_and_runs_in_the_party(
-    built, library
-):
+def test_the_prism_turns_more_than_one_way_and_runs_in_the_party(built, library):
     """2026-08-30: the prism existed for 40 s out of every 24 minutes, always
     inserted, always turning forward at 25 of its 0-127 run.
 
@@ -187,8 +182,7 @@ def test_the_prism_turns_more_than_one_way_and_runs_in_the_party(
     assert {"Prisma Giro Rapido", "Prisma Giro Inverso"} <= danced
 
     spins = set()
-    for name in ("Prisma - Insert Prism", "Prisma Giro Rapido",
-                 "Prisma Giro Inverso"):
+    for name in ("Prisma - Insert Prism", "Prisma Giro Rapido", "Prisma Giro Inverso"):
         for capability in _fixtures_with(built, library, roles.PRISM_ROTATION):
             written = _values(functions[name], capability.fixture.fixture_id)
             spins.update(
@@ -199,10 +193,7 @@ def test_the_prism_turns_more_than_one_way_and_runs_in_the_party(
     assert len(spins) >= 3, "the prism still has one speed and one direction"
 
     for level in ("Nivel Fiesta", "Nivel Fiesta Dinamico", "Momento Fiesta"):
-        members = {
-            ids.get(int(step.text))
-            for step in findall_local(functions[level], "Step")
-        }
+        members = {ids.get(int(step.text)) for step in findall_local(functions[level], "Step")}
         assert "Prisma Animacion" in members, f"{level} carries no prism"
 
 
@@ -231,8 +222,7 @@ def test_the_held_column_leaves_the_colour_to_the_room(built, library):
             "the held column paints over the colour the room is running"
         )
         assert all(
-            written.get(offset) == 255
-            for offset in capability.offsets_for_role(roles.DIMMER)
+            written.get(offset) == 255 for offset in capability.offsets_for_role(roles.DIMMER)
         ), "the column fires with its own LED down"
 
 
@@ -244,9 +234,7 @@ def test_the_ambient_haze_offers_its_rhythm_on_the_console(built):
     console puts them in a solo frame.
     """
     functions = _functions(built.root)
-    names = ["Humo Auto"] + [
-        f"Humo Auto {minutes} min" for minutes in SMOKE_INTERVALS_MIN[1:]
-    ]
+    names = ["Humo Auto"] + [f"Humo Auto {minutes} min" for minutes in SMOKE_INTERVALS_MIN[1:]]
     for name in names:
         assert name in functions, f"the console has no {name} to press"
     waits = []

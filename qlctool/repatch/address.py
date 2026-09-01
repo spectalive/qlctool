@@ -37,14 +37,14 @@ def set_fixture_address(
         universe_element.text = str(universe)
 
     introduced = [
-        conflict for conflict in patch_conflicts(root)
+        conflict
+        for conflict in patch_conflicts(root)
         if fixture_id in (conflict.first.fixture_id, conflict.second.fixture_id)
     ]
     if introduced and not allow_overlap:
         address_element.text = previous_address
         universe_element.text = previous_universe
         raise ValueError(
-            "re-address would overlap: "
-            + "; ".join(conflict.describe() for conflict in introduced)
+            "re-address would overlap: " + "; ".join(conflict.describe() for conflict in introduced)
         )
     return introduced

@@ -22,9 +22,7 @@ RULE = "intensidad tapada"
 LEAVES = ("Scene", "Sequence")
 
 
-def check_shadowed_intensity(
-    graph: ShowGraph, groups, entries
-) -> list[Finding]:
+def check_shadowed_intensity(graph: ShowGraph, groups, entries) -> list[Finding]:
     del groups
     findings: list[Finding] = []
     reported: set[tuple[int, int, int]] = set()
@@ -34,9 +32,7 @@ def check_shadowed_intensity(
     return findings
 
 
-def _collection(
-    graph: ShowGraph, collection_id: int, reported
-) -> list[Finding]:
+def _collection(graph: ShowGraph, collection_id: int, reported) -> list[Finding]:
     members = graph.members.get(collection_id, ())
     if len(members) < 2:
         return []
@@ -62,24 +58,24 @@ def _collection(
                 continue
             reported.add(key)
             fixture = graph.capabilities.get(channel[0])
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(collection_id),
-                message=(
-                    f"«{graph.name(member)}» deja un dimmer a {low} mientras "
-                    f"«{graph.name(top_member)}» tiene el mismo canal a "
-                    f"{top_value} a la vez: la intensidad mezcla HTP, gana el "
-                    f"alto y la bajada no se ve nunca"
-                ),
-                fixtures=(fixture.fixture.name,) if fixture is not None else (),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(collection_id),
+                    message=(
+                        f"«{graph.name(member)}» deja un dimmer a {low} mientras "
+                        f"«{graph.name(top_member)}» tiene el mismo canal a "
+                        f"{top_value} a la vez: la intensidad mezcla HTP, gana el "
+                        f"alto y la bajada no se ve nunca"
+                    ),
+                    fixtures=(fixture.fixture.name,) if fixture is not None else (),
+                )
+            )
     return findings
 
 
-def _dimmer_writes(
-    graph: ShowGraph, function_id: int
-) -> dict[tuple[int, int], set[int]]:
+def _dimmer_writes(graph: ShowGraph, function_id: int) -> dict[tuple[int, int], set[int]]:
     """(fixture, offset) -> definite dimmer values the member's scenes state.
 
     Only Scenes: an EFX in dimmer mode writes values nobody can predict, and a
@@ -93,9 +89,7 @@ def _dimmer_writes(
         function = graph.functions.get(member)
         if function is None or function.attrib.get("Type") not in LEAVES:
             continue
-        for fixture_id, pairs in driven_channels(
-            function, graph.capabilities, {}
-        ).items():
+        for fixture_id, pairs in driven_channels(function, graph.capabilities, {}).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None or capability.is_smoke:
                 continue

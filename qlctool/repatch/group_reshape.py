@@ -16,9 +16,7 @@ from lxml import etree
 from ..xmlutil import find_local, findall_local, iter_local
 
 
-def reshape_group(
-    root: etree._Element, group_id: int, width: int, height: int
-) -> None:
+def reshape_group(root: etree._Element, group_id: int, width: int, height: int) -> None:
     """Re-place every head into a width x height grid, in reading order.
 
     Refuses a grid that is not exactly the size of the group, because both ways
@@ -34,9 +32,7 @@ def reshape_group(
             "match leaves holes or orphans heads"
         )
 
-    ordered = sorted(
-        heads, key=lambda head: (int(head.attrib["Y"]), int(head.attrib["X"]))
-    )
+    ordered = sorted(heads, key=lambda head: (int(head.attrib["Y"]), int(head.attrib["X"])))
     for index, head in enumerate(ordered):
         head.set("X", str(index % width))
         head.set("Y", str(index // width))

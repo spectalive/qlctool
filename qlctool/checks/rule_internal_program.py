@@ -43,30 +43,31 @@ def check_internal_programs(
         if function.attrib.get("Type") not in STATES_COLOUR:
             continue
         driven = driven_channels(function, graph.capabilities, groups)
-        stranded = sorted({
-            graph.capabilities[fixture_id].fixture.name
-            for fixture_id, written in driven.items()
-            if fixture_id not in owned
-            and _left_animating(graph, fixture_id, written)
-        })
+        stranded = sorted(
+            {
+                graph.capabilities[fixture_id].fixture.name
+                for fixture_id, written in driven.items()
+                if fixture_id not in owned and _left_animating(graph, fixture_id, written)
+            }
+        )
         if stranded:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    "da color a un fixture sin sacarlo de su programa interno: "
-                    "mientras ese canal siga en automatico el fixture ignora el "
-                    "rojo, verde y azul que le mandas"
-                ),
-                fixtures=tuple(stranded),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        "da color a un fixture sin sacarlo de su programa interno: "
+                        "mientras ese canal siga en automatico el fixture ignora el "
+                        "rojo, verde y azul que le mandas"
+                    ),
+                    fixtures=tuple(stranded),
+                )
+            )
     return findings
 
 
-def _mode_owned_fixtures(
-    graph: ShowGraph, groups, states: set[int]
-) -> set[int]:
+def _mode_owned_fixtures(graph: ShowGraph, groups, states: set[int]) -> set[int]:
     """Fixtures whose mode channel every lighting room state drives.
 
     Owned means deterministic: whichever state is running, something in it is
@@ -86,15 +87,12 @@ def _mode_owned_fixtures(
             continue
         dimmers = capability.offsets_for_role(roles.DIMMER)
         lighting = [
-            driven for driven in state_reach
-            if any(
-                lit(driven.get(fixture_id, {}).get(offset, 0))
-                for offset in dimmers
-            )
+            driven
+            for driven in state_reach
+            if any(lit(driven.get(fixture_id, {}).get(offset, 0)) for offset in dimmers)
         ]
         if lighting and all(
-            program.mode_offset in driven.get(fixture_id, {})
-            for driven in lighting
+            program.mode_offset in driven.get(fixture_id, {}) for driven in lighting
         ):
             owned.add(fixture_id)
     return owned
@@ -108,9 +106,7 @@ def _left_animating(graph: ShowGraph, fixture_id: int, written) -> bool:
     if program is None:
         return False
 
-    coloured = {
-        offset for role in COLOUR for offset in capability.offsets_for_role(role)
-    }
+    coloured = {offset for role in COLOUR for offset in capability.offsets_for_role(role)}
     if not any(lit(written[o]) for o in coloured if o in written):
         return False
     return written.get(program.mode_offset) != program.off_value

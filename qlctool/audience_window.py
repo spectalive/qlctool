@@ -53,8 +53,7 @@ class Window:
     def holds(self, centre: int, span: int, axis: str) -> bool:
         """Whether a figure of this half-size around this centre stays inside."""
         low, high = (
-            (self.pan_min, self.pan_max) if axis == "pan"
-            else (self.tilt_min, self.tilt_max)
+            (self.pan_min, self.pan_max) if axis == "pan" else (self.tilt_min, self.tilt_max)
         )
         return low <= centre - span and centre + span <= high
 

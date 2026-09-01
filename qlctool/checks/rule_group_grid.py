@@ -38,35 +38,38 @@ def check_group_grids(graph: ShowGraph, root: etree._Element) -> list[Finding]:
             continue
         width, height = int(size.attrib["X"]), int(size.attrib["Y"])
         cells = [
-            (int(head.attrib["X"]), int(head.attrib["Y"]))
-            for head in findall_local(group, "Head")
+            (int(head.attrib["X"]), int(head.attrib["Y"])) for head in findall_local(group, "Head")
         ]
         name = _name(group)
 
         outside = [cell for cell in cells if cell[0] >= width or cell[1] >= height]
         if outside:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=name,
-                message=(
-                    f"declara {width}x{height} pero tiene {len(outside)} head(s) "
-                    f"fuera de esa rejilla: ningun efecto los alcanza"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=name,
+                    message=(
+                        f"declara {width}x{height} pero tiene {len(outside)} head(s) "
+                        f"fuera de esa rejilla: ningun efecto los alcanza"
+                    ),
+                )
+            )
 
         empty = width * height - len({c for c in cells if c not in outside})
         if empty > 0:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=name,
-                message=(
-                    f"declara {width}x{height} = {width * height} celdas y solo "
-                    f"{width * height - empty} tienen luz: en cada barrido "
-                    f"{empty} celda(s) se quedan a oscuras sin motivo"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=name,
+                    message=(
+                        f"declara {width}x{height} = {width * height} celdas y solo "
+                        f"{width * height - empty} tienen luz: en cada barrido "
+                        f"{empty} celda(s) se quedan a oscuras sin motivo"
+                    ),
+                )
+            )
     return findings
 
 

@@ -30,9 +30,7 @@ from .show_graph import ShowGraph, lit, reach
 RULE = "columna automatica"
 
 
-def check_held_column(
-    graph: ShowGraph, groups, root: etree._Element
-) -> list[Finding]:
+def check_held_column(graph: ShowGraph, groups, root: etree._Element) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []
@@ -60,20 +58,21 @@ def check_held_column(
             capability.fixture.name
             for fixture_id, capability in columns.items()
             if any(
-                lit(driven.get(fixture_id, {}).get(offset, 0))
-                for offset in fog_offsets(capability)
+                lit(driven.get(fixture_id, {}).get(offset, 0)) for offset in fog_offsets(capability)
             )
         )
         if fired:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    "dispara la bomba de las columnas de humo desde un boton "
-                    "que se queda enganchado: la columna solo debe salir "
-                    "mientras se mantiene pulsada la tecla"
-                ),
-                fixtures=tuple(fired),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        "dispara la bomba de las columnas de humo desde un boton "
+                        "que se queda enganchado: la columna solo debe salir "
+                        "mientras se mantiene pulsada la tecla"
+                    ),
+                    fixtures=tuple(fired),
+                )
+            )
     return findings

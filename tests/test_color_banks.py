@@ -56,7 +56,8 @@ def test_a_split_alternates_two_colours_across_the_group(tmp_path):
 
     functions = _functions(ws.root)
     split = next(
-        f for f in (functions[str(i)] for i in heads.split_ids)
+        f
+        for f in (functions[str(i)] for i in heads.split_ids)
         if f.attrib["Name"] == "Rojo / Azul Cabezas"
     )
     values = findall_local(split, "FixtureVal")
@@ -68,9 +69,7 @@ def test_a_split_alternates_two_colours_across_the_group(tmp_path):
     assert red[0] in first and blue[2] in second
 
 
-@pytest.mark.skipif(
-    qlcplus_binary() is None, reason="QLC+ is not installed on this machine"
-)
+@pytest.mark.skipif(qlcplus_binary() is None, reason="QLC+ is not installed on this machine")
 def test_qlcplus_loads_the_banks(tmp_path):
     ws = Workspace.load(SHOW)
     generate_color_banks(ws, FixtureLibrary.load())

@@ -13,9 +13,7 @@ from .fixture import patched_fixtures
 from .library import FixtureLibrary
 
 
-def capabilities_of(
-    root: etree._Element, library: FixtureLibrary
-) -> list[FixtureCapabilities]:
+def capabilities_of(root: etree._Element, library: FixtureLibrary) -> list[FixtureCapabilities]:
     result = []
     for fixture in patched_fixtures(root):
         definition = library.get(fixture.manufacturer, fixture.model)

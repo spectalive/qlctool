@@ -14,8 +14,15 @@ an EFX at the same time is a head that shakes.
 from .. import roles
 
 COLOUR = (
-    roles.RED, roles.GREEN, roles.BLUE, roles.WHITE, roles.AMBER, roles.UV,
-    roles.CYAN, roles.MAGENTA, roles.YELLOW,
+    roles.RED,
+    roles.GREEN,
+    roles.BLUE,
+    roles.WHITE,
+    roles.AMBER,
+    roles.UV,
+    roles.CYAN,
+    roles.MAGENTA,
+    roles.YELLOW,
 )
 WHEELS = (roles.COLOR_MACRO, roles.GOBO, roles.PRISM)
 POSITION = (roles.PAN, roles.PAN_FINE, roles.TILT, roles.TILT_FINE)

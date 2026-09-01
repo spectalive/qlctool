@@ -35,8 +35,7 @@ def add_fixture(
         raise KeyError(f"library has no definition for {manufacturer}/{model}")
     if mode not in definition.modes:
         raise KeyError(
-            f"{manufacturer}/{model} has no mode {mode!r} "
-            f"(modes: {sorted(definition.modes)})"
+            f"{manufacturer}/{model} has no mode {mode!r} (modes: {sorted(definition.modes)})"
         )
 
     engine = find_local(root, "Engine")
@@ -57,8 +56,7 @@ def add_fixture(
     # Keep patch entries together: after the last existing one, else at the top
     # of the Engine, which is where QLC+ writes them.
     existing = [
-        e for e in findall_local(engine, "Fixture")
-        if find_local(e, "Channels") is not None
+        e for e in findall_local(engine, "Fixture") if find_local(e, "Channels") is not None
     ]
     if existing:
         existing[-1].addnext(element)
@@ -66,14 +64,14 @@ def add_fixture(
         engine.insert(0, element)
 
     introduced = [
-        conflict for conflict in patch_conflicts(root)
+        conflict
+        for conflict in patch_conflicts(root)
         if fixture_id in (conflict.first.fixture_id, conflict.second.fixture_id)
     ]
     if introduced and not allow_overlap:
         engine.remove(element)
         raise ValueError(
-            "patch would overlap: "
-            + "; ".join(conflict.describe() for conflict in introduced)
+            "patch would overlap: " + "; ".join(conflict.describe() for conflict in introduced)
         )
     return fixture_id
 

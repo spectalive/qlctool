@@ -35,16 +35,18 @@ def check_unfinished_effects(graph: ShowGraph, groups, entries) -> list[Finding]
         if not cut:
             continue
         worst = max(cut, key=lambda item: item[2] - item[1])
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=graph.name(function_id),
-            message=(
-                f"corta {len(cut)} de sus efectos antes de que terminen: "
-                f"«{worst[0]}» necesita {worst[2]} ms para una pasada completa "
-                f"y solo tiene {worst[1]} ms"
-            ),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=graph.name(function_id),
+                message=(
+                    f"corta {len(cut)} de sus efectos antes de que terminen: "
+                    f"«{worst[0]}» necesita {worst[2]} ms para una pasada completa "
+                    f"y solo tiene {worst[1]} ms"
+                ),
+            )
+        )
     return findings
 
 
@@ -74,9 +76,7 @@ def _one_pass(matrix, grids) -> int:
     algorithm = find_local(matrix, "Algorithm")
     name = None if algorithm is None else (algorithm.text or None)
     width, height = grids.get(int(group.text), (1, 1))
-    return int(speed.attrib.get("Duration", 0)) * matrix_step_count(
-        name, width, height
-    )
+    return int(speed.attrib.get("Duration", 0)) * matrix_step_count(name, width, height)
 
 
 def _on_beats(function) -> bool:

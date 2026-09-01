@@ -40,9 +40,7 @@ def _collection(graph: ShowGraph, groups, collection_id: int, reported) -> list[
     members = graph.members.get(collection_id, ())
     if len(members) < 2:
         return []
-    contested = {
-        member: _contested_channels(graph, groups, member) for member in members
-    }
+    contested = {member: _contested_channels(graph, groups, member) for member in members}
     findings: list[Finding] = []
     for first, second in combinations(members, 2):
         shared = contested[first].keys() & contested[second].keys()
@@ -52,22 +50,26 @@ def _collection(graph: ShowGraph, groups, collection_id: int, reported) -> list[
         if key in reported:
             continue
         reported.add(key)
-        fixtures = sorted({
-            graph.capabilities[fixture_id].fixture.name
-            for fixture_id, _ in shared
-            if fixture_id in graph.capabilities
-        })
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=graph.name(collection_id),
-            message=(
-                f"arranca a la vez «{graph.name(first)}» y «{graph.name(second)}», "
-                f"y los dos escriben los mismos canales de color, rueda o "
-                f"posicion: se suman en vez de elegir"
-            ),
-            fixtures=tuple(fixtures),
-        ))
+        fixtures = sorted(
+            {
+                graph.capabilities[fixture_id].fixture.name
+                for fixture_id, _ in shared
+                if fixture_id in graph.capabilities
+            }
+        )
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=graph.name(collection_id),
+                message=(
+                    f"arranca a la vez «{graph.name(first)}» y «{graph.name(second)}», "
+                    f"y los dos escriben los mismos canales de color, rueda o "
+                    f"posicion: se suman en vez de elegir"
+                ),
+                fixtures=tuple(fixtures),
+            )
+        )
     return findings
 
 
@@ -79,11 +81,7 @@ def _contested_channels(graph: ShowGraph, groups, function_id: int) -> dict:
         capability = graph.capabilities.get(fixture_id)
         if capability is None:
             continue
-        wanted = {
-            offset
-            for role in CONTESTED
-            for offset in capability.offsets_for_role(role)
-        }
+        wanted = {offset for role in CONTESTED for offset in capability.offsets_for_role(role)}
         for offset, value in written.items():
             # A channel driven to zero everywhere is a fixture being turned
             # off, not a second opinion about its colour.

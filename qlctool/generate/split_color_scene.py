@@ -13,8 +13,8 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
 from ..shutter_open import shutter_open_pairs
-from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
+from ..zoom_wide import zoom_wide_pairs
 from .wheel_color_values import wheel_color_values
 
 RGB = tuple[int, int, int]
@@ -40,9 +40,9 @@ def split_color_scene_values(
     """
     wanted = None if fixture_ids is None else list(fixture_ids)
     ordered = [
-        caps for caps in capabilities
-        if caps.has_role(roles.RED) or caps.has_role(roles.GREEN)
-        or caps.has_role(roles.BLUE)
+        caps
+        for caps in capabilities
+        if caps.has_role(roles.RED) or caps.has_role(roles.GREEN) or caps.has_role(roles.BLUE)
     ]
     if wanted is not None:
         by_id = {caps.fixture.fixture_id: caps for caps in ordered}
@@ -73,9 +73,7 @@ def split_color_scene_values(
         result[caps.fixture.fixture_id] = pairs
 
     if color_names is not None:
-        result.update(
-            _wheel_halves(capabilities, wanted, color_names)
-        )
+        result.update(_wheel_halves(capabilities, wanted, color_names))
     return result
 
 
@@ -91,11 +89,9 @@ def _wheel_halves(
     means, instead of all landing on whichever colour their patch index gives.
     """
     ordered = [
-        caps for caps in capabilities
-        if not any(
-            caps.has_role(role)
-            for role in (roles.RED, roles.GREEN, roles.BLUE)
-        )
+        caps
+        for caps in capabilities
+        if not any(caps.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE))
     ]
     if fixture_ids is not None:
         by_id = {caps.fixture.fixture_id: caps for caps in ordered}

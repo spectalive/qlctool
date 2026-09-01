@@ -90,15 +90,12 @@ def write_monitor(
     """Replace the Monitor node, keeping the DMX-monitor display settings."""
     if point_of_view not in POINTS_OF_VIEW:
         raise ValueError(
-            f"unknown point of view {point_of_view!r} "
-            f"(known: {', '.join(sorted(POINTS_OF_VIEW))})"
+            f"unknown point of view {point_of_view!r} (known: {', '.join(sorted(POINTS_OF_VIEW))})"
         )
 
     engine = workspace.engine
     existing = find_local(engine, "Monitor")
-    kept = {
-        name: find_local(existing, name) for name in _DEFAULTS
-    } if existing is not None else {}
+    kept = {name: find_local(existing, name) for name in _DEFAULTS} if existing is not None else {}
 
     monitor = etree.Element(f"{{{QLC_NS}}}Monitor")
     monitor.set(
@@ -132,7 +129,9 @@ def write_monitor(
         element.set("YPos", str(round(item.y)))
         element.set("ZPos", str(round(item.z)))
         for attribute, degrees in (
-            ("XRot", item.x_rot), ("YRot", item.y_rot), ("ZRot", item.z_rot)
+            ("XRot", item.x_rot),
+            ("YRot", item.y_rot),
+            ("ZRot", item.z_rot),
         ):
             if degrees:
                 element.set(attribute, str(round(degrees)))
@@ -150,12 +149,12 @@ def write_monitor(
             (c - PRIMITIVE_SIZE / 2 for c in prop.centre),
         ):
             element.set(attribute, str(round(value)))
-        for attribute, wanted in zip(
-            ("XScale", "YScale", "ZScale"), prop.size
-        ):
+        for attribute, wanted in zip(("XScale", "YScale", "ZScale"), prop.size):
             element.set(attribute, f"{wanted / PRIMITIVE_SIZE:g}")
         for attribute, degrees in (
-            ("XRot", prop.x_rot), ("YRot", prop.y_rot), ("ZRot", prop.z_rot)
+            ("XRot", prop.x_rot),
+            ("YRot", prop.y_rot),
+            ("ZRot", prop.z_rot),
         ):
             if degrees:
                 element.set(attribute, str(round(degrees)))

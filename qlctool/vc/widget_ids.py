@@ -12,8 +12,17 @@ from ..constants import ALL_FIXTURES_GROUP
 from ..xmlutil import find_local
 
 WIDGET_TAGS = {
-    "Frame", "SoloFrame", "Button", "Label", "Slider", "XYPad", "SpeedDial",
-    "Matrix", "AudioTriggers", "Clock", "Cue",
+    "Frame",
+    "SoloFrame",
+    "Button",
+    "Label",
+    "Slider",
+    "XYPad",
+    "SpeedDial",
+    "Matrix",
+    "AudioTriggers",
+    "Clock",
+    "Cue",
 }
 
 

@@ -18,9 +18,9 @@ import pytest
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.efx_16bit import INTENSITY_PAIRS, PAN_TILT_PAIRS, keeps_16bit
 from qlctool.generate.movement_efx import generate_movement_efx
 from qlctool.library import FixtureLibrary
-from qlctool.efx_16bit import INTENSITY_PAIRS, PAN_TILT_PAIRS, keeps_16bit
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, localname
 
@@ -32,8 +32,7 @@ def _functions(root):
     """Real functions only: `<Function>` is also a reference inside chasers and
     Virtual Console widgets, and those carry no ID."""
     return [
-        f for f in find_local(root, "Engine")
-        if localname(f) == "Function" and f.attrib.get("ID")
+        f for f in find_local(root, "Engine") if localname(f) == "Function" and f.attrib.get("ID")
     ]
 
 
@@ -66,9 +65,7 @@ MODE_PAN_TILT = "0"
 def test_no_generated_efx_mixes_the_two(library):
     ws = Workspace.load(SHOW)
     generate_movement_efx(ws, library)
-    caps = {
-        c.fixture.fixture_id: c for c in capabilities_of(ws.root, library)
-    }
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, library)}
 
     efx_seen = 0
     for function in _functions(ws.root):
@@ -79,8 +76,7 @@ def test_no_generated_efx_mixes_the_two(library):
             for f in function
             if localname(f) == "Fixture"
             and find_local(f, "ID") is not None
-            and (find_local(f, "Mode") is None
-                 or find_local(f, "Mode").text == MODE_PAN_TILT)
+            and (find_local(f, "Mode") is None or find_local(f, "Mode").text == MODE_PAN_TILT)
         ]
         if not members:
             continue

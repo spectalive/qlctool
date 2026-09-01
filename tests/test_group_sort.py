@@ -24,7 +24,8 @@ SHOWS = ("Vibra.qxw", "Vibra-beats.qxw", "Vibra-split.qxw")
 
 def _group_element(root, group_id):
     return next(
-        element for element in iter_local(root, "FixtureGroup")
+        element
+        for element in iter_local(root, "FixtureGroup")
         if element.attrib.get("ID") == str(group_id)
     )
 
@@ -58,10 +59,12 @@ def test_sorting_puts_the_rigged_fixtures_left_to_right():
     group_id = _group_id(root, "Cabezas")
     # Put the row back in patch order, which is where it came from.
     element = _group_element(root, group_id)
-    for cell, head in enumerate(sorted(
-        findall_local(element, "Head"),
-        key=lambda h: int(h.attrib["Fixture"]),
-    )):
+    for cell, head in enumerate(
+        sorted(
+            findall_local(element, "Head"),
+            key=lambda h: int(h.attrib["Fixture"]),
+        )
+    ):
         head.set("X", str(cell))
     assert check_grid_order(root), "the repro did not put the group out of order"
 
@@ -147,9 +150,7 @@ def test_two_fixtures_at_one_position_keep_the_order_somebody_chose():
 
     after = [
         (int(h.attrib["Fixture"]), int(h.text or 0))
-        for h in sorted(
-            findall_local(element, "Head"), key=lambda h: int(h.attrib["X"])
-        )
+        for h in sorted(findall_local(element, "Head"), key=lambda h: int(h.attrib["X"]))
     ]
     assert after == before
 
@@ -166,9 +167,7 @@ def test_a_spare_in_the_middle_of_a_row_is_reported():
     element = _group_element(root, group_id)
     heads = {int(h.attrib["X"]): h for h in findall_local(element, "Head")}
     rigged = [x for x, h in heads.items() if int(h.attrib["Fixture"]) in positions]
-    spare = next(
-        x for x, h in heads.items() if int(h.attrib["Fixture"]) not in positions
-    )
+    spare = next(x for x, h in heads.items() if int(h.attrib["Fixture"]) not in positions)
     assert not check_grid_order(root)
 
     heads[min(rigged)].set("X", str(spare))

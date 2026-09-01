@@ -41,15 +41,17 @@ def check_flash_scene(graph: ShowGraph, root: etree._Element) -> list[Finding]:
         kind = graph.kind(function_id)
         if kind in FLASHABLE:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=graph.name(function_id),
-            message=(
-                f"cuelga en modo Flash del boton "
-                f"«{button.attrib.get('Caption', '')}», pero es un "
-                f"{kind or 'nada'}: QLC+ solo sabe flashear escenas "
-                f"(Scene::flash), asi que el boton se queda a medias"
-            ),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=graph.name(function_id),
+                message=(
+                    f"cuelga en modo Flash del boton "
+                    f"«{button.attrib.get('Caption', '')}», pero es un "
+                    f"{kind or 'nada'}: QLC+ solo sabe flashear escenas "
+                    f"(Scene::flash), asi que el boton se queda a medias"
+                ),
+            )
+        )
     return findings

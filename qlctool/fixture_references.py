@@ -17,9 +17,7 @@ _ATTRIBUTE_REFERENCES = {"Head", "Channel"}
 _ID_ATTRIBUTE_REFERENCES = {"FixtureVal"}
 
 
-def fixture_references(
-    root: etree._Element, fixture_id: int
-) -> list[etree._Element]:
+def fixture_references(root: etree._Element, fixture_id: int) -> list[etree._Element]:
     """Every node referencing this fixture, excluding its own patch entry."""
     wanted = str(fixture_id)
     found = []

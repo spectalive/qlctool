@@ -23,9 +23,9 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..internal_program import internal_program
 from ..shutter_open import shutter_open_pairs
-from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
+from ..zoom_wide import zoom_wide_pairs
 
 PATH = "Efectos Propios"
 # Where the hand-built show ran these: its speed sequence stepped the panels'
@@ -72,8 +72,7 @@ def generate_builtin_effects(
     programmed = [
         (capability, program)
         for capability in capabilities
-        if not capability.is_smoke
-        and (program := internal_program(capability)) is not None
+        if not capability.is_smoke and (program := internal_program(capability)) is not None
     ]
     if not programmed:
         return GeneratedBuiltins()
@@ -92,10 +91,7 @@ def generate_builtin_effects(
             ]
             if program.speed_offset is not None:
                 pairs.append((program.speed_offset, speed))
-            pairs += [
-                (offset, 255)
-                for offset in capability.offsets_for_role(roles.DIMMER)
-            ]
+            pairs += [(offset, 255) for offset in capability.offsets_for_role(roles.DIMMER)]
             pairs += shutter_open_pairs(capability)
             pairs += zoom_wide_pairs(capability)
             # A strobe-only channel is LTP and a released Flash restores
@@ -105,9 +101,7 @@ def generate_builtin_effects(
 
         function_id = next_function_id(workspace.root)
         name = programmed[0][1].effects[index].name.strip() or f"Efecto {index + 1}"
-        workspace.add_function(
-            build_scene(function_id, f"{label} - {name}", values, path=path)
-        )
+        workspace.add_function(build_scene(function_id, f"{label} - {name}", values, path=path))
         scene_ids.append(function_id)
 
     cycled = [

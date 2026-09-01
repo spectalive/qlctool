@@ -60,7 +60,11 @@ def check_strobe_restore(
         if scene is None:
             continue
         findings += _latched(
-            graph, groups, function_id, scene, states,
+            graph,
+            groups,
+            function_id,
+            scene,
+            states,
             button.attrib.get("Caption", ""),
         )
     return findings
@@ -70,17 +74,14 @@ def _latched(
     graph: ShowGraph, groups, function_id: int, scene, states, caption: str
 ) -> list[Finding]:
     findings: list[Finding] = []
-    for fixture_id, written in driven_channels(
-        scene, graph.capabilities, groups
-    ).items():
+    for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
         capability = graph.capabilities.get(fixture_id)
         if capability is None or capability.is_smoke:
             continue
         strobed = {
             offset
             for offset, strobing in strobe_capable_offsets(capability).items()
-            if written.get(offset) is not None
-            and value_strobes(strobing, written[offset])
+            if written.get(offset) is not None and value_strobes(strobing, written[offset])
         }
         if not strobed:
             continue
@@ -89,21 +90,27 @@ def _latched(
             graph.name(state_id)
             for state_id in states
             if unowned_while_lit(
-                graph, groups, state_id, fixture_id,
-                frozenset(strobed), tuple(dimmers),
+                graph,
+                groups,
+                state_id,
+                fixture_id,
+                frozenset(strobed),
+                tuple(dimmers),
             )
         )
         if not orphan_states:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=graph.name(function_id),
-            message=(
-                f"el flash «{caption}» estroba un canal que "
-                f"{', '.join(orphan_states)} no escribe: al soltar, el canal "
-                f"LTP se queda estrobando hasta que alguien lo apague a mano"
-            ),
-            fixtures=(capability.fixture.name,),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=graph.name(function_id),
+                message=(
+                    f"el flash «{caption}» estroba un canal que "
+                    f"{', '.join(orphan_states)} no escribe: al soltar, el canal "
+                    f"LTP se queda estrobando hasta que alguien lo apague a mano"
+                ),
+                fixtures=(capability.fixture.name,),
+            )
+        )
     return findings

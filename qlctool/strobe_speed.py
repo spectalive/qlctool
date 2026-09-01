@@ -22,9 +22,7 @@ from .capability import FixtureCapabilities
 from .strobe_range import strobe_range
 
 
-def strobe_speed_pairs(
-    capabilities: FixtureCapabilities, fraction: float
-) -> list[tuple[int, int]]:
+def strobe_speed_pairs(capabilities: FixtureCapabilities, fraction: float) -> list[tuple[int, int]]:
     """(offset, value) strobing every strobe channel this fixture has."""
     pairs: list[tuple[int, int]] = []
     for offset, ranges in capabilities.capabilities_for_role(roles.STROBE):

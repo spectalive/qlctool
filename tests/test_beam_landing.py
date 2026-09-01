@@ -11,9 +11,9 @@ from pathlib import Path
 import pytest
 
 from qlctool.beam_landing import HANGING, STANDING, beam_landing
-from qlctool.monitor_node import MonitorItem
 from qlctool.capabilities_of import capabilities_of
 from qlctool.library import FixtureLibrary
+from qlctool.monitor_node import MonitorItem
 from qlctool.stage_plot import load_stage_plot
 from qlctool.workspace import Workspace
 
@@ -31,10 +31,7 @@ DECK_Z = 4500
 def rig():
     ws = Workspace.load(SHOW)
     plot = load_stage_plot(PLOT, ws.root)
-    caps = {
-        c.fixture.fixture_id: c
-        for c in capabilities_of(ws.root, FixtureLibrary.load())
-    }
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, FixtureLibrary.load())}
     return plot, caps
 
 
@@ -65,9 +62,9 @@ def test_the_truss_pars_pass_over_the_dj_and_land_past_the_deck(rig):
     """
     plot, caps = rig
     pars = [
-        item for item in plot.items
-        if not item.hidden
-        and caps[item.fixture_id].fixture.model == "PC-64 LED S"
+        item
+        for item in plot.items
+        if not item.hidden and caps[item.fixture_id].fixture.model == "PC-64 LED S"
     ]
     assert len(pars) == 6
 
@@ -75,8 +72,7 @@ def test_the_truss_pars_pass_over_the_dj_and_land_past_the_deck(rig):
         landing = beam_landing(par, caps[par.fixture_id])
         assert landing.z is not None
         assert landing.z > DECK_Z + 1000, (
-            f"fixture {par.fixture_id} lands at {landing.z:.0f}, on the DJ deck "
-            "or short of it"
+            f"fixture {par.fixture_id} lands at {landing.z:.0f}, on the DJ deck or short of it"
         )
         # Height of the beam as it goes over him: 2084 mm at 50 degrees, a good
         # 350 mm over his head. At 35 it was in his face.
@@ -106,6 +102,7 @@ def test_a_smoke_machine_has_no_beam(rig):
     plot, caps = rig
     item = next(i for i in plot.items if i.fixture_id == 17)
     assert beam_landing(item, caps[17]).reason == "smoke machine: no beam"
+
 
 def test_the_same_angle_points_a_par_and_a_pixel_bar_opposite_ways(rig):
     """The one thing two flips in an afternoon taught, pinned.

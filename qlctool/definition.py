@@ -125,17 +125,17 @@ def load_definition(path: str | Path) -> FixtureDefinition:
             if "Min" in cap.attrib and "Max" in cap.attrib
         )
         channels[name] = Channel(
-            name=name, role=role, capabilities=capabilities, group=group or "",
+            name=name,
+            role=role,
+            capabilities=capabilities,
+            group=group or "",
         )
 
     modes: dict[str, list[str]] = {}
     heads: dict[str, tuple[tuple[int, ...], ...]] = {}
     for mode in iter_local(root, "Mode"):
         ordered = sorted(
-            (
-                (int(c.attrib["Number"]), c.text)
-                for c in findall_local(mode, "Channel")
-            ),
+            ((int(c.attrib["Number"]), c.text) for c in findall_local(mode, "Channel")),
             key=lambda pair: pair[0],
         )
         modes[mode.attrib["Name"]] = [name for _, name in ordered]
@@ -150,11 +150,15 @@ def load_definition(path: str | Path) -> FixtureDefinition:
 
     physical = find_local(root, "Physical")
     size = find_local(physical, "Dimensions") if physical is not None else None
-    dimensions = Dimensions(
-        width=float(size.attrib.get("Width", 0)),
-        height=float(size.attrib.get("Height", 0)),
-        depth=float(size.attrib.get("Depth", 0)),
-    ) if size is not None else None
+    dimensions = (
+        Dimensions(
+            width=float(size.attrib.get("Width", 0)),
+            height=float(size.attrib.get("Height", 0)),
+            depth=float(size.attrib.get("Depth", 0)),
+        )
+        if size is not None
+        else None
+    )
 
     return FixtureDefinition(
         manufacturer=manufacturer,

@@ -15,7 +15,11 @@ from .xmlutil import find_local, localname
 
 # Engine children that describe the rig rather than the show.
 KEPT_ENGINE_CHILDREN = (
-    "InputOutputMap", "Fixture", "FixtureGroup", "ChannelsGroup", "Monitor",
+    "InputOutputMap",
+    "Fixture",
+    "FixtureGroup",
+    "ChannelsGroup",
+    "Monitor",
 )
 
 

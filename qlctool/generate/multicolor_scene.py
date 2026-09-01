@@ -53,14 +53,17 @@ def generate_multicolor_scenes(
     excluded = set(exclude_fixture_ids)
     gated = set(program_gated_ids)
     rgb_caps = [
-        c for c in caps
+        c
+        for c in caps
         if not (c.is_smoke and not c.is_lit_smoke)
         and c.fixture.fixture_id not in excluded
         and any(c.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE))
     ]
     wheel_caps = [
-        c for c in caps
-        if not c.is_smoke and c.fixture.fixture_id not in excluded
+        c
+        for c in caps
+        if not c.is_smoke
+        and c.fixture.fixture_id not in excluded
         and c.has_role(roles.COLOR_MACRO)
         and not any(c.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE))
     ]
@@ -73,24 +76,33 @@ def generate_multicolor_scenes(
         for index, capability in enumerate(rgb_caps):
             fixture_id = capability.fixture.fixture_id
             _, rgb = colors[(index + offset) % len(colors)]
-            values.update(color_scene_values(
-                caps, rgb, fixture_ids=[fixture_id], dimmer_full=False,
-                internal_program_off=fixture_id not in gated,
-            ))
+            values.update(
+                color_scene_values(
+                    caps,
+                    rgb,
+                    fixture_ids=[fixture_id],
+                    dimmer_full=False,
+                    internal_program_off=fixture_id not in gated,
+                )
+            )
         names = [name for name, _ in colors]
         for index, capability in enumerate(wheel_caps, start=len(rgb_caps)):
             name = dealt_wheel_color(capability, names, index + offset)
             if name is None:
                 continue
-            values.update(wheel_color_values(
-                caps, name,
-                fixture_ids=[capability.fixture.fixture_id], dimmer=None,
-            ))
+            values.update(
+                wheel_color_values(
+                    caps,
+                    name,
+                    fixture_ids=[capability.fixture.fixture_id],
+                    dimmer=None,
+                )
+            )
         if not values:
             continue
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_scene(
-            function_id, f"Rig Multicolor {number}", values, path=path
-        ))
+        workspace.add_function(
+            build_scene(function_id, f"Rig Multicolor {number}", values, path=path)
+        )
         scene_ids.append(function_id)
     return scene_ids

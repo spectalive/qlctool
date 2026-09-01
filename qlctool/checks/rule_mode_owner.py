@@ -36,16 +36,13 @@ def check_mode_owner(graph: ShowGraph, groups, entries) -> list[Finding]:
     written: dict[int, set[int]] = {}
     lighted: set[int] = set()
     for function in graph.functions.values():
-        for fixture_id, values in driven_channels(
-            function, graph.capabilities, groups
-        ).items():
+        for fixture_id, values in driven_channels(function, graph.capabilities, groups).items():
             written.setdefault(fixture_id, set()).update(values)
             capability = graph.capabilities.get(fixture_id)
             if capability is None:
                 continue
             if any(
-                lit(values.get(offset, 0))
-                for offset in capability.offsets_for_role(roles.DIMMER)
+                lit(values.get(offset, 0)) for offset in capability.offsets_for_role(roles.DIMMER)
             ):
                 lighted.add(fixture_id)
 
@@ -61,16 +58,18 @@ def check_mode_owner(graph: ShowGraph, groups, entries) -> list[Finding]:
             if offset not in written.get(fixture_id, set())
         ]
         if orphans:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function="",
-                message=(
-                    "el canal con el que el fixture corre sus propios "
-                    "programas no lo escribe ninguna funcion del show: se "
-                    "queda con lo que dejo la noche anterior y mientras este "
-                    "arriba el aparato ignora posicion, color e intensidad"
-                ),
-                fixtures=(capability.fixture.name,),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function="",
+                    message=(
+                        "el canal con el que el fixture corre sus propios "
+                        "programas no lo escribe ninguna funcion del show: se "
+                        "queda con lo que dejo la noche anterior y mientras este "
+                        "arriba el aparato ignora posicion, color e intensidad"
+                    ),
+                    fixtures=(capability.fixture.name,),
+                )
+            )
     return findings

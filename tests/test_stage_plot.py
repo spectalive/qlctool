@@ -11,11 +11,11 @@ from pathlib import Path
 
 import pytest
 
-from qlctool.generate.stage_plot_layout import apply_stage_plot
-from qlctool.monitor_node import POINTS_OF_VIEW
-from qlctool.library import FixtureLibrary
-from qlctool.stage_plot import load_stage_plot
 from qlctool.fixture import patched_fixtures
+from qlctool.generate.stage_plot_layout import apply_stage_plot
+from qlctool.library import FixtureLibrary
+from qlctool.monitor_node import POINTS_OF_VIEW
+from qlctool.stage_plot import load_stage_plot
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
@@ -130,9 +130,7 @@ def test_the_back_truss_reads_left_to_right(workspace):
     # LED PAR, beam, LED PAR, wash, LED PAR, LED PAR, wash, LED PAR, beam, LED PAR
     # The two washes are the MAC WASH 1915Z since 2026-08-29; the CromoWash
     # they replaced are patched but parked.
-    assert [item.fixture_id for item in truss] == [
-        6, 20, 7, 33, 8, 9, 34, 10, 21, 11
-    ]
+    assert [item.fixture_id for item in truss] == [6, 20, 7, 33, 8, 9, 34, 10, 21, 11]
 
 
 def test_nothing_hangs_off_the_edge_of_the_stage(workspace):
@@ -146,9 +144,7 @@ def test_nothing_hangs_off_the_edge_of_the_stage(workspace):
 
 def test_no_two_rigged_fixtures_share_a_spot(workspace):
     plot = load_stage_plot(PLOT, workspace.root)
-    spots = [
-        (item.x, item.y, item.z) for item in plot.items if not item.hidden
-    ]
+    spots = [(item.x, item.y, item.z) for item in plot.items if not item.hidden]
     assert len(set(spots)) == len(spots)
 
 
@@ -189,9 +185,7 @@ def test_a_plot_that_forgets_a_fixture_is_refused(workspace, tmp_path):
 
 def test_a_plot_naming_an_unpatched_fixture_is_refused(workspace, tmp_path):
     document = json.loads(PLOT.read_text())
-    document["fixtures"].append(
-        {"id": 99, "model": "Ghost", "x": 0, "y": 0, "z": 0}
-    )
+    document["fixtures"].append({"id": 99, "model": "Ghost", "x": 0, "y": 0, "z": 0})
     ghost = tmp_path / "ghost.json"
     ghost.write_text(json.dumps(document))
 

@@ -49,25 +49,25 @@ def check_movement_window(graph: ShowGraph) -> list[Finding]:
         for window, names in moved.items():
             outside = [
                 f"{axis} {centre - size}..{centre + size}"
-                for axis, centre, size in (
-                    ("pan", pan, width), ("tilt", tilt, height)
-                )
+                for axis, centre, size in (("pan", pan, width), ("tilt", tilt, height))
                 if not window.holds(centre, size, axis)
             ]
             if not outside:
                 continue
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    f"dibuja {', '.join(outside)}, y el publico esta en pan "
-                    f"{window.pan_min}-{window.pan_max} tilt "
-                    f"{window.tilt_min}-{window.tilt_max}: parte de la figura "
-                    "apunta fuera de la sala"
-                ),
-                fixtures=tuple(sorted(names)),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        f"dibuja {', '.join(outside)}, y el publico esta en pan "
+                        f"{window.pan_min}-{window.pan_max} tilt "
+                        f"{window.tilt_min}-{window.tilt_max}: parte de la figura "
+                        "apunta fuera de la sala"
+                    ),
+                    fixtures=tuple(sorted(names)),
+                )
+            )
     return findings
 
 
@@ -99,16 +99,12 @@ def _heads_by_family(graph: ShowGraph, function) -> dict:
         if identifier is None or not (identifier.text or "").strip().isdigit():
             continue
         mode = find_local(element, "Mode")
-        mode_value = (
-            int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
-        )
+        mode_value = int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
         if mode_value != EFX_PAN_TILT:
             continue
         capability = graph.capabilities.get(int(identifier.text))
         if capability is None or capability.is_smoke:
             continue
-        window = (
-            BEAM_WINDOW if capability.has_role(roles.GOBO) else WASH_WINDOW
-        )
+        window = BEAM_WINDOW if capability.has_role(roles.GOBO) else WASH_WINDOW
         moved.setdefault(window, set()).add(capability.fixture.name)
     return moved

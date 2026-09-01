@@ -45,21 +45,21 @@ def check_colour_clocks(
             distinct = set().union(*clocks.values()) if clocks else set()
             if len(clocks) < 2 or len(distinct) < 2:
                 continue
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(collection_id),
-                message=(
-                    "arranca a la vez "
-                    + " y ".join(
-                        f"«{graph.name(clock)}»" for clock in sorted(distinct)
-                    )
-                    + ", dos ciclos que rotan color cada uno a su ritmo: los "
-                    f"fixtures de uno van a su bola respecto al resto "
-                    f"(boton: {entries[function_id]})"
-                ),
-                fixtures=_stray_fixtures(graph, groups, distinct),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(collection_id),
+                    message=(
+                        "arranca a la vez "
+                        + " y ".join(f"«{graph.name(clock)}»" for clock in sorted(distinct))
+                        + ", dos ciclos que rotan color cada uno a su ritmo: los "
+                        f"fixtures de uno van a su bola respecto al resto "
+                        f"(boton: {entries[function_id]})"
+                    ),
+                    fixtures=_stray_fixtures(graph, groups, distinct),
+                )
+            )
     return findings
 
 
@@ -68,8 +68,7 @@ def _clocks_below(graph: ShowGraph, groups, function_id: int) -> set[int]:
     return {
         member
         for member in graph.descendants(function_id)
-        if graph.kind(member) == "Chaser"
-        and _is_colour_clock(graph, groups, member)
+        if graph.kind(member) == "Chaser" and _is_colour_clock(graph, groups, member)
     }
 
 
@@ -102,9 +101,7 @@ def _step_colours(graph: ShowGraph, groups, step_id: int) -> Signature:
 
 def _scene_colours(graph: ShowGraph, function: etree._Element) -> set[tuple]:
     items: set[tuple] = set()
-    for fixture_id, pairs in driven_channels(
-        function, graph.capabilities, {}
-    ).items():
+    for fixture_id, pairs in driven_channels(function, graph.capabilities, {}).items():
         capability = graph.capabilities.get(fixture_id)
         if capability is None:
             continue
@@ -130,10 +127,7 @@ def _matrix_colours(graph: ShowGraph, groups, function: etree._Element) -> set[t
         (fixture_id, "matrix", colour)
         for fixture_id in groups.get(int(group.text), ())
         if (capability := graph.capabilities.get(fixture_id)) is not None
-        and any(
-            capability.has_role(role)
-            for role in (roles.RED, roles.GREEN, roles.BLUE)
-        )
+        and any(capability.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE))
     }
 
 
@@ -159,11 +153,11 @@ def _stray_fixtures(graph: ShowGraph, groups, clock_ids: set[int]) -> tuple[str,
         for clock in clock_ids
     }
     widest = max(painted, key=lambda clock: len(painted[clock]))
-    stray = set().union(
-        *(fixtures for clock, fixtures in painted.items() if clock != widest)
+    stray = set().union(*(fixtures for clock, fixtures in painted.items() if clock != widest))
+    return tuple(
+        sorted(
+            graph.capabilities[fixture_id].fixture.name
+            for fixture_id in stray
+            if fixture_id in graph.capabilities
+        )
     )
-    return tuple(sorted(
-        graph.capabilities[fixture_id].fixture.name
-        for fixture_id in stray
-        if fixture_id in graph.capabilities
-    ))

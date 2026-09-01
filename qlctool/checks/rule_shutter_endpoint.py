@@ -36,17 +36,19 @@ def check_shutter_endpoint(graph: ShowGraph, groups) -> list[Finding]:
             continue
         names = tuple(sorted(name for name, _, _ in short))
         _, value, endpoint = short[0]
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=graph.name(function_id),
-            message=(
-                f"abre el obturador a {value} en vez de {endpoint}: dentro del "
-                f"rango 'abierto', pero sin llegar al extremo - la 7R se queda "
-                f"a oscuras en mitad de ese rango"
-            ),
-            fixtures=names,
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=graph.name(function_id),
+                message=(
+                    f"abre el obturador a {value} en vez de {endpoint}: dentro del "
+                    f"rango 'abierto', pero sin llegar al extremo - la 7R se queda "
+                    f"a oscuras en mitad de ese rango"
+                ),
+                fixtures=names,
+            )
+        )
     return findings
 
 
@@ -54,9 +56,7 @@ def _short_of_the_endpoint(
     graph: ShowGraph, groups, function_id: int
 ) -> list[tuple[str, int, int]]:
     """(fixture name, value written, the endpoint it should have written)."""
-    driven = driven_channels(
-        graph.functions[function_id], graph.capabilities, groups
-    )
+    driven = driven_channels(graph.functions[function_id], graph.capabilities, groups)
     short: list[tuple[str, int, int]] = []
     for fixture_id, written in driven.items():
         capability = graph.capabilities.get(fixture_id)

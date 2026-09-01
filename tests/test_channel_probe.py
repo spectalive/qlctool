@@ -38,8 +38,7 @@ def test_probe_walks_every_channel_once(tmp_path):
         assert values[0].text == f"{offset},255"
 
     chaser = next(
-        f for f in iter_local(reloaded, "Function")
-        if f.attrib.get("ID") == str(result.chaser_id)
+        f for f in iter_local(reloaded, "Function") if f.attrib.get("ID") == str(result.chaser_id)
     )
     # SingleShot: it walks the channels once and stops, rather than looping.
     assert find_local(chaser, "RunOrder").text == "SingleShot"
@@ -50,16 +49,14 @@ def test_base_values_hold_other_channels_open():
     result = generate_channel_probe(ws, HYULIGHTS, base_values={0: 255})
 
     first = next(
-        f for f in iter_local(ws.root, "Function")
-        if f.attrib.get("ID") == str(result.scene_ids[1])
+        f for f in iter_local(ws.root, "Function") if f.attrib.get("ID") == str(result.scene_ids[1])
     )
     # Channel 2 under test, channel 1 (the dimmer) held open.
     assert findall_local(first, "FixtureVal")[0].text == "0,255,1,255"
 
     # The scene probing the base channel itself does not write it twice.
     probing_base = next(
-        f for f in iter_local(ws.root, "Function")
-        if f.attrib.get("ID") == str(result.scene_ids[0])
+        f for f in iter_local(ws.root, "Function") if f.attrib.get("ID") == str(result.scene_ids[0])
     )
     assert findall_local(probing_base, "FixtureVal")[0].text == "0,255"
 
@@ -70,9 +67,7 @@ def test_probe_rejects_an_unpatched_fixture():
         generate_channel_probe(ws, 999)
 
 
-@pytest.mark.skipif(
-    qlcplus_binary() is None, reason="QLC+ is not installed on this machine"
-)
+@pytest.mark.skipif(qlcplus_binary() is None, reason="QLC+ is not installed on this machine")
 def test_qlcplus_loads_a_probe(tmp_path):
     ws = Workspace.load(SHOW)
     generate_channel_probe(ws, HYULIGHTS)

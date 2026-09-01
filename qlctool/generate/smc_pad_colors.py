@@ -24,34 +24,34 @@ RGB = tuple[int, int, int]
 
 FUNCTION_COLORS: dict[str, RGB] = {
     # Bottom row: base states.
-    "Blanco Total": (255, 255, 255),      # pad 1  - work light, white
-    "Todo Negro": (255, 40, 40),          # pad 2  - kill, red
-    "Momento Charla": (255, 170, 60),     # pad 3  - talk, warm amber
+    "Blanco Total": (255, 255, 255),  # pad 1  - work light, white
+    "Todo Negro": (255, 40, 40),  # pad 2  - kill, red
+    "Momento Charla": (255, 170, 60),  # pad 3  - talk, warm amber
     # Third row: the room's moods.
-    "AUTO": (40, 255, 60),                # pad 5  - the go state, green
-    "Momento Fiesta": (255, 40, 180),     # pad 6  - party, magenta
-    "Momento Locura": (255, 90, 0),       # pad 7  - peak, orange
+    "AUTO": (40, 255, 60),  # pad 5  - the go state, green
+    "Momento Fiesta": (255, 40, 180),  # pad 6  - party, magenta
+    "Momento Locura": (255, 90, 0),  # pad 7  - peak, orange
     "Momento Tranquilo": (40, 120, 255),  # pad 8  - lull, blue
     # Second row: smoke and strobes.
-    "Humo Vertical YA": (0, 220, 255),    # pad 9  - cyan
-    "Humo ON": (150, 220, 255),           # pad 10 - pale cyan
-    "Strobo Rapido": (255, 255, 0),       # pad 11 - yellow
-    "Strobo Medio": (255, 200, 0),        # pad 12 - amber
+    "Humo Vertical YA": (0, 220, 255),  # pad 9  - cyan
+    "Humo ON": (150, 220, 255),  # pad 10 - pale cyan
+    "Strobo Rapido": (255, 255, 0),  # pad 11 - yellow
+    "Strobo Medio": (255, 200, 0),  # pad 12 - amber
     # Top row: the flash hits.
-    "Flash 100%": (255, 255, 255),        # pad 13 - white
-    "Flash 50%": (255, 225, 180),         # pad 14 - warm white
-    "Flash Color": (255, 0, 255),         # pad 15 - magenta
-    "Color Beam Animacion": (0, 255, 255),# pad 16 - cyan
+    "Flash 100%": (255, 255, 255),  # pad 13 - white
+    "Flash 50%": (255, 225, 180),  # pad 14 - warm white
+    "Flash Color": (255, 0, 255),  # pad 15 - magenta
+    "Color Beam Animacion": (0, 255, 255),  # pad 16 - cyan
     # Bank 2, second row: the effects you layer by hand.
     "Prisma Animacion": (255, 255, 255),  # pad 9  - white
-    "Humo Auto": (150, 220, 255),         # pad 10 - pale cyan, the smoke family
-    "Arcoiris Simultaneo": (255, 140, 0), # pad 11 - orange
-    "Arcoiris Pasos": (255, 220, 0),      # pad 12 - yellow
+    "Humo Auto": (150, 220, 255),  # pad 10 - pale cyan, the smoke family
+    "Arcoiris Simultaneo": (255, 140, 0),  # pad 11 - orange
+    "Arcoiris Pasos": (255, 220, 0),  # pad 12 - yellow
     # Bank 2, top row: the wheels and the movement.
-    "Rueda Colores": (255, 0, 128),       # pad 13 - pink
-    "Rueda Mezcla": (128, 0, 255),        # pad 14 - violet
-    "Movimientos Cabezas": (0, 128, 255), # pad 15 - blue
-    "Gobo Animacion": (0, 255, 128),      # pad 16 - spring green
+    "Rueda Colores": (255, 0, 128),  # pad 13 - pink
+    "Rueda Mezcla": (128, 0, 255),  # pad 14 - violet
+    "Movimientos Cabezas": (0, 128, 255),  # pad 15 - blue
+    "Gobo Animacion": (0, 255, 128),  # pad 16 - spring green
 }
 
 

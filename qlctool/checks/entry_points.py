@@ -14,7 +14,7 @@ from ..xmlutil import find_local, iter_local
 
 
 def entry_points(root: etree._Element) -> dict[int, str]:
-    """function id -> the caption of the button that starts it.
+    """Function id -> the caption of the button that starts it.
 
     A button with no function - the blackout and panic actions - is skipped: it
     stops functions rather than starting one.

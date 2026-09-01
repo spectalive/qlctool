@@ -78,9 +78,20 @@ def generate_matrix_effects(
         label = "Solid" if algorithm is None else algorithm
         for color_name, rgb in colors.items():
             fid, pass_ms = _add_matrix(
-                workspace, f"{group_name} - {label} {color_name}", algorithm,
-                rgb, None, group_id, color_format, direction, path, None,
-                width, height, duration, chaser_max_hold,
+                workspace,
+                f"{group_name} - {label} {color_name}",
+                algorithm,
+                rgb,
+                None,
+                group_id,
+                color_format,
+                direction,
+                path,
+                None,
+                width,
+                height,
+                duration,
+                chaser_max_hold,
             )
             matrix_ids.append(fid)
             if algorithm in stepped:
@@ -88,11 +99,20 @@ def generate_matrix_effects(
 
     for entry in curated:
         fid, pass_ms = _add_matrix(
-            workspace, f"{group_name} - {entry.algorithm} {'/'.join(entry.colors)}",
-            entry.algorithm, PALETTE[entry.colors[0]],
+            workspace,
+            f"{group_name} - {entry.algorithm} {'/'.join(entry.colors)}",
+            entry.algorithm,
+            PALETTE[entry.colors[0]],
             PALETTE[entry.colors[1]] if len(entry.colors) > 1 else None,
-            group_id, color_format, direction, path, entry.properties,
-            width, height, duration, chaser_max_hold,
+            group_id,
+            color_format,
+            direction,
+            path,
+            entry.properties,
+            width,
+            height,
+            duration,
+            chaser_max_hold,
         )
         matrix_ids.append(fid)
         steps.append((fid, max(chaser_hold, pass_ms)))
@@ -189,9 +209,5 @@ def _group_name(workspace: Workspace, group_id: int) -> str:
     for group in fixture_groups(workspace.root):
         if group.group_id == group_id:
             return group.name
-    known = ", ".join(
-        f"{g.group_id}={g.name}" for g in fixture_groups(workspace.root)
-    )
-    raise ValueError(
-        f"workspace defines no fixture group {group_id} (have: {known or 'none'})"
-    )
+    known = ", ".join(f"{g.group_id}={g.name}" for g in fixture_groups(workspace.root))
+    raise ValueError(f"workspace defines no fixture group {group_id} (have: {known or 'none'})")

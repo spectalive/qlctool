@@ -88,9 +88,7 @@ def test_a_gobo_scene_opens_the_beams(rig):
         if localname(f) == "Function" and f.attrib.get("ID")
     }
     beams = [
-        c.fixture.fixture_id
-        for c in capabilities_of(ws.root, library)
-        if c.has_role(roles.GOBO)
+        c.fixture.fixture_id for c in capabilities_of(ws.root, library) if c.has_role(roles.GOBO)
     ]
     assert len(beams) == 4
     for scene_id in result.scene_ids:

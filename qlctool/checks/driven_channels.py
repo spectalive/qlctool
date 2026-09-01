@@ -39,7 +39,7 @@ def driven_channels(
     capabilities: dict[int, FixtureCapabilities],
     group_fixtures: dict[int, tuple[int, ...]],
 ) -> Driven:
-    """fixture id -> {offset: value or None} for one leaf function.
+    """Fixture id -> {offset: value or None} for one leaf function.
 
     Returns empty for a Chaser or a Collection: those drive nothing themselves,
     they start other functions, and the caller expands them.
@@ -63,9 +63,7 @@ def _scene(function: etree._Element) -> Driven:
     return driven
 
 
-def _efx(
-    function: etree._Element, capabilities: dict[int, FixtureCapabilities]
-) -> Driven:
+def _efx(function: etree._Element, capabilities: dict[int, FixtureCapabilities]) -> Driven:
     driven: Driven = {}
     for element in findall_local(function, "Fixture"):
         identifier = find_local(element, "ID")
@@ -79,11 +77,9 @@ def _efx(
         wanted = EFX_ROLES.get(
             int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT, ()
         )
-        driven.setdefault(fixture_id, {}).update({
-            offset: None
-            for role in wanted
-            for offset in capability.offsets_for_role(role)
-        })
+        driven.setdefault(fixture_id, {}).update(
+            {offset: None for role in wanted for offset in capability.offsets_for_role(role)}
+        )
     return driven
 
 
@@ -100,11 +96,7 @@ def _matrix(
         capability = capabilities.get(fixture_id)
         if capability is None:
             continue
-        offsets = {
-            offset
-            for role in MATRIX_ROLES
-            for offset in capability.offsets_for_role(role)
-        }
+        offsets = {offset for role in MATRIX_ROLES for offset in capability.offsets_for_role(role)}
         if offsets:
             driven[fixture_id] = dict.fromkeys(offsets)
     return driven

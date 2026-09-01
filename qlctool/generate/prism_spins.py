@@ -37,14 +37,15 @@ class GeneratedPrismSpins:
 
 
 def generate_prism_spins(
-    workspace: Workspace, library: FixtureLibrary, path: str = "Prisma",
+    workspace: Workspace,
+    library: FixtureLibrary,
+    path: str = "Prisma",
 ) -> GeneratedPrismSpins:
     """One scene per extra spin, empty when nothing here has a turning prism."""
     beams = [
         capability
         for capability in capabilities_of(workspace.root, library)
-        if capability.has_role(roles.PRISM)
-        and capability.has_role(roles.PRISM_ROTATION)
+        if capability.has_role(roles.PRISM) and capability.has_role(roles.PRISM_ROTATION)
     ]
     if not beams:
         return GeneratedPrismSpins(scene_ids=[])
@@ -54,18 +55,14 @@ def generate_prism_spins(
         values: dict[int, list[tuple[int, int]]] = {}
         for capability in beams:
             inserted = _preset_value(capability, roles.PRISM, "PrismEffectOn", 0.5)
-            spin = _preset_value(
-                capability, roles.PRISM_ROTATION, preset, fraction
-            )
+            spin = _preset_value(capability, roles.PRISM_ROTATION, preset, fraction)
             if inserted is None or spin is None:
                 continue
             offset, _ = capability.wheel_for_role(roles.PRISM)
             pairs = [(offset, inserted)]
             pairs += [
                 (rotation_offset, spin)
-                for rotation_offset in capability.offsets_for_role(
-                    roles.PRISM_ROTATION
-                )
+                for rotation_offset in capability.offsets_for_role(roles.PRISM_ROTATION)
             ]
             values[capability.fixture.fixture_id] = pairs
         if not values:
@@ -76,9 +73,7 @@ def generate_prism_spins(
     return GeneratedPrismSpins(scene_ids=scene_ids)
 
 
-def _preset_value(
-    capability, role: str, preset: str, fraction: float
-) -> int | None:
+def _preset_value(capability, role: str, preset: str, fraction: float) -> int | None:
     """Where along the range named by `preset` this look sits, or None."""
     for _, ranges in capability.capabilities_for_role(role):
         for item in ranges:

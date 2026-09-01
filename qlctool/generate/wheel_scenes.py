@@ -17,8 +17,8 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..shutter_open import shutter_open_pairs
-from ..zoom_wide import zoom_wide_pairs
 from ..workspace import Workspace
+from ..zoom_wide import zoom_wide_pairs
 
 
 @dataclass(frozen=True)
@@ -63,7 +63,8 @@ def generate_wheel_scenes(
     """
     wanted = None if fixture_ids is None else set(fixture_ids)
     caps = [
-        c for c in capabilities_of(workspace.root, library)
+        c
+        for c in capabilities_of(workspace.root, library)
         if c.has_role(role) and (wanted is None or c.fixture.fixture_id in wanted)
     ]
     if not caps:
@@ -85,24 +86,17 @@ def generate_wheel_scenes(
             for companion_role, on_value, off_value in companions:
                 pairs += [
                     (companion_offset, on_value if engaged else off_value)
-                    for companion_offset in capability.offsets_for_role(
-                        companion_role
-                    )
+                    for companion_offset in capability.offsets_for_role(companion_role)
                 ]
             if dimmer_full:
-                pairs += [
-                    (offset, 255)
-                    for offset in capability.offsets_for_role(roles.DIMMER)
-                ]
+                pairs += [(offset, 255) for offset in capability.offsets_for_role(roles.DIMMER)]
                 pairs += shutter_open_pairs(capability)
                 pairs += zoom_wide_pairs(capability)
             values[capability.fixture.fixture_id] = pairs
 
         function_id = next_function_id(workspace.root)
         name = position.name or f"{label} {index}"
-        workspace.add_function(
-            build_scene(function_id, f"{label} - {name}", values, path=folder)
-        )
+        workspace.add_function(build_scene(function_id, f"{label} - {name}", values, path=folder))
         scene_ids.append(function_id)
 
     chaser_id: int | None = None

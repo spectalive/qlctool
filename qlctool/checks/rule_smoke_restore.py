@@ -54,32 +54,33 @@ def check_smoke_restore(
             continue
         caption = button.attrib.get("Caption", "")
         for fixture_id in sorted(held):
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    f"el boton «{caption}» abre la bomba de humo en un canal "
-                    "que QLC+ no reinicia solo - no esta en el grupo Intensity "
-                    "- y la funcion no lo cierra: al soltar, la maquina sigue "
-                    "tirando hasta vaciar el deposito"
-                ),
-                fixtures=(graph.capabilities[fixture_id].fixture.name,),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        f"el boton «{caption}» abre la bomba de humo en un canal "
+                        "que QLC+ no reinicia solo - no esta en el grupo Intensity "
+                        "- y la funcion no lo cierra: al soltar, la maquina sigue "
+                        "tirando hasta vaciar el deposito"
+                    ),
+                    fixtures=(graph.capabilities[fixture_id].fixture.name,),
+                )
+            )
     return findings
 
 
-def _pumps_held(
-    graph: ShowGraph, groups, function_id: int
-) -> dict[int, set[int]]:
-    """fixture id -> the pump offsets this button raises that QLC+ will not clear."""
+def _pumps_held(graph: ShowGraph, groups, function_id: int) -> dict[int, set[int]]:
+    """Fixture id -> the pump offsets this button raises that QLC+ will not clear."""
     held: dict[int, set[int]] = {}
     for fixture_id, written in reach(graph, groups, function_id).items():
         capability = graph.capabilities.get(fixture_id)
         if capability is None or not capability.is_smoke:
             continue
         offsets = {
-            offset for offset in fog_offsets(capability)
+            offset
+            for offset in fog_offsets(capability)
             if offset in written
             and lit(written[offset])
             and capability.groups_by_offset[offset].lower() != RESET_GROUP
@@ -90,7 +91,10 @@ def _pumps_held(
 
 
 def _clears_itself(
-    graph: ShowGraph, groups, function_id: int, held: dict[int, set[int]],
+    graph: ShowGraph,
+    groups,
+    function_id: int,
+    held: dict[int, set[int]],
     seen: frozenset = frozenset(),
 ) -> bool:
     """Whether the thing this button starts carries its own "pump shut".
@@ -116,8 +120,7 @@ def _clears_itself(
     )
     candidates = [steps[-1]] if single else list(steps)
     return any(
-        _shuts(graph, groups, step, held)
-        or _clears_itself(graph, groups, step, held, seen)
+        _shuts(graph, groups, step, held) or _clears_itself(graph, groups, step, held, seen)
         for step in candidates
     )
 
@@ -126,9 +129,7 @@ def _shuts(graph: ShowGraph, groups, step: int, held) -> bool:
     """Whether this one step writes zero to every pump offset that was raised."""
     if step not in graph.functions:
         return False
-    written = driven_channels(
-        graph.functions[step], graph.capabilities, groups
-    )
+    written = driven_channels(graph.functions[step], graph.capabilities, groups)
     return all(
         written.get(fixture_id, {}).get(offset) == 0
         for fixture_id, offsets in held.items()

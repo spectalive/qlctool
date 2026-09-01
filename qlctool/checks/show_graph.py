@@ -44,7 +44,11 @@ class ShowGraph:
 
     def name(self, function_id: int) -> str:
         function = self.functions.get(function_id)
-        return function.attrib.get("Name", str(function_id)) if function is not None else str(function_id)
+        return (
+            function.attrib.get("Name", str(function_id))
+            if function is not None
+            else str(function_id)
+        )
 
     def kind(self, function_id: int) -> str:
         function = self.functions.get(function_id)
@@ -64,15 +68,10 @@ class ShowGraph:
 
     def collections(self, function_id: int) -> list[int]:
         """The Collections reachable from here - every point of simultaneity."""
-        return [
-            fid for fid in self.descendants(function_id)
-            if self.kind(fid) == CONCURRENT
-        ]
+        return [fid for fid in self.descendants(function_id) if self.kind(fid) == CONCURRENT]
 
 
-def build_show_graph(
-    root: etree._Element, capabilities: list[FixtureCapabilities]
-) -> ShowGraph:
+def build_show_graph(root: etree._Element, capabilities: list[FixtureCapabilities]) -> ShowGraph:
     engine = find_local(root, "Engine")
     functions: dict[int, etree._Element] = {}
     members: dict[int, tuple[int, ...]] = {}
@@ -91,10 +90,7 @@ def build_show_graph(
         functions=functions,
         members=members,
         capabilities={c.fixture.fixture_id: c for c in capabilities},
-        grids={
-            group.group_id: (group.width, group.height)
-            for group in fixture_groups(root)
-        },
+        grids={group.group_id: (group.width, group.height) for group in fixture_groups(root)},
     )
 
 
@@ -126,9 +122,7 @@ def reach(
             continue
         if kinds is not None and function.attrib.get("Type") not in kinds:
             continue
-        for fixture_id, pairs in driven_channels(
-            function, graph.capabilities, groups
-        ).items():
+        for fixture_id, pairs in driven_channels(function, graph.capabilities, groups).items():
             target = merged.setdefault(fixture_id, {})
             for offset, value in pairs.items():
                 target[offset] = _higher(target.get(offset, 0), value)

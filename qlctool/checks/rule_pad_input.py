@@ -45,38 +45,44 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
     sendable = _profile_channels()
     for channel, captions in sorted(bindings.items()):
         if channel not in sendable:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=captions[0],
-                message=(
-                    f"escucha el canal {channel}, que no esta en el perfil del "
-                    f"pad: ningun control del aparato manda ese numero, asi que "
-                    f"el widget no se puede pulsar desde el hardware"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=captions[0],
+                    message=(
+                        f"escucha el canal {channel}, que no esta en el perfil del "
+                        f"pad: ningun control del aparato manda ese numero, asi que "
+                        f"el widget no se puede pulsar desde el hardware"
+                    ),
+                )
+            )
         if len(captions) > 1:
-            findings.append(Finding(
-                rule=DOUBLE_RULE,
-                severity=ERROR,
-                function=captions[0],
-                message=(
-                    f"comparte el canal {channel} con {', '.join(captions[1:])}: "
-                    f"un solo control dispara todos a la vez"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=DOUBLE_RULE,
+                    severity=ERROR,
+                    function=captions[0],
+                    message=(
+                        f"comparte el canal {channel} con {', '.join(captions[1:])}: "
+                        f"un solo control dispara todos a la vez"
+                    ),
+                )
+            )
 
     if midi_input_patch(root) is None:
-        findings.append(Finding(
-            rule=UNPATCHED_RULE,
-            severity=ERROR,
-            function="InputOutputMap",
-            message=(
-                f"{len(bindings)} widget(s) tienen binding MIDI y ningun "
-                f"universo declara <Input>: QLC+ abre el show sin nadie "
-                f"escuchando y el pad no hace nada hasta configurarlo a mano"
-            ),
-        ))
+        findings.append(
+            Finding(
+                rule=UNPATCHED_RULE,
+                severity=ERROR,
+                function="InputOutputMap",
+                message=(
+                    f"{len(bindings)} widget(s) tienen binding MIDI y ningun "
+                    f"universo declara <Input>: QLC+ abre el show sin nadie "
+                    f"escuchando y el pad no hace nada hasta configurarlo a mano"
+                ),
+            )
+        )
     return findings
 
 

@@ -33,9 +33,9 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..shutter_open import shutter_open_pairs
 from ..stepped_dimmer import stepped_dimmer_offsets
-from ..zoom_wide import zoom_wide_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
+from ..zoom_wide import zoom_wide_pairs
 
 PATH = "Niveles"
 

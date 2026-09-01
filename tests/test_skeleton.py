@@ -29,15 +29,11 @@ def test_skeleton_keeps_the_rig_and_drops_the_show(tmp_path):
 
     kinds = set(_engine_children(reloaded))
     assert "Function" not in kinds
-    assert kinds <= {
-        "InputOutputMap", "Fixture", "FixtureGroup", "ChannelsGroup", "Monitor"
-    }
+    assert kinds <= {"InputOutputMap", "Fixture", "FixtureGroup", "ChannelsGroup", "Monitor"}
 
     # The rig survives intact.
     assert len(patched_fixtures(reloaded)) == 27
-    assert [g.name for g in fixture_groups(reloaded)] == [
-        "BarrasLed", "Cabezas", "PAR"
-    ]
+    assert [g.name for g in fixture_groups(reloaded)] == ["BarrasLed", "Cabezas", "PAR"]
     assert patch_conflicts(reloaded) == []
 
     # The console is emptied but still well-formed.
@@ -45,9 +41,7 @@ def test_skeleton_keeps_the_rig_and_drops_the_show(tmp_path):
     assert [localname(c) for c in frame] == ["Appearance"]
 
 
-@pytest.mark.skipif(
-    qlcplus_binary() is None, reason="QLC+ is not installed on this machine"
-)
+@pytest.mark.skipif(qlcplus_binary() is None, reason="QLC+ is not installed on this machine")
 def test_qlcplus_loads_a_skeleton(tmp_path):
     ws = strip_to_skeleton(Workspace.load(SHOW))
     out = tmp_path / "skeleton.qxw"

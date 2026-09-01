@@ -42,18 +42,18 @@ def generate_panel_speed_auto(
         for fixture_id, offset in speed_channels:
             values.setdefault(fixture_id, []).append((offset, value))
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_scene(
-            function_id, f"Vel. Paneles {value}", values, path=path
-        ))
+        workspace.add_function(build_scene(function_id, f"Vel. Paneles {value}", values, path=path))
         scene_ids.append(function_id)
 
     chaser_id = next_function_id(workspace.root)
-    workspace.add_function(build_chaser(
-        chaser_id,
-        "Vel. Paneles Auto",
-        scene_ids,
-        fade_in=STEP_FADE_MS,
-        hold=STEP_HOLD_MS,
-        path=path,
-    ))
+    workspace.add_function(
+        build_chaser(
+            chaser_id,
+            "Vel. Paneles Auto",
+            scene_ids,
+            fade_in=STEP_FADE_MS,
+            hold=STEP_HOLD_MS,
+            path=path,
+        )
+    )
     return chaser_id

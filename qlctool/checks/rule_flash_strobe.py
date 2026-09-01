@@ -36,9 +36,7 @@ RULE = "flash sin estrobo"
 AUDIO_RULE = "estrobo en manos del audio"
 
 
-def check_flash_strobe(
-    graph: ShowGraph, groups, root: etree._Element
-) -> list[Finding]:
+def check_flash_strobe(graph: ShowGraph, groups, root: etree._Element) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []
@@ -62,29 +60,33 @@ def check_flash_strobe(
         by_audio = button.attrib.get("ID", "") in audio_pressed
         dark, strobing = _strobe_writes(graph, groups, scene)
         if by_audio and strobing:
-            findings.append(Finding(
-                rule=AUDIO_RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    f"estroba y lo pulsa una barra de audio: un estrobo "
-                    f"disparado por lo que haga la musica es un estrobo que "
-                    f"nadie ha elegido"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=AUDIO_RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        "estroba y lo pulsa una barra de audio: un estrobo "
+                        "disparado por lo que haga la musica es un estrobo que "
+                        "nadie ha elegido"
+                    ),
+                )
+            )
         elif not by_audio and dark:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                fixtures=tuple(sorted(dark)),
-                message=(
-                    f"cuelga de un boton Flash y escribe {len(dark)} aparatos "
-                    f"con canal de estrobo sin estrobarlos - en este show un "
-                    f"flash mantenido estroba, y dejar el shutter en "
-                    f"«Open»/«No function» es la luz de trabajo, no el golpe"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    fixtures=tuple(sorted(dark)),
+                    message=(
+                        f"cuelga de un boton Flash y escribe {len(dark)} aparatos "
+                        f"con canal de estrobo sin estrobarlos - en este show un "
+                        f"flash mantenido estroba, y dejar el shutter en "
+                        f"«Open»/«No function» es la luz de trabajo, no el golpe"
+                    ),
+                )
+            )
     return findings
 
 
@@ -92,9 +94,7 @@ def _strobe_writes(graph: ShowGraph, groups, scene) -> tuple[list[str], bool]:
     """(fixtures written but not strobed, whether anything strobes at all)."""
     dark: list[str] = []
     strobing_anywhere = False
-    for fixture_id, written in driven_channels(
-        scene, graph.capabilities, groups
-    ).items():
+    for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
         capability = graph.capabilities.get(fixture_id)
         if capability is None or capability.is_smoke:
             continue

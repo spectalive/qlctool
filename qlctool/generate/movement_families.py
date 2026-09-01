@@ -85,32 +85,61 @@ class Envelope:
 # bigger than the window is a head pointing out of the room, whatever the
 # optics. Slow draws the same shape smaller, which is the room left to vary.
 WASH_SLOW = Envelope(
-    ("Circle", "Line"), 28000, WASH_PAN_SPAN * 2 // 3, WASH_TILT_SPAN * 2 // 3,
-    56000, pan_offset=WASH_PAN_AIM, tilt_offset=WASH_TILT_AIM,
+    ("Circle", "Line"),
+    28000,
+    WASH_PAN_SPAN * 2 // 3,
+    WASH_TILT_SPAN * 2 // 3,
+    56000,
+    pan_offset=WASH_PAN_AIM,
+    tilt_offset=WASH_TILT_AIM,
 )
 # The beam sizes are the audience window, not a taste: the window is 41 counts
 # of pan by 27 of tilt, so a figure any bigger walks out of the room. Slow is
 # the same shape drawn smaller and slower, which is the only room left to vary.
 BEAM_SLOW = Envelope(
-    ("Circle", "Line"), 34000, BEAM_PAN_SPAN * 2 // 3, BEAM_TILT_SPAN * 2 // 3,
-    56000, pan_offset=BEAM_PAN_AIM, tilt_offset=BEAM_TILT_AIM,
+    ("Circle", "Line"),
+    34000,
+    BEAM_PAN_SPAN * 2 // 3,
+    BEAM_TILT_SPAN * 2 // 3,
+    56000,
+    pan_offset=BEAM_PAN_AIM,
+    tilt_offset=BEAM_TILT_AIM,
 )
 WASH = Envelope(
     ("Circle", "Eight", "Line", "Diamond", "Square", "Leaf", "Lissajous"),
-    16000, WASH_PAN_SPAN, WASH_TILT_SPAN, 10000,
-    pan_offset=WASH_PAN_AIM, tilt_offset=WASH_TILT_AIM,
+    16000,
+    WASH_PAN_SPAN,
+    WASH_TILT_SPAN,
+    10000,
+    pan_offset=WASH_PAN_AIM,
+    tilt_offset=WASH_TILT_AIM,
 )
 BEAM = Envelope(
-    ("Circle", "Eight", "Line"), 11000, BEAM_PAN_SPAN, BEAM_TILT_SPAN, 10000,
-    pan_offset=BEAM_PAN_AIM, tilt_offset=BEAM_TILT_AIM,
+    ("Circle", "Eight", "Line"),
+    11000,
+    BEAM_PAN_SPAN,
+    BEAM_TILT_SPAN,
+    10000,
+    pan_offset=BEAM_PAN_AIM,
+    tilt_offset=BEAM_TILT_AIM,
 )
 WASH_FAST = Envelope(
-    WASH.algorithms, 5000, WASH.width, WASH.height, 6000,
-    pan_offset=WASH_PAN_AIM, tilt_offset=WASH_TILT_AIM,
+    WASH.algorithms,
+    5000,
+    WASH.width,
+    WASH.height,
+    6000,
+    pan_offset=WASH_PAN_AIM,
+    tilt_offset=WASH_TILT_AIM,
 )
 BEAM_FAST = Envelope(
-    BEAM.algorithms, 5000, BEAM.width, BEAM.height, 6000,
-    pan_offset=BEAM_PAN_AIM, tilt_offset=BEAM_TILT_AIM,
+    BEAM.algorithms,
+    5000,
+    BEAM.width,
+    BEAM.height,
+    6000,
+    pan_offset=BEAM_PAN_AIM,
+    tilt_offset=BEAM_TILT_AIM,
 )
 
 # The rig's 23 EFX all ran Rotation=0 and Parallel propagation, every shape an
@@ -125,19 +154,35 @@ BEAM_FAST = Envelope(
 # so these are new beam figures rather than a rotation on old ones; sharing
 # BEAM's duration/width/height keeps them tuned for the same optics.
 BEAM_ROTATED_SHAPES = Envelope(
-    ("Diamond", "Leaf"), BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
+    ("Diamond", "Leaf"),
+    BEAM.duration,
+    BEAM.width,
+    BEAM.height,
+    BEAM.hold,
     rotation_by_algorithm={"Diamond": 90, "Leaf": 45},
-    pan_offset=BEAM.pan_offset, tilt_offset=BEAM.tilt_offset,
+    pan_offset=BEAM.pan_offset,
+    tilt_offset=BEAM.tilt_offset,
 )
 WASH_CASCADE = Envelope(
-    ("Line",), WASH_SLOW.duration, WASH_SLOW.width, WASH_SLOW.height,
-    WASH_SLOW.hold, propagation="Serial",
-    pan_offset=WASH_SLOW.pan_offset, tilt_offset=WASH_SLOW.tilt_offset,
+    ("Line",),
+    WASH_SLOW.duration,
+    WASH_SLOW.width,
+    WASH_SLOW.height,
+    WASH_SLOW.hold,
+    propagation="Serial",
+    pan_offset=WASH_SLOW.pan_offset,
+    tilt_offset=WASH_SLOW.tilt_offset,
 )
 BEAM_CASCADE = Envelope(
-    BEAM.algorithms[:1], BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
-    propagation="Serial", rotation=45,
-    pan_offset=BEAM.pan_offset, tilt_offset=BEAM.tilt_offset,
+    BEAM.algorithms[:1],
+    BEAM.duration,
+    BEAM.width,
+    BEAM.height,
+    BEAM.hold,
+    propagation="Serial",
+    rotation=45,
+    pan_offset=BEAM.pan_offset,
+    tilt_offset=BEAM.tilt_offset,
 )
 
 # The classic club wave: tilt only. QLC+'s Line traces x=y - a diagonal, and
@@ -146,12 +191,24 @@ BEAM_CASCADE = Envelope(
 # and the wave lives on the tilt alone, cascaded Serial down the row. Per
 # family, like every other figure: same shape, each family's own size.
 WASH_TILT_WAVE = Envelope(
-    ("Line",), WASH.duration, 0, WASH.height, WASH.hold, propagation="Serial",
-    pan_offset=WASH.pan_offset, tilt_offset=WASH.tilt_offset,
+    ("Line",),
+    WASH.duration,
+    0,
+    WASH.height,
+    WASH.hold,
+    propagation="Serial",
+    pan_offset=WASH.pan_offset,
+    tilt_offset=WASH.tilt_offset,
 )
 BEAM_TILT_WAVE = Envelope(
-    ("Line",), BEAM.duration, 0, BEAM.height, BEAM.hold, propagation="Serial",
-    pan_offset=BEAM.pan_offset, tilt_offset=BEAM.tilt_offset,
+    ("Line",),
+    BEAM.duration,
+    0,
+    BEAM.height,
+    BEAM.hold,
+    propagation="Serial",
+    pan_offset=BEAM.pan_offset,
+    tilt_offset=BEAM.tilt_offset,
 )
 
 # The hand-built show kept a "(Simultaneo)" twin of every shape - all heads at
@@ -166,13 +223,22 @@ MOVEMENT_CROSSFADE_MS = 5000
 # kept, the two sides push toward each other and open apart, which is what a
 # "push" means on a truss. Slow and wide: the drama is the unison, not speed.
 WASH_UNISON = Envelope(
-    ("Line",), WASH_SLOW.duration, WASH_SLOW.width, WASH_SLOW.height,
+    ("Line",),
+    WASH_SLOW.duration,
+    WASH_SLOW.width,
+    WASH_SLOW.height,
     WASH_SLOW.hold,
-    pan_offset=WASH_SLOW.pan_offset, tilt_offset=WASH_SLOW.tilt_offset,
+    pan_offset=WASH_SLOW.pan_offset,
+    tilt_offset=WASH_SLOW.tilt_offset,
 )
 BEAM_UNISON = Envelope(
-    ("Line",), BEAM.duration, BEAM.width, BEAM.height, BEAM.hold,
-    pan_offset=BEAM.pan_offset, tilt_offset=BEAM.tilt_offset,
+    ("Line",),
+    BEAM.duration,
+    BEAM.width,
+    BEAM.height,
+    BEAM.hold,
+    pan_offset=BEAM.pan_offset,
+    tilt_offset=BEAM.tilt_offset,
 )
 
 
@@ -210,35 +276,57 @@ def generate_movement_families(
     if not washes and not beams:
         raise ValueError("no fixture in this workspace has both pan and tilt")
 
-    def _family(ids, envelope, name, prefix, path, make_chaser=True, names=None,
-                spread_phase=True):
+    def _family(ids, envelope, name, prefix, path, make_chaser=True, names=None, spread_phase=True):
         if not ids:
             return None
         return generate_movement_efx(
-            workspace, library, algorithms=envelope.algorithms,
-            fixture_ids=ids, path=path, make_chaser=make_chaser,
-            duration=envelope.duration, width=envelope.width,
-            height=envelope.height, chaser_hold=envelope.hold,
-            chaser_run_order="Random", chaser_name=name, label_prefix=prefix,
-            mirrored_ids=mirrored_ids, propagation_mode=envelope.propagation,
+            workspace,
+            library,
+            algorithms=envelope.algorithms,
+            fixture_ids=ids,
+            path=path,
+            make_chaser=make_chaser,
+            duration=envelope.duration,
+            width=envelope.width,
+            height=envelope.height,
+            chaser_hold=envelope.hold,
+            chaser_run_order="Random",
+            chaser_name=name,
+            label_prefix=prefix,
+            mirrored_ids=mirrored_ids,
+            propagation_mode=envelope.propagation,
             rotation=envelope.rotation,
             rotation_by_algorithm=envelope.rotation_by_algorithm or None,
-            names=names, spread_phase=spread_phase,
-            pan_offset=envelope.pan_offset, tilt_offset=envelope.tilt_offset,
+            names=names,
+            spread_phase=spread_phase,
+            pan_offset=envelope.pan_offset,
+            tilt_offset=envelope.tilt_offset,
         )
 
-    slow = _family(washes, WASH_SLOW, None, "Suave", "Movimiento Suave",
-                   make_chaser=False)
-    slow_beam = _family(beams, BEAM_SLOW, "Movimientos Suaves Beams",
-                        "Beam Suave", "Movimiento Suave")
-    ola_suave = _family(washes, WASH_CASCADE, None, "Ola", "Movimiento Suave",
-                        make_chaser=False, names={"Line": "Ola Suave"})
+    slow = _family(washes, WASH_SLOW, None, "Suave", "Movimiento Suave", make_chaser=False)
+    slow_beam = _family(
+        beams, BEAM_SLOW, "Movimientos Suaves Beams", "Beam Suave", "Movimiento Suave"
+    )
+    ola_suave = _family(
+        washes,
+        WASH_CASCADE,
+        None,
+        "Ola",
+        "Movimiento Suave",
+        make_chaser=False,
+        names={"Line": "Ola Suave"},
+    )
     wash = _family(washes, WASH, None, "Wash", "Movimiento", make_chaser=False)
     beam = _family(beams, BEAM, None, "Beam", "Movimiento", make_chaser=False)
     # The old "(Simultaneo)" twins: same shapes, same envelope, every head at
     # phase 0 so the family traces one figure together.
     wash_sim = _family(
-        washes, WASH, None, "Wash", "Movimiento", make_chaser=False,
+        washes,
+        WASH,
+        None,
+        "Wash",
+        "Movimiento",
+        make_chaser=False,
         names={
             shape: f"Wash {SPANISH_LABELS.get(shape, shape)} Simultaneo"
             for shape in WASH.algorithms
@@ -246,34 +334,69 @@ def generate_movement_families(
         spread_phase=False,
     )
     beam_sim = _family(
-        beams, BEAM, None, "Beam", "Movimiento", make_chaser=False,
+        beams,
+        BEAM,
+        None,
+        "Beam",
+        "Movimiento",
+        make_chaser=False,
         names={
             shape: f"Beam {SPANISH_LABELS.get(shape, shape)} Simultaneo"
             for shape in BEAM.algorithms
         },
         spread_phase=False,
     )
-    beam_shapes = _family(beams, BEAM_ROTATED_SHAPES, None, "Beam",
-                          "Movimiento", make_chaser=False)
-    cascada_beams = _family(beams, BEAM_CASCADE, None, "Cascada", "Movimiento",
-                            make_chaser=False, names={"Circle": "Cascada Beams"})
+    beam_shapes = _family(beams, BEAM_ROTATED_SHAPES, None, "Beam", "Movimiento", make_chaser=False)
+    cascada_beams = _family(
+        beams,
+        BEAM_CASCADE,
+        None,
+        "Cascada",
+        "Movimiento",
+        make_chaser=False,
+        names={"Circle": "Cascada Beams"},
+    )
     # The tilt wave and the synced push, per family like every figure.
-    ola_wash = _family(washes, WASH_TILT_WAVE, None, "Ola", "Movimiento",
-                       make_chaser=False, names={"Line": "Ola Vertical Washes"})
-    ola_beam = _family(beams, BEAM_TILT_WAVE, None, "Ola", "Movimiento",
-                       make_chaser=False, names={"Line": "Ola Vertical Beams"})
+    ola_wash = _family(
+        washes,
+        WASH_TILT_WAVE,
+        None,
+        "Ola",
+        "Movimiento",
+        make_chaser=False,
+        names={"Line": "Ola Vertical Washes"},
+    )
+    ola_beam = _family(
+        beams,
+        BEAM_TILT_WAVE,
+        None,
+        "Ola",
+        "Movimiento",
+        make_chaser=False,
+        names={"Line": "Ola Vertical Beams"},
+    )
     unison_wash = _family(
-        washes, WASH_UNISON, None, "Barrido", "Movimiento", make_chaser=False,
-        names={"Line": "Barrido Unison Washes"}, spread_phase=False,
+        washes,
+        WASH_UNISON,
+        None,
+        "Barrido",
+        "Movimiento",
+        make_chaser=False,
+        names={"Line": "Barrido Unison Washes"},
+        spread_phase=False,
     )
     unison_beam = _family(
-        beams, BEAM_UNISON, None, "Barrido", "Movimiento", make_chaser=False,
-        names={"Line": "Barrido Unison Beams"}, spread_phase=False,
+        beams,
+        BEAM_UNISON,
+        None,
+        "Barrido",
+        "Movimiento",
+        make_chaser=False,
+        names={"Line": "Barrido Unison Beams"},
+        spread_phase=False,
     )
-    fast_wash = _family(washes, WASH_FAST, "Rapidos Washes", "Wash Rapido",
-                        "Movimiento Rapido")
-    fast_beam = _family(beams, BEAM_FAST, "Rapidos Beams", "Beam Rapido",
-                        "Movimiento Rapido")
+    fast_wash = _family(washes, WASH_FAST, "Rapidos Washes", "Wash Rapido", "Movimiento Rapido")
+    fast_beam = _family(beams, BEAM_FAST, "Rapidos Beams", "Beam Rapido", "Movimiento Rapido")
 
     fan_id = generate_fan_position(workspace, library, beams)
     cross_id = generate_cross_position(workspace, library, beams)
@@ -281,15 +404,20 @@ def generate_movement_families(
     # The Suave family gets its own cascade wave beside the two plain shapes.
     slow_id: int | None = None
     if slow is not None:
-        steps = list(slow.efx_ids) + (
-            list(ola_suave.efx_ids) if ola_suave is not None else []
-        )
+        steps = list(slow.efx_ids) + (list(ola_suave.efx_ids) if ola_suave is not None else [])
         slow_id = next_function_id(workspace.root)
-        workspace.add_function(build_chaser(
-            slow_id, "Movimientos Suaves", steps, hold=WASH_SLOW.hold,
-            fade_in=MOVEMENT_CROSSFADE_MS, fade_out=MOVEMENT_CROSSFADE_MS,
-            run_order="Random", path="Movimiento Suave",
-        ))
+        workspace.add_function(
+            build_chaser(
+                slow_id,
+                "Movimientos Suaves",
+                steps,
+                hold=WASH_SLOW.hold,
+                fade_in=MOVEMENT_CROSSFADE_MS,
+                fade_out=MOVEMENT_CROSSFADE_MS,
+                run_order="Random",
+                path="Movimiento Suave",
+            )
+        )
 
     # The washes' rotation, assembled by hand like the beams' so the wave and
     # the push sit among its steps rather than on buttons only.
@@ -302,11 +430,18 @@ def generate_movement_families(
             + (list(unison_wash.efx_ids) if unison_wash is not None else [])
         )
         wash_id = next_function_id(workspace.root)
-        workspace.add_function(build_chaser(
-            wash_id, "Movimientos Washes", steps, hold=WASH.hold,
-            fade_in=MOVEMENT_CROSSFADE_MS, fade_out=MOVEMENT_CROSSFADE_MS,
-            run_order="Random", path="Movimiento",
-        ))
+        workspace.add_function(
+            build_chaser(
+                wash_id,
+                "Movimientos Washes",
+                steps,
+                hold=WASH.hold,
+                fade_in=MOVEMENT_CROSSFADE_MS,
+                fade_out=MOVEMENT_CROSSFADE_MS,
+                run_order="Random",
+                path="Movimiento",
+            )
+        )
 
     # The beams' rotation carries the fan as a step of its own: a rest the
     # chaser lands on, not a separate button somebody has to remember. The
@@ -327,11 +462,18 @@ def generate_movement_families(
             + ([cross_id] if cross_id is not None else [])
         )
         beam_id = next_function_id(workspace.root)
-        workspace.add_function(build_chaser(
-            beam_id, "Movimientos Beams", steps, hold=BEAM.hold,
-            fade_in=MOVEMENT_CROSSFADE_MS, fade_out=MOVEMENT_CROSSFADE_MS,
-            run_order="Random", path="Movimiento",
-        ))
+        workspace.add_function(
+            build_chaser(
+                beam_id,
+                "Movimientos Beams",
+                steps,
+                hold=BEAM.hold,
+                fade_in=MOVEMENT_CROSSFADE_MS,
+                fade_out=MOVEMENT_CROSSFADE_MS,
+                run_order="Random",
+                path="Movimiento",
+            )
+        )
 
     # One entry per shape for the console, whichever families draw it. Diamond
     # and Leaf merge the beam versions into the same button the wash versions
@@ -342,7 +484,9 @@ def generate_movement_families(
     efx_ids: list[int] = []
     by_shape: dict[str, list[int]] = {}
     for generated, envelope in (
-        (wash, WASH), (beam, BEAM), (beam_shapes, BEAM_ROTATED_SHAPES),
+        (wash, WASH),
+        (beam, BEAM),
+        (beam_shapes, BEAM_ROTATED_SHAPES),
     ):
         if generated is None:
             continue
@@ -353,10 +497,14 @@ def generate_movement_families(
         if not members:
             continue
         collection_id = next_function_id(workspace.root)
-        workspace.add_function(build_collection(
-            collection_id, f"Movimiento {SPANISH_LABELS.get(shape, shape)}",
-            members, path="Movimiento",
-        ))
+        workspace.add_function(
+            build_collection(
+                collection_id,
+                f"Movimiento {SPANISH_LABELS.get(shape, shape)}",
+                members,
+                path="Movimiento",
+            )
+        )
         efx_ids.append(collection_id)
     if ola_suave is not None:
         efx_ids.append(ola_suave.efx_ids[0])
@@ -366,15 +514,18 @@ def generate_movement_families(
     # The wave and the push span both families, so their buttons are
     # Collections the way Diamond and Leaf are - one press, both optics.
     def _figure(name, *parts):
-        members = [
-            generated.efx_ids[0] for generated in parts if generated is not None
-        ]
+        members = [generated.efx_ids[0] for generated in parts if generated is not None]
         if not members:
             return
         collection_id = next_function_id(workspace.root)
-        workspace.add_function(build_collection(
-            collection_id, name, members, path="Movimiento",
-        ))
+        workspace.add_function(
+            build_collection(
+                collection_id,
+                name,
+                members,
+                path="Movimiento",
+            )
+        )
         efx_ids.append(collection_id)
 
     _figure("Ola Vertical", ola_wash, ola_beam)
@@ -385,9 +536,7 @@ def generate_movement_families(
         if not members:
             return None
         collection_id = next_function_id(workspace.root)
-        workspace.add_function(
-            build_collection(collection_id, name, members, path=path)
-        )
+        workspace.add_function(build_collection(collection_id, name, members, path=path))
         return collection_id
 
     fast_wash_id = fast_wash.chaser_id if fast_wash is not None else None
@@ -402,7 +551,9 @@ def generate_movement_families(
         fan_id=fan_id,
         cabezas_id=_both("Movimientos Cabezas", wash_id, beam_id, "Movimiento"),
         rapidos_id=_both(
-            "Movimientos Rapidos", fast_wash_id, fast_beam_id,
+            "Movimientos Rapidos",
+            fast_wash_id,
+            fast_beam_id,
             "Movimiento Rapido",
         ),
         efx_ids=efx_ids,

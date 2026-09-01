@@ -27,8 +27,15 @@ from .window_state import build_window_state
 # and multiples QLC+ offers, and nothing between them exists.
 MULTIPLIER_NONE = 0
 MULTIPLIERS: dict[float, int] = {
-    1 / 16: 2, 1 / 8: 3, 1 / 4: 4, 1 / 2: 5,
-    1: 6, 2: 7, 4: 8, 8: 9, 16: 10,
+    1 / 16: 2,
+    1 / 8: 3,
+    1 / 4: 4,
+    1 / 2: 5,
+    1: 6,
+    2: 7,
+    4: 8,
+    8: 9,
+    16: 10,
 }
 
 

@@ -55,7 +55,9 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # other across the sweep. Orientation is load-bearing for the step count
     # (matrix_step_count.py assumes Horizontal), not just a look.
     CuratedScript(
-        "BarrasLed", "Sine Wave", {"orientation": "Horizontal"},
+        "BarrasLed",
+        "Sine Wave",
+        {"orientation": "Horizontal"},
         ("Rojo", "Azul"),
     ),
     # lines.js: apiVersion 2. rgbMapStepCount always returns 2 regardless of
@@ -71,7 +73,9 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # is) is what rgbMapStepCount returns - written explicitly since the step
     # count table depends on it.
     CuratedScript(
-        "BarrasLed", "Marquee", {"marquee": "Forward", "marqueeCount": "3"},
+        "BarrasLed",
+        "Marquee",
+        {"marquee": "Forward", "marqueeCount": "3"},
         ("Amarillo", "Azul"),
     ),
     # plasma.js: apiVersion 3. Its own setPreset("Rainbow") sets
@@ -114,7 +118,8 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # preset times presetSize - Rainbow has 3 stops, so 3 x 5 = 15), which is
     # why both are written even though 5 is already the script's default.
     CuratedScript(
-        "PAR", "Gradient",
+        "PAR",
+        "Gradient",
         {"presetIndex": "Rainbow", "presetSize": "5", "orientation": "Horizontal"},
         ("Ambar",),
     ),
@@ -130,15 +135,21 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # odd pixels), step count 2 - the honest script for the old "X / Y" bar
     # duals. orientation is explicit because the step-count table assumes it.
     CuratedScript(
-        "BarrasLed", "Alternate", {"orientation": "Horizontal"},
+        "BarrasLed",
+        "Alternate",
+        {"orientation": "Horizontal"},
         ("Azul", "Rojo"),
     ),
     CuratedScript(
-        "BarrasLed", "Alternate", {"orientation": "Horizontal"},
+        "BarrasLed",
+        "Alternate",
+        {"orientation": "Horizontal"},
         ("Cyan", "Rosa"),
     ),
     CuratedScript(
-        "BarrasLed", "Alternate", {"orientation": "Horizontal"},
+        "BarrasLed",
+        "Alternate",
+        {"orientation": "Horizontal"},
         ("Verde", "Amarillo"),
     ),
     # opposite.js: two dots crossing the row, step count = width (Horizontal).
@@ -146,11 +157,15 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # fillfromcenter.js / stripesfromcenter.js: centre outwards, (width+1)/2
     # steps on Horizontal - Vertical on an 8x2 bar is a two-frame blink.
     CuratedScript(
-        "BarrasLed", "Fill From Center", {"orientation": "Horizontal"},
+        "BarrasLed",
+        "Fill From Center",
+        {"orientation": "Horizontal"},
         ("Naranja",),
     ),
     CuratedScript(
-        "BarrasLed", "Stripes From Center", {"orientation": "Horizontal"},
+        "BarrasLed",
+        "Stripes From Center",
+        {"orientation": "Horizontal"},
         ("Morado",),
     ),
     # randomcolumn.js: declares nothing, step count 2, reads rgb[0] only.
@@ -158,25 +173,37 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # fillunfill.js and onebyone.js: same recipes the Cabezas entries above
     # use, on the bars' own grid, in colours the bars' base set lacks.
     CuratedScript(
-        "BarrasLed", "Fill Unfill", {"orientation": "Horizontal"}, ("Rosa",),
+        "BarrasLed",
+        "Fill Unfill",
+        {"orientation": "Horizontal"},
+        ("Rosa",),
     ),
     CuratedScript("BarrasLed", "One By One", {}, ("Cyan",)),
     # The heads and the PARs carry the rest of the missing palette.
     CuratedScript(
-        "Cabezas", "Alternate", {"orientation": "Horizontal"},
+        "Cabezas",
+        "Alternate",
+        {"orientation": "Horizontal"},
         ("Verde Menta", "Azul Profundo"),
     ),
     CuratedScript("Cabezas", "Opposite", {"orientation": "Horizontal"}, ("Celeste",)),
     CuratedScript("Cabezas", "Random Column", {}, ("Fucsia",)),
     CuratedScript(
-        "PAR", "Fill From Center", {"orientation": "Horizontal"},
+        "PAR",
+        "Fill From Center",
+        {"orientation": "Horizontal"},
         ("Rojo Fuego",),
     ),
     CuratedScript(
-        "PAR", "Stripes From Center", {"orientation": "Horizontal"},
+        "PAR",
+        "Stripes From Center",
+        {"orientation": "Horizontal"},
         ("Azul Cielo",),
     ),
     CuratedScript(
-        "PAR", "Alternate", {"orientation": "Horizontal"}, ("Rosa", "Cyan"),
+        "PAR",
+        "Alternate",
+        {"orientation": "Horizontal"},
+        ("Rosa", "Cyan"),
     ),
 )

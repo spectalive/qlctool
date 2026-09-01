@@ -109,7 +109,7 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
         return EFFECT
     if g == "speed":
         return SPEED
-    if g == "colour" or "macro" in n and "color" in n or "colour" in n:
+    if g == "colour" or ("macro" in n and "color" in n) or "colour" in n:
         return COLOR_MACRO
     if g == "shutter" or "strob" in n:
         return STROBE

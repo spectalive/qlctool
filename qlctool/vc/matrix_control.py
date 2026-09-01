@@ -26,7 +26,7 @@ def build_matrix_control(
     function_id: int,
     algorithms: Sequence[str] = (),
 ) -> etree._Element:
-    """algorithms are RGB script names, one preset button each."""
+    """Algorithms are RGB script names, one preset button each."""
     matrix = etree.SubElement(parent, f"{{{QLC_NS}}}Matrix")
     matrix.set("Caption", caption)
     matrix.set("ID", str(widget_id))

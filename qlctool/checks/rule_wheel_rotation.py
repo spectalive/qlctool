@@ -36,18 +36,20 @@ def check_wheel_rotation(graph: ShowGraph, groups) -> list[Finding]:
             continue
         spinning = sorted(_spinning_wheels(graph, stated))
         if spinning:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    "da color a todo el rig pero deja la rueda de color de "
-                    "estos fixtures en un rango de giro, que no es un color: "
-                    "la rueda queda entre dos posiciones y el haz sale a medias "
-                    "(media luna)"
-                ),
-                fixtures=tuple(spinning),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        "da color a todo el rig pero deja la rueda de color de "
+                        "estos fixtures en un rango de giro, que no es un color: "
+                        "la rueda queda entre dos posiciones y el haz sale a medias "
+                        "(media luna)"
+                    ),
+                    fixtures=tuple(spinning),
+                )
+            )
     return findings
 
 
@@ -57,10 +59,7 @@ def _states_rgb_colour(graph: ShowGraph, stated) -> bool:
         capability = graph.capabilities.get(fixture_id)
         if capability is None or capability.is_smoke or not written:
             continue
-        if not any(
-            capability.has_role(role)
-            for role in (roles.RED, roles.GREEN, roles.BLUE)
-        ):
+        if not any(capability.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE)):
             continue
         offsets = {o for role in COLOUR for o in capability.offsets_for_role(role)}
         if any(lit(written[o]) for o in offsets if o in written):
@@ -75,10 +74,7 @@ def _spinning_wheels(graph: ShowGraph, stated) -> set[str]:
         capability = graph.capabilities.get(fixture_id)
         if capability is None or capability.is_smoke or not written:
             continue
-        if any(
-            capability.has_role(role)
-            for role in (roles.RED, roles.GREEN, roles.BLUE)
-        ):
+        if any(capability.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE)):
             continue
         wheel = capability.wheel_for_role(roles.COLOR_MACRO)
         if wheel is None:

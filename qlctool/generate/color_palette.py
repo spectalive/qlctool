@@ -40,9 +40,7 @@ def generate_color_palette(
     for name, rgb in colors.items():
         fid = next_function_id(workspace.root)
         values = color_scene_values(caps, rgb)
-        workspace.add_function(
-            build_scene(fid, f"Color {name}", values, path=path)
-        )
+        workspace.add_function(build_scene(fid, f"Color {name}", values, path=path))
         scene_ids.append(fid)
 
     chaser_id: int | None = None

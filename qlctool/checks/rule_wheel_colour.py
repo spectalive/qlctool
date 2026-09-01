@@ -37,21 +37,22 @@ def check_wheel_colour(graph: ShowGraph, groups, entries: dict[int, str]) -> lis
             missed |= {
                 graph.capabilities[fixture_id].fixture.name
                 for fixture_id in members
-                if _is_wheel_coloured(graph, fixture_id)
-                and not everything.get(fixture_id)
+                if _is_wheel_coloured(graph, fixture_id) and not everything.get(fixture_id)
             }
         if missed:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    "da color a un grupo pero no escribe nada en los fixtures "
-                    "de ese grupo cuyo color es una rueda: se quedan con el "
-                    f"color anterior (boton: {caption})"
-                ),
-                fixtures=tuple(sorted(missed)),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        "da color a un grupo pero no escribe nada en los fixtures "
+                        "de ese grupo cuyo color es una rueda: se quedan con el "
+                        f"color anterior (boton: {caption})"
+                    ),
+                    fixtures=tuple(sorted(missed)),
+                )
+            )
     return findings
 
 

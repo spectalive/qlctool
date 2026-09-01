@@ -59,7 +59,8 @@ def generate_dealt_gobo_scenes(
         return []
     _, positions = beams[0].wheel_for_role(roles.GOBO)
     patterns = [
-        position for position in positions
+        position
+        for position in positions
         if (position.name or "").strip().lower() not in OPEN_NAMES
         and (position.preset or "") in OPEN_PRESETS
     ]
@@ -80,8 +81,13 @@ def generate_dealt_gobo_scenes(
                 ]
             values[capability.fixture.fixture_id] = pairs
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_scene(
-            function_id, f"Gobo Repartido {deal + 1}", values, path=path,
-        ))
+        workspace.add_function(
+            build_scene(
+                function_id,
+                f"Gobo Repartido {deal + 1}",
+                values,
+                path=path,
+            )
+        )
         scene_ids.append(function_id)
     return scene_ids

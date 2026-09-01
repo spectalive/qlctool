@@ -26,9 +26,7 @@ RULE = "efx de dimmer tapado"
 FULL = 255
 
 
-def check_masked_dimmer_efx(
-    graph: ShowGraph, groups, entries
-) -> list[Finding]:
+def check_masked_dimmer_efx(graph: ShowGraph, groups, entries) -> list[Finding]:
     del groups
     findings: list[Finding] = []
     reported: set[tuple[int, int, int]] = set()
@@ -38,9 +36,7 @@ def check_masked_dimmer_efx(
     return findings
 
 
-def _collection(
-    graph: ShowGraph, collection_id: int, reported
-) -> list[Finding]:
+def _collection(graph: ShowGraph, collection_id: int, reported) -> list[Finding]:
     members = graph.members.get(collection_id, ())
     if len(members) < 2:
         return []
@@ -59,23 +55,27 @@ def _collection(
             if key in reported:
                 continue
             reported.add(key)
-            names = sorted({
-                graph.capabilities[fixture].fixture.name
-                for fixture, _ in masked
-                if fixture in graph.capabilities
-            })
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(collection_id),
-                message=(
-                    f"«{graph.name(full_member)}» clava un dimmer a {FULL} "
-                    f"mientras «{graph.name(efx_member)}» lo mueve como "
-                    f"efecto a la vez: la intensidad mezcla HTP, nada supera "
-                    f"{FULL} y el efecto no se ve nunca"
-                ),
-                fixtures=tuple(names),
-            ))
+            names = sorted(
+                {
+                    graph.capabilities[fixture].fixture.name
+                    for fixture, _ in masked
+                    if fixture in graph.capabilities
+                }
+            )
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(collection_id),
+                    message=(
+                        f"«{graph.name(full_member)}» clava un dimmer a {FULL} "
+                        f"mientras «{graph.name(efx_member)}» lo mueve como "
+                        f"efecto a la vez: la intensidad mezcla HTP, nada supera "
+                        f"{FULL} y el efecto no se ve nunca"
+                    ),
+                    fixtures=tuple(names),
+                )
+            )
     return findings
 
 
@@ -86,16 +86,12 @@ def _efx_dimmers(graph: ShowGraph, function_id: int) -> set[tuple[int, int]]:
         function = graph.functions.get(member)
         if function is None or function.attrib.get("Type") != "EFX":
             continue
-        for fixture_id, pairs in driven_channels(
-            function, graph.capabilities, {}
-        ).items():
+        for fixture_id, pairs in driven_channels(function, graph.capabilities, {}).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None or capability.is_smoke:
                 continue
             dimmers = set(capability.offsets_for_role(roles.DIMMER))
-            channels |= {
-                (fixture_id, offset) for offset in pairs if offset in dimmers
-            }
+            channels |= {(fixture_id, offset) for offset in pairs if offset in dimmers}
     return channels
 
 
@@ -104,13 +100,9 @@ def _full_writes(graph: ShowGraph, function_id: int) -> set[tuple[int, int]]:
     channels: set[tuple[int, int]] = set()
     for member in graph.descendants(function_id):
         function = graph.functions.get(member)
-        if function is None or function.attrib.get("Type") not in (
-            "Scene", "Sequence"
-        ):
+        if function is None or function.attrib.get("Type") not in ("Scene", "Sequence"):
             continue
-        for fixture_id, pairs in driven_channels(
-            function, graph.capabilities, {}
-        ).items():
+        for fixture_id, pairs in driven_channels(function, graph.capabilities, {}).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None or capability.is_smoke:
                 continue

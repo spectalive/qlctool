@@ -45,9 +45,7 @@ def move_group_head(
     moving = None
     for existing in findall_local(group, "Head"):
         cell = (int(existing.attrib["X"]), int(existing.attrib["Y"]))
-        if (int(existing.attrib["Fixture"]), int(existing.text or 0)) == (
-            fixture_id, head
-        ):
+        if (int(existing.attrib["Fixture"]), int(existing.text or 0)) == (fixture_id, head):
             moving = existing
         elif cell == (x, y):
             raise ValueError(

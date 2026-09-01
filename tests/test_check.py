@@ -20,8 +20,8 @@ from qlctool import roles
 from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.console_states import room_states
-from qlctool.checks.run import check_workspace
 from qlctool.checks.rule_undeclared_heads import check_undeclared_heads
+from qlctool.checks.run import check_workspace
 from qlctool.checks.show_graph import (
     build_show_graph,
     group_fixtures,
@@ -95,9 +95,7 @@ def test_a_fixture_given_colour_with_nothing_opening_its_dimmer(library):
             pairs.pop(0, None)  # channel 1 is the panel's master dimmer
             value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library) if f.rule == "intensidad"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "intensidad"]
     assert findings, "colour with the dimmer left at zero went unnoticed"
     assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
 
@@ -123,10 +121,7 @@ def test_a_colour_stated_on_a_fixture_left_running_its_own_programme(library):
             pairs.pop(5, None)  # channel 6 is the mode channel
             value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "programa interno"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "programa interno"]
     assert findings, "colour stated over a running programme went unnoticed"
     assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
 
@@ -140,22 +135,15 @@ def test_the_panels_own_effects_are_actually_used(library):
     assert len(effects) == 42
 
     by_id = {f.attrib["ID"]: f for f in functions.values() if f.attrib.get("ID")}
-    auto = {
-        by_id[step.text].attrib["Name"]
-        for step in findall_local(functions["AUTO"], "Step")
-    }
+    auto = {by_id[step.text].attrib["Name"] for step in findall_local(functions["AUTO"], "Step")}
     # Since 2026-08-28 the effects cycle sits inside `Ciclo Paneles Mixto`,
     # which alternates it with a manual phase listening to the rig wheel.
-    assert "Ciclo Paneles Mixto" in auto, (
-        "the panels animate themselves, unattended"
-    )
+    assert "Ciclo Paneles Mixto" in auto, "the panels animate themselves, unattended"
     mixto_steps = {
         by_id[step.text].attrib["Name"]
         for step in findall_local(functions["Ciclo Paneles Mixto"], "Step")
     }
-    assert "Ciclo Paneles" in mixto_steps, (
-        "the effects phase left the panels' cycle"
-    )
+    assert "Ciclo Paneles" in mixto_steps, "the effects phase left the panels' cycle"
 
 
 def test_a_group_whose_grid_does_not_match_the_lights_in_it(library):
@@ -168,7 +156,8 @@ def test_a_group_whose_grid_does_not_match_the_lights_in_it(library):
     """
     workspace = _show()
     group = next(
-        g for g in workspace.root.iter()
+        g
+        for g in workspace.root.iter()
         if g.tag.endswith("FixtureGroup") and g.attrib.get("ID") == "0"
     )
     size = find_local(group, "Size")
@@ -194,7 +183,8 @@ def test_a_look_that_never_writes_the_wheel_coloured_fixtures(library):
                 scene.remove(value)
 
     findings = [
-        f for f in check_workspace(workspace, library)
+        f
+        for f in check_workspace(workspace, library)
         if f.rule == "rueda de color" and f.function == "Blanco Total"
     ]
     assert findings, "a rig-wide white that skips the beams went unnoticed"
@@ -216,9 +206,7 @@ def test_two_programmes_writing_one_fixtures_colour(library):
     duplicate.text = "0,255,1,0,2,0"
     scene.append(duplicate)
 
-    findings = [
-        f for f in check_workspace(workspace, library) if f.rule == "colores pisados"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "colores pisados"]
     assert any(f.function.startswith("Rig Rojo") for f in findings), (
         "two colour sources on one bar went unnoticed"
     )
@@ -242,10 +230,7 @@ def test_two_colour_clocks_ticking_in_one_room_state(library):
     step.text = cycle.attrib["ID"]
     auto.append(step)
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "relojes de color"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "relojes de color"]
     assert findings, "two colour clocks in one room state went unnoticed"
     assert any("LED Bar" in fixture for f in findings for fixture in f.fixtures)
 
@@ -258,9 +243,16 @@ def test_the_curated_matrix_library_never_reaches_a_wheel_step(library):
     premise: a wheel step states exactly one colour clock)."""
     workspace = _show()
     curated_names = {
-        "Sine Wave", "Lines", "Marquee", "Plasma",
-        "One By One", "Fill Unfill", "Noise",
-        "Circular", "3D Starfield", "Gradient",
+        "Sine Wave",
+        "Lines",
+        "Marquee",
+        "Plasma",
+        "One By One",
+        "Fill Unfill",
+        "Noise",
+        "Circular",
+        "3D Starfield",
+        "Gradient",
     }
     wheel_matrices = [
         function
@@ -295,7 +287,8 @@ def test_a_dimmer_at_full_behind_a_shut_shutter(library):
         value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
     findings = [
-        f for f in check_workspace(workspace, library)
+        f
+        for f in check_workspace(workspace, library)
         if f.rule == "intensidad" and f.function == "Blanco Total"
     ]
     assert findings, "a shut shutter with the dimmer at full went unnoticed"
@@ -309,8 +302,7 @@ def test_a_shutter_whose_open_position_is_zero_is_left_alone(library):
     """
     findings = check_workspace(_show(), library)
     assert not [
-        f for f in findings
-        if f.rule == "intensidad" and any("CLB2.4" in n for n in f.fixtures)
+        f for f in findings if f.rule == "intensidad" and any("CLB2.4" in n for n in f.fixtures)
     ]
 
 
@@ -374,7 +366,8 @@ def test_a_widget_that_spills_past_its_own_parent_frame(library):
 
     console = find_local(workspace.root, "VirtualConsole")
     matrix_frame = next(
-        frame for frame in console.iter()
+        frame
+        for frame in console.iter()
         if localname(frame) == "SoloFrame"
         and frame.attrib.get("Caption", "").startswith("Matrices")
     )
@@ -385,7 +378,8 @@ def test_a_widget_that_spills_past_its_own_parent_frame(library):
     find_local(button, "WindowState").set("Y", str(frame_height - 10))
 
     findings = [
-        f for f in check_workspace(workspace, library)
+        f
+        for f in check_workspace(workspace, library)
         if f.rule == "consola" and "su propio marco" in f.message
     ]
     assert findings, "a widget pushed past its own parent frame's box went unnoticed"
@@ -404,9 +398,7 @@ def test_an_animation_the_chaser_cuts_off_before_it_finishes(library):
     for step in findall_local(cycle, "Step"):
         step.set("Hold", "2000")  # the flat interval it used to have
 
-    findings = [
-        f for f in check_workspace(workspace, library) if f.rule == "efecto cortado"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "efecto cortado"]
     assert findings, "a chaser cutting its own animations went unnoticed"
     assert "Ciclo Matrices BarrasLed" in {f.function for f in findings}
 
@@ -422,16 +414,19 @@ def test_a_strobe_left_running_as_one_step_of_a_cycle(library):
     functions = _functions(workspace)
     cycle = functions["Ciclo Matrices BarrasLed"]
     strobe = functions["BarrasLed - Strobe Rojo"]
-    step = cycle.makeelement(findall_local(cycle, "Step")[0].tag, {
-        "Number": "99", "FadeIn": "0", "Hold": "2000", "FadeOut": "0",
-    })
+    step = cycle.makeelement(
+        findall_local(cycle, "Step")[0].tag,
+        {
+            "Number": "99",
+            "FadeIn": "0",
+            "Hold": "2000",
+            "FadeOut": "0",
+        },
+    )
     step.text = strobe.attrib["ID"]
     cycle.append(step)
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "estrobo en un ciclo"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "estrobo en un ciclo"]
     assert findings, "a strobe among a cycle's steps went unnoticed"
 
 
@@ -444,9 +439,7 @@ def test_the_beams_take_their_colour_from_one_group_only(library):
     and the heads' mix wheel wrote their colour wheel at the same time.
     """
     workspace = _show()
-    groups = {
-        group.name: group for group in fixture_groups(workspace.root)
-    }
+    groups = {group.name: group for group in fixture_groups(workspace.root)}
     assert not set(BEAMS) & set(groups["BarrasLed"].fixture_ids)
     assert set(BEAMS) <= set(groups["Cabezas"].fixture_ids)
 
@@ -472,7 +465,6 @@ def test_a_fog_machine_fired_with_its_light_never_programmed(library):
     write to the machines - burst scene, colour bed, blackout - leaving only
     the pumps, and the checker must see the dark column."""
     from qlctool.capabilities_of import capabilities_of
-    from qlctool.fog_offsets import fog_offsets
 
     workspace = _show()
     machines = {
@@ -499,9 +491,7 @@ def test_a_fog_machine_fired_with_its_light_never_programmed(library):
             else:
                 value.getparent().remove(value)
 
-    findings = [
-        f for f in check_workspace(workspace, library) if f.rule == "humo-luz"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "humo-luz"]
     assert findings, "the stripped show should read as a dark column"
 
 
@@ -519,8 +509,7 @@ def test_a_strobe_flashing_faster_than_four_hertz(library):
     find_local(chaser, "Speed").set("Duration", "50")
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "estrobo demasiado rapido"
+        f for f in check_workspace(workspace, library) if f.rule == "estrobo demasiado rapido"
     ]
     assert findings, "a 10 Hz whole-rig strobe went unnoticed"
     assert "Strobo Rapido" in {f.function for f in findings}
@@ -536,10 +525,7 @@ def test_a_strobe_that_loops_behind_a_button(library):
     chaser = _functions(workspace)["Strobo Rapido"]
     find_local(chaser, "RunOrder").text = "Loop"
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "estrobo enganchado"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "estrobo enganchado"]
     assert findings, "a latched looping strobe went unnoticed"
     assert "Strobo Rapido" in {f.function for f in findings}
 
@@ -553,24 +539,18 @@ def test_a_tap_that_flattens_every_programme(library):
     multipliers back to one value.
     """
     workspace = _show()
-    dial = next(
-        d for d in workspace.root.iter()
-        if localname(d) == "SpeedDial" and _has_tap(d)
-    )
+    dial = next(d for d in workspace.root.iter() if localname(d) == "SpeedDial" and _has_tap(d))
     for bound in findall_local(dial, "Function"):
         bound.set("Duration", "6")
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "tap que aplana los programas"
+        f for f in check_workspace(workspace, library) if f.rule == "tap que aplana los programas"
     ]
     assert findings, "a tap dial flattening every layer went unnoticed"
 
 
 def _has_tap(dial):
-    return any(
-        localname(s) == "Input" and s.attrib.get("ID") == "1" for s in dial
-    )
+    return any(localname(s) == "Input" and s.attrib.get("ID") == "1" for s in dial)
 
 
 def test_a_beats_chaser_driving_millisecond_effects(library):
@@ -589,8 +569,7 @@ def test_a_beats_chaser_driving_millisecond_effects(library):
     chaser.insert(0, tempo)
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "unidades de tempo cruzadas"
+        f for f in check_workspace(workspace, library) if f.rule == "unidades de tempo cruzadas"
     ]
     assert findings, "a beats chaser re-timing its EFX went unnoticed"
     assert "Movimientos Washes" in {f.function for f in findings}
@@ -610,8 +589,7 @@ def test_a_collection_carrying_a_tempo_it_cannot_have(library):
     collection.insert(0, tempo)
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "tempo en una coleccion"
+        f for f in check_workspace(workspace, library) if f.rule == "tempo en una coleccion"
     ]
     assert findings, "a Collection carrying a Tempo went unnoticed"
 
@@ -627,17 +605,13 @@ def test_a_chaser_that_presses_the_room_state_buttons(library):
     """
     workspace = _show()
     functions = _functions(workspace)
-    state_ids = {
-        name: functions[name].attrib["ID"]
-        for name in ("Blanco Total", "Todo Negro")
-    }
-    for index, step in enumerate(
-        findall_local(functions["Strobo Rapido"], "Step")
-    ):
+    state_ids = {name: functions[name].attrib["ID"] for name in ("Blanco Total", "Todo Negro")}
+    for index, step in enumerate(findall_local(functions["Strobo Rapido"], "Step")):
         step.text = state_ids["Blanco Total" if index % 2 == 0 else "Todo Negro"]
 
     findings = [
-        f for f in check_workspace(workspace, library)
+        f
+        for f in check_workspace(workspace, library)
         if f.rule == "estado pulsado por otra funcion"
     ]
     assert findings, "a chaser pressing the room-state buttons went unnoticed"
@@ -661,10 +635,7 @@ def test_a_flash_that_lights_the_room_without_strobing_it(library):
         pairs[10] = 4  # the strobe channel, 0-9 = "No function"
         value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "flash sin estrobo"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "flash sin estrobo"]
     assert findings, "a flash with its shutters parked open went unnoticed"
     assert "Flash 100%" in {f.function for f in findings}
 
@@ -699,13 +670,11 @@ def test_a_flash_that_strobes_at_a_stroll(library):
                     pairs[offset] = strobing.minimum + round(0.85 * span)
             value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library) if f.rule == "flash lento"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "flash lento"]
     assert findings, "a whole rig flashing at a stroll went unnoticed"
-    assert any(
-        "CLB2.4" in fixture for f in findings for fixture in f.fixtures
-    ), "the PAR heads the owner was watching are not in the finding"
+    assert any("CLB2.4" in fixture for f in findings for fixture in f.fixtures), (
+        "the PAR heads the owner was watching are not in the finding"
+    )
 
 
 def test_a_slow_flash_that_crawls(library):
@@ -736,14 +705,12 @@ def test_a_slow_flash_that_crawls(library):
                 pairs[offset] = strobing.minimum + round(0.45 * span)
         value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library) if f.rule == "flash lento"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "flash lento"]
     assert findings, "a slow flash crawling went unnoticed"
     assert "Flash 50%" in {f.function for f in findings}
-    assert any(
-        "CLB2.4" in fixture for f in findings for fixture in f.fixtures
-    ), "the PAR heads the owner was watching are not in the finding"
+    assert any("CLB2.4" in fixture for f in findings for fixture in f.fixtures), (
+        "the PAR heads the owner was watching are not in the finding"
+    )
 
 
 def test_a_strobe_scene_that_skips_half_the_rig(library):
@@ -759,10 +726,7 @@ def test_a_strobe_scene_that_skips_half_the_rig(library):
         if int(value.attrib["ID"]) in range(6, 13):
             scene.remove(value)
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "estrobo incompleto"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "estrobo incompleto"]
     assert findings, "a strobe scene skipping seven fixtures went unnoticed"
     assert "Strobo ON" in {f.function for f in findings}
 
@@ -784,8 +748,7 @@ def test_a_strobe_the_music_can_fire(library):
         value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "estrobo en manos del audio"
+        f for f in check_workspace(workspace, library) if f.rule == "estrobo en manos del audio"
     ]
     assert findings, "an audio-fired strobe went unnoticed"
     assert "Golpe Graves" in {f.function for f in findings}
@@ -809,10 +772,7 @@ def test_a_flash_button_pointed_at_something_qlcplus_cannot_flash(library):
         find_local(button, "Function").set("ID", auto_id)
         break
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "flash sin escena"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "flash sin escena"]
     assert findings, "a Flash button over a Collection went unnoticed"
 
 
@@ -838,8 +798,7 @@ def test_a_shutter_opened_to_the_middle_of_its_open_range(library):
             value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "obturador a medio abrir"
+        f for f in check_workspace(workspace, library) if f.rule == "obturador a medio abrir"
     ]
     assert findings, "a shutter opened to a value the hardware ignores went unnoticed"
 
@@ -867,10 +826,7 @@ def test_a_wash_lit_by_a_scene_that_never_states_its_zoom(library):
                 continue
             value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "zoom sin declarar"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "zoom sin declarar"]
     assert findings, "a wash lit with its zoom left at the narrow end went unnoticed"
 
 
@@ -885,10 +841,7 @@ def test_a_quiet_dimmer_shadowed_by_a_full_one_running_beside_it(library):
     from qlctool.capabilities_of import capabilities_of
 
     workspace = _show()
-    caps = {
-        c.fixture.fixture_id: c
-        for c in capabilities_of(workspace.root, library)
-    }
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(workspace.root, library)}
     for function in _functions(workspace).values():
         if function.attrib.get("Type") != "Scene":
             continue
@@ -901,13 +854,10 @@ def test_a_quiet_dimmer_shadowed_by_a_full_one_running_beside_it(library):
                 continue
             numbers = [int(n) for n in value.text.split(",")]
             pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
-            pairs.update({offset: 255 for offset in offsets})
+            pairs.update(dict.fromkeys(offsets, 255))
             value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "intensidad tapada"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "intensidad tapada"]
     assert findings, "a dimmer nobody can ever see went unnoticed"
 
 
@@ -928,10 +878,7 @@ def test_a_dimmer_effect_flattened_by_a_full_scene_beside_it(library):
         if step.text == peak_id:
             step.text = total_id
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "efx de dimmer tapado"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "efx de dimmer tapado"]
     assert findings, "a dimmer effect nobody can ever see went unnoticed"
 
 
@@ -950,10 +897,7 @@ def test_a_flash_accent_on_a_wheel_no_state_puts_back(library):
         if step.text == white_id:
             charla.remove(step)
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "acento sin dueño"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "acento sin dueño"]
     assert findings, "a flashed wheel with no owner underneath went unnoticed"
 
 
@@ -969,18 +913,24 @@ def test_an_efx_stretched_over_both_optics_families(library):
 
     workspace = _show()
     efx = next(
-        f for f in _functions(workspace).values()
-        if f.attrib.get("Type") == "EFX"
-        and f.attrib.get("Name", "").startswith("Wash ")
+        f
+        for f in _functions(workspace).values()
+        if f.attrib.get("Type") == "EFX" and f.attrib.get("Name", "").startswith("Wash ")
     )
     fixture = etree.SubElement(efx, f"{{{QLC_NS}}}Fixture")
-    for tag, text in (("ID", "20"), ("Head", "0"), ("Mode", "0"),
-                      ("Direction", "Forward"), ("StartOffset", "0")):
+    for tag, text in (
+        ("ID", "20"),
+        ("Head", "0"),
+        ("Mode", "0"),
+        ("Direction", "Forward"),
+        ("StartOffset", "0"),
+    ):
         child = etree.SubElement(fixture, f"{{{QLC_NS}}}{tag}")
         child.text = text
 
     findings = [
-        f for f in check_workspace(workspace, library)
+        f
+        for f in check_workspace(workspace, library)
         if f.rule == "familias de movimiento mezcladas"
     ]
     assert findings, "an EFX mixing washes and beams went unnoticed"
@@ -996,15 +946,12 @@ def test_an_audio_trigger_with_no_bar_bound_to_anything(library):
     stripping every SpectrumBar off the widget.
     """
     workspace = _show()
-    widget = next(
-        w for w in workspace.root.iter() if localname(w) == "AudioTriggers"
-    )
+    widget = next(w for w in workspace.root.iter() if localname(w) == "AudioTriggers")
     for bar in findall_local(widget, "SpectrumBar"):
         widget.remove(bar)
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "disparador de audio vacio"
+        f for f in check_workspace(workspace, library) if f.rule == "disparador de audio vacio"
     ]
     assert findings, "an AudioTriggers widget with no bound bar went unnoticed"
 
@@ -1025,14 +972,13 @@ def test_an_audio_trigger_bound_to_a_strobe(library):
     functions = _functions(workspace)
     strobe_id = functions["Strobo Rapido"].attrib["ID"]
     strobe_button = next(
-        b for b in workspace.root.iter()
+        b
+        for b in workspace.root.iter()
         if localname(b) == "Button"
         and (function := find_local(b, "Function")) is not None
         and function.attrib.get("ID") == strobe_id
     )
-    widget = next(
-        w for w in workspace.root.iter() if localname(w) == "AudioTriggers"
-    )
+    widget = next(w for w in workspace.root.iter() if localname(w) == "AudioTriggers")
     bar = etree.SubElement(widget, f"{{{QLC_NS}}}SpectrumBar")
     bar.set("Name", "Graves")
     bar.set("Type", "3")
@@ -1043,8 +989,7 @@ def test_an_audio_trigger_bound_to_a_strobe(library):
     bar.set("WidgetID", strobe_button.attrib["ID"])
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "disparador de audio vacio"
+        f for f in check_workspace(workspace, library) if f.rule == "disparador de audio vacio"
     ]
     assert findings, "an audio bar bound to a strobe went unnoticed"
 
@@ -1074,15 +1019,14 @@ def test_an_audio_trigger_bound_to_a_room_state_button(library):
     def button_for(name):
         function_id = functions[name].attrib["ID"]
         return next(
-            b for b in workspace.root.iter()
+            b
+            for b in workspace.root.iter()
             if localname(b) == "Button"
             and (function := find_local(b, "Function")) is not None
             and function.attrib.get("ID") == function_id
         )
 
-    widget = next(
-        w for w in workspace.root.iter() if localname(w) == "AudioTriggers"
-    )
+    widget = next(w for w in workspace.root.iter() if localname(w) == "AudioTriggers")
 
     def bind(widget_id):
         for bar in findall_local(widget, "SpectrumBar"):
@@ -1098,15 +1042,13 @@ def test_an_audio_trigger_bound_to_a_room_state_button(library):
 
     bind(button_for("Blanco Total").attrib["ID"])
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "disparador de audio vacio"
+        f for f in check_workspace(workspace, library) if f.rule == "disparador de audio vacio"
     ]
     assert findings, "an audio bar pressing a room-state button went unnoticed"
 
     bind(button_for("Flash 100%").attrib["ID"])
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "disparador de audio vacio"
+        f for f in check_workspace(workspace, library) if f.rule == "disparador de audio vacio"
     ]
     assert not findings, "the fixed binding (Flash 100%) should not trip this rule"
 
@@ -1128,9 +1070,7 @@ def test_an_audio_trigger_bar_bound_to_a_dangling_widget_id(library):
     from qlctool.constants import QLC_NS
 
     workspace = _show()
-    widget = next(
-        w for w in workspace.root.iter() if localname(w) == "AudioTriggers"
-    )
+    widget = next(w for w in workspace.root.iter() if localname(w) == "AudioTriggers")
     for bar in findall_local(widget, "SpectrumBar"):
         widget.remove(bar)
     bar = etree.SubElement(widget, f"{{{QLC_NS}}}SpectrumBar")
@@ -1143,8 +1083,7 @@ def test_an_audio_trigger_bar_bound_to_a_dangling_widget_id(library):
     bar.set("WidgetID", "999999")
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "disparador de audio vacio"
+        f for f in check_workspace(workspace, library) if f.rule == "disparador de audio vacio"
     ]
     assert findings, "a bar bound to a dangling WidgetID went unnoticed"
 
@@ -1170,10 +1109,7 @@ def test_a_flashed_strobe_no_state_switches_off(library):
                 pairs.pop(4)
             value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "estrobo pegado"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "estrobo pegado"]
     assert findings, "a flashed strobe nobody switches off went unnoticed"
     assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
 
@@ -1193,16 +1129,14 @@ def test_the_wheel_colours_the_panels_and_the_mixto_owns_their_mode(library):
 
     mixto = functions["Ciclo Paneles Mixto"]
     steps = [s.text for s in findall_local(mixto, "Step")]
-    step_names = {
-        f.attrib.get("Name")
-        for f in functions.values()
-        if f.attrib.get("ID") in steps
-    }
+    step_names = {f.attrib.get("Name") for f in functions.values() if f.attrib.get("ID") in steps}
     assert step_names == {"Ciclo Paneles", "Paneles Manual"}
 
     rig_scenes = [
-        f for name, f in functions.items()
-        if name and name.startswith(("Rig ", "Cabezas "))
+        f
+        for name, f in functions.items()
+        if name
+        and name.startswith(("Rig ", "Cabezas "))
         and f.attrib.get("Type") == "Scene"
         and f.attrib.get("Path") == "Colores Rig"
     ]
@@ -1244,10 +1178,7 @@ def test_colour_on_the_panels_without_a_mode_owner_still_fires(library):
             pairs.pop(5, None)  # channel 6 is the mode channel
             value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "programa interno"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "programa interno"]
     assert findings, "colour with no standing mode owner went unnoticed"
     assert any("WX-60WPS" in fixture for f in findings for fixture in f.fixtures)
 
@@ -1281,9 +1212,7 @@ def test_a_console_bound_to_a_control_the_pad_cannot_send(library):
     assert moved, "the shipped console carries no MIDI binding to move"
 
     findings = check_workspace(workspace, library)
-    unsendable = [
-        f for f in findings if f.rule == "binding a un control que el pad no manda"
-    ]
+    unsendable = [f for f in findings if f.rule == "binding a un control que el pad no manda"]
     assert unsendable, "a binding on a note the pad cannot send went unnoticed"
     assert any(f.function == moved for f in unsendable)
 
@@ -1307,9 +1236,9 @@ def test_a_console_full_of_bindings_with_nothing_listening(library):
     universe.remove(patch)
 
     findings = check_workspace(workspace, library)
-    assert [
-        f for f in findings if f.rule == "consola con bindings y sin entrada MIDI"
-    ], "a console whose bindings reach no input plugin went unnoticed"
+    assert [f for f in findings if f.rule == "consola con bindings y sin entrada MIDI"], (
+        "a console whose bindings reach no input plugin went unnoticed"
+    )
 
 
 def test_a_rig_colour_that_spins_the_beams_wheel_instead_of_naming_one(library):
@@ -1326,8 +1255,7 @@ def test_a_rig_colour_that_spins_the_beams_wheel_instead_of_naming_one(library):
     functions = _functions(workspace)
     scene = functions["Rig Multicolor 1"]
     wheel = {
-        capability.fixture.fixture_id:
-            capability.wheel_for_role(roles.COLOR_MACRO)[0]
+        capability.fixture.fixture_id: capability.wheel_for_role(roles.COLOR_MACRO)[0]
         for capability in capabilities_of(workspace.root, library)
         if capability.fixture.fixture_id in BEAMS
     }
@@ -1338,14 +1266,11 @@ def test_a_rig_colour_that_spins_the_beams_wheel_instead_of_naming_one(library):
         value.text = f"{wheel[fixture_id]},186"
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "rueda de color girando"
+        f for f in check_workspace(workspace, library) if f.rule == "rueda de color girando"
     ]
     assert findings, "a rig colour spinning the beams' wheel went unnoticed"
     assert "Rig Multicolor 1" in {f.function for f in findings}
-    assert all(
-        "BEAM" in fixture for f in findings for fixture in f.fixtures
-    )
+    assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)
 
 
 def test_a_level_of_the_cycle_that_parks_half_the_movers(library):
@@ -1375,8 +1300,7 @@ def test_a_level_of_the_cycle_that_parks_half_the_movers(library):
     assert swapped, "`Nivel Ambiente` no longer moves the beams at all"
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "cabezas paradas en el ciclo"
+        f for f in check_workspace(workspace, library) if f.rule == "cabezas paradas en el ciclo"
     ]
     assert findings, "a cycle level parking the beams went unnoticed"
     assert "Nivel Ambiente" in {f.function for f in findings}
@@ -1395,16 +1319,13 @@ def test_a_beam_figure_centred_on_mid_travel(library):
     workspace = _show()
     functions = _functions(workspace)
     efx = functions["Beam Suave Circulo"]
-    axis = next(
-        a for a in findall_local(efx, "Axis") if a.attrib.get("Name") == "Y"
-    )
+    axis = next(a for a in findall_local(efx, "Axis") if a.attrib.get("Name") == "Y")
     offset = find_local(axis, "Offset")
     assert offset.text != "127", "the beams' figure is aimed at mid travel again"
     offset.text = "127"
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "movimiento sin apuntar"
+        f for f in check_workspace(workspace, library) if f.rule == "movimiento sin apuntar"
     ]
     assert findings, "a beam figure centred on mid travel went unnoticed"
     assert "Beam Suave Circulo" in {f.function for f in findings}
@@ -1439,10 +1360,7 @@ def test_a_fraction_written_to_a_blade_dimmer(library):
             pairs[offset] = 110
         value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "dimmer a medias"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "dimmer a medias"]
     assert findings, "a fraction on a blade dimmer went unnoticed"
     assert "Intensidad Ambiente" in {f.function for f in findings}
     assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)
@@ -1457,10 +1375,7 @@ def test_a_dimmer_efx_sweeping_a_blade_dimmer(library):
     member = findall_local(efx, "Fixture")[0]
     find_local(member, "ID").text = str(BEAMS[0])
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "dimmer a medias"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "dimmer a medias"]
     assert findings, "a dimmer EFX sweeping a blade went unnoticed"
     assert any("BEAM" in fixture for f in findings for fixture in f.fixtures)
 
@@ -1479,16 +1394,18 @@ def test_a_beam_figure_that_leaves_the_audience(library):
     height = find_local(efx, "Height")
     inside = int(height.text)
     assert BEAM_WINDOW.holds(
-        int(find_local(
-            next(a for a in findall_local(efx, "Axis")
-                 if a.attrib.get("Name") == "Y"), "Offset").text),
-        inside, "tilt",
+        int(
+            find_local(
+                next(a for a in findall_local(efx, "Axis") if a.attrib.get("Name") == "Y"), "Offset"
+            ).text
+        ),
+        inside,
+        "tilt",
     ), "the shipped beam figure already leaves the audience window"
     height.text = str(inside + 40)
 
     findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "figura fuera del publico"
+        f for f in check_workspace(workspace, library) if f.rule == "figura fuera del publico"
     ]
     assert findings, "a beam figure sweeping out of the room went unnoticed"
     assert "Beam Circulo" in {f.function for f in findings}
@@ -1516,10 +1433,7 @@ def test_a_held_pump_on_a_channel_qlcplus_never_resets(library):
     assert pump.group.lower() == "intensity", "the pump left the reset group"
     definition.channels["Fog"] = replace(pump, group="Effect")
 
-    findings = [
-        f for f in check_workspace(workspace, broken)
-        if f.rule == "humo pegado"
-    ]
+    findings = [f for f in check_workspace(workspace, broken) if f.rule == "humo pegado"]
     assert findings, "a held pump QLC+ never resets went unnoticed"
     assert any("Humo" in fixture for f in findings for fixture in f.fixtures)
 
@@ -1545,7 +1459,8 @@ def test_a_head_nothing_takes_off_its_own_programme(library):
     victims = {
         fixture_id: capability.offsets_for_role(roles.EFFECT)
         for fixture_id, capability in capabilities.items()
-        if capability.has_role(roles.EFFECT) and capability.has_role(roles.PAN)
+        if capability.has_role(roles.EFFECT)
+        and capability.has_role(roles.PAN)
         and capability.has_role(roles.RED)
     }
     assert victims, "no RGB moving head in the show carries a mode channel"
@@ -1564,15 +1479,10 @@ def test_a_head_nothing_takes_off_its_own_programme(library):
             ]
             if len(kept) * 2 != len(numbers):
                 stripped += 1
-            element.text = ",".join(
-                str(n) for pair in kept for n in pair
-            )
+            element.text = ",".join(str(n) for pair in kept for n in pair)
     assert stripped, "the show never parked the mode channel to begin with"
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "modo sin dueño"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "modo sin dueño"]
     assert findings, "a head left running its own programme went unnoticed"
     assert any(
         capabilities[fixture_id].fixture.name in f.fixtures
@@ -1602,10 +1512,7 @@ def test_a_smoke_column_a_latched_button_can_fire(library):
         switched += 1
     assert switched, "the console lost its vertical smoke button"
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "columna automatica"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "columna automatica"]
     assert findings, "a latched smoke column went unnoticed"
     assert any("Humo Vertical" in fixture for f in findings for fixture in f.fixtures)
 
@@ -1637,7 +1544,7 @@ def test_one_wheel_step_cannot_switch_the_strobe_off_for_all_of_them(library):
             numbers = [int(n) for n in value.text.split(",")]
             pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
             if pairs.get(4) == 0:  # channel 5 is the strobe; leave the
-                pairs.pop(4)      # flash scenes' own strobing value alone
+                pairs.pop(4)  # flash scenes' own strobing value alone
                 stripped += 1
             value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
     assert stripped, "the repro changed nothing; the scene shape moved"
@@ -1645,20 +1552,12 @@ def test_one_wheel_step_cannot_switch_the_strobe_off_for_all_of_them(library):
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     groups = group_fixtures(workspace.root)
     states = room_states(workspace.root, graph, groups)
-    merged = {
-        state_id: reach(graph, groups, state_id).get(24, {})
-        for state_id in states
-    }
-    assert all(
-        4 in written
-        for written in merged.values()
-        if lit(written.get(0, 0))
-    ), "the old merged reach would have caught this on its own; repro too broad"
+    merged = {state_id: reach(graph, groups, state_id).get(24, {}) for state_id in states}
+    assert all(4 in written for written in merged.values() if lit(written.get(0, 0))), (
+        "the old merged reach would have caught this on its own; repro too broad"
+    )
 
-    findings = [
-        f for f in check_workspace(workspace, library)
-        if f.rule == "estrobo pegado"
-    ]
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "estrobo pegado"]
 
     assert findings, (
         "a strobe-off surviving in one wheel step masked every step that lost "
@@ -1692,7 +1591,8 @@ def test_a_fixture_with_three_rings_and_one_head_is_caught(tmp_path):
 
     workspace = _show()
     group = next(
-        element for element in workspace.root.iter()
+        element
+        for element in workspace.root.iter()
         if localname(element) == "FixtureGroup"
         and (find_local(element, "Name").text or "") == "Cabezas"
     )
@@ -1705,14 +1605,9 @@ def test_a_fixture_with_three_rings_and_one_head_is_caught(tmp_path):
         head.set("Fixture", str(fixture_id))
         head.text = "0"
 
-    findings = [
-        f for f in check_workspace(workspace, headless)
-        if f.rule == "cabezas sin declarar"
-    ]
+    findings = [f for f in check_workspace(workspace, headless) if f.rule == "cabezas sin declarar"]
 
-    assert findings, (
-        "a fixture offering a matrix one of its three rings went unnoticed"
-    )
+    assert findings, "a fixture offering a matrix one of its three rings went unnoticed"
     assert any("MAC WASH" in fixture for f in findings for fixture in f.fixtures)
 
 
@@ -1721,9 +1616,7 @@ def test_the_shipped_definitions_declare_a_head_per_colour_set(library):
     satisfy it, or the rule is only true of the one file it was written for."""
     for name in SHOWS:
         workspace = _show(name)
-        graph = build_show_graph(
-            workspace.root, capabilities_of(workspace.root, library)
-        )
+        graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
         assert not check_undeclared_heads(graph, workspace.root)
 
 
@@ -1744,9 +1637,7 @@ def test_three_empty_head_blocks_do_not_satisfy_the_rule(tmp_path):
     colourless = FixtureLibrary.load(tmp_path)
 
     workspace = _show()
-    graph = build_show_graph(
-        workspace.root, capabilities_of(workspace.root, colourless)
-    )
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, colourless))
 
     findings = check_undeclared_heads(graph, workspace.root)
 

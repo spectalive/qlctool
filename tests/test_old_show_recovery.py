@@ -55,12 +55,8 @@ def test_every_palette_colour_reaches_the_show(built):
                 element = find_local(function, tag)
                 if element is not None and element.text:
                     argb = int(element.text)
-                    emitted.add(
-                        ((argb >> 16) & 255, (argb >> 8) & 255, argb & 255)
-                    )
-    missing = {
-        name for name, rgb in PALETTE.items() if rgb not in emitted
-    }
+                    emitted.add(((argb >> 16) & 255, (argb >> 8) & 255, argb & 255))
+    missing = {name for name, rgb in PALETTE.items() if rgb not in emitted}
     # Scenes emit the primary colours; the matrices must cover the rest. The
     # assertion is over matrices alone because that is where the seven lost
     # colours were put back - if this fails, run the audit again.
@@ -139,7 +135,8 @@ def test_the_beams_park_at_the_old_rest(built):
 
     centro = functions[str(show.master_ids["Cabezas Centro"])]
     beam_rows = [
-        fixture_val for fixture_val in findall_local(centro, "FixtureVal")
+        fixture_val
+        for fixture_val in findall_local(centro, "FixtureVal")
         if int(fixture_val.attrib["ID"]) in (20, 21, 22, 23)  # the 7R beams
     ]
     assert len(beam_rows) == 4
@@ -165,8 +162,14 @@ def test_the_prism_animation_is_the_old_choreography(built):
     # rotation channel can do - extra steps, never a reordering.
     assert names[8:] == ["Prisma Giro Rapido", "Prisma Giro Inverso"]
     assert names[:8] == [
-        "Prisma - 4", "Prisma - 2 y 4", "Prisma - 1", "Prisma - 2",
-        names[4], "Prisma - 3", "Prisma - 1 y 3", names[7],
+        "Prisma - 4",
+        "Prisma - 2 y 4",
+        "Prisma - 1",
+        "Prisma - 2",
+        names[4],
+        "Prisma - 3",
+        "Prisma - 1 y 3",
+        names[7],
     ]
     # Crest and rest are the wheel's own scenes: inserted, then parked.
     assert names[4] != names[7]
@@ -181,14 +184,13 @@ def test_the_matrix_cycles_are_random_like_the_old_one(built):
     root = Workspace.load(out).root
 
     cycles = [
-        f for f in _functions(root).values()
+        f
+        for f in _functions(root).values()
         if f.attrib.get("Name", "").startswith("Ciclo Matrices")
     ]
     assert cycles
     for cycle in cycles:
-        assert find_local(cycle, "RunOrder").text == "Random", (
-            cycle.attrib["Name"]
-        )
+        assert find_local(cycle, "RunOrder").text == "Random", cycle.attrib["Name"]
 
 
 def test_the_output_binds_to_whatever_interface_is_connected(built):
@@ -216,9 +218,7 @@ def test_the_quad_colour_deals_ride_the_wheel(built):
     functions = _functions(root)
 
     wheel = functions[str(show.master_ids["Rueda Colores"])]
-    step_names = [
-        functions[s.text].attrib["Name"] for s in findall_local(wheel, "Step")
-    ]
+    step_names = [functions[s.text].attrib["Name"] for s in findall_local(wheel, "Step")]
     quads = [n for n in step_names if n.startswith("Rig 4 Colores")]
     assert len(quads) == 4
 
@@ -232,20 +232,15 @@ def test_movement_keeps_the_simultaneo_twins_and_the_crossfade(built):
     functions = _functions(root)
 
     sims = [
-        f.attrib["Name"] for f in functions.values()
-        if f.attrib.get("Name", "").endswith("Simultaneo")
-        and f.attrib["Type"] == "EFX"
+        f.attrib["Name"]
+        for f in functions.values()
+        if f.attrib.get("Name", "").endswith("Simultaneo") and f.attrib["Type"] == "EFX"
     ]
     assert len(sims) >= 10  # seven wash shapes + three beam shapes
     for name in ("Movimientos Washes", "Movimientos Beams"):
-        chaser = next(
-            f for f in functions.values() if f.attrib.get("Name") == name
-        )
+        chaser = next(f for f in functions.values() if f.attrib.get("Name") == name)
         speed = find_local(chaser, "Speed")
         assert speed.attrib["FadeIn"] == "5000", name
         assert speed.attrib["FadeOut"] == "5000", name
         step_ids = {s.text for s in findall_local(chaser, "Step")}
-        assert any(
-            functions[sid].attrib["Name"].endswith("Simultaneo")
-            for sid in step_ids
-        ), name
+        assert any(functions[sid].attrib["Name"].endswith("Simultaneo") for sid in step_ids), name

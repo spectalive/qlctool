@@ -50,10 +50,7 @@ def test_a_unison_scene_lights_every_colour_fixture_in_the_patch(tmp_path):
         caps.fixture.fixture_id
         for caps in capabilities_of(ws.root, library)
         if not (caps.is_smoke and not caps.is_lit_smoke)
-        and any(
-            caps.has_role(role)
-            for role in (roles.RED, roles.GREEN, roles.BLUE)
-        )
+        and any(caps.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE))
     }
     # The four beams have no RGB at all: their white is a wheel position.
     beams = {
@@ -66,8 +63,7 @@ def test_a_unison_scene_lights_every_colour_fixture_in_the_patch(tmp_path):
     assert beams
 
     white = next(
-        f for f in (functions[str(i)] for i in unison.scene_ids)
-        if f.attrib["Name"] == "Rig Blanco"
+        f for f in (functions[str(i)] for i in unison.scene_ids) if f.attrib["Name"] == "Rig Blanco"
     )
     # Including the two CLB2.4, which are in no fixture group and therefore in
     # no colour bank and no matrix: without this wheel AUTO leaves them dark.
@@ -83,14 +79,12 @@ def test_a_contrast_puts_the_movers_against_everything_else(tmp_path):
     functions = _functions(ws.root)
     assert len(unison.contrast_ids) == len(CONTRAST_PAIRS)
     scene = next(
-        f for f in (functions[str(i)] for i in unison.contrast_ids)
+        f
+        for f in (functions[str(i)] for i in unison.contrast_ids)
         if f.attrib["Name"] == "Cabezas Rojo / Resto Azul"
     )
     caps = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, library)}
-    movers = {
-        fid for fid, c in caps.items()
-        if c.has_role(roles.PAN) and c.has_role(roles.TILT)
-    }
+    movers = {fid for fid, c in caps.items() if c.has_role(roles.PAN) and c.has_role(roles.TILT)}
 
     for value in findall_local(scene, "FixtureVal"):
         fixture_id = int(value.attrib["ID"])
@@ -111,6 +105,4 @@ def test_the_wheel_is_random_and_steps_every_scene(tmp_path):
     assert wheel.attrib["Type"] == "Chaser"
     # Random: a fixed order reads as a loop when nobody is at the console.
     assert find_local(wheel, "RunOrder").text == "Random"
-    assert len(findall_local(wheel, "Step")) == len(unison.scene_ids) + len(
-        unison.contrast_ids
-    )
+    assert len(findall_local(wheel, "Step")) == len(unison.scene_ids) + len(unison.contrast_ids)

@@ -59,9 +59,7 @@ def generate_energy_levels(
             continue
         function_id = next_function_id(workspace.root)
         workspace.add_function(
-            build_collection(
-                function_id, level.name, list(level.members), path=PATH
-            )
+            build_collection(function_id, level.name, list(level.members), path=PATH)
         )
         level_ids[level.name] = function_id
 

@@ -28,9 +28,7 @@ FREE_ADDRESS = 300  # 0-based; the show patches 0-299 contiguously
 
 
 def _fixture(root, fixture_id):
-    return next(
-        f for f in patched_fixtures(root) if f.fixture_id == fixture_id
-    )
+    return next(f for f in patched_fixtures(root) if f.fixture_id == fixture_id)
 
 
 def test_real_show_patch_is_clean():
@@ -85,7 +83,9 @@ def test_rename_touches_only_the_name(tmp_path):
     after = _fixture(Workspace.load(out).root, 0)
     assert after.name == "Wash Frontal 1"
     assert (after.universe, after.address, after.channels) == (
-        before.universe, before.address, before.channels
+        before.universe,
+        before.address,
+        before.channels,
     )
 
 
@@ -113,8 +113,14 @@ def test_add_takes_its_channel_count_from_the_definition(tmp_path):
     library = FixtureLibrary.load()
 
     fixture_id = add_fixture(
-        ws.root, library, "Vortex", "PC-64 LED S", "Default",
-        universe=0, address=FREE_ADDRESS, name="PAR Extra",
+        ws.root,
+        library,
+        "Vortex",
+        "PC-64 LED S",
+        "Default",
+        universe=0,
+        address=FREE_ADDRESS,
+        name="PAR Extra",
     )
 
     out = tmp_path / "out.qxw"
@@ -126,8 +132,7 @@ def test_add_takes_its_channel_count_from_the_definition(tmp_path):
     assert patch_conflicts(reloaded) == []
     # The new entry is complete enough for the capability layer to resolve it.
     resolved = next(
-        c for c in capabilities_of(reloaded, library)
-        if c.fixture.fixture_id == fixture_id
+        c for c in capabilities_of(reloaded, library) if c.fixture.fixture_id == fixture_id
     )
     assert "red" in resolved.roles
 

@@ -11,13 +11,13 @@ from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
+from ..efx_16bit import PAN_TILT_PAIRS, keeps_16bit
 from ..efx_algorithms import EFX_ALGORITHMS, SPANISH_LABELS
 from ..functions.chaser import build_chaser
+from ..functions.collection import build_collection
 from ..functions.efx import EFXAxis, EFXFixture, build_efx
 from ..ids import next_function_id
-from ..functions.collection import build_collection
 from ..library import FixtureLibrary
-from ..efx_16bit import PAN_TILT_PAIRS, keeps_16bit
 from ..workspace import Workspace
 
 
@@ -98,19 +98,14 @@ def generate_movement_efx(
     whose point is that nobody is desynchronised (mirroring still applies, so
     the two sides push toward each other rather than in parallel).
     """
-    ids = list(fixture_ids) if fixture_ids is not None else moving_head_ids(
-        workspace, library
-    )
+    ids = list(fixture_ids) if fixture_ids is not None else moving_head_ids(workspace, library)
     if not ids:
         raise ValueError("no fixture in this workspace has both pan and tilt")
 
     # One EFX cannot hold both kinds of mover: a fixture whose fine channels are
     # not adjacent turns 16-bit off for the whole EFX, and the ones that *do*
     # pair then lose their coarse channels entirely. See `efx_16bit`.
-    by_id = {
-        caps.fixture.fixture_id: caps
-        for caps in capabilities_of(workspace.root, library)
-    }
+    by_id = {caps.fixture.fixture_id: caps for caps in capabilities_of(workspace.root, library)}
     groups: dict[bool, list[int]] = {True: [], False: []}
     for fid in ids:
         caps = by_id.get(fid)
@@ -120,11 +115,7 @@ def generate_movement_efx(
     mirrored = set(mirrored_ids)
 
     def _members(fixture_ids: list[int]) -> list[EFXFixture]:
-        offsets = (
-            spread_offsets(len(fixture_ids))
-            if spread_phase
-            else [0] * len(fixture_ids)
-        )
+        offsets = spread_offsets(len(fixture_ids)) if spread_phase else [0] * len(fixture_ids)
         return [
             EFXFixture(
                 fixture_id=fid,
@@ -174,9 +165,7 @@ def generate_movement_efx(
         # One button, one chaser step, both halves moving together.
         part_ids.extend(shape_parts)
         collection_id = next_function_id(workspace.root)
-        workspace.add_function(
-            build_collection(collection_id, name, shape_parts, path=path)
-        )
+        workspace.add_function(build_collection(collection_id, name, shape_parts, path=path))
         efx_ids.append(collection_id)
 
     chaser_id: int | None = None
@@ -193,6 +182,4 @@ def generate_movement_efx(
             )
         )
 
-    return GeneratedMovements(
-        efx_ids=efx_ids, chaser_id=chaser_id, part_ids=part_ids
-    )
+    return GeneratedMovements(efx_ids=efx_ids, chaser_id=chaser_id, part_ids=part_ids)

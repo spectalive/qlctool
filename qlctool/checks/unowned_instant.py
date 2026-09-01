@@ -48,7 +48,8 @@ def unowned_while_lit(
     dimmers: tuple[int, ...],
 ) -> bool:
     """Whether some instant of this function lights the fixture with one of
-    `offsets` left to whatever the last writer put there."""
+    `offsets` left to whatever the last writer put there.
+    """
     return any(
         _latch(graph, groups, function_id, fixture_id, offset, dimmers, set())[0]
         for offset in offsets
@@ -71,18 +72,13 @@ def _latch(
 
     members = graph.members.get(function_id, ())
     if not members:
-        written = driven_channels(function, graph.capabilities, groups).get(
-            fixture_id, {}
-        )
+        written = driven_channels(function, graph.capabilities, groups).get(fixture_id, {})
         free = offset not in written
         lights = any(lit(written.get(d, 0)) for d in dimmers)
         return (free and lights, free)
 
     seen = seen | {function_id}
-    parts = [
-        _latch(graph, groups, member, fixture_id, offset, dimmers, seen)
-        for member in members
-    ]
+    parts = [_latch(graph, groups, member, fixture_id, offset, dimmers, seen) for member in members]
     if function.attrib.get("Type") == "Collection":
         free = all(part[1] for part in parts)
         return (free and any(part[0] for part in parts), free)

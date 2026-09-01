@@ -39,9 +39,7 @@ def first_difference(a: etree._Element, b: etree._Element) -> str | None:
     return _first_difference(a, b, path="")
 
 
-def _first_difference(
-    a: etree._Element, b: etree._Element, path: str
-) -> str | None:
+def _first_difference(a: etree._Element, b: etree._Element, path: str) -> str | None:
     here = f"{path}/{_localname(a.tag)}"
 
     if _localname(a.tag) != _localname(b.tag):

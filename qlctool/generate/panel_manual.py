@@ -36,9 +36,7 @@ def generate_panel_manual(
         pairs = internal_program_off_pairs(capability)
         if not pairs:
             continue
-        pairs += [
-            (offset, 255) for offset in capability.offsets_for_role(roles.DIMMER)
-        ]
+        pairs += [(offset, 255) for offset in capability.offsets_for_role(roles.DIMMER)]
         pairs += shutter_open_pairs(capability)
         pairs += strobe_off_pairs(capability)
         values[capability.fixture.fixture_id] = sorted(set(pairs))

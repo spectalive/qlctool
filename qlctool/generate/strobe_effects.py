@@ -63,16 +63,12 @@ def generate_strobe_effects(
         off_id = _scene(workspace, "Strobo OFF", {f: v for f, (_, v) in shutter.items()}, path)
 
     fast_id = _flash_chaser(workspace, "Strobo Rapido", full_id, black_id, FAST_MS, path)
-    medium_id = _flash_chaser(
-        workspace, "Strobo Medio", full_id, black_id, MEDIUM_MS, path
-    )
-    return GeneratedStrobes(
-        on_id=on_id, off_id=off_id, fast_id=fast_id, medium_id=medium_id
-    )
+    medium_id = _flash_chaser(workspace, "Strobo Medio", full_id, black_id, MEDIUM_MS, path)
+    return GeneratedStrobes(on_id=on_id, off_id=off_id, fast_id=fast_id, medium_id=medium_id)
 
 
 def _shutter_values(workspace: Workspace, library: FixtureLibrary):
-    """fixture id -> (values that strobe it, values that reopen it).
+    """Fixture id -> (values that strobe it, values that reopen it).
 
     The strobing value through `strobe_speed_pairs`, which also covers the
     channels whose whole job is the strobe and carry no labelled range at all
@@ -104,14 +100,22 @@ def _scene(workspace: Workspace, name: str, values, path: str) -> int:
 
 
 def _flash_chaser(
-    workspace: Workspace, name: str, full_id: int, black_id: int,
-    hold: int, path: str,
+    workspace: Workspace,
+    name: str,
+    full_id: int,
+    black_id: int,
+    hold: int,
+    path: str,
 ) -> int:
     function_id = next_function_id(workspace.root)
     workspace.add_function(
         build_chaser(
-            function_id, name, [full_id, black_id] * PULSES, hold=hold,
-            run_order="SingleShot", path=path,
+            function_id,
+            name,
+            [full_id, black_id] * PULSES,
+            hold=hold,
+            run_order="SingleShot",
+            path=path,
         )
     )
     return function_id

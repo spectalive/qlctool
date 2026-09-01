@@ -27,7 +27,6 @@ from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..workspace import Workspace
 
-
 # The rhythms the console offers, in minutes of pause between bursts. The
 # first is the default - the one AUTO starts and the one the key toggles - and
 # it is the 60 s this show ran on before there was a choice.
@@ -59,7 +58,8 @@ def generate_smoke_auto(
     empty tanks. Those fire from `vertical_smoke_burst` instead.
     """
     smoke = [
-        c for c in capabilities_of(workspace.root, library)
+        c
+        for c in capabilities_of(workspace.root, library)
         if c.is_smoke and not c.has_role(roles.RED)
     ]
     if not smoke:
@@ -67,9 +67,7 @@ def generate_smoke_auto(
 
     def scene(name: str, value: int) -> int:
         values = {
-            caps.fixture.fixture_id: [
-                (offset, value) for offset in fog_offsets(caps)
-            ]
+            caps.fixture.fixture_id: [(offset, value) for offset in fog_offsets(caps)]
             for caps in smoke
         }
         function_id = next_function_id(workspace.root)
@@ -83,10 +81,15 @@ def generate_smoke_auto(
     # their own holds, which is what puts this chaser in PerStep duration mode.
     def timer(name: str, wait_ms: int) -> int:
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_chaser(
-            function_id, name, [on_id, off_id],
-            hold=[burst_ms, wait_ms], path=path,
-        ))
+        workspace.add_function(
+            build_chaser(
+                function_id,
+                name,
+                [on_id, off_id],
+                hold=[burst_ms, wait_ms],
+                path=path,
+            )
+        )
         return function_id
 
     chaser_id = timer("Humo Auto", pause_ms)
@@ -96,6 +99,8 @@ def generate_smoke_auto(
         interval_ids[name] = timer(name, minutes * 60_000)
 
     return GeneratedSmoke(
-        on_id=on_id, off_id=off_id, chaser_id=chaser_id,
+        on_id=on_id,
+        off_id=off_id,
+        chaser_id=chaser_id,
         interval_ids=interval_ids,
     )

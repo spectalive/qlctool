@@ -45,7 +45,8 @@ def generate_fan_position(
         caps
         for caps in capabilities_of(workspace.root, library)
         if caps.fixture.fixture_id in set(fixture_ids)
-        and caps.has_role(roles.PAN) and caps.has_role(roles.TILT)
+        and caps.has_role(roles.PAN)
+        and caps.has_role(roles.TILT)
     ]
     if len(wanted) < 2:
         return None

@@ -96,11 +96,7 @@ def generate_unison_colors(
     """
     caps = capabilities_of(workspace.root, library)
     excluded = set(exclude_fixture_ids)
-    lit_ids = [
-        c.fixture.fixture_id
-        for c in caps
-        if c.fixture.fixture_id not in excluded
-    ]
+    lit_ids = [c.fixture.fixture_id for c in caps if c.fixture.fixture_id not in excluded]
 
     extras = step_extras or {}
     scene_ids: list[int] = []
@@ -110,13 +106,16 @@ def generate_unison_colors(
         # energy level, and a dimmer at 255 here is a dimmer no level can ever
         # bring down - HTP, the highest write wins (2026-08-27). The levels
         # own the dimmers and shutters now.
-        values = color_scene_values(
-            caps, PALETTE[name], fixture_ids=lit_ids, dimmer_full=False
+        values = color_scene_values(caps, PALETTE[name], fixture_ids=lit_ids, dimmer_full=False)
+        values.update(
+            color_scene_values(
+                caps,
+                PALETTE[name],
+                fixture_ids=program_gated_ids,
+                dimmer_full=False,
+                internal_program_off=False,
+            )
         )
-        values.update(color_scene_values(
-            caps, PALETTE[name], fixture_ids=program_gated_ids,
-            dimmer_full=False, internal_program_off=False,
-        ))
         values.update(wheel_color_values(caps, name, dimmer=None))
         if not values:
             continue
@@ -125,9 +124,7 @@ def generate_unison_colors(
         steps.append(_step(workspace, f"Rig {name}", scene_id, extras.get(name)))
 
     head_ids = [
-        c.fixture.fixture_id
-        for c in caps
-        if c.has_role(roles.PAN) and c.has_role(roles.TILT)
+        c.fixture.fixture_id for c in caps if c.has_role(roles.PAN) and c.has_role(roles.TILT)
     ]
     rest_ids = [
         c.fixture.fixture_id
@@ -137,13 +134,16 @@ def generate_unison_colors(
 
     contrast_ids: list[int] = []
     for heads_color, rest_color in contrasts:
-        values = _contrast_values(
-            caps, head_ids, rest_ids, heads_color, rest_color, excluded
+        values = _contrast_values(caps, head_ids, rest_ids, heads_color, rest_color, excluded)
+        values.update(
+            color_scene_values(
+                caps,
+                PALETTE[rest_color],
+                fixture_ids=program_gated_ids,
+                dimmer_full=False,
+                internal_program_off=False,
+            )
         )
-        values.update(color_scene_values(
-            caps, PALETTE[rest_color], fixture_ids=program_gated_ids,
-            dimmer_full=False, internal_program_off=False,
-        ))
         if len(values) < 2:
             continue
         name = f"Cabezas {heads_color} / Resto {rest_color}"
@@ -168,9 +168,7 @@ def generate_unison_colors(
             )
         )
 
-    return GeneratedUnison(
-        scene_ids=scene_ids, contrast_ids=contrast_ids, wheel_id=wheel_id
-    )
+    return GeneratedUnison(scene_ids=scene_ids, contrast_ids=contrast_ids, wheel_id=wheel_id)
 
 
 def _contrast_values(
@@ -189,15 +187,11 @@ def _contrast_values(
     values = color_scene_values(
         caps, PALETTE[heads_color], fixture_ids=lit_heads, dimmer_full=False
     )
-    values.update(color_scene_values(
-        caps, PALETTE[rest_color], fixture_ids=rest_ids, dimmer_full=False
-    ))
-    values.update(wheel_color_values(
-        caps, heads_color, fixture_ids=head_ids, dimmer=None
-    ))
-    values.update(wheel_color_values(
-        caps, rest_color, fixture_ids=rest_ids, dimmer=None
-    ))
+    values.update(
+        color_scene_values(caps, PALETTE[rest_color], fixture_ids=rest_ids, dimmer_full=False)
+    )
+    values.update(wheel_color_values(caps, heads_color, fixture_ids=head_ids, dimmer=None))
+    values.update(wheel_color_values(caps, rest_color, fixture_ids=rest_ids, dimmer=None))
     return values
 
 
@@ -207,16 +201,12 @@ def _scene(workspace: Workspace, name: str, values) -> int:
     return function_id
 
 
-def _step(
-    workspace: Workspace, name: str, scene_id: int, extras: Sequence[int] | None
-) -> int:
+def _step(workspace: Workspace, name: str, scene_id: int, extras: Sequence[int] | None) -> int:
     """What the wheel actually steps: the scene, with its extras beside it."""
     if not extras:
         return scene_id
     function_id = next_function_id(workspace.root)
     workspace.add_function(
-        build_collection(
-            function_id, f"{name} + Pixeles", [scene_id, *extras], path=PATH
-        )
+        build_collection(function_id, f"{name} + Pixeles", [scene_id, *extras], path=PATH)
     )
     return function_id

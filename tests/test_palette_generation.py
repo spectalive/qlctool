@@ -46,8 +46,7 @@ def test_generate_palette_and_chaser(tmp_path):
 
     # Chaser has one step per generated scene, in order.
     chaser = next(
-        f for f in iter_local(reloaded, "Function")
-        if f.attrib.get("ID") == str(result.chaser_id)
+        f for f in iter_local(reloaded, "Function") if f.attrib.get("ID") == str(result.chaser_id)
     )
     assert chaser.attrib["Type"] == "Chaser"
     steps = findall_local(chaser, "Step")

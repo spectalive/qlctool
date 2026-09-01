@@ -41,28 +41,21 @@ WHEEL_NAMES: dict[str, tuple[str, ...]] = {
 }
 
 
-def color_wheel_pairs(
-    capabilities: FixtureCapabilities, color_name: str
-) -> list[tuple[int, int]]:
+def color_wheel_pairs(capabilities: FixtureCapabilities, color_name: str) -> list[tuple[int, int]]:
     """(offset, value) putting this fixture's colour wheel on that colour.
 
     Empty when the fixture has RGB - three channels are a better way to say a
     colour than a wheel, and a macro channel on a wash overrides them - when it
     has no colour wheel, or when the wheel carries nothing near the colour.
     """
-    if any(
-        capabilities.has_role(role)
-        for role in (roles.RED, roles.GREEN, roles.BLUE)
-    ):
+    if any(capabilities.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE)):
         return []
     wheel = capabilities.wheel_for_role(roles.COLOR_MACRO)
     if wheel is None:
         return []
 
     offset, positions = wheel
-    by_name = {
-        (position.name or "").strip().lower(): position for position in positions
-    }
+    by_name = {(position.name or "").strip().lower(): position for position in positions}
     for wanted in WHEEL_NAMES.get(color_name, ()):
         position = by_name.get(wanted)
         if position is not None:

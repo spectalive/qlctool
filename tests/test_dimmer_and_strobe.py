@@ -49,9 +49,7 @@ def _chase_efx(root, chase_id):
     if function.attrib["Type"] == "EFX":
         return [function]
     assert function.attrib["Type"] == "Collection"
-    return [
-        functions[int(step.text)] for step in findall_local(function, "Step")
-    ]
+    return [functions[int(step.text)] for step in findall_local(function, "Step")]
 
 
 def test_the_dimmer_chase_is_a_family_cascade_in_dimmer_mode(library):
@@ -88,12 +86,10 @@ def test_the_second_dimmer_chase_runs_backwards(library):
     generated = generate_dimmer_chases(ws, library)
 
     forward = [
-        f for efx in _chase_efx(ws.root, generated.chase_id)
-        for f in findall_local(efx, "Fixture")
+        f for efx in _chase_efx(ws.root, generated.chase_id) for f in findall_local(efx, "Fixture")
     ]
     backward = [
-        f for efx in _chase_efx(ws.root, generated.chase2_id)
-        for f in findall_local(efx, "Fixture")
+        f for efx in _chase_efx(ws.root, generated.chase2_id) for f in findall_local(efx, "Fixture")
     ]
     assert forward and backward
     assert all(find_local(f, "Direction").text == "Forward" for f in forward)
@@ -107,15 +103,11 @@ def test_the_dimmer_sequence_breathes_between_all_three_programs(library):
     """
     ws = Workspace.load(SHOW)
     dimmers = generate_dimmer_chases(ws, library)
-    intensity = generate_energy_intensity(
-        ws, capabilities_of(ws.root, library)
-    )
+    intensity = generate_energy_intensity(ws, capabilities_of(ws.root, library))
     assert intensity.full_id is not None
     programs = [dimmers.chase_id, dimmers.pingpong_id, dimmers.chase2_id]
 
-    sequence_id = generate_dimmer_sequence(
-        ws, breath_id=intensity.full_id, program_ids=programs
-    )
+    sequence_id = generate_dimmer_sequence(ws, breath_id=intensity.full_id, program_ids=programs)
     chaser = _functions(ws.root)[sequence_id]
     steps = findall_local(chaser, "Step")
 
@@ -123,12 +115,20 @@ def test_the_dimmer_sequence_breathes_between_all_three_programs(library):
     assert find_local(chaser, "RunOrder").text == "Loop"
     assert find_local(chaser, "SpeedModes").attrib["Duration"] == "PerStep"
     assert [int(step.text) for step in steps] == [
-        intensity.full_id, dimmers.chase_id,
-        intensity.full_id, dimmers.pingpong_id,
-        intensity.full_id, dimmers.chase2_id,
+        intensity.full_id,
+        dimmers.chase_id,
+        intensity.full_id,
+        dimmers.pingpong_id,
+        intensity.full_id,
+        dimmers.chase2_id,
     ]
     assert [int(step.attrib["Hold"]) for step in steps] == [
-        20000, 10000, 20000, 10000, 20000, 10000,
+        20000,
+        10000,
+        20000,
+        10000,
+        20000,
+        10000,
     ]
 
 
@@ -137,21 +137,14 @@ def test_the_dimmer_chase_leaves_the_smoke_machines_alone(library):
     generated = generate_dimmer_chases(ws, library)
     functions = _functions(ws.root)
 
-    smoke = {
-        c.fixture.fixture_id
-        for c in capabilities_of(ws.root, library)
-        if c.is_smoke
-    }
+    smoke = {c.fixture.fixture_id for c in capabilities_of(ws.root, library) if c.is_smoke}
     driven = {
         int(find_local(f, "ID").text)
         for f in findall_local(functions[generated.chase_id], "Fixture")
     }
     assert not (driven & smoke)
     for scene_id in generated.scene_ids:
-        touched = {
-            int(v.attrib["ID"])
-            for v in findall_local(functions[scene_id], "FixtureVal")
-        }
+        touched = {int(v.attrib["ID"]) for v in findall_local(functions[scene_id], "FixtureVal")}
         assert not (touched & smoke)
 
 
@@ -168,9 +161,7 @@ def test_the_ping_pong_scenes_are_complements(library):
         result = {}
         for element in findall_local(functions[scene_id], "FixtureVal"):
             numbers = [int(n) for n in (element.text or "").split(",") if n != ""]
-            result[int(element.attrib["ID"])] = dict(
-                zip(numbers[::2], numbers[1::2])
-            )
+            result[int(element.attrib["ID"])] = dict(zip(numbers[::2], numbers[1::2]))
         return result
 
     first, second = (values_of(i) for i in generated.scene_ids)
@@ -193,10 +184,7 @@ def test_the_lit_half_of_the_ping_pong_opens_its_shutter(library):
     generated = generate_dimmer_chases(ws, library)
     functions = _functions(ws.root)
     caps = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, library)}
-    beams = {
-        c.fixture.fixture_id for c in caps.values()
-        if c.fixture.model == "BEAM 230W 7R"
-    }
+    beams = {c.fixture.fixture_id for c in caps.values() if c.fixture.model == "BEAM 230W 7R"}
     assert beams
 
     seen_lit = False
@@ -286,6 +274,7 @@ def test_the_flash_strobes_are_bounded_bursts_capped_at_four_hz(library):
         assert find_local(chaser, "RunOrder").text == "SingleShot"
         assert find_local(chaser, "SpeedModes").attrib["Duration"] == "Common"
 
+
 def test_a_channel_that_labels_its_open_position_no_strobe_is_not_read_as_one(library):
     """The name is a fallback, the preset is the meaning.
 
@@ -294,13 +283,12 @@ def test_a_channel_that_labels_its_open_position_no_strobe_is_not_read_as_one(li
     matched the first one and sent `Strobo ON` a zero - the single value that
     guarantees no strobe at all.
     """
-    from qlctool.strobe_range import strobe_range
     from qlctool.definition import Capability
+    from qlctool.strobe_range import strobe_range
 
     ranges = (
         Capability(minimum=0, maximum=0, name="No strobe", preset="ShutterOpen"),
-        Capability(minimum=1, maximum=255, name="Strobe, slow to fast",
-                   preset="StrobeSlowToFast"),
+        Capability(minimum=1, maximum=255, name="Strobe, slow to fast", preset="StrobeSlowToFast"),
     )
 
     chosen = strobe_range(ranges)

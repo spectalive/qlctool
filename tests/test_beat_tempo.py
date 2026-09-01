@@ -23,9 +23,7 @@ SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 
 
 def _function(workspace, name):
-    return next(
-        f for f in workspace.engine if f.attrib.get("Name") == name
-    )
+    return next(f for f in workspace.engine if f.attrib.get("Name") == name)
 
 
 def test_a_wheel_switched_to_beats_counts_in_thousandths_of_a_beat():

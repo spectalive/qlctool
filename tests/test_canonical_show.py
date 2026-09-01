@@ -11,12 +11,12 @@ import pytest
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.fixture import patched_fixtures
 from qlctool.fixture_group import fixture_groups
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.canonical_show import KEYS, build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.patch_conflicts import patch_conflicts
-from qlctool.fixture import patched_fixtures
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
@@ -67,17 +67,15 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     auto = functions[str(show.master_ids["AUTO"])]
     assert auto.attrib["Type"] == "Collection"
     members = {step.text for step in findall_local(auto, "Step")}
-    named = {
-        str(show.master_ids[name])
-        for name in ("Rueda Colores", "Humo Auto", "Ciclo Energia")
-    }
+    named = {str(show.master_ids[name]) for name in ("Rueda Colores", "Humo Auto", "Ciclo Energia")}
     assert named <= members
     # Plus what the pixel groups need beside the wheel, which carries their
     # colour inside its own steps: the scene holding their intensity open,
     # and the panels' phase cycle - their own programmes most of the night,
     # a stretch in manual listening to the wheel's RGB (2026-08-28).
     assert {functions[m].attrib["Name"] for m in members - named} == {
-        "Pixeles ON", "Ciclo Paneles Mixto",
+        "Pixeles ON",
+        "Ciclo Paneles Mixto",
     }
 
     cycle = functions[str(show.master_ids["Ciclo Energia"])]
@@ -85,15 +83,15 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     # A wave, not a ramp: the way down from the peak is the dynamic level,
     # party pace with the dimmers taking turns (2026-08-28).
     assert [functions[s.text].attrib["Name"] for s in findall_local(cycle, "Step")] == [
-        "Nivel Ambiente", "Nivel Fiesta", "Nivel Peak", "Nivel Fiesta Dinamico",
+        "Nivel Ambiente",
+        "Nivel Fiesta",
+        "Nivel Peak",
+        "Nivel Fiesta Dinamico",
     ]
 
     def _names(level):
         collection = functions[str(show.master_ids[level])]
-        return {
-            functions[step.text].attrib["Name"]
-            for step in findall_local(collection, "Step")
-        }
+        return {functions[step.text].attrib["Name"] for step in findall_local(collection, "Step")}
 
     # 2026-08-27, the owner on pressing AUTO and watching parked heads: "el
     # auto es eso, como el modo auto de las cabezas en si". Every level moves
@@ -108,8 +106,12 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     assert "Intensidad Ambiente" in ambient
 
     party = _names("Nivel Fiesta")
-    assert {"Movimientos Washes", "Movimientos Beams",
-            "Gobo Animacion", "Intensidad Total"} <= party
+    assert {
+        "Movimientos Washes",
+        "Movimientos Beams",
+        "Gobo Animacion",
+        "Intensidad Total",
+    } <= party
 
     # 2026-08-27: Peak is the one level `Dimmer Chase` actually owns. Before
     # this, `Intensidad Total` ran beside it here too and held every dimmer at
@@ -117,8 +119,7 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     # (TODO.md). `Intensidad Peak` is its replacement: a static owner only for
     # the fixtures the chase cannot reach at all (no dimmer role).
     peak = _names("Nivel Peak")
-    assert {"Rapidos Washes", "Rapidos Beams", "Dimmer Chase",
-            "Intensidad Peak"} <= peak
+    assert {"Rapidos Washes", "Rapidos Beams", "Dimmer Chase", "Intensidad Peak"} <= peak
     assert "Intensidad Total" not in peak
     # Held back for the peak, not running all night.
     assert "Dimmer Chase" not in party
@@ -162,7 +163,8 @@ def test_dimmer_chase_owns_peak_and_nothing_is_left_dark(built):
     chase_writes: dict[int, dict[int, int | None]] = {}
     chase_parts = (
         [functions[step.text] for step in findall_local(chase, "Step")]
-        if chase.attrib["Type"] == "Collection" else [chase]
+        if chase.attrib["Type"] == "Collection"
+        else [chase]
     )
     for part in chase_parts:
         for fixture_id, pairs in driven_channels(part, caps, {}).items():
@@ -195,9 +197,7 @@ def test_dimmer_chase_owns_peak_and_nothing_is_left_dark(built):
     chase_step_id = str(show.master_ids["Dimmer Chase"])
     other_writes: dict[int, dict[int, int | None]] = {}
     for member_id in peak_members - {chase_step_id}:
-        for fixture_id, pairs in driven_channels(
-            functions[member_id], caps, {}
-        ).items():
+        for fixture_id, pairs in driven_channels(functions[member_id], caps, {}).items():
             other_writes.setdefault(fixture_id, {}).update(pairs)
     for fixture_id, offsets in chase_writes.items():
         contested = set(offsets) & set(other_writes.get(fixture_id, {}))
@@ -225,12 +225,8 @@ def test_dimmer_chase_owns_peak_and_nothing_is_left_dark(built):
             assert not any(written.values()), "the static owner fires a pump"
             continue
         dimmers = set(caps[fixture_id].offsets_for_role(roles.DIMMER))
-        assert not (dimmers & set(written)), (
-            "the static owner must not contest the chase's dimmers"
-        )
-    min_wash_ids = {
-        c.fixture.fixture_id for c in caps.values() if c.fixture.model == "MiN Wash"
-    }
+        assert not (dimmers & set(written)), "the static owner must not contest the chase's dimmers"
+    min_wash_ids = {c.fixture.fixture_id for c in caps.values() if c.fixture.model == "MiN Wash"}
     assert min_wash_ids and min_wash_ids <= static_writes.keys()
 
 
@@ -260,9 +256,7 @@ def test_only_a_pixel_group_gets_matrices_inside_the_wheel(built):
         if functions[member.text].attrib["Type"] == "RGBMatrix"
     ]
     assert len(matrices) == len(steps), "every wheel step colours the pixels"
-    pixel_group = next(
-        str(g.group_id) for g in fixture_groups(root) if g.name == "BarrasLed"
-    )
+    pixel_group = next(str(g.group_id) for g in fixture_groups(root) if g.name == "BarrasLed")
     assert {find_local(m, "FixtureGroup").text for m in matrices} == {pixel_group}
     # The step's scene and its matrix state the same colour, by name: the
     # solid steps their own, a contrast step the colour of the "resto". The
@@ -279,10 +273,7 @@ def test_only_a_pixel_group_gets_matrices_inside_the_wheel(built):
 
     for level in ("Nivel Ambiente", "Nivel Fiesta", "Nivel Peak"):
         collection = functions[str(show.master_ids[level])]
-        names = {
-            functions[step.text].attrib["Name"]
-            for step in findall_local(collection, "Step")
-        }
+        names = {functions[step.text].attrib["Name"] for step in findall_local(collection, "Step")}
         assert not any(n.startswith("Ciclo Matrices") for n in names), level
 
 
@@ -336,9 +327,7 @@ def test_no_scene_but_the_smoke_ones_touches_the_smoke_pump(built):
             assert not fired, (function.attrib.get("Name"), fired)
 
 
-@pytest.mark.skipif(
-    qlcplus_binary() is None, reason="QLC+ is not installed on this machine"
-)
+@pytest.mark.skipif(qlcplus_binary() is None, reason="QLC+ is not installed on this machine")
 def test_qlcplus_loads_the_show(built):
     _, out = built
     result = validate_workspace(out)
@@ -393,10 +382,7 @@ def test_one_fixture_never_has_two_colour_sources_under_auto(built):
     """
     _, out = built
     root = Workspace.load(out).root
-    caps = {
-        c.fixture.fixture_id: c
-        for c in capabilities_of(root, FixtureLibrary.load())
-    }
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(root, FixtureLibrary.load())}
     painted = {
         fixture_id
         for group in fixture_groups(root)
@@ -430,26 +416,32 @@ def test_a_moment_brings_its_own_colour_bed(built):
     functions = _functions(Workspace.load(out).root)
 
     for moment in (
-        "Momento Charla", "Momento Tranquilo", "Momento Fiesta", "Momento Locura",
+        "Momento Charla",
+        "Momento Tranquilo",
+        "Momento Fiesta",
+        "Momento Locura",
     ):
         collection = functions[str(show.master_ids[moment])]
         assert collection.attrib["Type"] == "Collection"
         members = {
-            functions[step.text].attrib["Name"]
-            for step in findall_local(collection, "Step")
+            functions[step.text].attrib["Name"] for step in findall_local(collection, "Step")
         }
         lights_something = members & {
-            "Rueda Colores", "Luz Charla", "Ciclo Matrices BarrasLed",
+            "Rueda Colores",
+            "Luz Charla",
+            "Ciclo Matrices BarrasLed",
         }
         assert lights_something, (moment, members)
 
     # The speech look is the one with nothing moving in it.
     charla = functions[str(show.master_ids["Momento Charla"])]
-    moving = {
-        functions[step.text].attrib["Name"]
-        for step in findall_local(charla, "Step")
-    } & {"Rueda Colores", "Movimientos Cabezas", "Gobo Animacion",
-         "Ciclo Matrices BarrasLed", "Dimmer Chase"}
+    moving = {functions[step.text].attrib["Name"] for step in findall_local(charla, "Step")} & {
+        "Rueda Colores",
+        "Movimientos Cabezas",
+        "Gobo Animacion",
+        "Ciclo Matrices BarrasLed",
+        "Dimmer Chase",
+    }
     assert not moving, moving
 
 
@@ -485,7 +477,8 @@ def test_everything_white_reaches_the_beams(built):
     functions = _functions(root)
 
     wheel_only = [
-        c for c in caps
+        c
+        for c in caps
         if c.has_role(roles.COLOR_MACRO)
         and not any(c.has_role(r) for r in (roles.RED, roles.GREEN, roles.BLUE))
     ]
@@ -493,8 +486,7 @@ def test_everything_white_reaches_the_beams(built):
 
     # Both flashes at full: "50%" is half the strobe *speed*, not half the
     # brightness - what it meant on the hand-built console (2026-08-27).
-    for look, level in (("Blanco Total", 255), ("Flash 100%", 255),
-                        ("Flash 50%", 255)):
+    for look, level in (("Blanco Total", 255), ("Flash 100%", 255), ("Flash 50%", 255)):
         scene = functions[str(show.master_ids[look])]
         for capability in wheel_only:
             written = _pairs(scene, capability.fixture.fixture_id)
@@ -515,10 +507,7 @@ def test_a_matrix_lit_fixture_has_its_intensity_opened(built):
     """
     show, out = built
     root = Workspace.load(out).root
-    caps = {
-        c.fixture.fixture_id: c
-        for c in capabilities_of(root, FixtureLibrary.load())
-    }
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(root, FixtureLibrary.load())}
     functions = _functions(root)
 
     base = functions[str(show.master_ids["Pixeles ON"])]
@@ -534,10 +523,7 @@ def test_a_matrix_lit_fixture_has_its_intensity_opened(built):
         capability
         for fixture_id in painted
         if (capability := caps[fixture_id])
-        and any(
-            capability.has_role(role)
-            for role in (roles.RED, roles.GREEN, roles.BLUE)
-        )
+        and any(capability.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE))
         and capability.offsets_for_role(roles.DIMMER)
     ]
     assert needs_opening, "no matrix-lit fixture has a dimmer to open"
@@ -671,26 +657,16 @@ def test_both_tap_dials_share_one_key_and_scale_by_layer(built):
     _, out = built
     root = Workspace.load(out).root
 
-    dials = {
-        d.attrib["Caption"]: d
-        for d in root.iter() if localname(d) == "SpeedDial"
-    }
+    dials = {d.attrib["Caption"]: d for d in root.iter() if localname(d) == "SpeedDial"}
     assert set(dials) == {"Tempo Show", "Vel. Movimiento"}
 
     for caption, dial in dials.items():
-        taps = [
-            source for source in findall_local(dial, "Input")
-            if source.attrib.get("ID") == "1"
-        ]
+        taps = [source for source in findall_local(dial, "Input") if source.attrib.get("ID") == "1"]
         assert [t.attrib.get("Key") for t in taps] == ["M"], caption
 
-        multipliers = [
-            int(f.attrib["Duration"]) for f in findall_local(dial, "Function")
-        ]
+        multipliers = [int(f.attrib["Duration"]) for f in findall_local(dial, "Function")]
         assert len(multipliers) >= 3, caption
-        assert len(set(multipliers)) > 1, (
-            f"{caption} re-times every layer to the same length"
-        )
+        assert len(set(multipliers)) > 1, f"{caption} re-times every layer to the same length"
 
     # The movement dial carries the EFX as well as the rotations, and re-times
     # the crossfade too: QLC+ subtracts a chaser's fade from its EFX's own
@@ -701,10 +677,7 @@ def test_both_tap_dials_share_one_key_and_scale_by_layer(built):
         functions[f.text].attrib["Name"]: f
         for f in findall_local(dials["Vel. Movimiento"], "Function")
     }
-    assert any(
-        functions_by_name(functions, name).attrib["Type"] == "EFX"
-        for name in movement
-    )
+    assert any(functions_by_name(functions, name).attrib["Type"] == "EFX" for name in movement)
     assert int(movement["Movimientos Washes"].attrib["FadeIn"]) > 0
 
 
@@ -738,7 +711,8 @@ def test_the_build_for_a_newer_qlcplus_taps_the_global_bpm(tmp_path):
     assert generator.attrib["BPM"] == "120"
 
     beats = [
-        f for f in _functions(root).values()
+        f
+        for f in _functions(root).values()
         if (tempo := find_local(f, "Tempo")) is not None and tempo.text == "Beats"
     ]
     assert beats, "nothing counts beats for the BPM to move"
@@ -747,7 +721,6 @@ def test_the_build_for_a_newer_qlcplus_taps_the_global_bpm(tmp_path):
     by_id = _functions(root)
     for chaser in beats:
         kinds = {
-            by_id[s.text].attrib["Type"]
-            for s in findall_local(chaser, "Step") if s.text in by_id
+            by_id[s.text].attrib["Type"] for s in findall_local(chaser, "Step") if s.text in by_id
         }
         assert "EFX" not in kinds, chaser.attrib["Name"]

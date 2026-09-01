@@ -28,15 +28,10 @@ from .xmlutil import find_local
 BEAT_TYPES = ("Disabled", "Internal", "Plugin", "Audio")
 
 
-def set_beat_generator(
-    root: etree._Element, beat_type: str = "Audio", bpm: int = 0
-) -> None:
+def set_beat_generator(root: etree._Element, beat_type: str = "Audio", bpm: int = 0) -> None:
     """Set the workspace's beat source in place. Raises on an unknown type."""
     if beat_type not in BEAT_TYPES:
-        raise ValueError(
-            f"unknown beat generator {beat_type!r} "
-            f"(known: {', '.join(BEAT_TYPES)})"
-        )
+        raise ValueError(f"unknown beat generator {beat_type!r} (known: {', '.join(BEAT_TYPES)})")
 
     io_map = find_local(find_local(root, "Engine"), "InputOutputMap")
     if io_map is None:

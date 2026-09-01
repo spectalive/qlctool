@@ -47,10 +47,7 @@ def test_every_patched_fixture_gets_a_position(laid_out):
 
 def test_no_two_fixtures_share_a_spot(laid_out):
     ws, _ = laid_out
-    spots = [
-        (i.attrib["XPos"], i.attrib["YPos"], i.attrib["ZPos"])
-        for i in _items(ws).values()
-    ]
+    spots = [(i.attrib["XPos"], i.attrib["YPos"], i.attrib["ZPos"]) for i in _items(ws).values()]
     assert len(set(spots)) == len(spots)
 
 
@@ -71,10 +68,7 @@ def test_a_row_shares_one_height_and_depth(laid_out):
     ws, result = laid_out
     items = _items(ws)
     for fixture_ids in result.rows.values():
-        rows = {
-            (items[fid].attrib["YPos"], items[fid].attrib["ZPos"])
-            for fid in fixture_ids
-        }
+        rows = {(items[fid].attrib["YPos"], items[fid].attrib["ZPos"]) for fid in fixture_ids}
         assert len(rows) == 1
 
 
@@ -83,9 +77,7 @@ def test_the_point_of_view_is_stored(laid_out):
     grid = find_local(find_local(ws.engine, "Monitor"), "Grid")
     assert grid.attrib["POV"] == str(POINTS_OF_VIEW["front"])
     assert grid.attrib["Units"] == "0"
-    assert (grid.attrib["Width"], grid.attrib["Height"], grid.attrib["Depth"]) == (
-        "12", "6", "8"
-    )
+    assert (grid.attrib["Width"], grid.attrib["Height"], grid.attrib["Depth"]) == ("12", "6", "8")
 
 
 def test_positions_stay_inside_the_stage(laid_out):

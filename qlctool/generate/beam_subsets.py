@@ -50,14 +50,9 @@ def generate_beam_subsets(
     if not beams:
         return GeneratedBeamSubsets()
 
-    subsets = [
-        (name, indices)
-        for name, indices in _SUBSETS
-        if max(indices) < len(beams)
-    ]
+    subsets = [(name, indices) for name, indices in _SUBSETS if max(indices) < len(beams)]
     prism_scene_ids = [
-        _prism_scene(workspace, beams, name, set(indices))
-        for name, indices in subsets
+        _prism_scene(workspace, beams, name, set(indices)) for name, indices in subsets
     ]
 
     multicolor_offsets = [_multicolor_offset(beam) for beam in beams]
@@ -98,9 +93,7 @@ def _prism_scene(workspace, beams, name: str, selected: set[int]) -> int:
         ]
 
     function_id = next_function_id(workspace.root)
-    workspace.add_function(
-        build_scene(function_id, f"Prisma - {name}", values, path="Prismas")
-    )
+    workspace.add_function(build_scene(function_id, f"Prisma - {name}", values, path="Prismas"))
     return function_id
 
 
@@ -116,9 +109,7 @@ def _inserted_prism(positions: tuple[Capability, ...]) -> Capability:
 def _parked_prism(positions: tuple[Capability, ...]) -> Capability:
     for position in positions:
         preset = position.preset.lower()
-        if (
-            "prism" in preset and preset.endswith("off")
-        ) or position.name.lower() == "none":
+        if ("prism" in preset and preset.endswith("off")) or position.name.lower() == "none":
             return position
     if positions:
         return positions[0]
@@ -134,11 +125,7 @@ def _multicolor_offset(beam) -> int | None:
         if offset == wheel_offset:
             continue
         ranges = beam.capabilities_by_offset[offset]
-        if (
-            len(ranges) == 1
-            and ranges[0].minimum == 0
-            and ranges[0].maximum == 255
-        ):
+        if len(ranges) == 1 and ranges[0].minimum == 0 and ranges[0].maximum == 255:
             return offset
     return None
 

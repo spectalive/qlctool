@@ -50,14 +50,10 @@ def load_stage_plot(path: str | Path, root: etree._Element) -> StagePlot:
     planned = {int(entry["id"]) for entry in entries}
     missing = sorted(set(patched) - planned)
     if missing:
-        raise ValueError(
-            f"{path}: the patch has fixtures the plot does not place: {missing}"
-        )
+        raise ValueError(f"{path}: the patch has fixtures the plot does not place: {missing}")
     unknown = sorted(planned - set(patched))
     if unknown:
-        raise ValueError(
-            f"{path}: the plot places fixtures that are not patched: {unknown}"
-        )
+        raise ValueError(f"{path}: the plot places fixtures that are not patched: {unknown}")
 
     for entry in entries:
         fixture_id = int(entry["id"])

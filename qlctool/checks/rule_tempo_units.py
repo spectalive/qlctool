@@ -44,42 +44,48 @@ def check_tempo_units(graph: ShowGraph) -> list[Finding]:
             continue
 
         if function.attrib.get("Type") == "Collection":
-            findings.append(Finding(
-                rule=COLLECTION_RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    "es una coleccion y lleva <Tempo>: una coleccion no tiene "
-                    "tempo propio, arranca a sus miembros y ya - QLC+ lo dice "
-                    "al cargar («Unknown collection tag: Tempo») y lo ignora, "
-                    "asi que esa capa se queda en el reloj sin avisar"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=COLLECTION_RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        "es una coleccion y lleva <Tempo>: una coleccion no tiene "
+                        "tempo propio, arranca a sus miembros y ya - QLC+ lo dice "
+                        "al cargar («Unknown collection tag: Tempo») y lo ignora, "
+                        "asi que esa capa se queda en el reloj sin avisar"
+                    ),
+                )
+            )
             continue
 
         fade = _fade(function)
         if fade == 0:
             continue
-        hurt = sorted({
-            graph.name(member)
-            for member in graph.members.get(function_id, ())
-            if graph.kind(member) in SELF_TIMED
-        })
+        hurt = sorted(
+            {
+                graph.name(member)
+                for member in graph.members.get(function_id, ())
+                if graph.kind(member) in SELF_TIMED
+            }
+        )
         if not hurt:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=graph.name(function_id),
-            fixtures=tuple(hurt),
-            message=(
-                f"va en Beats con un fundido de {fade} y arranca "
-                f"{len(hurt)} funciones que se cronometran en milisegundos: "
-                f"el chaser les pasa ese numero tal cual y un EFX se lo resta "
-                f"a su duracion (EFX::loopDuration), asi que dibujan su "
-                f"figura mucho mas rapido y no la cierran"
-            ),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=graph.name(function_id),
+                fixtures=tuple(hurt),
+                message=(
+                    f"va en Beats con un fundido de {fade} y arranca "
+                    f"{len(hurt)} funciones que se cronometran en milisegundos: "
+                    f"el chaser les pasa ese numero tal cual y un EFX se lo resta "
+                    f"a su duracion (EFX::loopDuration), asi que dibujan su "
+                    f"figura mucho mas rapido y no la cierran"
+                ),
+            )
+        )
     return findings
 
 
@@ -87,6 +93,4 @@ def _fade(function) -> int:
     speed = find_local(function, "Speed")
     if speed is None:
         return 0
-    return max(
-        int(speed.attrib.get("FadeIn", 0)), int(speed.attrib.get("FadeOut", 0))
-    )
+    return max(int(speed.attrib.get("FadeIn", 0)), int(speed.attrib.get("FadeOut", 0)))

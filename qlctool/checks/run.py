@@ -20,7 +20,6 @@ from .entry_points import entry_points
 from .finding import ERROR, Finding
 from .rule_accent_restore import check_accent_restore
 from .rule_audio_triggers import check_audio_triggers
-from .rule_movement_window import check_movement_window
 from .rule_collision import check_collisions
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
@@ -36,6 +35,7 @@ from .rule_latched_strobe import check_latched_strobe
 from .rule_masked_dimmer_efx import check_masked_dimmer_efx
 from .rule_mode_owner import check_mode_owner
 from .rule_movement_families import check_movement_families
+from .rule_movement_window import check_movement_window
 from .rule_pad_input import check_pad_input
 from .rule_parked_movers import check_parked_movers
 from .rule_shadowed_intensity import check_shadowed_intensity
@@ -45,14 +45,14 @@ from .rule_smoke_light import check_smoke_light
 from .rule_smoke_restore import check_smoke_restore
 from .rule_state_proxy import check_state_proxy
 from .rule_stepped_dimmer import check_stepped_dimmer
-from .rule_tap_dial import check_tap_dial
-from .rule_tempo_units import check_tempo_units
-from .rule_undeclared_heads import check_undeclared_heads
 from .rule_strobe_coverage import check_strobe_coverage
 from .rule_strobe_in_cycle import check_strobe_in_cycle
 from .rule_strobe_rate import check_strobe_rate
 from .rule_strobe_restore import check_strobe_restore
+from .rule_tap_dial import check_tap_dial
+from .rule_tempo_units import check_tempo_units
 from .rule_unaimed_movement import check_unaimed_movement
+from .rule_undeclared_heads import check_undeclared_heads
 from .rule_unfinished_effect import check_unfinished_effects
 from .rule_wheel_colour import check_wheel_colour
 from .rule_wheel_rotation import check_wheel_rotation

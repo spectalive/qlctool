@@ -23,9 +23,7 @@ def test_removing_a_fixture_leaves_the_others_where_they_were():
     workspace = Workspace.load(SHOW)
     group = _group(workspace.root, "BarrasLed")
     victim = group.fixture_ids[-1]
-    before = {
-        fixture_id for fixture_id in group.fixture_ids if fixture_id != victim
-    }
+    before = {fixture_id for fixture_id in group.fixture_ids if fixture_id != victim}
 
     removed = remove_group_head(workspace.root, group.group_id, victim)
 
@@ -50,6 +48,4 @@ def test_emptying_a_group_is_refused():
     for fixture_id in group.fixture_ids[:-1]:
         remove_group_head(workspace.root, group.group_id, fixture_id)
     with pytest.raises(ValueError, match="no heads at all"):
-        remove_group_head(
-            workspace.root, group.group_id, group.fixture_ids[-1]
-        )
+        remove_group_head(workspace.root, group.group_id, group.fixture_ids[-1])

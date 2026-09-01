@@ -53,17 +53,19 @@ def check_intensity(
         )
         if not dark:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=graph.name(function_id),
-            message=(
-                f"pone color pero no abre la intensidad, asi que "
-                f"{'ese fixture se queda' if len(dark) == 1 else 'esos fixtures se quedan'} "
-                f"a oscuras (boton: {caption})"
-            ),
-            fixtures=tuple(sorted(dark)),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=graph.name(function_id),
+                message=(
+                    f"pone color pero no abre la intensidad, asi que "
+                    f"{'ese fixture se queda' if len(dark) == 1 else 'esos fixtures se quedan'} "
+                    f"a oscuras (boton: {caption})"
+                ),
+                fixtures=tuple(sorted(dark)),
+            )
+        )
     return findings
 
 
@@ -97,17 +99,12 @@ def _dark(graph: ShowGraph, driven, layer: bool = False) -> set[str]:
 def _touches_intensity_path(capability, written: dict[int, int | None]) -> bool:
     if any(offset in written for offset in capability.offsets_for_role(roles.DIMMER)):
         return True
-    return any(
-        offset in written
-        for offset, _ in shutter_open_ranges(capability)
-    )
+    return any(offset in written for offset, _ in shutter_open_ranges(capability))
 
 
 def _colours(capability, written: dict[int, int | None]) -> bool:
     """Whether this function is putting a colour on the fixture at all."""
-    coloured = {
-        offset for role in COLOUR for offset in capability.offsets_for_role(role)
-    }
+    coloured = {offset for role in COLOUR for offset in capability.offsets_for_role(role)}
     wheel = capability.wheel_for_role(roles.COLOR_MACRO)
     if wheel is not None:
         coloured.add(wheel[0])
@@ -120,7 +117,8 @@ def _reason_it_stays_dark(capability, written: dict[int, int | None]) -> bool:
         return True
     return any(
         _shut(
-            written.get(offset, UNTOUCHED), opening,
+            written.get(offset, UNTOUCHED),
+            opening,
             strobe_range(capability.capabilities_by_offset[offset]),
         )
         for offset, opening in shutter_open_ranges(capability)
@@ -141,6 +139,4 @@ def _shut(value: int | None, opening, strobing) -> bool:
         return False
     if opening.minimum <= value <= opening.maximum:
         return False
-    return strobing is None or not (
-        strobing.minimum <= value <= strobing.maximum
-    )
+    return strobing is None or not (strobing.minimum <= value <= strobing.maximum)

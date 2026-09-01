@@ -57,9 +57,7 @@ def test_the_workspaces_patch_the_pad_in_with_that_profile():
     """A binding is inert until a universe declares the input plugin."""
     for name in ("Vibra.qxw", "Vibra-beats.qxw", "Vibra-split.qxw"):
         root = Workspace.load(REPO / "QLC+ Setups" / name).root
-        universe = find_local(
-            find_local(find_local(root, "Engine"), "InputOutputMap"), "Universe"
-        )
+        universe = find_local(find_local(find_local(root, "Engine"), "InputOutputMap"), "Universe")
         patch = find_local(universe, "Input")
         assert patch is not None, f"{name} has no MIDI input patch"
         assert patch.attrib["Profile"] == PROFILE_NAME, name

@@ -36,9 +36,7 @@ def check_smoke_light(graph: ShowGraph, groups, entries) -> list[Finding]:
         fired = False
         lit_somewhere = False
         for function in graph.functions.values():
-            written = driven_channels(
-                function, graph.capabilities, groups
-            ).get(fixture_id)
+            written = driven_channels(function, graph.capabilities, groups).get(fixture_id)
             if not written:
                 continue
             if any(lit(v) for o, v in written.items() if o in pump):
@@ -48,16 +46,18 @@ def check_smoke_light(graph: ShowGraph, groups, entries) -> list[Finding]:
             ):
                 lit_somewhere = True
         if fired and not lit_somewhere:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function="",
-                message=(
-                    "la maquina de humo con luz dispara la columna pero "
-                    "ninguna funcion enciende su LED (dimmer + color a la "
-                    "vez): con DMX conectado su programa interno queda "
-                    "anulado y la columna sale a oscuras"
-                ),
-                fixtures=(capability.fixture.name,),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function="",
+                    message=(
+                        "la maquina de humo con luz dispara la columna pero "
+                        "ninguna funcion enciende su LED (dimmer + color a la "
+                        "vez): con DMX conectado su programa interno queda "
+                        "anulado y la columna sale a oscuras"
+                    ),
+                    fixtures=(capability.fixture.name,),
+                )
+            )
     return findings

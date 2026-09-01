@@ -36,33 +36,33 @@ from lxml import etree
 
 from ..argb import argb_from_rgb
 from ..palette import PALETTE
+from ..vc.appearance import DEFAULT
+from ..vc.audio_triggers import build_audio_triggers
 from ..vc.bank_pitch import (
     BANK_COLUMN_TOP,
     DIMMER_FRAME_HEIGHT,
     bank_pitch_for,
 )
-from ..vc.appearance import DEFAULT
-from ..vc.audio_triggers import build_audio_triggers
 from ..vc.button import BLACKOUT, FLASH, STOP_ALL, TOGGLE, build_button
 from ..vc.console_font import console_font
+from ..vc.dial_function import DialFunction
 from ..vc.frame import build_frame
 from ..vc.grand_master_slider import build_grand_master_slider
 from ..vc.input_source import build_input_source
 from ..vc.label import build_label
 from ..vc.level_slider import build_level_slider
 from ..vc.matrix_control import build_matrix_control
-from ..vc.dial_function import DialFunction
 from ..vc.speed_dial import build_speed_dial
 from ..vc.widget_ids import next_widget_id
-from .smc_pad_bindings import SMC_PAD_BINDINGS
-from .smc_pad_colors import FUNCTION_COLORS, readable_foreground
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
+from .smc_pad_bindings import SMC_PAD_BINDINGS
+from .smc_pad_colors import FUNCTION_COLORS, readable_foreground
 
 CANVAS_WIDTH = 1440
 CANVAS_HEIGHT = 900
-HEADER = 26          # the frame header, where the page arrows live
+HEADER = 26  # the frame header, where the page arrows live
 GAP = 6
 
 # The console is one multipage frame filling the screen. The page arrows are in
@@ -112,8 +112,11 @@ BANK_KEYS = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
 
 # A colour bank button is 44px wide: the name has to survive that.
 SHORT_COLOR = {
-    "UltraVioleta": "UV", "Amarillo": "Amar", "Magenta": "Mage",
-    "Blanco": "Blan", "Naranja": "Nara",
+    "UltraVioleta": "UV",
+    "Amarillo": "Amar",
+    "Magenta": "Mage",
+    "Blanco": "Blan",
+    "Naranja": "Nara",
 }
 # ...and a two-colour mix carries two of them, so those go to two letters. One
 # letter is what made "R/A" mean both Rojo/Azul and Rojo/Amarillo.
@@ -123,8 +126,15 @@ LONG_WHEEL_NAME = {
     "Rainbow effect reverse slow to fast": "Arcoiris -",
 }
 MIX_CODE = {
-    "Rojo": "Ro", "Verde": "Ve", "Azul": "Az", "Amarillo": "Am", "Cyan": "Cy",
-    "Magenta": "Ma", "Blanco": "Bl", "Naranja": "Na", "Rosa": "Rs",
+    "Rojo": "Ro",
+    "Verde": "Ve",
+    "Azul": "Az",
+    "Amarillo": "Am",
+    "Cyan": "Cy",
+    "Magenta": "Ma",
+    "Blanco": "Bl",
+    "Naranja": "Na",
+    "Rosa": "Rs",
     "UltraVioleta": "UV",
 }
 
@@ -323,8 +333,15 @@ def generate_live_console(
     def button(parent, function_id, caption, x, y, w, h, page=None, **kwargs):
         widget_id = ids.take()
         element = build_button(
-            parent, widget_id, caption, function_id, x=x, y=y, width=w,
-            height=h, **kwargs,
+            parent,
+            widget_id,
+            caption,
+            function_id,
+            x=x,
+            y=y,
+            width=w,
+            height=h,
+            **kwargs,
         )
         _on_page(element, page)
         console.button_ids.append(widget_id)
@@ -357,11 +374,16 @@ def generate_live_console(
         colour = FUNCTION_COLORS.get(name)
         if colour is not None and "background" not in kwargs:
             kwargs["background"] = str(argb_from_rgb(colour))
-            kwargs.setdefault(
-                "foreground", str(argb_from_rgb(readable_foreground(colour)))
-            )
+            kwargs.setdefault("foreground", str(argb_from_rgb(readable_foreground(colour))))
         element = button(
-            parent, master[name], caption, x, y, w, h, page=page,
+            parent,
+            master[name],
+            caption,
+            x,
+            y,
+            w,
+            h,
+            page=page,
             key=keys.get(name),
             action=FLASH if name in flash else TOGGLE,
             # A hit must read over the running state, not merely join it:
@@ -374,9 +396,16 @@ def generate_live_console(
         return element
 
     outer = frame(
-        root_frame, "", OUTER_X, OUTER_Y, OUTER_WIDTH, OUTER_HEIGHT,
-        pages=PAGES, next_page_key=PAGE_NEXT_KEY,
-        previous_page_key=PAGE_PREVIOUS_KEY, font=TITLE_FONT,
+        root_frame,
+        "",
+        OUTER_X,
+        OUTER_Y,
+        OUTER_WIDTH,
+        OUTER_HEIGHT,
+        pages=PAGES,
+        next_page_key=PAGE_NEXT_KEY,
+        previous_page_key=PAGE_PREVIOUS_KEY,
+        font=TITLE_FONT,
     )
     # The SMC-PAD's arrow buttons page the console: a frame's Next Page is
     # external control 0 and Previous Page is 1 (qmlui vcframe.h).
@@ -384,24 +413,60 @@ def generate_live_console(
     build_input_source(outer, SMC_PAD_BINDINGS["Pagina Anterior"], source_id=1)
 
     _page_show(
-        outer, button, master_button, frame, label, ids, console,
-        tempo_functions, bpm_tap,
+        outer,
+        button,
+        master_button,
+        frame,
+        label,
+        ids,
+        console,
+        tempo_functions,
+        bpm_tap,
     )
     _page_manual(
-        outer, button, master_button, frame, label, ids, console, names,
-        banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
-        beam_subsets, movement_functions,
+        outer,
+        button,
+        master_button,
+        frame,
+        label,
+        ids,
+        console,
+        names,
+        banks,
+        movement,
+        gobos,
+        beam_colors,
+        prisms,
+        mover_fixture_ids,
+        beam_subsets,
+        movement_functions,
     )
     _page_library(
-        outer, button, master_button, frame, label, ids, console, names,
-        banks, matrices, builtins, matrix_algorithms, beam_subsets,
+        outer,
+        button,
+        master_button,
+        frame,
+        label,
+        ids,
+        console,
+        names,
+        banks,
+        matrices,
+        builtins,
+        matrix_algorithms,
+        beam_subsets,
     )
 
     # Last, because a band presses a button and needs its widget ID.
     triggers_id = ids.take()
     triggers = build_audio_triggers(
-        outer, triggers_id, "Audio (hay que elegir entrada en Configuración)",
-        RIGHT_X, 330, RIGHT_WIDTH, 110,
+        outer,
+        triggers_id,
+        "Audio (hay que elegir entrada en Configuración)",
+        RIGHT_X,
+        330,
+        RIGHT_WIDTH,
+        110,
         bars=[
             (name, widget_of.get(master.get(target)) if target else None)
             for name, target in AUDIO_BANDS
@@ -415,13 +480,26 @@ def generate_live_console(
 
 
 def _page_show(
-    outer, button, master_button, frame, label, ids, console, tempo_functions,
+    outer,
+    button,
+    master_button,
+    frame,
+    label,
+    ids,
+    console,
+    tempo_functions,
     bpm_tap,
 ) -> None:
     """Page 1: the state the room is in, the hits, and the panic button."""
     label(
-        outer, "1 · SHOW — pulsa AUTO y ya está. PgDn para el resto.",
-        LEFT_X, 30, OUTER_WIDTH - 16, 30, page=PAGE_SHOW, font=TITLE_FONT,
+        outer,
+        "1 · SHOW — pulsa AUTO y ya está. PgDn para el resto.",
+        LEFT_X,
+        30,
+        OUTER_WIDTH - 16,
+        30,
+        page=PAGE_SHOW,
+        font=TITLE_FONT,
     )
 
     # Solo on purpose: this is what makes the room one state at a time. Nothing
@@ -429,29 +507,53 @@ def _page_show(
     # a moment starts wheels and chasers, and every one of those lives on
     # another page, in a plain frame.
     room = frame(
-        outer, "LA SALA ESTÁ ASÍ — solo una a la vez",
-        LEFT_X, 68, OUTER_WIDTH - 16, 322, page=PAGE_SHOW, solo=True,
+        outer,
+        "LA SALA ESTÁ ASÍ — solo una a la vez",
+        LEFT_X,
+        68,
+        OUTER_WIDTH - 16,
+        322,
+        page=PAGE_SHOW,
+        solo=True,
         font=TITLE_FONT,
     )
     for name, caption, (x, y, w, h), font in ROOM_STATES:
         master_button(room, name, caption, x, y, w, h, font=font)
 
     hits = frame(
-        outer, "GOLPES — se suman a lo que ya está sonando",
-        LEFT_X, 400, OUTER_WIDTH - 16, 160, page=PAGE_SHOW, font=TITLE_FONT,
+        outer,
+        "GOLPES — se suman a lo que ya está sonando",
+        LEFT_X,
+        400,
+        OUTER_WIDTH - 16,
+        160,
+        page=PAGE_SHOW,
+        font=TITLE_FONT,
     )
     # Seven across the row: pitch derived from the frame so adding a hit
     # narrows the buttons instead of pushing the last one off the screen.
     pitch = (OUTER_WIDTH - 16 - 2 * GAP - 4) // len(HITS)
     for index, (name, caption) in enumerate(HITS):
         master_button(
-            hits, name, caption,
-            GAP + 2 + index * pitch, HEADER + 4, pitch - 6, 118, font=BIG_FONT,
+            hits,
+            name,
+            caption,
+            GAP + 2 + index * pitch,
+            HEADER + 4,
+            pitch - 6,
+            118,
+            font=BIG_FONT,
         )
 
     panic = frame(
-        outer, "SI ALGO VA MAL", LEFT_X, 570, OUTER_WIDTH - 16, 118,
-        page=PAGE_SHOW, font=TITLE_FONT,
+        outer,
+        "SI ALGO VA MAL",
+        LEFT_X,
+        570,
+        OUTER_WIDTH - 16,
+        118,
+        page=PAGE_SHOW,
+        font=TITLE_FONT,
     )
     # Neither drives a function of its own. StopAll stops every one that is
     # running, which is the only honest answer to "something is on and nobody
@@ -468,14 +570,30 @@ def _page_show(
     # The panic pair rides the SMC-PAD's transport buttons - on the device's
     # right edge, physically apart from the pads a hand hammers in the dark.
     stop_all = button(
-        panic, None, "PARAR TODO · Retroceso", GAP + 2, HEADER + 4, 460, 78,
-        action=STOP_ALL, key=STOP_ALL_KEY, stop_all_fade_ms=STOP_ALL_FADE_MS,
+        panic,
+        None,
+        "PARAR TODO · Retroceso",
+        GAP + 2,
+        HEADER + 4,
+        460,
+        78,
+        action=STOP_ALL,
+        key=STOP_ALL_KEY,
+        stop_all_fade_ms=STOP_ALL_FADE_MS,
         font=BIG_FONT,
     )
     build_input_source(stop_all, SMC_PAD_BINDINGS["PARAR TODO"])
     blackout = button(
-        panic, None, "APAGON · Esc", 474, HEADER + 4, 200, 78,
-        action=BLACKOUT, key=BLACKOUT_KEY, font=BIG_FONT,
+        panic,
+        None,
+        "APAGON · Esc",
+        474,
+        HEADER + 4,
+        200,
+        78,
+        action=BLACKOUT,
+        key=BLACKOUT_KEY,
+        font=BIG_FONT,
     )
     build_input_source(blackout, SMC_PAD_BINDINGS["APAGON"])
     label(
@@ -483,13 +601,23 @@ def _page_show(
         "PARAR TODO para las funciones con un fundido de 1 segundo — pulsa "
         "AUTO para retomar. APAGON deja la sala a oscuras — vuelve a pulsar "
         "APAGON para devolverla, y luego AUTO.",
-        680, HEADER + 4, 726, 78, font=HELP_FONT,
+        680,
+        HEADER + 4,
+        726,
+        78,
+        font=HELP_FONT,
     )
 
     for index, line in enumerate(HELP_LINES):
         label(
-            outer, line, LEFT_X, 700 + index * 26, RIGHT_X - LEFT_X - GAP, 24,
-            page=PAGE_SHOW, font=HELP_FONT,
+            outer,
+            line,
+            LEFT_X,
+            700 + index * 26,
+            RIGHT_X - LEFT_X - GAP,
+            24,
+            page=PAGE_SHOW,
+            font=HELP_FONT,
         )
 
     # The haze rhythm, on the page the operator is looking at. Solo, because
@@ -498,15 +626,27 @@ def _page_show(
     # altogether. The vertical columns are not here and never will be - those
     # only fire while HUMO VERT is held down (`rule_held_column`).
     smoke = frame(
-        outer, "HUMO AMBIENTE — cada cuánto dispara solo",
-        LEFT_X, SMOKE_ROW_Y, RIGHT_X - LEFT_X - GAP, 60,
-        page=PAGE_SHOW, solo=True, font=TITLE_FONT,
+        outer,
+        "HUMO AMBIENTE — cada cuánto dispara solo",
+        LEFT_X,
+        SMOKE_ROW_Y,
+        RIGHT_X - LEFT_X - GAP,
+        60,
+        page=PAGE_SHOW,
+        solo=True,
+        font=TITLE_FONT,
     )
     pitch = (RIGHT_X - LEFT_X - GAP - 2 * GAP) // len(SMOKE_RHYTHMS)
     for index, (name, caption) in enumerate(SMOKE_RHYTHMS):
         master_button(
-            smoke, name, caption,
-            GAP + index * pitch, HEADER + 2, pitch - 6, 28, font=SMALL_FONT,
+            smoke,
+            name,
+            caption,
+            GAP + index * pitch,
+            HEADER + 2,
+            pitch - 6,
+            28,
+            font=SMALL_FONT,
         )
 
     # The tempo dial, where the operator is looking, with the hand-built
@@ -517,34 +657,73 @@ def _page_show(
         return
     dial_id = ids.take()
     dial = build_speed_dial(
-        outer, dial_id, "Tempo Show", RIGHT_X, 700, RIGHT_WIDTH, 120,
-        functions=tempo_functions, time_ms=TEMPO_BEAT_MS,
-        tap_key=TEMPO_TAP_KEY, control_bpm=bpm_tap,
+        outer,
+        dial_id,
+        "Tempo Show",
+        RIGHT_X,
+        700,
+        RIGHT_WIDTH,
+        120,
+        functions=tempo_functions,
+        time_ms=TEMPO_BEAT_MS,
+        tap_key=TEMPO_TAP_KEY,
+        control_bpm=bpm_tap,
     )
     build_input_source(dial, SMC_PAD_BINDINGS["Tempo Show"])
     _on_page(dial, PAGE_SHOW)
     console.widget_ids.append(dial_id)
     for index, line in enumerate(TEMPO_LINES):
         label(
-            outer, line, RIGHT_X, 824 + index * 20, RIGHT_WIDTH, 20,
-            page=PAGE_SHOW, font=HELP_FONT,
+            outer,
+            line,
+            RIGHT_X,
+            824 + index * 20,
+            RIGHT_WIDTH,
+            20,
+            page=PAGE_SHOW,
+            font=HELP_FONT,
         )
 
 
 def _page_manual(
-    outer, button, master_button, frame, label, ids, console, names,
-    banks, movement, gobos, beam_colors, prisms, mover_fixture_ids,
-    beam_subsets, movement_functions,
+    outer,
+    button,
+    master_button,
+    frame,
+    label,
+    ids,
+    console,
+    names,
+    banks,
+    movement,
+    gobos,
+    beam_colors,
+    prisms,
+    mover_fixture_ids,
+    beam_subsets,
+    movement_functions,
 ) -> None:
     """Page 2: the layers, for somebody who wants to drive it by hand."""
     label(
-        outer, "2 · MANUAL — capas sueltas, se encienden sobre AUTO",
-        LEFT_X, 30, OUTER_WIDTH - 16, 30, page=PAGE_MANUAL, font=TITLE_FONT,
+        outer,
+        "2 · MANUAL — capas sueltas, se encienden sobre AUTO",
+        LEFT_X,
+        30,
+        OUTER_WIDTH - 16,
+        30,
+        page=PAGE_MANUAL,
+        font=TITLE_FONT,
     )
 
     layers = frame(
-        outer, "Capas del show", LEFT_X, 68, LEFT_WIDTH, 140,
-        page=PAGE_MANUAL, font=TITLE_FONT,
+        outer,
+        "Capas del show",
+        LEFT_X,
+        68,
+        LEFT_WIDTH,
+        140,
+        page=PAGE_MANUAL,
+        font=TITLE_FONT,
     )
     # Four columns since the rainbows came back (2026-08-28): eight layers
     # have to fit the same two rows the six fitted.
@@ -560,8 +739,14 @@ def _page_manual(
     for index, (name, caption) in enumerate(layer_names):
         column, row = index % 4, index // 4
         master_button(
-            layers, name, caption,
-            GAP + column * 129, HEADER + row * 52, 124, 46, font=SMALL_FONT,
+            layers,
+            name,
+            caption,
+            GAP + column * 129,
+            HEADER + row * 52,
+            124,
+            46,
+            font=SMALL_FONT,
         )
 
     # The banks are one frame per fixture group, and the number of groups is
@@ -574,8 +759,14 @@ def _page_manual(
     bank_pitch = bank_pitch_for(len(banks))
     for bank in banks:
         element = frame(
-            outer, f"Colores {bank.group_name} — teclas 1-0",
-            LEFT_X, y, LEFT_WIDTH, bank_pitch - 6, page=PAGE_MANUAL, solo=True,
+            outer,
+            f"Colores {bank.group_name} — teclas 1-0",
+            LEFT_X,
+            y,
+            LEFT_WIDTH,
+            bank_pitch - 6,
+            page=PAGE_MANUAL,
+            solo=True,
             font=TITLE_FONT,
         )
         # Keys 1-0 follow the bank's key list - eight solids, then the old
@@ -588,9 +779,13 @@ def _page_manual(
             name = names.get(function_id, "")
             split = " / " in name
             button(
-                element, function_id,
+                element,
+                function_id,
                 _mix_caption(name) if split else _bank_caption(name),
-                x=GAP + index * pitch, y=HEADER, w=pitch - 3, h=44,
+                x=GAP + index * pitch,
+                y=HEADER,
+                w=pitch - 3,
+                h=44,
                 key=BANK_KEYS[index] if index < len(keyed) else None,
                 background=_swatch(name),
                 foreground=_swatch(name, second=True) if split else DEFAULT,
@@ -599,22 +794,34 @@ def _page_manual(
         y += bank_pitch
 
     dimmers = frame(
-        outer, "Intensidad y strobo de fixture", LEFT_X, y, LEFT_WIDTH,
+        outer,
+        "Intensidad y strobo de fixture",
+        LEFT_X,
+        y,
+        LEFT_WIDTH,
         DIMMER_FRAME_HEIGHT,
-        page=PAGE_MANUAL, font=TITLE_FONT,
+        page=PAGE_MANUAL,
+        font=TITLE_FONT,
     )
-    for index, (name, caption) in enumerate((
-        ("Dimmer Chase", "Barrido de intensidad · V"),
-        ("Dimmer Chase 2", "Barrido inverso · B"),
-        ("Dimmer PingPong", "Pares / impares · Z"),
-        ("Dimmer Secuencia", "Rotación de barridos · K"),
-        ("Strobo ON", "Strobo del fixture · S"),
-        ("Strobo OFF", "Parar ese strobo · D"),
-    )):
+    for index, (name, caption) in enumerate(
+        (
+            ("Dimmer Chase", "Barrido de intensidad · V"),
+            ("Dimmer Chase 2", "Barrido inverso · B"),
+            ("Dimmer PingPong", "Pares / impares · Z"),
+            ("Dimmer Secuencia", "Rotación de barridos · K"),
+            ("Strobo ON", "Strobo del fixture · S"),
+            ("Strobo OFF", "Parar ese strobo · D"),
+        )
+    ):
         column, row = index % 3, index // 3
         master_button(
-            dimmers, name, caption,
-            GAP + column * 170, HEADER + row * 52, 166, 46,
+            dimmers,
+            name,
+            caption,
+            GAP + column * 170,
+            HEADER + row * 52,
+            166,
+            46,
         )
 
     # Below the audio triggers (they end at y=440): the left column is full,
@@ -624,41 +831,74 @@ def _page_manual(
     # not functions), so its plain white hit gets a button of its own here,
     # beside the audio triggers that press it.
     master_button(
-        outer, "Golpe Graves", "GOLPE GRAVES — lo pulsa el audio",
-        RIGHT_X + GRAND_MASTER_WIDTH + GAP, grand_master_y,
-        RIGHT_WIDTH - GRAND_MASTER_WIDTH - GAP, 60, page=PAGE_MANUAL,
+        outer,
+        "Golpe Graves",
+        "GOLPE GRAVES — lo pulsa el audio",
+        RIGHT_X + GRAND_MASTER_WIDTH + GAP,
+        grand_master_y,
+        RIGHT_WIDTH - GRAND_MASTER_WIDTH - GAP,
+        60,
+        page=PAGE_MANUAL,
     )
     grand_master_id = ids.take()
     grand_master = build_grand_master_slider(
-        outer, grand_master_id, "Master General",
-        RIGHT_X, grand_master_y, GRAND_MASTER_WIDTH, GRAND_MASTER_HEIGHT,
+        outer,
+        grand_master_id,
+        "Master General",
+        RIGHT_X,
+        grand_master_y,
+        GRAND_MASTER_WIDTH,
+        GRAND_MASTER_HEIGHT,
     )
     build_input_source(grand_master, SMC_PAD_BINDINGS["Master General"])
     _on_page(grand_master, PAGE_MANUAL)
     console.widget_ids.append(grand_master_id)
     for index, line in enumerate(GRAND_MASTER_LINES):
         label(
-            outer, line,
-            RIGHT_X, grand_master_y + GRAND_MASTER_HEIGHT + GAP + index * 22,
-            RIGHT_WIDTH, 20,
-            page=PAGE_MANUAL, font=HELP_FONT,
+            outer,
+            line,
+            RIGHT_X,
+            grand_master_y + GRAND_MASTER_HEIGHT + GAP + index * 22,
+            RIGHT_WIDTH,
+            20,
+            page=PAGE_MANUAL,
+            font=HELP_FONT,
         )
 
     # The vertical smoke's light: latched on purpose - the column lasts as
     # long as it lasts, and somebody presses it off when it is over.
     master_button(
-        outer, "Humo Vertical", "HUMO VERTICAL — su luz · N",
-        RIGHT_X, 716, RIGHT_WIDTH, 60, page=PAGE_MANUAL,
+        outer,
+        "Humo Vertical",
+        "HUMO VERTICAL — su luz · N",
+        RIGHT_X,
+        716,
+        RIGHT_WIDTH,
+        60,
+        page=PAGE_MANUAL,
     )
     label(
-        outer, "Los paneles a sus ciclos de color mientras dispara el humo "
+        outer,
+        "Los paneles a sus ciclos de color mientras dispara el humo "
         "vertical. Se queda puesto: apágalo al terminar.",
-        RIGHT_X, 782, RIGHT_WIDTH, 60, page=PAGE_MANUAL, font=HELP_FONT,
+        RIGHT_X,
+        782,
+        RIGHT_WIDTH,
+        60,
+        page=PAGE_MANUAL,
+        font=HELP_FONT,
     )
 
     shapes = frame(
-        outer, "Figura que dibujan las cabezas", MIDDLE_X, 68, MIDDLE_WIDTH, 80,
-        page=PAGE_MANUAL, solo=True, font=TITLE_FONT,
+        outer,
+        "Figura que dibujan las cabezas",
+        MIDDLE_X,
+        68,
+        MIDDLE_WIDTH,
+        80,
+        page=PAGE_MANUAL,
+        solo=True,
+        font=TITLE_FONT,
     )
     # One button per shape, sized to fit however many the rig now draws.
     # `Escenario` (the measured stage aim) and `Cabezas Centro` (parked) sit
@@ -666,51 +906,99 @@ def _page_manual(
     # drawing a figure with them are exclusive, and the solo frame is what
     # stops the figure when the aim is pressed.
     aims = [
-        (name, caption) for name, caption in
-        (("Escenario", "Escenario"), ("Cabezas Centro", "Centro"))
+        (name, caption)
+        for name, caption in (("Escenario", "Escenario"), ("Cabezas Centro", "Centro"))
     ]
     slots = len(movement.efx_ids) + len(aims)
     shape_step = (MIDDLE_WIDTH - GAP) // slots
     for index, function_id in enumerate(movement.efx_ids):
         button(
-            shapes, function_id, _after(names.get(function_id, ""), "Movimiento "),
-            x=GAP + index * shape_step, y=HEADER, w=shape_step - GAP, h=44,
+            shapes,
+            function_id,
+            _after(names.get(function_id, ""), "Movimiento "),
+            x=GAP + index * shape_step,
+            y=HEADER,
+            w=shape_step - GAP,
+            h=44,
         )
     for offset, (name, caption) in enumerate(aims):
         master_button(
-            shapes, name, caption,
-            GAP + (len(movement.efx_ids) + offset) * shape_step, HEADER,
-            shape_step - GAP, 44,
+            shapes,
+            name,
+            caption,
+            GAP + (len(movement.efx_ids) + offset) * shape_step,
+            HEADER,
+            shape_step - GAP,
+            44,
         )
 
     # The beams' wheels are a live decision, not library material: somebody
     # picks a gobo while the show runs. They sit beside the movement shapes.
     _wheel_frame(
-        outer, button, frame, names, gobos.scene_ids,
-        "Gobos — solo los 4 BEAM", "Gobo - ",
-        MIDDLE_X, 156, MIDDLE_WIDTH, 150, PAGE_MANUAL, columns=12,
+        outer,
+        button,
+        frame,
+        names,
+        gobos.scene_ids,
+        "Gobos — solo los 4 BEAM",
+        "Gobo - ",
+        MIDDLE_X,
+        156,
+        MIDDLE_WIDTH,
+        150,
+        PAGE_MANUAL,
+        columns=12,
     )
     _wheel_frame(
-        outer, button, frame, names, beam_colors.scene_ids,
-        "Color de los BEAM — su rueda, no RGB", "Color Beam - ",
-        MIDDLE_X, 314, MIDDLE_WIDTH, 150, PAGE_MANUAL, columns=12,
+        outer,
+        button,
+        frame,
+        names,
+        beam_colors.scene_ids,
+        "Color de los BEAM — su rueda, no RGB",
+        "Color Beam - ",
+        MIDDLE_X,
+        314,
+        MIDDLE_WIDTH,
+        150,
+        PAGE_MANUAL,
+        columns=12,
     )
     _wheel_frame(
-        outer, button, frame, names,
-        prisms.scene_ids + (
-            beam_subsets.prism_scene_ids if beam_subsets is not None else []
-        ),
-        "Prisma — solo los 4 BEAM", "Prisma - ",
-        MIDDLE_X, 472, MIDDLE_WIDTH, 92, PAGE_MANUAL, columns=12,
+        outer,
+        button,
+        frame,
+        names,
+        prisms.scene_ids + (beam_subsets.prism_scene_ids if beam_subsets is not None else []),
+        "Prisma — solo los 4 BEAM",
+        "Prisma - ",
+        MIDDLE_X,
+        472,
+        MIDDLE_WIDTH,
+        92,
+        PAGE_MANUAL,
+        columns=12,
     )
 
     label(
-        outer, "Apunta las 12 cabezas a mano — arrastra dentro del cuadro",
-        MIDDLE_X, 574, MIDDLE_WIDTH, 20, page=PAGE_MANUAL, font=HELP_FONT,
+        outer,
+        "Apunta las 12 cabezas a mano — arrastra dentro del cuadro",
+        MIDDLE_X,
+        574,
+        MIDDLE_WIDTH,
+        20,
+        page=PAGE_MANUAL,
+        font=HELP_FONT,
     )
     pad_id = ids.take()
     pad = build_xy_pad(
-        outer, pad_id, "Cabezas", MIDDLE_X, 598, MIDDLE_WIDTH, 280,
+        outer,
+        pad_id,
+        "Cabezas",
+        MIDDLE_X,
+        598,
+        MIDDLE_WIDTH,
+        280,
         fixture_ids=list(mover_fixture_ids),
     )
     _on_page(pad, PAGE_MANUAL)
@@ -723,8 +1011,15 @@ def _page_manual(
     if movement_functions:
         dial_id = ids.take()
         dial = build_speed_dial(
-            outer, dial_id, "Vel. Movimiento", RIGHT_X, 68, 124, 150,
-            functions=movement_functions, time_ms=TEMPO_BEAT_MS,
+            outer,
+            dial_id,
+            "Vel. Movimiento",
+            RIGHT_X,
+            68,
+            124,
+            150,
+            functions=movement_functions,
+            time_ms=TEMPO_BEAT_MS,
             tap_key=TEMPO_TAP_KEY,
         )
         build_input_source(dial, SMC_PAD_BINDINGS["Vel. Movimiento"])
@@ -732,44 +1027,82 @@ def _page_manual(
         console.widget_ids.append(dial_id)
         for index, line in enumerate(MOVEMENT_DIAL_LINES):
             label(
-                outer, line, RIGHT_X, 228 + index * 22, RIGHT_WIDTH, 20,
-                page=PAGE_MANUAL, font=HELP_FONT,
+                outer,
+                line,
+                RIGHT_X,
+                228 + index * 22,
+                RIGHT_WIDTH,
+                20,
+                page=PAGE_MANUAL,
+                font=HELP_FONT,
             )
 
 
 def _page_library(
-    outer, button, master_button, frame, label, ids, console, names,
-    banks, matrices, builtins, matrix_algorithms, beam_subsets,
+    outer,
+    button,
+    master_button,
+    frame,
+    label,
+    ids,
+    console,
+    names,
+    banks,
+    matrices,
+    builtins,
+    matrix_algorithms,
+    beam_subsets,
 ) -> None:
     """Page 3: the material the show is built from, not buttons for a set."""
     label(
         outer,
-        "3 · LIBRERÍA — de aquí sale el show. No hace falta tocar nada de esto "
-        "durante una fiesta.",
-        LEFT_X, 30, OUTER_WIDTH - 16, 30, page=PAGE_LIBRARY, font=TITLE_FONT,
+        "3 · LIBRERÍA — de aquí sale el show. No hace falta tocar nada de esto durante una fiesta.",
+        LEFT_X,
+        30,
+        OUTER_WIDTH - 16,
+        30,
+        page=PAGE_LIBRARY,
+        font=TITLE_FONT,
     )
 
     mixes = frame(
-        outer, "Mezclas de dos colores", LEFT_X, 68, LEFT_WIDTH, 230,
-        page=PAGE_LIBRARY, solo=True, pages=len(banks) or 1, font=TITLE_FONT,
+        outer,
+        "Mezclas de dos colores",
+        LEFT_X,
+        68,
+        LEFT_WIDTH,
+        230,
+        page=PAGE_LIBRARY,
+        solo=True,
+        pages=len(banks) or 1,
+        font=TITLE_FONT,
     )
     for page, bank in enumerate(banks):
         label(
-            mixes, f"Grupo: {bank.group_name}", GAP, HEADER, 512, 20,
-            page=page, font=HELP_FONT,
+            mixes,
+            f"Grupo: {bank.group_name}",
+            GAP,
+            HEADER,
+            512,
+            20,
+            page=page,
+            font=HELP_FONT,
         )
         # The blue/red pair lives on the bank's keys 9/0 (restored
         # 2026-08-28); a second button here would always look off.
-        library_splits = [
-            fid for fid in bank.split_ids if fid not in bank.key_ids
-        ]
+        library_splits = [fid for fid in bank.split_ids if fid not in bank.key_ids]
         for index, function_id in enumerate(library_splits):
             column, row = index % 10, index // 10
             name = names.get(function_id, "")
             _on_page(
                 button(
-                    mixes, function_id, _mix_caption(name),
-                    x=GAP + column * 51, y=HEADER + 24 + row * 51, w=48, h=45,
+                    mixes,
+                    function_id,
+                    _mix_caption(name),
+                    x=GAP + column * 51,
+                    y=HEADER + 24 + row * 51,
+                    w=48,
+                    h=45,
                     background=_swatch(name),
                     foreground=_swatch(name, second=True),
                     font=TINY_FONT,
@@ -778,32 +1111,57 @@ def _page_library(
             )
 
     _wheel_frame(
-        outer, button, frame, names,
+        outer,
+        button,
+        frame,
+        names,
         beam_subsets.multicolor_scene_ids if beam_subsets is not None else [],
-        "MultiColor BEAM — dos colores a la vez en el haz", "MultiColor - ",
-        LEFT_X, 306, LEFT_WIDTH, 92, PAGE_LIBRARY, columns=8,
+        "MultiColor BEAM — dos colores a la vez en el haz",
+        "MultiColor - ",
+        LEFT_X,
+        306,
+        LEFT_WIDTH,
+        92,
+        PAGE_LIBRARY,
+        columns=8,
     )
 
     matrix_frame = frame(
-        outer, "Matrices — dibujos sobre las barras y los paneles",
-        MIDDLE_X, 68, MIDDLE_WIDTH, 300, page=PAGE_LIBRARY, solo=True,
-        pages=len(matrices) or 1, font=TITLE_FONT,
+        outer,
+        "Matrices — dibujos sobre las barras y los paneles",
+        MIDDLE_X,
+        68,
+        MIDDLE_WIDTH,
+        300,
+        page=PAGE_LIBRARY,
+        solo=True,
+        pages=len(matrices) or 1,
+        font=TITLE_FONT,
     )
     for page, generated in enumerate(matrices):
         group = _before(names.get(_first(generated.matrix_ids), ""), " - ")
         label(
-            matrix_frame, f"Grupo: {group}", GAP, HEADER, 400, 20,
-            page=page, font=HELP_FONT,
+            matrix_frame,
+            f"Grupo: {group}",
+            GAP,
+            HEADER,
+            400,
+            20,
+            page=page,
+            font=HELP_FONT,
         )
         step = (MIDDLE_WIDTH - GAP * 2) // MATRIX_COLUMNS
         for index, function_id in enumerate(generated.matrix_ids):
             column, row = index % MATRIX_COLUMNS, index // MATRIX_COLUMNS
             _on_page(
                 button(
-                    matrix_frame, function_id,
+                    matrix_frame,
+                    function_id,
                     _after(names.get(function_id, ""), " - "),
-                    x=GAP + column * step, y=HEADER + 24 + row * MATRIX_ROW_HEIGHT,
-                    w=step - 6, h=MATRIX_BUTTON_HEIGHT,
+                    x=GAP + column * step,
+                    y=HEADER + 24 + row * MATRIX_ROW_HEIGHT,
+                    w=step - 6,
+                    h=MATRIX_BUTTON_HEIGHT,
                     font=SMALL_FONT,
                 ),
                 page,
@@ -814,26 +1172,40 @@ def _page_library(
     wheel_ids = [b.wheel_id for b in banks if b.wheel_id is not None]
     wheel_ids += [b.mix_wheel_id for b in banks if b.mix_wheel_id is not None]
     cycles = frame(
-        outer, "Ruedas y ciclos por grupo — no usar a la vez que la rueda "
-        "general: se suman los colores",
-        MIDDLE_X, 376, MIDDLE_WIDTH, 190, page=PAGE_LIBRARY, font=TITLE_FONT,
+        outer,
+        "Ruedas y ciclos por grupo — no usar a la vez que la rueda general: se suman los colores",
+        MIDDLE_X,
+        376,
+        MIDDLE_WIDTH,
+        190,
+        page=PAGE_LIBRARY,
+        font=TITLE_FONT,
     )
     entries = [(fid, _wheel_caption(names.get(fid, ""))) for fid in wheel_ids]
     entries += [
         (m.chaser_id, _after(names.get(m.chaser_id, ""), "Ciclo "))
-        for m in matrices if m.chaser_id is not None
+        for m in matrices
+        if m.chaser_id is not None
     ]
     # The panels' own cycle belongs here and not among the effects it starts:
     # a chaser sharing a solo frame with its own steps dies as it begins.
     if builtins.chaser_id is not None:
-        entries.append((
-            builtins.chaser_id, _after(names.get(builtins.chaser_id, ""), "Ciclo "),
-        ))
+        entries.append(
+            (
+                builtins.chaser_id,
+                _after(names.get(builtins.chaser_id, ""), "Ciclo "),
+            )
+        )
     for index, (function_id, caption) in enumerate(entries):
         column, row = index % 5, index // 5
         button(
-            cycles, function_id, caption,
-            x=GAP + column * 122, y=HEADER + row * 50, w=116, h=44,
+            cycles,
+            function_id,
+            caption,
+            x=GAP + column * 122,
+            y=HEADER + row * 50,
+            w=116,
+            h=44,
             font=SMALL_FONT,
         )
 
@@ -841,15 +1213,24 @@ def _page_library(
         panels = frame(
             outer,
             "Paneles — sus 42 efectos propios, sin ver todavía",
-            MIDDLE_X, 580, MIDDLE_WIDTH, 244, page=PAGE_LIBRARY, solo=True,
+            MIDDLE_X,
+            580,
+            MIDDLE_WIDTH,
+            244,
+            page=PAGE_LIBRARY,
+            solo=True,
             font=TITLE_FONT,
         )
         for index, function_id in enumerate(builtins.scene_ids):
             column, row = index % 12, index // 12
             button(
-                panels, function_id,
+                panels,
+                function_id,
                 _after(names.get(function_id, ""), " - "),
-                x=GAP + column * 51, y=HEADER + row * 52, w=47, h=46,
+                x=GAP + column * 51,
+                y=HEADER + row * 52,
+                w=47,
+                h=46,
                 font=TINY_FONT,
             )
 
@@ -861,32 +1242,52 @@ def _page_library(
         # effect and pulling it to zero simply hands the pace back.
         slider_id = ids.take()
         slider = build_level_slider(
-            outer, slider_id, "Vel. Paneles",
-            RIGHT_X, 580, 90, 244,
+            outer,
+            slider_id,
+            "Vel. Paneles",
+            RIGHT_X,
+            580,
+            90,
+            244,
             channels=list(builtins.speed_channels),
         )
         _on_page(slider, PAGE_LIBRARY)
         console.widget_ids.append(slider_id)
         label(
-            outer, "Velocidad de los efectos de los paneles. A cero, manda "
-            "la del ciclo (200).",
-            RIGHT_X + 96, 580, RIGHT_WIDTH - 96, 120,
-            page=PAGE_LIBRARY, font=HELP_FONT,
+            outer,
+            "Velocidad de los efectos de los paneles. A cero, manda la del ciclo (200).",
+            RIGHT_X + 96,
+            580,
+            RIGHT_WIDTH - 96,
+            120,
+            page=PAGE_LIBRARY,
+            font=HELP_FONT,
         )
         # The old "Strobo LED - Speed Auto", beside the fader it shares the
         # channel with: the pace rides 160-255 on its own until somebody
         # stops it (HTP - the raised fader wins while it is higher).
         master_button(
-            outer, "Vel. Paneles Auto", "VEL. AUTO — sube y baja sola",
-            RIGHT_X + 96, 704, RIGHT_WIDTH - 96, 60, page=PAGE_LIBRARY,
+            outer,
+            "Vel. Paneles Auto",
+            "VEL. AUTO — sube y baja sola",
+            RIGHT_X + 96,
+            704,
+            RIGHT_WIDTH - 96,
+            60,
+            page=PAGE_LIBRARY,
             font=SMALL_FONT,
         )
 
     if matrices and matrices[0].matrix_ids:
         matrix_widget_id = ids.take()
         control = build_matrix_control(
-            outer, matrix_widget_id, "Matriz en vivo", RIGHT_X, 68,
-            RIGHT_WIDTH, 200,
+            outer,
+            matrix_widget_id,
+            "Matriz en vivo",
+            RIGHT_X,
+            68,
+            RIGHT_WIDTH,
+            200,
             function_id=matrices[0].matrix_ids[0],
             algorithms=list(matrix_algorithms),
         )
@@ -895,20 +1296,44 @@ def _page_library(
 
     for index, line in enumerate(LIBRARY_LINES):
         label(
-            outer, line, LEFT_X, 410 + index * 26, LEFT_WIDTH, 24,
-            page=PAGE_LIBRARY, font=HELP_FONT,
+            outer,
+            line,
+            LEFT_X,
+            410 + index * 26,
+            LEFT_WIDTH,
+            24,
+            page=PAGE_LIBRARY,
+            font=HELP_FONT,
         )
 
 
 def _wheel_frame(
-    outer, button, frame, names, scene_ids, caption, marker, x, y, width,
-    height, page, columns,
+    outer,
+    button,
+    frame,
+    names,
+    scene_ids,
+    caption,
+    marker,
+    x,
+    y,
+    width,
+    height,
+    page,
+    columns,
 ) -> None:
     """A solo frame of wheel positions - gobos, beam colours, prism."""
     if not scene_ids:
         return
     element = frame(
-        outer, caption, x, y, width, height, page=page, solo=True,
+        outer,
+        caption,
+        x,
+        y,
+        width,
+        height,
+        page=page,
+        solo=True,
         font=TITLE_FONT,
     )
     step = (width - GAP * 2) // columns
@@ -916,8 +1341,13 @@ def _wheel_frame(
         column, row = index % columns, index // columns
         caption = _after(names.get(function_id, ""), marker)
         button(
-            element, function_id, LONG_WHEEL_NAME.get(caption, caption),
-            x=GAP + column * step, y=HEADER + row * 52, w=step - 4, h=46,
+            element,
+            function_id,
+            LONG_WHEEL_NAME.get(caption, caption),
+            x=GAP + column * step,
+            y=HEADER + row * 52,
+            w=step - 4,
+            h=46,
             font=TINY_FONT,
         )
 
@@ -961,18 +1391,18 @@ def _swatch(name: str, second: bool = False) -> str:
 
 
 def _bank_caption(name: str) -> str:
-    """"Rojo BarrasLed" is a red button in the bars' bank: it says "Rojo"."""
-    first = name.split(" ")[0] if name else ""
+    """ "Rojo BarrasLed" is a red button in the bars' bank: it says "Rojo"."""
+    first = name.split(" ", maxsplit=1)[0] if name else ""
     return SHORT_COLOR.get(first, first)
 
 
 def _wheel_caption(name: str) -> str:
-    """"Rueda Colores BarrasLed" is wider than its button; drop the "Rueda"."""
+    """ "Rueda Colores BarrasLed" is wider than its button; drop the "Rueda"."""
     return _after(name, "Rueda ")
 
 
 def _mix_caption(name: str) -> str:
-    """"Rojo / Azul PAR" reads as "Ro/Az" on a 44px button.
+    """ "Rojo / Azul PAR" reads as "Ro/Az" on a 44px button.
 
     Two letters, not one: Azul and Amarillo both start with an A, so a
     one-letter code gave six pairs of buttons the same label.

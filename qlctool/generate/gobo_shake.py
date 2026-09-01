@@ -39,7 +39,8 @@ def generate_gobo_shake(
 ) -> GeneratedGoboShake:
     """Shake scenes over every fixture that has both a gobo wheel and a shake."""
     caps = [
-        c for c in capabilities_of(workspace.root, library)
+        c
+        for c in capabilities_of(workspace.root, library)
         if c.has_role(roles.GOBO) and c.has_role(roles.GOBO_SHAKE)
     ]
     if not caps:
@@ -48,8 +49,7 @@ def generate_gobo_shake(
     # Pattern positions come from the first fixture: they share the wheel.
     _, positions = caps[0].wheel_for_role(roles.GOBO)
     patterns = [
-        p for p in positions
-        if (p.preset or "") == GOBO_POSITION_PRESET and p is not positions[0]
+        p for p in positions if (p.preset or "") == GOBO_POSITION_PRESET and p is not positions[0]
     ]
     if not patterns:
         return GeneratedGoboShake()
@@ -67,9 +67,9 @@ def generate_gobo_shake(
             ]
             values[capability.fixture.fixture_id] = pairs
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_scene(
-            function_id, f"Gobo Shake - {position.name}", values, path=path
-        ))
+        workspace.add_function(
+            build_scene(function_id, f"Gobo Shake - {position.name}", values, path=path)
+        )
         scene_ids.append(function_id)
     return GeneratedGoboShake(scene_ids=scene_ids)
 

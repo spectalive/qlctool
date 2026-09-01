@@ -31,9 +31,7 @@ class Moment:
     members: Sequence[int]
 
 
-def generate_moments(
-    workspace: Workspace, moments: Sequence[Moment]
-) -> dict[str, int]:
+def generate_moments(workspace: Workspace, moments: Sequence[Moment]) -> dict[str, int]:
     """A Collection per moment; a moment with nothing in it is not generated."""
     generated: dict[str, int] = {}
     for moment in moments:
@@ -41,8 +39,6 @@ def generate_moments(
         if not members:
             continue
         function_id = next_function_id(workspace.root)
-        workspace.add_function(
-            build_collection(function_id, moment.name, members, path=PATH)
-        )
+        workspace.add_function(build_collection(function_id, moment.name, members, path=PATH))
         generated[moment.name] = function_id
     return generated

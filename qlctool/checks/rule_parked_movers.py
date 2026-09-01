@@ -53,20 +53,21 @@ def check_parked_movers(graph: ShowGraph) -> list[Finding]:
             parked = movers - moved
             if not parked:
                 continue
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(step),
-                message=(
-                    "es un bloque del ciclo automatico que mueve unas cabezas "
-                    "y deja estas quietas durante todo el paso: una lira que "
-                    "no se mueve durante minutos parece averiada, no en reposo"
-                ),
-                fixtures=tuple(sorted(
-                    graph.capabilities[fixture_id].fixture.name
-                    for fixture_id in parked
-                )),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(step),
+                    message=(
+                        "es un bloque del ciclo automatico que mueve unas cabezas "
+                        "y deja estas quietas durante todo el paso: una lira que "
+                        "no se mueve durante minutos parece averiada, no en reposo"
+                    ),
+                    fixtures=tuple(
+                        sorted(graph.capabilities[fixture_id].fixture.name for fixture_id in parked)
+                    ),
+                )
+            )
     return findings
 
 
@@ -82,9 +83,7 @@ def _moved_heads(graph: ShowGraph, function_id: int) -> set[int]:
             if identifier is None or not (identifier.text or "").strip().isdigit():
                 continue
             mode = find_local(element, "Mode")
-            mode_value = (
-                int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
-            )
+            mode_value = int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
             if mode_value != EFX_PAN_TILT:
                 continue
             fixture_id = int(identifier.text)

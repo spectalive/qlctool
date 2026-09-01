@@ -29,8 +29,7 @@ def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
     capable = {
         fixture_id: offsets
         for fixture_id, capability in graph.capabilities.items()
-        if not capability.is_smoke
-        and (offsets := strobe_capable_offsets(capability))
+        if not capability.is_smoke and (offsets := strobe_capable_offsets(capability))
     }
     findings: list[Finding] = []
     for function_id in sorted(graph.functions):
@@ -48,17 +47,19 @@ def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
             if fixture_id not in written
         ]
         if missing:
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                fixtures=tuple(missing),
-                message=(
-                    f"es una escena de estrobo que deja fuera {len(missing)} "
-                    f"aparatos con canal de estrobo: media sala parpadea y la "
-                    f"otra media se queda mirando"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    fixtures=tuple(missing),
+                    message=(
+                        f"es una escena de estrobo que deja fuera {len(missing)} "
+                        f"aparatos con canal de estrobo: media sala parpadea y la "
+                        f"otra media se queda mirando"
+                    ),
+                )
+            )
     return findings
 
 

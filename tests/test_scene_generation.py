@@ -40,13 +40,18 @@ def test_red_scene_encoding():
     # see shutter_open_value, and the beams that stayed dark on 248.
     crom = next(c for c in caps if "CromoWash" in c.fixture.model)
     assert values[crom.fixture.fixture_id] == [
-        (5, 255), (6, 0), (7, 0), (9, 255), (10, 0),
+        (5, 255),
+        (6, 0),
+        (7, 0),
+        (9, 255),
+        (10, 0),
     ]
 
     # LED Bar: eight red segments all at 255.
     bar = next(c for c in caps if "LED Bar 240" in c.fixture.model)
-    reds = [v for off, v in values[bar.fixture.fixture_id]
-            if off in bar.offsets_for_role(roles.RED)]
+    reds = [
+        v for off, v in values[bar.fixture.fixture_id] if off in bar.offsets_for_role(roles.RED)
+    ]
     assert reds == [255] * 8
 
 
@@ -67,8 +72,7 @@ def test_inject_scene_keeps_show_valid(tmp_path):
     assert _count_functions(reloaded) == before + 1
 
     scene = next(
-        f for f in iter_local(reloaded, "Function")
-        if f.attrib.get("Name") == "GEN Todo Azul"
+        f for f in iter_local(reloaded, "Function") if f.attrib.get("Name") == "GEN Todo Azul"
     )
     assert scene.attrib["Type"] == "Scene"
     assert scene.attrib["ID"] == str(fid)

@@ -39,18 +39,20 @@ def check_unaimed_movement(graph: ShowGraph) -> list[Finding]:
         heads = _heads_moved(graph, function)
         if not heads:
             continue
-        findings.append(Finding(
-            rule=RULE,
-            severity=WARNING,
-            function=graph.name(function_id),
-            message=(
-                f"dibuja la figura centrada en el tilt {MID_TRAVEL}, que es el "
-                "centro del recorrido y no un sitio: es donde queda una figura "
-                "que nadie ha apuntado - el suelo en las 7R, la pared del fondo "
-                "en los washes"
-            ),
-            fixtures=tuple(sorted(heads)),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=WARNING,
+                function=graph.name(function_id),
+                message=(
+                    f"dibuja la figura centrada en el tilt {MID_TRAVEL}, que es el "
+                    "centro del recorrido y no un sitio: es donde queda una figura "
+                    "que nadie ha apuntado - el suelo en las 7R, la pared del fondo "
+                    "en los washes"
+                ),
+                fixtures=tuple(sorted(heads)),
+            )
+        )
     return findings
 
 
@@ -74,9 +76,7 @@ def _heads_moved(graph: ShowGraph, function) -> set[str]:
         if identifier is None or not (identifier.text or "").strip().isdigit():
             continue
         mode = find_local(element, "Mode")
-        mode_value = (
-            int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
-        )
+        mode_value = int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
         if mode_value != EFX_PAN_TILT:
             continue
         capability = graph.capabilities.get(int(identifier.text))

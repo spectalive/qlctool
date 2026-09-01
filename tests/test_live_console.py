@@ -33,8 +33,16 @@ SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 OPTIONAL_KEYS = {"Humo Vertical YA"}
 
 WIDGET_TAGS = {
-    "Frame", "SoloFrame", "Button", "Label", "Slider", "XYPad", "SpeedDial",
-    "AudioTriggers", "Matrix", "Clock",
+    "Frame",
+    "SoloFrame",
+    "Button",
+    "Label",
+    "Slider",
+    "XYPad",
+    "SpeedDial",
+    "AudioTriggers",
+    "Matrix",
+    "Clock",
 }
 
 
@@ -109,9 +117,7 @@ def test_no_solo_frame_holds_a_function_and_what_it_starts(console):
         if localname(widget) != "SoloFrame":
             continue
         inside = {
-            int(find_local(b, "Function").attrib["ID"])
-            for b in widget
-            if localname(b) == "Button"
+            int(find_local(b, "Function").attrib["ID"]) for b in widget if localname(b) == "Button"
         }
         for function_id in inside:
             clash = inside & members.get(function_id, set())
@@ -184,11 +190,7 @@ def test_the_bass_band_presses_a_flash_hit_and_never_a_strobe(console):
     test pins the generator's own output.
     """
     _, frame = console
-    buttons = {
-        int(w.attrib["ID"]): w
-        for w, _, _ in _walk(frame)
-        if localname(w) == "Button"
-    }
+    buttons = {int(w.attrib["ID"]): w for w, _, _ in _walk(frame) if localname(w) == "Button"}
     triggers = [w for w, _, _ in _walk(frame) if localname(w) == "AudioTriggers"]
     assert len(triggers) == 1
 
@@ -212,11 +214,7 @@ def _frame_named(frame, caption):
 
 
 def _captions(widget):
-    return [
-        child.attrib.get("Caption", "")
-        for child in widget
-        if localname(child) == "Button"
-    ]
+    return [child.attrib.get("Caption", "") for child in widget if localname(child) == "Button"]
 
 
 def test_the_room_is_in_exactly_one_state(console):
@@ -292,10 +290,7 @@ def test_every_button_on_the_show_page_says_its_own_key(console):
     ):
         assert " · " in caption, caption
     actual = _captions(_frame_named(frame, "GOLPES"))
-    expected = [
-        caption for name, caption in HITS
-        if name not in OPTIONAL_KEYS or caption in actual
-    ]
+    expected = [caption for name, caption in HITS if name not in OPTIONAL_KEYS or caption in actual]
     assert expected == actual
 
 
@@ -325,10 +320,7 @@ def test_the_console_can_reach_the_grand_master(console):
     """
     _, frame = console
     sliders = [w for w, _, _ in _walk(frame) if localname(w) == "Slider"]
-    modes = {
-        (find_local(s, "SliderMode").text or ""): find_local(s, "SliderMode")
-        for s in sliders
-    }
+    modes = {(find_local(s, "SliderMode").text or ""): find_local(s, "SliderMode") for s in sliders}
     # Exactly one GrandMaster; the Level fader over the panels' speed channel
     # ("Vel. Paneles", 2026-08-27) rides beside it and must not absorb it.
     assert sorted(modes) == ["GrandMaster", "Level"]
@@ -344,9 +336,7 @@ def test_a_mix_button_is_not_ambiguous(console):
     for child in mixes:
         if localname(child) != "Button":
             continue
-        by_page.setdefault(child.attrib.get("Page", "0"), []).append(
-            child.attrib["Caption"]
-        )
+        by_page.setdefault(child.attrib.get("Page", "0"), []).append(child.attrib["Caption"])
     assert by_page
     for page, captions in by_page.items():
         assert len(captions) == len(set(captions)), page

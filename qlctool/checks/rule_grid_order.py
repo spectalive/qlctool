@@ -32,7 +32,7 @@ from lxml import etree
 
 from ..fixture_group import fixture_groups
 from ..stage_x_positions import stage_x_positions
-from .finding import Finding, WARNING
+from .finding import WARNING, Finding
 
 RULE = "rejilla fuera de orden"
 
@@ -51,25 +51,23 @@ def check_grid_order(root: etree._Element) -> list[Finding]:
                 (fixture_id not in positions, positions.get(fixture_id, 0.0))
                 for _, fixture_id in sorted(row)
             ]
-            out = [
-                (before, after)
-                for before, after in zip(keys, keys[1:])
-                if after < before
-            ]
+            out = [(before, after) for before, after in zip(keys, keys[1:]) if after < before]
             if not out:
                 continue
-            findings.append(Finding(
-                rule=RULE,
-                severity=WARNING,
-                function=group.name,
-                message=(
-                    f"la fila {y} de la rejilla salta por el escenario "
-                    f"{len(out)} veces ({', '.join(_jump(a, b) for a, b in out[:3])}"
-                    f"{', ...' if len(out) > 3 else ''}): un barrido por la "
-                    f"rejilla no barre la sala. `qlctool patch --group-sort "
-                    f"{group.group_id}` la reordena"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=WARNING,
+                    function=group.name,
+                    message=(
+                        f"la fila {y} de la rejilla salta por el escenario "
+                        f"{len(out)} veces ({', '.join(_jump(a, b) for a, b in out[:3])}"
+                        f"{', ...' if len(out) > 3 else ''}): un barrido por la "
+                        f"rejilla no barre la sala. `qlctool patch --group-sort "
+                        f"{group.group_id}` la reordena"
+                    ),
+                )
+            )
     return findings
 
 

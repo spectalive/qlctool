@@ -50,10 +50,7 @@ def generate_pixel_base(
     for capability in capabilities:
         if capability.fixture.fixture_id not in wanted or capability.is_smoke:
             continue
-        if not any(
-            capability.has_role(role)
-            for role in (roles.RED, roles.GREEN, roles.BLUE)
-        ):
+        if not any(capability.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE)):
             continue
         pairs = [(o, 255) for o in capability.offsets_for_role(roles.DIMMER)]
         pairs += shutter_open_pairs(capability)

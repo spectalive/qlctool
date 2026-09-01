@@ -37,11 +37,11 @@ DEFAULT_STAGE = (12, 6, 8)
 # view collapses depth, so rows that differ only in Z land on top of each other
 # there.
 BAND_ROWS = {
-    "beams":  (0.80, 0.82),
+    "beams": (0.80, 0.82),
     "washes": (0.58, 0.20),
-    "bars":   (0.02, 0.88),
-    "pars":   (0.06, 0.10),
-    "smoke":  (0.00, 0.95),
+    "bars": (0.02, 0.88),
+    "pars": (0.06, 0.10),
+    "smoke": (0.00, 0.95),
 }
 
 # Clear space kept at each end of a row, as a fraction of the stage width. A
@@ -65,17 +65,15 @@ class GeneratedStage:
 
 def unplaced_fixtures(workspace: Workspace) -> list[int]:
     """Patched fixtures the Monitor has no position for - the ones QLC+ draws
-    at the origin, on top of each other."""
+    at the origin, on top of each other.
+    """
     monitor = find_local(workspace.engine, "Monitor")
     placed = (
         {int(item.attrib["ID"]) for item in findall_local(monitor, "FxItem")}
-        if monitor is not None else set()
+        if monitor is not None
+        else set()
     )
-    return [
-        f.fixture_id
-        for f in patched_fixtures(workspace.root)
-        if f.fixture_id not in placed
-    ]
+    return [f.fixture_id for f in patched_fixtures(workspace.root) if f.fixture_id not in placed]
 
 
 def spread(count: int, span: float, margin: float) -> list[float]:
@@ -96,8 +94,7 @@ def generate_stage_layout(
 ) -> GeneratedStage:
     """Rewrite `<Monitor>` with a position for every patched fixture."""
     band_by_id = {
-        c.fixture.fixture_id: band_of(c)
-        for c in capabilities_of(workspace.root, library)
+        c.fixture.fixture_id: band_of(c) for c in capabilities_of(workspace.root, library)
     }
     # A fixture whose definition the library does not have still needs a spot,
     # and the front row is where an unknown light is least in the way.
@@ -121,8 +118,7 @@ def generate_stage_layout(
         workspace,
         stage,
         point_of_view,
-        [MonitorItem(fixture_id=fid, x=x, y=y, z=z)
-         for fid, (x, y, z) in positions.items()],
+        [MonitorItem(fixture_id=fid, x=x, y=y, z=z) for fid, (x, y, z) in positions.items()],
     )
     return GeneratedStage(
         stage=stage,

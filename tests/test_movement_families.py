@@ -32,9 +32,7 @@ def library():
 
 def _efx_by_name(root):
     return {
-        f.attrib["Name"]: f
-        for f in iter_local(root, "Function")
-        if f.attrib.get("Type") == "EFX"
+        f.attrib["Name"]: f for f in iter_local(root, "Function") if f.attrib.get("Type") == "EFX"
     }
 
 
@@ -105,8 +103,7 @@ def test_movement_families_still_pass_the_mixed_optics_rule(library):
     """One optics family per EFX - adding cascades must not blur that line."""
     ws = _generated(library)
     findings = [
-        f for f in check_workspace(ws, library)
-        if f.rule == "familias de movimiento mezcladas"
+        f for f in check_workspace(ws, library) if f.rule == "familias de movimiento mezcladas"
     ]
     assert not findings, "\n".join(str(f) for f in findings)
 

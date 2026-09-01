@@ -39,15 +39,17 @@ def check_latched_strobe(graph: ShowGraph, groups, entries) -> list[Finding]:
             if run_order is not None and (run_order.text or "").strip() == BOUNDED:
                 continue
             reported.add(function_id)
-            findings.append(Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(function_id),
-                message=(
-                    f"es un estrobo que hace bucle y cuelga del boton "
-                    f"«{caption}»: una pulsacion y el rig parpadea hasta que "
-                    f"alguien lo apague; una rafaga es un chaser SingleShot "
-                    f"que termina solo"
-                ),
-            ))
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(function_id),
+                    message=(
+                        f"es un estrobo que hace bucle y cuelga del boton "
+                        f"«{caption}»: una pulsacion y el rig parpadea hasta que "
+                        f"alguien lo apague; una rafaga es un chaser SingleShot "
+                        f"que termina solo"
+                    ),
+                )
+            )
     return findings

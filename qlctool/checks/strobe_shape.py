@@ -19,17 +19,23 @@ from ..xmlutil import find_local, findall_local
 from .show_graph import ShowGraph, reach
 
 INTENSITY_ROLES = (
-    roles.DIMMER, roles.RED, roles.GREEN, roles.BLUE, roles.WHITE,
-    roles.AMBER, roles.UV, roles.CYAN, roles.MAGENTA, roles.YELLOW,
+    roles.DIMMER,
+    roles.RED,
+    roles.GREEN,
+    roles.BLUE,
+    roles.WHITE,
+    roles.AMBER,
+    roles.UV,
+    roles.CYAN,
+    roles.MAGENTA,
+    roles.YELLOW,
 )
 # MasterTimer runs at 50 Hz; a zero-duration step flips every other tick.
 TICK_FLASH_HZ = 25.0
 STROBE_ALGORITHM = "Strobe"
 
 
-def strobe_flash_rate(
-    graph: ShowGraph, groups, function_id: int
-) -> float | None:
+def strobe_flash_rate(graph: ShowGraph, groups, function_id: int) -> float | None:
     """Flashes per second this function produces, or None when it is no strobe."""
     function = graph.functions.get(function_id)
     if function is None:
@@ -97,9 +103,7 @@ def _pairs(count: int, run_order: str):
     return pairs
 
 
-def _intensity_shape(
-    graph: ShowGraph, groups, function_id: int
-) -> tuple[frozenset, bool] | None:
+def _intensity_shape(graph: ShowGraph, groups, function_id: int) -> tuple[frozenset, bool] | None:
     """(intensity channels this step writes, whether any of them is lit).
 
     None when the step writes no intensity channel at all - a gobo scene, a
@@ -112,9 +116,7 @@ def _intensity_shape(
         if capability is None or capability.is_smoke:
             continue
         wanted = {
-            offset
-            for role in INTENSITY_ROLES
-            for offset in capability.offsets_for_role(role)
+            offset for role in INTENSITY_ROLES for offset in capability.offsets_for_role(role)
         }
         for offset, value in written.items():
             if offset not in wanted:

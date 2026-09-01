@@ -20,10 +20,7 @@ SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 
 
 def _group(root, group_id):
-    return next(
-        e for e in iter_local(root, "FixtureGroup")
-        if e.attrib.get("ID") == str(group_id)
-    )
+    return next(e for e in iter_local(root, "FixtureGroup") if e.attrib.get("ID") == str(group_id))
 
 
 @pytest.fixture
@@ -89,9 +86,6 @@ def test_growing_the_grid_then_adding_works(root):
     set_group_size(root, 2, 8, 1)  # the PAR group, 7x1 with 7 heads
     add_group_head(root, 2, 24, x=7, y=0)
     group = _group(root, 2)
-    placed = [
-        h for h in findall_local(group, "Head")
-        if h.attrib["Fixture"] == "24"
-    ]
+    placed = [h for h in findall_local(group, "Head") if h.attrib["Fixture"] == "24"]
     assert len(placed) == 1
     assert placed[0].text == "0"

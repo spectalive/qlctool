@@ -49,9 +49,7 @@ CRAWL_FLASH_FRACTION = 0.7
 FAST_TO_SLOW_PRESET = "StrobeFastToSlow"
 
 
-def check_flash_speed(
-    graph: ShowGraph, groups, root: etree._Element
-) -> list[Finding]:
+def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []
@@ -61,9 +59,7 @@ def check_flash_speed(
     crawl_by_scene: dict[str, list[tuple[int, float]]] = {}
     for function_id in _hand_flash_scenes(graph, console):
         scene = graph.functions[function_id]
-        for fixture_id, written in driven_channels(
-            scene, graph.capabilities, groups
-        ).items():
+        for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None or capability.is_smoke:
                 continue
@@ -76,50 +72,58 @@ def check_flash_speed(
                 if key not in best or fraction > best[key][0]:
                     best[key] = (fraction, graph.name(function_id))
                 if fraction < CRAWL_FLASH_FRACTION:
-                    crawl_by_scene.setdefault(
-                        graph.name(function_id), []
-                    ).append((fixture_id, fraction))
+                    crawl_by_scene.setdefault(graph.name(function_id), []).append(
+                        (fixture_id, fraction)
+                    )
     slow_by_scene: dict[str, list[tuple[int, float]]] = {}
     for (fixture_id, offset), (fraction, scene_name) in sorted(best.items()):
         if fraction < FAST_FLASH_FRACTION:
             slow_by_scene.setdefault(scene_name, []).append((fixture_id, fraction))
     findings: list[Finding] = []
     for scene_name, slow in sorted(slow_by_scene.items()):
-        names = sorted({
-            graph.capabilities[fixture_id].fixture.name or str(fixture_id)
-            for fixture_id, _ in slow
-        })
+        names = sorted(
+            {
+                graph.capabilities[fixture_id].fixture.name or str(fixture_id)
+                for fixture_id, _ in slow
+            }
+        )
         slowest = min(fraction for _, fraction in slow)
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=scene_name,
-            fixtures=tuple(names),
-            message=(
-                f"es el flash mas rapido que reciben {len(slow)} canales de "
-                f"estrobo y se queda al {slowest:.0%} de su carrera "
-                f"slow-to-fast - un flash a toda velocidad vive del "
-                f"{FAST_FLASH_FRACTION:.0%} para arriba"
-            ),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=scene_name,
+                fixtures=tuple(names),
+                message=(
+                    f"es el flash mas rapido que reciben {len(slow)} canales de "
+                    f"estrobo y se queda al {slowest:.0%} de su carrera "
+                    f"slow-to-fast - un flash a toda velocidad vive del "
+                    f"{FAST_FLASH_FRACTION:.0%} para arriba"
+                ),
+            )
+        )
     for scene_name, crawling in sorted(crawl_by_scene.items()):
-        names = sorted({
-            graph.capabilities[fixture_id].fixture.name or str(fixture_id)
-            for fixture_id, _ in crawling
-        })
+        names = sorted(
+            {
+                graph.capabilities[fixture_id].fixture.name or str(fixture_id)
+                for fixture_id, _ in crawling
+            }
+        )
         slowest = min(fraction for _, fraction in crawling)
-        findings.append(Finding(
-            rule=RULE,
-            severity=ERROR,
-            function=scene_name,
-            fixtures=tuple(names),
-            message=(
-                f"escribe {len(crawling)} canales de estrobo por debajo del "
-                f"{CRAWL_FLASH_FRACTION:.0%} de su carrera slow-to-fast (el "
-                f"peor al {slowest:.0%}) - eso ya no es un flash, es un "
-                f"parpadeo a paso de tortuga"
-            ),
-        ))
+        findings.append(
+            Finding(
+                rule=RULE,
+                severity=ERROR,
+                function=scene_name,
+                fixtures=tuple(names),
+                message=(
+                    f"escribe {len(crawling)} canales de estrobo por debajo del "
+                    f"{CRAWL_FLASH_FRACTION:.0%} de su carrera slow-to-fast (el "
+                    f"peor al {slowest:.0%}) - eso ya no es un flash, es un "
+                    f"parpadeo a paso de tortuga"
+                ),
+            )
+        )
     return findings
 
 

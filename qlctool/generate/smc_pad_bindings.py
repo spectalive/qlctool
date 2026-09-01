@@ -31,13 +31,13 @@ from .smc_pad_device import control_channel, pad_channel
 
 SMC_PAD_BINDINGS: dict[str, int] = {
     # Bank 1, top row (pads 13-16): the hits you hammer.
-    "Flash 100%": pad_channel(13),           # the punch
-    "Flash 50%": pad_channel(14),            # the gentler fill
+    "Flash 100%": pad_channel(13),  # the punch
+    "Flash 50%": pad_channel(14),  # the gentler fill
     "Flash Color": pad_channel(15),
     "Color Beam Animacion": pad_channel(16),
     # Bank 1, second row (pads 9-12): smoke and strobes.
-    "Humo Vertical YA": pad_channel(9),      # the punch, under pad 13
-    "Humo ON": pad_channel(10),              # the fill, under pad 14
+    "Humo Vertical YA": pad_channel(9),  # the punch, under pad 13
+    "Humo ON": pad_channel(10),  # the fill, under pad 14
     "Strobo Rapido": pad_channel(11),
     "Strobo Medio": pad_channel(12),
     # Bank 1, third row (pads 5-8): the room's states.
@@ -61,12 +61,12 @@ SMC_PAD_BINDINGS: dict[str, int] = {
     "Arcoiris Pasos": pad_channel(12, bank=2),
     # Encoders (CC on channel 1, absolute 0-127). The device numbers its knobs
     # bottom-up too: knob 1 is bottom-left, labeled RATE on the panel.
-    "Master General": control_channel(30),   # the whole room's intensity
-    "Tempo Show": control_channel(31),       # the tap dial's time wheel
+    "Master General": control_channel(30),  # the whole room's intensity
+    "Tempo Show": control_channel(31),  # the tap dial's time wheel
     "Vel. Movimiento": control_channel(32),  # the movement dial's
     # The small buttons on the right edge (CC on channel 1, 127/0).
     "Pagina Anterior": control_channel(25),  # "<" - the console's PgUp
     "Pagina Siguiente": control_channel(26),  # ">" - the console's PgDown
-    "PARAR TODO": control_channel(28),       # pause - stop every running function
-    "APAGON": control_channel(29),           # record - the blackout latch
+    "PARAR TODO": control_channel(28),  # pause - stop every running function
+    "APAGON": control_channel(29),  # record - the blackout latch
 }
