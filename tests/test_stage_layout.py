@@ -13,11 +13,11 @@ import pytest
 
 from qlctool.fixture import patched_fixtures
 from qlctool.generate.stage_layout import (
-    POINTS_OF_VIEW,
     generate_stage_layout,
     spread,
 )
 from qlctool.library import FixtureLibrary
+from qlctool.monitor_node import POINTS_OF_VIEW
 from qlctool.stage_band import BARS, BEAMS, PARS, SMOKE, WASHES
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local

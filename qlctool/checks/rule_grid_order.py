@@ -28,6 +28,8 @@ would still rewrite, which is a checker disagreeing with its own fixer.
 `qlctool patch --group-sort GROUP` is the fix.
 """
 
+import itertools
+
 from lxml import etree
 
 from ..fixture_group import fixture_groups
@@ -51,7 +53,7 @@ def check_grid_order(root: etree._Element) -> list[Finding]:
                 (fixture_id not in positions, positions.get(fixture_id, 0.0))
                 for _, fixture_id in sorted(row)
             ]
-            out = [(before, after) for before, after in zip(keys, keys[1:]) if after < before]
+            out = [(before, after) for before, after in itertools.pairwise(keys) if after < before]
             if not out:
                 continue
             findings.append(

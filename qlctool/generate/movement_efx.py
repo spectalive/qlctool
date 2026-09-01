@@ -135,14 +135,14 @@ def generate_movement_efx(
         name = (names or {}).get(algorithm, f"{label_prefix} {label}")
         shape_rotation = (rotation_by_algorithm or {}).get(algorithm, rotation)
         shape_parts: list[int] = []
-        for paired, fixture_ids in parts:
+        for paired, part_fixture_ids in parts:
             fid = next_function_id(workspace.root)
             suffix = f" ({'16 bit' if paired else '8 bit'})" if split else ""
             workspace.add_function(
                 build_efx(
                     fid,
                     f"{name}{suffix}",
-                    _members(fixture_ids),
+                    _members(part_fixture_ids),
                     algorithm=algorithm,
                     # The axis defaults QLC+ writes for a plain circle, with
                     # the centre moved off mid-travel onto the rig's own aim.

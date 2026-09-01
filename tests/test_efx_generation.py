@@ -75,9 +75,9 @@ def test_builder_reproduces_every_real_efx(show):
         # <Direction>/<StartOffset> also appear inside <Fixture>; the EFX-level
         # ones are the direct children, which find_local returns first only
         # because the Fixture blocks are nested - read them explicitly.
-        top = [c for c in original]
+        top = list(original)
         efx_direction = next(c for c in top if c.tag.endswith("}Direction")).text.strip()
-        efx_start_offset = [c for c in top if c.tag.endswith("}StartOffset")][0].text.strip()
+        efx_start_offset = next(c for c in top if c.tag.endswith("}StartOffset")).text.strip()
 
         rebuilt = build_efx(
             int(original.attrib["ID"]),

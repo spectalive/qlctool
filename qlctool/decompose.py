@@ -11,7 +11,7 @@ from pathlib import Path
 
 from lxml import etree
 
-from .constants import DOCTYPE, XML_DECLARATION
+from .constants import XML_DECLARATION
 from .slug import slugify
 from .workspace import Workspace
 from .xmlutil import localname

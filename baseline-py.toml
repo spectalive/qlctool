@@ -1,0 +1,27 @@
+# baseline-py configuration - https://github.com/BusiRocket/baseline
+schema-version = 1
+source-roots = ["qlctool"]
+test-roots = ["tests"]
+import-package = "qlctool"
+respect-gitignore = true
+# Measured 86.51% at adoption (2026-09-01). The floor sits above the shared 80
+# so the gain cannot drain away unnoticed. Raise it, never lower it.
+coverage-threshold = 85
+
+[limits]
+max-file-lines = 150
+test-max-file-lines = 300
+
+# A role states what a file is. Prefer a role over a suppression: it explains
+# the file instead of silencing an alarm.
+[roles]
+data = []
+registry = []
+entrypoint = []
+generated = []
+namespace-init = []
+
+[[overrides]]
+paths = ["qlctool/checks/rule_*.py"]
+disable = ["BPY002"]
+reason = "CLAUDE.md defines the check-rule convention: a rule lives in checks/rule_<name>.py and exposes check_<name>. The pairing is the repository's own naming rule, not a mismatch"

@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from ..capabilities_of import capabilities_of
 from ..fixture import patched_fixtures
 from ..library import FixtureLibrary
-from ..monitor_node import POINTS_OF_VIEW, MonitorItem, write_monitor
+from ..monitor_node import MonitorItem, write_monitor
 from ..stage_band import BANDS, PARS, band_of
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local

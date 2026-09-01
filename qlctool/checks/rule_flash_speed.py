@@ -76,7 +76,7 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
                         (fixture_id, fraction)
                     )
     slow_by_scene: dict[str, list[tuple[int, float]]] = {}
-    for (fixture_id, offset), (fraction, scene_name) in sorted(best.items()):
+    for (fixture_id, _offset), (fraction, scene_name) in sorted(best.items()):
         if fraction < FAST_FLASH_FRACTION:
             slow_by_scene.setdefault(scene_name, []).append((fixture_id, fraction))
     findings: list[Finding] = []

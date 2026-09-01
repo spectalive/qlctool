@@ -22,7 +22,7 @@ Tempo is read off the function's own `<Tempo>`, never off a name, and the step
 kinds off the graph.
 """
 
-from ..xmlutil import find_local, findall_local
+from ..xmlutil import find_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 

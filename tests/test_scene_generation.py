@@ -7,8 +7,6 @@ survive the round trip so generation never corrupts existing content.
 
 from pathlib import Path
 
-import pytest
-
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.functions.scene import build_scene

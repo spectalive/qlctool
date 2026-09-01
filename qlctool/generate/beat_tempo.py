@@ -91,4 +91,4 @@ def _to_beats(function, timing: BeatTiming) -> None:
 
 def _units(beats: float) -> int:
     """Beats to QLC+'s thousandths, on its own eighth-of-a-beat grid."""
-    return int(round(beats * UNITS_PER_BEAT / QUANTUM)) * QUANTUM
+    return round(beats * UNITS_PER_BEAT / QUANTUM) * QUANTUM

@@ -20,7 +20,6 @@ from qlctool.repatch.patch_element import patch_element
 from qlctool.repatch.remove import remove_fixture
 from qlctool.repatch.rename import rename_fixture
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local
 
 REPO = Path(__file__).resolve().parents[3]
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

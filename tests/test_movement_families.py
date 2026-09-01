@@ -19,7 +19,7 @@ from qlctool.library import FixtureLibrary
 from qlctool.monitor_positions import house_right_fixture_ids
 from qlctool.skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, iter_local, localname
+from qlctool.xmlutil import find_local, findall_local, iter_local
 
 REPO = Path(__file__).resolve().parents[3]
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"

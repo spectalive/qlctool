@@ -175,7 +175,7 @@ def test_a_stale_plot_is_refused(workspace, tmp_path):
 
 def test_a_plot_that_forgets_a_fixture_is_refused(workspace, tmp_path):
     document = json.loads(PLOT.read_text())
-    dropped = document["fixtures"].pop()
+    document["fixtures"].pop()
     short = tmp_path / "short.json"
     short.write_text(json.dumps(document))
 

@@ -15,11 +15,15 @@ and Chaser::tap() refuses outright.
 """
 
 from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 from lxml import etree
 
 from ..constants import QLC_NS
 from .appearance import build_appearance
+
+if TYPE_CHECKING:
+    from .dial_function import DialFunction
 from .window_state import build_window_state
 
 # VCSpeedDialFunction::SpeedMultiplier - the dial's value is multiplied by this
