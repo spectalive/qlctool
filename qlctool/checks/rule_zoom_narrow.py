@@ -4,8 +4,8 @@ Until 2026-08-29 nothing in this rig had a zoom channel, so no generator had a
 reason to mention one. That night two Mac Mah MAC WASH 1915Z came in place of
 the CromoWash100s, and their beam width is DMX: a scene that sets colour and
 dimmer and says nothing about zoom leaves the head wherever the last look left
-it, which on a cold desk is 0 - six degrees, a coin on the back wall from a
-fixture the plot calls a wash.
+it, which on a cold desk is 0 - whichever end of the zoom that is on the
+model, and for a week nobody knew which.
 
 It is the shutter's lesson in a second channel: an unwritten channel is not a
 neutral one, and the look that owns the light owns every channel that decides
@@ -43,8 +43,8 @@ def check_zoom_narrow(graph: ShowGraph, groups) -> list[Finding]:
                 function=graph.name(function_id),
                 message=(
                     "enciende la cabeza pero no escribe su zoom: se queda con el "
-                    "que dejo el ultimo look, y sin nadie que lo escriba eso es 0 - "
-                    "el haz mas cerrado que tiene"
+                    "que dejo el ultimo look, y sin nadie que lo escriba eso es 0, "
+                    "sea el extremo que sea en ese modelo"
                 ),
                 fixtures=tuple(sorted(silent)),
             )

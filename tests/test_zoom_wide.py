@@ -30,10 +30,17 @@ def _by_model(caps, model):
     return next(c for c in caps if c.fixture.model == model)
 
 
-def test_the_mac_wash_zoom_opens_to_the_top_of_the_channel(caps):
+def test_the_mac_wash_zoom_opens_to_the_bottom_of_the_channel(caps):
+    """2026-09-02: this test said 255 for a week, and so did both washes.
+
+    The manual prints `Zoom 000-255` and nothing else, the definition guessed
+    `SmallToBig`, and every look ran the washes at 6 degrees. ChamSys MagicQ's
+    personality for the unit says *Wide to Narrow 0-255*; the definition is
+    `BigToSmall` now and the wide end is 0.
+    """
     wash = _by_model(caps, "MAC WASH 1915Z")
-    # 23 Channel mode: offset 5, "SmallToBig" - 255 is the 50 degree end.
-    assert zoom_wide_pairs(wash) == [(5, 255)]
+    # 23 Channel mode: offset 5, "BigToSmall" - 0 is the 50 degree end.
+    assert zoom_wide_pairs(wash) == [(5, 0)]
 
 
 def test_a_fixture_with_no_zoom_is_left_alone(caps):

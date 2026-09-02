@@ -16,6 +16,16 @@ for the whole step, however long that is.
 A Collection somebody presses is not asked the same question: a button named
 after one shape is allowed to move only the fixtures that draw that shape, and
 the operator can see what they pressed.
+
+Nor is a Collection made of nothing but EFX. That is one movement QLC+ made
+us write twice: an EFX turns 16-bit handling off for every fixture in it when
+one of them has a fine channel that is not directly after its coarse one, so a
+family that mixes the two kinds is generated as two EFX under one Collection
+(`efx_16bit`). Since 2026-09-02 the Mini Led Moving Head declares its fine
+channels at 14 and 15, and every wash figure became such a pair. A pair like
+that as a step of the washes' own chaser is the same step it was as one EFX,
+and the beams it does not move are moved by the beams' chaser beside it - the
+block the rule is about is the one that mixes a scene into the step.
 """
 
 from .. import roles
@@ -47,6 +57,8 @@ def check_parked_movers(graph: ShowGraph) -> list[Finding]:
             if graph.kind(step) != CONCURRENT or step in seen:
                 continue
             seen.add(step)
+            if _only_efx(graph, step):
+                continue
             moved = _moved_heads(graph, step)
             if not moved:
                 continue
@@ -69,6 +81,12 @@ def check_parked_movers(graph: ShowGraph) -> list[Finding]:
                 )
             )
     return findings
+
+
+def _only_efx(graph: ShowGraph, function_id: int) -> bool:
+    """A split movement: a Collection whose every member is an EFX."""
+    members = graph.members.get(function_id, ())
+    return bool(members) and all(graph.kind(member) == "EFX" for member in members)
 
 
 def _moved_heads(graph: ShowGraph, function_id: int) -> set[int]:

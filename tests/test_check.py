@@ -1307,6 +1307,33 @@ def test_a_level_of_the_cycle_that_parks_half_the_movers(library):
     assert all("BEAM" in fixture for f in findings for fixture in f.fixtures)
 
 
+def test_a_split_movement_is_not_a_block_that_parks_the_beams(library):
+    """2026-09-02: the wash figures became pairs of EFX, and the rule bit.
+
+    The Mini Led Moving Head's channels 9-16 were settled off three agreeing
+    OEM charts, which put its fine channels at 14 and 15 - not beside the
+    coarse ones - so every wash figure is now a 16-bit EFX and an 8-bit EFX
+    under one Collection (`efx_16bit`). As a step of the washes' chaser that
+    Collection moves the washes and not the beams, exactly as the single EFX
+    did, and the beams' chaser beside it moves the beams. The rule must read
+    it as one movement, not as a block of the cycle parking four 7R - while a
+    block that mixes a static scene into the step still bites (the test
+    above).
+    """
+    workspace = _show()
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "cabezas paradas en el ciclo"
+    ]
+    assert not findings, [f.function for f in findings]
+    functions = _functions(workspace)
+    pairs = [
+        name
+        for name, function in functions.items()
+        if function.attrib.get("Type") == "Collection" and (name or "").startswith("Wash ")
+    ]
+    assert pairs, "the wash figures are no longer split into EFX pairs"
+
+
 def test_a_beam_figure_centred_on_mid_travel(library):
     """2026-08-29: "está todo el rato haciendo un circulo pequeño en el suelo".
 

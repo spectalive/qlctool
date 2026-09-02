@@ -37,7 +37,7 @@ EFFECT = "effect"
 # nothing writes it, which is how this rig ran its seventeen gobos for years.
 FOCUS = "focus"
 # The beam's own width. A wash with a zoom channel and nobody writing it sits at
-# whatever DMX 0 means on that model - on the MAC WASH 1915Z, a pencil - so the
+# whatever DMX 0 means on that model - and nobody knows until a chart says - so the
 # looks that light it have to state it, the way they state the shutter.
 ZOOM = "zoom"
 SPEED = "speed"

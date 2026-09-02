@@ -2,9 +2,10 @@
 
 The rig had no zoom until the MAC WASH 1915Z arrived on 2026-08-29, and every
 generator here reasons about colour, intensity, movement and the shutter. A
-zoom channel nobody writes sits at whatever DMX 0 means on that model - on this
-one, 6 degrees, a pencil - so the fixture the plot calls a wash paints a coin on
-the back wall. Same shape as `shutter_open_pairs`: the looks that light a
+zoom channel nobody writes sits at whatever DMX 0 means on that model, and
+nobody had checked what that was: the first definition guessed narrow, sent 255
+for "wide", and ran both washes as pencils until ChamSys's personality for the
+unit said 0 is the wide end (2026-09-02). Same shape as `shutter_open_pairs`: the looks that light a
 fixture state the channel, because nothing else will.
 
 Which end is wide comes out of the definition, never out of a model name: the
