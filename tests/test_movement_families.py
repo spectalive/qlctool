@@ -31,9 +31,39 @@ def library():
 
 
 def _efx_by_name(root):
-    return {
-        f.attrib["Name"]: f for f in iter_local(root, "Function") if f.attrib.get("Type") == "EFX"
-    }
+    """Every EFX by name - and a split figure by its plain name, via its first part.
+
+    A family that mixes fixtures on both sides of `efx_16bit` is generated as
+    one EFX per side under a Collection carrying the figure's name (the Mini
+    Led Moving Head put the washes there on 2026-09-02). The shape - algorithm,
+    propagation, speed, rotation - is the same on every part, so the plain
+    name resolves to the first; `_efx_parts` is for the per-fixture fields.
+    """
+    functions = {f.attrib["Name"]: f for f in iter_local(root, "Function")}
+    efx = {name: f for name, f in functions.items() if f.attrib.get("Type") == "EFX"}
+    for name, parts in _split_figures(root).items():
+        efx.setdefault(name, parts[0])
+    return efx
+
+
+def _efx_parts(root, name):
+    """The EFX elements behind one figure: itself, or the parts of its split."""
+    split = _split_figures(root)
+    if name in split:
+        return split[name]
+    return [_efx_by_name(root)[name]]
+
+
+def _split_figures(root):
+    by_id = {f.attrib["ID"]: f for f in iter_local(root, "Function") if "ID" in f.attrib}
+    split = {}
+    for f in iter_local(root, "Function"):
+        if f.attrib.get("Type") != "Collection":
+            continue
+        parts = [by_id.get((step.text or "").strip()) for step in findall_local(f, "Step")]
+        if parts and all(p is not None and p.attrib.get("Type") == "EFX" for p in parts):
+            split[f.attrib["Name"]] = parts
+    return split
 
 
 def _generated(library):
@@ -88,14 +118,15 @@ def test_the_far_side_still_runs_the_new_figures_backwards(library):
     functions = _efx_by_name(ws.root)
 
     for name in ("Ola Suave", "Cascada Beams", "Beam Diamante", "Beam Hoja"):
-        function = functions[name]
+        assert name in functions
         checked = 0
-        for fixture in findall_local(function, "Fixture"):
-            fixture_id = int(find_local(fixture, "ID").text)
-            direction = find_local(fixture, "Direction").text
-            expected = "Backward" if fixture_id in mirrored else "Forward"
-            assert direction == expected, f"{name}, fixture {fixture_id}"
-            checked += 1
+        for part in _efx_parts(ws.root, name):
+            for fixture in findall_local(part, "Fixture"):
+                fixture_id = int(find_local(fixture, "ID").text)
+                direction = find_local(fixture, "Direction").text
+                expected = "Backward" if fixture_id in mirrored else "Forward"
+                assert direction == expected, f"{name}, fixture {fixture_id}"
+                checked += 1
         assert checked, name
 
 

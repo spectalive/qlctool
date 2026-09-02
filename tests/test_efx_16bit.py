@@ -49,11 +49,19 @@ def test_the_rig_really_does_have_both_kinds(library):
     assert kinds == {True, False}
 
 
-def test_a_fixture_with_no_fine_channels_never_splits_the_efx(library):
+def test_the_mini_declares_its_fine_channels_two_apart_and_sides_with_the_beams(library):
+    """Until 2026-09-02 this test said the Mini had no fine channels at all.
+
+    Its channels 9-16 were "No function"; three agreeing OEM charts put pan
+    fine and tilt fine at 14 and 15 - twelve channels after their coarse ones
+    - so it is on the 8-bit side of the fence now, with the 7R, and the wash
+    figures that hold it split into two EFX.
+    """
     caps = capabilities_of(Workspace.load(SHOW).root, library)
     mini = next(c for c in caps if c.fixture.model == "Mini Led Moving Head")
-    assert not mini.has_role(roles.PAN_FINE)
-    assert keeps_16bit(mini, PAN_TILT_PAIRS)
+    assert mini.has_role(roles.PAN_FINE)
+    assert mini.offsets_for_role(roles.PAN_FINE)[0] - mini.offsets_for_role(roles.PAN)[0] == 13
+    assert not keeps_16bit(mini, PAN_TILT_PAIRS)
 
 
 # EFXFixture::Mode. The Dimmer mode runs the identical check on the *intensity*

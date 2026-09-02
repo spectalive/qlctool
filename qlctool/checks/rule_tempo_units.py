@@ -20,6 +20,12 @@ beats corrupts it silently, and the room is the only place it shows.
 
 Tempo is read off the function's own `<Tempo>`, never off a name, and the step
 kinds off the graph.
+
+A Collection in the way changes nothing: `Collection::write` starts every member
+with the collection's own override fades (`collection.cpp`), so a Beats chaser
+whose step is a Collection of two EFX - a split figure, `efx_16bit` - hands the
+number through to both. The rule walks through Collections and stops at any
+function with a clock of its own (2026-09-02, when the wash figures split).
 """
 
 from ..xmlutil import find_local
@@ -62,13 +68,7 @@ def check_tempo_units(graph: ShowGraph) -> list[Finding]:
         fade = _fade(function)
         if fade == 0:
             continue
-        hurt = sorted(
-            {
-                graph.name(member)
-                for member in graph.members.get(function_id, ())
-                if graph.kind(member) in SELF_TIMED
-            }
-        )
+        hurt = sorted({graph.name(member) for member in _self_timed(graph, function_id)})
         if not hurt:
             continue
         findings.append(
@@ -87,6 +87,20 @@ def check_tempo_units(graph: ShowGraph) -> list[Finding]:
             )
         )
     return findings
+
+
+def _self_timed(graph: ShowGraph, function_id: int) -> set[int]:
+    """The self-timed functions this one starts, looking through Collections."""
+    found: set[int] = set()
+    stack = list(graph.members.get(function_id, ()))
+    while stack:
+        member = stack.pop()
+        kind = graph.kind(member)
+        if kind in SELF_TIMED:
+            found.add(member)
+        elif kind == "Collection":
+            stack.extend(graph.members.get(member, ()))
+    return found
 
 
 def _fade(function) -> int:

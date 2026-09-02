@@ -560,6 +560,11 @@ def test_a_beats_chaser_driving_millisecond_effects(library):
     its override fade from its own millisecond duration
     (`EFX::loopDuration`), turning a 16 s sweep into a 6 s one. Reproduced by
     putting Movimientos Washes back on Beats with its fade intact.
+
+    Since 2026-09-02 every step of that chaser is a Collection of two EFX (the
+    wash figures split on `efx_16bit`), and `Collection::write` hands the
+    chaser's override fade straight to both - so the rule has to look through
+    the Collection, and this test is what says it does.
     """
     workspace = _show()
     chaser = _functions(workspace)["Movimientos Washes"]

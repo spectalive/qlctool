@@ -231,11 +231,14 @@ def test_movement_keeps_the_simultaneo_twins_and_the_crossfade(built):
     root = Workspace.load(out).root
     functions = _functions(root)
 
-    sims = [
-        f.attrib["Name"]
+    # A split figure is "<name> (16 bit)" and "<name> (8 bit)" under a
+    # Collection named plainly (`efx_16bit`); count figures, not parts.
+    sims = {
+        f.attrib["Name"].split(" (")[0]
         for f in functions.values()
-        if f.attrib.get("Name", "").endswith("Simultaneo") and f.attrib["Type"] == "EFX"
-    ]
+        if f.attrib.get("Name", "").split(" (")[0].endswith("Simultaneo")
+        and f.attrib["Type"] == "EFX"
+    }
     assert len(sims) >= 10  # seven wash shapes + three beam shapes
     for name in ("Movimientos Washes", "Movimientos Beams"):
         chaser = next(f for f in functions.values() if f.attrib.get("Name") == name)

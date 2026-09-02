@@ -153,11 +153,13 @@ def test_generate_movement_into_real_show(tmp_path):
 
     paired = by_name["Movimiento Circulo (16 bit)"]
     unpaired = by_name["Movimiento Circulo (8 bit)"]
+    # Four CromoWash and two MiN Wash pair their fine channels; the four 7R
+    # and, since 2026-09-02, the two Mini Led Moving Heads do not.
     members = findall_local(paired, "Fixture")
-    assert len(members) == 8
-    assert len(findall_local(unpaired, "Fixture")) == 4
+    assert len(members) == 6
+    assert len(findall_local(unpaired, "Fixture")) == 6
     offsets = [int(_text_of(m, "StartOffset")) for m in members]
-    assert offsets == [45 * step for step in range(8)]
+    assert offsets == [60 * step for step in range(6)]
     assert _text_of(paired, "PropagationMode") == "Parallel"
     assert paired.attrib["Path"] == "Movimiento (generado)/Partes"
 
