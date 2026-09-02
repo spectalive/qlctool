@@ -11,8 +11,9 @@ permissions:
 jobs:
   gate:
     runs-on: ubuntu-latest
-    # The project lives inside a repository about something else; GitHub only
-    # reads workflows at the repository root, so every step runs from there.
+    # The project lives inside a repository about something else; GitHub
+    # only reads workflows at the repository root, so every step runs
+    # from the project directory.
     defaults:
       run:
         working-directory: tools/qlctool
