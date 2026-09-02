@@ -16,6 +16,7 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..color_wheel_match import color_wheel_pairs
 from ..mode_park import mode_park_pairs
+from ..multicolor_off import multicolor_off_pairs
 from ..shutter_open import shutter_open_pairs
 from ..zoom_wide import zoom_wide_pairs
 
@@ -49,6 +50,9 @@ def wheel_color_values(
         # their own self-running channel (`Atomization`) is parked here or
         # nowhere.
         pairs += mode_park_pairs(capability)
+        # A wheel colour is a whole detent: the half-colour channel beside the
+        # wheel goes to zero with it, or a `MultiColor` press outlives the night.
+        pairs += multicolor_off_pairs(capability)
         if dimmer is not None:
             pairs += [(o, dimmer) for o in capability.offsets_for_role(roles.DIMMER)]
             pairs += shutter_open_pairs(capability)

@@ -27,6 +27,8 @@ LTP - which is exactly the kind of luck a self-contained moment does not get.
 
 from collections.abc import Sequence
 
+from .. import roles
+
 from ..capability import FixtureCapabilities
 from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
@@ -53,14 +55,22 @@ def generate_dimmerless_intensity(
         if capability.fixture.fixture_id in excluded:
             continue
         if capability.is_smoke:
-            # Only the pump, and only to hold it shut: this level runs under
-            # the smoke flashes like every other, and a released flash needs
+            # The pump, and only to hold it shut: this level runs under the
+            # smoke flashes like every other, and a released flash needs
             # something writing zero to come home to (`fog_off`).
             off = fog_off_pairs(capability)
             if off:
                 values[capability.fixture.fixture_id] = sorted(set(off))
-            continue
+            if not capability.is_lit_smoke:
+                continue
         pairs: list[tuple[int, int]] = []
+        if capability.is_lit_smoke:
+            # A fog machine with LEDs is a floor PAR the chase never reaches:
+            # nothing else lights it in a chase level, so this base does - or
+            # the four columns went dark for every peak (cross-audit,
+            # 2026-09-02; the montage note of 2026-08-29 wants them "subir y
+            # bajar con los niveles").
+            pairs += [(offset, 255) for offset in capability.offsets_for_role(roles.DIMMER)]
         # A blade dimmer is out of the chase (`stepped_dimmer`), so this level
         # is the only thing that can own it - at full, the one value it has.
         pairs += [(offset, 255) for offset in stepped_dimmer_offsets(capability)]
@@ -68,7 +78,8 @@ def generate_dimmerless_intensity(
         pairs += zoom_wide_pairs(capability)
         pairs += strobe_off_pairs(capability)
         if pairs:
-            values[capability.fixture.fixture_id] = sorted(set(pairs))
+            fixture_id = capability.fixture.fixture_id
+            values[fixture_id] = sorted(set(pairs) | set(values.get(fixture_id, [])))
     if not values:
         return None
     function_id = next_function_id(workspace.root)

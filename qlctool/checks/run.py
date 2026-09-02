@@ -29,23 +29,29 @@ from .rule_flash_strobe import check_flash_strobe
 from .rule_grid_order import check_grid_order
 from .rule_group_grid import check_group_grids
 from .rule_held_column import check_held_column
+from .rule_instant_dimmer import check_instant_dimmer
 from .rule_intensity import check_intensity
 from .rule_internal_program import check_internal_programs
 from .rule_latched_strobe import check_latched_strobe
+from .rule_layer_adds import check_layer_adds
+from .rule_layer_trace import check_layer_trace
 from .rule_masked_dimmer_efx import check_masked_dimmer_efx
 from .rule_mode_owner import check_mode_owner
 from .rule_movement_families import check_movement_families
 from .rule_movement_window import check_movement_window
 from .rule_pad_input import check_pad_input
+from .rule_pick_overridden import check_pick_overridden
 from .rule_parked_movers import check_parked_movers
 from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_shutter_endpoint import check_shutter_endpoint
 from .rule_smoke import check_smoke
 from .rule_smoke_light import check_smoke_light
 from .rule_smoke_restore import check_smoke_restore
+from .rule_state_handover import check_state_handover
 from .rule_state_proxy import check_state_proxy
 from .rule_stepped_dimmer import check_stepped_dimmer
 from .rule_strobe_coverage import check_strobe_coverage
+from .rule_strobe_black import check_strobe_black
 from .rule_strobe_in_cycle import check_strobe_in_cycle
 from .rule_strobe_rate import check_strobe_rate
 from .rule_strobe_restore import check_strobe_restore
@@ -55,6 +61,8 @@ from .rule_unaimed_movement import check_unaimed_movement
 from .rule_undeclared_heads import check_undeclared_heads
 from .rule_unfinished_effect import check_unfinished_effects
 from .rule_wheel_colour import check_wheel_colour
+from .rule_wheel_fade import check_wheel_fade
+from .rule_white_emitter import check_white_emitter
 from .rule_wheel_rotation import check_wheel_rotation
 from .rule_zoom_narrow import check_zoom_narrow
 from .show_graph import build_show_graph, group_fixtures
@@ -77,16 +85,24 @@ def check_workspace(
 
     findings: list[Finding] = []
     findings += check_intensity(graph, groups, entries, states)
+    findings += check_instant_dimmer(graph, groups, states)
+    findings += check_white_emitter(graph, groups)
     findings += check_wheel_colour(graph, groups, entries)
     findings += check_wheel_rotation(graph, groups)
+    findings += check_wheel_fade(graph, groups, root)
     findings += check_internal_programs(graph, groups, entries, states)
     findings += check_mode_owner(graph, groups, entries)
     findings += check_collisions(graph, groups, entries)
+    findings += check_layer_adds(graph, groups, root, states)
+    findings += check_layer_trace(graph, groups, root, states)
+    findings += check_pick_overridden(graph, groups, root, states)
+    findings += check_state_handover(graph, groups, states)
     findings += check_colour_clocks(graph, groups, entries, states)
     findings += check_unfinished_effects(graph, groups, entries)
     findings += check_strobe_in_cycle(graph, groups, entries)
     findings += check_strobe_rate(graph, groups, entries)
     findings += check_latched_strobe(graph, groups, entries)
+    findings += check_strobe_black(graph, groups, root, states)
     findings += check_flash_scene(graph, root)
     findings += check_flash_strobe(graph, groups, root)
     findings += check_flash_speed(graph, groups, root)

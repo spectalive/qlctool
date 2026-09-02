@@ -5,22 +5,29 @@ flashing. Only the fixtures whose definition *labels* a strobe range get driven
 here - a MiN Wash's shutter channel puts "Closed" at 1-7, so guessing a value on
 an unlabelled channel is how a head goes dark in the middle of a set.
 
-Everything else - the LED bars and PARs - has no shutter, so it strobes the way
-the hand-built show does it: a chaser flipping the whole rig between full and
-black. Two speeds, because one is a hard strobe and the other is a pulse.
+Everything else - the LED bars - has no shutter at all, and nothing in QLC+
+can blink it to black on top of a lit state. The first STROBO was a chaser
+flipping the rig between a white scene and a black one: the black step wrote
+zeros to dimmers and RGB, every one of them an Intensity channel, and Intensity
+is HTP - under any room state the state's own dimmer at 255 wins the compare
+(`Universe::write`), so the "black" half of the strobe changed nothing. The
+room saw white / state-colour, never white / black, and on the four BEAM 7R
+the colour wheel was commanded white and back every 125 ms (cross-audit,
+2026-09-02). It only ever worked under `Todo Negro`, which is the one state
+nobody strobes.
 
-Both chasers are **bounded bursts, capped at 4 Hz** (2026-08-27). The first
-version looped at 50 ms a step - ten flashes a second, inside the
-photosensitive-epilepsy trigger band, latched behind a Toggle button. UK
-performance guidance caps effect flashing at four per second, and QLC+ cannot
-make a chaser momentary (only Scenes flash), so the safe shape is a SingleShot
-chaser: press it, it plays its pulses, it stops on its own.
+So the two console strobes are the honest shape: a held Flash scene driving
+every strobe-capable channel at a rate, colour and dimmers left to the state -
+the same wiring as `Flash Color`, at the two speeds the buttons promise. A
+fixture with no strobe channel is not in them, because it cannot strobe.
+
+`Strobo ON` / `Strobo OFF` stay as the latched pair for somebody who wants the
+shutters going for a while.
 """
 
 from dataclasses import dataclass
 
 from ..capabilities_of import capabilities_of
-from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
@@ -28,14 +35,12 @@ from ..shutter_open import shutter_open_pairs
 from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
 
-# Half-cycles: full for this long, black for this long. 125 ms each way is
-# 4 Hz - the cap - and 250 ms is a 2 Hz pulse.
-FAST_MS = 125
-MEDIUM_MS = 250
-# One press is one burst: this many flashes, then the chaser ends itself.
-PULSES = 4
-# Where `Strobo ON` sits on each shutter's slow-to-fast run. Mid-speed: it is
-# a latched look somebody walks away from, not a hit.
+# Where the held strobes sit on each channel's slow-to-fast run: the same two
+# points the flashes use - 0.97 is the owner's "246-248" on the PARs and
+# 0.785 the "unos 200" of the slow one (2026-08-29). `flash lento` refuses a
+# held strobe below 70% of the run. The latched `Strobo ON` keeps the midpoint.
+FAST_FRACTION = 0.97
+MEDIUM_FRACTION = 0.785
 ON_FRACTION = 0.5
 
 
@@ -50,21 +55,31 @@ class GeneratedStrobes:
 def generate_strobe_effects(
     workspace: Workspace,
     library: FixtureLibrary,
-    full_id: int,
-    black_id: int,
     path: str = "Strobos",
 ) -> GeneratedStrobes:
-    """Shutter strobe scenes plus two flash chasers over full/black scenes."""
+    """The latched shutter pair plus the two held strobe scenes."""
     shutter = _shutter_values(workspace, library)
-
     on_id = off_id = None
     if shutter:
         on_id = _scene(workspace, "Strobo ON", {f: v for f, (v, _) in shutter.items()}, path)
         off_id = _scene(workspace, "Strobo OFF", {f: v for f, (_, v) in shutter.items()}, path)
-
-    fast_id = _flash_chaser(workspace, "Strobo Rapido", full_id, black_id, FAST_MS, path)
-    medium_id = _flash_chaser(workspace, "Strobo Medio", full_id, black_id, MEDIUM_MS, path)
+    fast_id = _scene(workspace, "Strobo Rapido", _held_values(workspace, library, FAST_FRACTION), path)
+    medium_id = _scene(
+        workspace, "Strobo Medio", _held_values(workspace, library, MEDIUM_FRACTION), path
+    )
     return GeneratedStrobes(on_id=on_id, off_id=off_id, fast_id=fast_id, medium_id=medium_id)
+
+
+def _held_values(workspace: Workspace, library: FixtureLibrary, fraction: float):
+    """Fixture id -> every strobe channel at `fraction`, nothing else."""
+    values: dict[int, list[tuple[int, int]]] = {}
+    for capability in capabilities_of(workspace.root, library):
+        if capability.is_smoke:
+            continue
+        strobing = strobe_speed_pairs(capability, fraction)
+        if strobing:
+            values[capability.fixture.fixture_id] = sorted(strobing)
+    return values
 
 
 def _shutter_values(workspace: Workspace, library: FixtureLibrary):
@@ -83,8 +98,6 @@ def _shutter_values(workspace: Workspace, library: FixtureLibrary):
     for capability in capabilities_of(workspace.root, library):
         if capability.is_smoke:
             continue
-        # One source of truth for "what value opens this shutter": the range the
-        # definition marks `ShutterOpen`, read by shutter_open_pairs.
         reopen = dict(shutter_open_pairs(capability))
         strobing = strobe_speed_pairs(capability, ON_FRACTION)
         opening = [(offset, reopen.get(offset, 0)) for offset, _ in strobing]
@@ -96,26 +109,4 @@ def _shutter_values(workspace: Workspace, library: FixtureLibrary):
 def _scene(workspace: Workspace, name: str, values, path: str) -> int:
     function_id = next_function_id(workspace.root)
     workspace.add_function(build_scene(function_id, name, values, path=path))
-    return function_id
-
-
-def _flash_chaser(
-    workspace: Workspace,
-    name: str,
-    full_id: int,
-    black_id: int,
-    hold: int,
-    path: str,
-) -> int:
-    function_id = next_function_id(workspace.root)
-    workspace.add_function(
-        build_chaser(
-            function_id,
-            name,
-            [full_id, black_id] * PULSES,
-            hold=hold,
-            run_order="SingleShot",
-            path=path,
-        )
-    )
     return function_id

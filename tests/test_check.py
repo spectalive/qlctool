@@ -65,6 +65,59 @@ def _rules(findings):
     return {(finding.rule, finding.function) for finding in findings}
 
 
+def _twin_scene(workspace, functions, source_name, twin_name):
+    """A copy of a scene under a new id: the old burst chasers' white/black."""
+    import copy
+
+    from qlctool.ids import next_function_id
+
+    twin = copy.deepcopy(functions[source_name])
+    twin.set("ID", str(next_function_id(workspace.root)))
+    twin.set("Name", twin_name)
+    workspace.add_function(twin)
+    return twin
+
+
+def _burst_chaser(workspace, hold=125):
+    """Put the pre-2026-09-02 STROBO back: a white/black chaser on a Toggle.
+
+    `Strobo Rapido` was a SingleShot chaser alternating a white scene and a
+    black one, on a Toggle button on the show page. It is a held shutter scene
+    now, so the tests that need a strobe-shaped chaser build the old one here:
+    twins of `Golpe Graves` (white, shutters open) and `Todo Negro`.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+    from qlctool.functions.chaser import build_chaser
+    from qlctool.ids import next_function_id
+    from qlctool.vc.button import build_button
+    from qlctool.vc.widget_ids import next_widget_id
+
+    functions = _functions(workspace)
+    white = _twin_scene(workspace, functions, "Golpe Graves", "Rafaga Blanco")
+    black = _twin_scene(workspace, functions, "Todo Negro", "Rafaga Negro")
+    chaser_id = next_function_id(workspace.root)
+    chaser = build_chaser(
+        chaser_id,
+        "Rafaga",
+        [int(white.attrib["ID"]), int(black.attrib["ID"])] * 4,
+        hold=hold,
+        run_order="SingleShot",
+        path="Strobos",
+    )
+    workspace.add_function(chaser)
+    hits = next(
+        f
+        for f in workspace.root.iter()
+        if localname(f) == "Frame" and f.attrib.get("Caption", "").startswith("GOLPES")
+    )
+    button = build_button(
+        hits, next_widget_id(workspace.root), "RAFAGA", chaser_id, x=8, y=30, width=60, height=40
+    )
+    return chaser, button
+
+
 @pytest.mark.parametrize("name", SHOWS)
 def test_every_shipped_show_passes_every_check(name, library):
     """The gate. A rule that is not true of all three shows is not a rule."""
@@ -76,16 +129,16 @@ def test_every_shipped_show_passes_every_check(name, library):
 def test_a_fixture_given_colour_with_nothing_opening_its_dimmer(library):
     """2026-08-26: the panels were the right colour and off all night.
 
-    Reproduced by taking the master dimmer back out of the rig-wide colour
-    scenes for the four panels - which is the shape the bug had, whatever is
-    painting them: colour written, intensity left at zero.
+    Reproduced by taking the master dimmer back out of the scenes that open
+    it under AUTO - the panels' own programme and manual phases - which is the
+    shape the bug had, whatever is painting them: colour written, intensity
+    left at zero. (The colour banks used to be the target; since 2026-09-02
+    they are held colour-only layers and own no dimmer at all.)
     """
     workspace = _show()
     panels = {24, 25, 27, 28}
-    for function in _functions(workspace).values():
-        # The panels' own colour bank: they left the rig-wide wheel when they
-        # started running their own programmes under AUTO.
-        if function.attrib.get("Path") != "Colores PixelesLed":
+    for name, function in _functions(workspace).items():
+        if not (name.startswith("Paneles - ") or name == "Paneles Manual"):
             continue
         for value in findall_local(function, "FixtureVal"):
             if int(value.attrib["ID"]) not in panels or not value.text:
@@ -503,16 +556,13 @@ def test_a_strobe_flashing_faster_than_four_hertz(library):
     steps back into the burst.
     """
     workspace = _show()
-    chaser = _functions(workspace)["Strobo Rapido"]
-    for step in findall_local(chaser, "Step"):
-        step.set("Hold", "50")
-    find_local(chaser, "Speed").set("Duration", "50")
+    chaser, _ = _burst_chaser(workspace, hold=50)
 
     findings = [
         f for f in check_workspace(workspace, library) if f.rule == "estrobo demasiado rapido"
     ]
     assert findings, "a 10 Hz whole-rig strobe went unnoticed"
-    assert "Strobo Rapido" in {f.function for f in findings}
+    assert chaser.attrib["Name"] in {f.function for f in findings}
 
 
 def test_a_strobe_that_loops_behind_a_button(library):
@@ -522,12 +572,12 @@ def test_a_strobe_that_loops_behind_a_button(library):
     burst that ends itself. Reproduced by putting the loop back.
     """
     workspace = _show()
-    chaser = _functions(workspace)["Strobo Rapido"]
+    chaser, _ = _burst_chaser(workspace)
     find_local(chaser, "RunOrder").text = "Loop"
 
     findings = [f for f in check_workspace(workspace, library) if f.rule == "estrobo enganchado"]
     assert findings, "a latched looping strobe went unnoticed"
-    assert "Strobo Rapido" in {f.function for f in findings}
+    assert chaser.attrib["Name"] in {f.function for f in findings}
 
 
 def test_a_tap_that_flattens_every_programme(library):
@@ -609,9 +659,10 @@ def test_a_chaser_that_presses_the_room_state_buttons(library):
     Strobo Rapido steps back at the state scenes instead of its twins.
     """
     workspace = _show()
+    chaser, _ = _burst_chaser(workspace)
     functions = _functions(workspace)
     state_ids = {name: functions[name].attrib["ID"] for name in ("Blanco Total", "Todo Negro")}
-    for index, step in enumerate(findall_local(functions["Strobo Rapido"], "Step")):
+    for index, step in enumerate(findall_local(chaser, "Step")):
         step.text = state_ids["Blanco Total" if index % 2 == 0 else "Todo Negro"]
 
     findings = [
@@ -620,7 +671,7 @@ def test_a_chaser_that_presses_the_room_state_buttons(library):
         if f.rule == "estado pulsado por otra funcion"
     ]
     assert findings, "a chaser pressing the room-state buttons went unnoticed"
-    assert "Strobo Rapido" in {f.function for f in findings}
+    assert chaser.attrib["Name"] in {f.function for f in findings}
 
 
 def test_a_flash_that_lights_the_room_without_strobing_it(library):
@@ -658,7 +709,9 @@ def test_a_flash_that_strobes_at_a_stroll(library):
         capability.fixture.fixture_id: capability
         for capability in capabilities_of(workspace.root, library)
     }
-    for name in ("Flash 100%", "Flash 50%", "Flash Color"):
+    # The held strobes (Flash scenes since 2026-09-02) drive the same channels
+    # and are dropped with the flashes: the rule judges the fastest hand flash.
+    for name in ("Flash 100%", "Flash 50%", "Flash Color", "Strobo Rapido", "Strobo Medio"):
         for value in findall_local(_functions(workspace)[name], "FixtureVal"):
             capability = capabilities.get(int(value.attrib["ID"]))
             if capability is None or not value.text:
@@ -974,15 +1027,7 @@ def test_an_audio_trigger_bound_to_a_strobe(library):
     from qlctool.constants import QLC_NS
 
     workspace = _show()
-    functions = _functions(workspace)
-    strobe_id = functions["Strobo Rapido"].attrib["ID"]
-    strobe_button = next(
-        b
-        for b in workspace.root.iter()
-        if localname(b) == "Button"
-        and (function := find_local(b, "Function")) is not None
-        and function.attrib.get("ID") == strobe_id
-    )
+    _, strobe_button = _burst_chaser(workspace)
     widget = next(w for w in workspace.root.iter() if localname(w) == "AudioTriggers")
     bar = etree.SubElement(widget, f"{{{QLC_NS}}}SpectrumBar")
     bar.set("Name", "Graves")
@@ -1675,3 +1720,191 @@ def test_three_empty_head_blocks_do_not_satisfy_the_rule(tmp_path):
 
     assert findings, "three heads holding no colour passed the head count"
     assert any("MAC WASH" in fixture for f in findings for fixture in f.fixtures)
+
+
+# --- the cross-audit of 2026-09-02: two simulators against forty-four rules ---
+
+
+def _pairs_of(value):
+    numbers = [int(n) for n in (value.text or "").split(",") if n != ""]
+    return dict(zip(numbers[0::2], numbers[1::2], strict=True))
+
+
+def _write_pairs(value, pairs):
+    value.text = ",".join(f"{o},{v}" for o, v in sorted(pairs.items()))
+
+
+def _button_of(workspace, function_id):
+    return next(
+        b
+        for b in workspace.root.iter()
+        if localname(b) == "Button"
+        and (function := find_local(b, "Function")) is not None
+        and function.attrib.get("ID") == str(function_id)
+    )
+
+
+def test_a_latched_colour_bank_on_top_of_the_running_state(library):
+    """2026-09-02, cross-audit: AUTO on `Rig Cyan` plus key `1` was white on
+    twenty-seven fixtures - RGB mixes HTP, so a Toggle bank adds to the
+    state's colour and never shows its own. Reproduced by turning one bank
+    button back into a Toggle.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    button = _button_of(workspace, functions["Rojo Cabezas"].attrib["ID"])
+    action = find_local(button, "Action")
+    action.text = "Toggle"
+    action.attrib.clear()
+
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "capa que se suma al estado"
+    ]
+    assert findings, "a latched colour layer adding to the state went unnoticed"
+    assert "Rojo Cabezas" in {f.function for f in findings}
+
+
+def test_a_strobe_whose_black_step_a_lit_state_outbids(library):
+    """2026-09-02, cross-audit: STROBO was a white/black chaser and its black
+    step wrote only Intensity channels, which HTP drops under a state holding
+    the dimmers at 255 - white / state-colour, never white / black. Reproduced
+    by rebuilding that chaser on a show-page button.
+    """
+    workspace = _show()
+    chaser, _ = _burst_chaser(workspace)
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "estrobo sin negro"]
+    assert findings, "a strobe that cannot reach black went unnoticed"
+    assert chaser.attrib["Name"] in {f.function for f in findings}
+
+
+def test_a_latched_layer_on_a_channel_no_state_ever_writes(library):
+    """2026-09-02, cross-audit: `MultiColor - Todas` wrote the beams'
+    half-colour channel to 255 and no state wrote it back, so every wheel
+    colour came out split for the rest of the night. Reproduced by taking
+    that channel's zero out of every scene that is not a MultiColor one, and
+    turning the `Todas` button back into the Toggle it was.
+    """
+    workspace = _show()
+    button = _button_of(workspace, _functions(workspace)["MultiColor - Todas"].attrib["ID"])
+    action = find_local(button, "Action")
+    action.text = "Toggle"
+    action.attrib.clear()
+    for name, function in _functions(workspace).items():
+        if function.attrib.get("Type") != "Scene" or name.startswith("MultiColor - "):
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            if int(value.attrib["ID"]) in BEAMS and value.text:
+                pairs = _pairs_of(value)
+                pairs.pop(8, None)  # channel 9, the half-colour position
+                _write_pairs(value, pairs)
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "capa que deja huella"]
+    assert findings, "a latched layer nobody writes back went unnoticed"
+    assert "MultiColor - Todas" in {f.function for f in findings}
+
+
+def test_a_work_light_that_inherits_the_gobo_and_the_prism(library):
+    """2026-09-02, cross-audit: `Todo Negro` -> `Blanco Total` after a party
+    level was four white beams projecting Gobo 5 through a spinning prism,
+    because the work light wrote nothing LTP. Reproduced by taking the parked
+    gobo back out of it.
+    """
+    workspace = _show()
+    for value in findall_local(_functions(workspace)["Blanco Total"], "FixtureVal"):
+        if int(value.attrib["ID"]) in BEAMS and value.text:
+            pairs = _pairs_of(value)
+            pairs.pop(9, None)  # channel 10, the gobo wheel
+            _write_pairs(value, pairs)
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "estado que hereda"]
+    assert findings, "a state inheriting the last state's wheels went unnoticed"
+    assert "Blanco Total" in {f.function for f in findings}
+
+
+def test_the_fog_machines_leds_dark_for_a_whole_level(library):
+    """2026-09-02, cross-audit: `Intensidad Peak` wrote the vertical fog
+    machines' pump shut and nothing else, so under `Nivel Peak`, `Nivel Fiesta
+    Dinamico` and `Momento Locura` the wheel coloured four LED columns whose
+    dimmer nobody opened. Reproduced by taking their dimmer back out of it.
+    """
+    workspace = _show()
+    fog = {
+        int(find_local(f, "ID").text)
+        for f in find_local(workspace.root, "Engine")
+        if localname(f) == "Fixture" and (find_local(f, "Name").text or "").startswith("Humo Vertical")
+    }
+    assert fog
+    for value in findall_local(_functions(workspace)["Intensidad Peak"], "FixtureVal"):
+        if int(value.attrib["ID"]) in fog and value.text:
+            pairs = _pairs_of(value)
+            pairs.pop(1, None)  # channel 2, the LED master dimmer
+            _write_pairs(value, pairs)
+
+    findings = [
+        f
+        for f in check_workspace(workspace, library)
+        if f.rule == "color sin dimmer en algun instante"
+    ]
+    assert findings, "a level colouring a fixture with its dimmer shut went unnoticed"
+    assert "AUTO" in {f.function for f in findings}
+    assert any("Humo Vertical" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_latched_pick_the_states_chaser_steps_over(library):
+    """2026-09-02, cross-audit: a gobo picked on the manual page lasted until
+    `Gobo Animacion`'s next step, four seconds later, because the step's new
+    fader is appended after the button's and wins the LTP channel. Reproduced
+    by turning one gobo button back into a Toggle.
+    """
+    workspace = _show()
+    functions = _functions(workspace)
+    button = _button_of(workspace, functions["Gobo - Gobo 5"].attrib["ID"])
+    action = find_local(button, "Action")
+    action.text = "Toggle"
+    action.attrib.clear()
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "capa pisada por el ciclo"]
+    assert findings, "a latched pick the state overwrites went unnoticed"
+    assert "Gobo - Gobo 5" in {f.function for f in findings}
+
+
+def test_a_crossfade_that_walks_a_mechanical_wheel(library):
+    """2026-09-02, cross-audit: the colour wheel's 800 ms crossfade walked the
+    beams' colour wheel through every detent between two colours, twenty-one
+    steps every 3.3 s, all night. Reproduced by taking one beam's wheels back
+    out of its <ExcludeFade>.
+    """
+    workspace = _show()
+    fixture = next(
+        f
+        for f in find_local(workspace.root, "Engine")
+        if localname(f) == "Fixture" and find_local(f, "ID").text == str(BEAMS[0])
+    )
+    exclude = find_local(fixture, "ExcludeFade")
+    assert exclude is not None, "the generator no longer pins the wheels"
+    fixture.remove(exclude)
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "rueda fundida"]
+    assert findings, "a faded wheel went unnoticed"
+    assert any("BEAM 230W 7R #1" in fixture for f in findings for fixture in f.fixtures)
+
+
+def test_a_white_look_that_leaves_the_white_emitter_at_zero(library):
+    """2026-09-02, cross-audit (Codex): every white look mixed its white out
+    of red, green and blue and left the Mini Led's White channel and the MAC
+    WASH's three at 0. Reproduced by taking the white back out of the work
+    light on one Mini Led.
+    """
+    workspace = _show()
+    for value in findall_local(_functions(workspace)["Blanco Total"], "FixtureVal"):
+        if int(value.attrib["ID"]) == 18 and value.text:
+            pairs = _pairs_of(value)
+            assert pairs.pop(6, None) is not None  # channel 7, White
+            _write_pairs(value, pairs)
+
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "blanco sin emisor blanco"
+    ]
+    assert findings, "an unused white emitter went unnoticed"
+    assert "Blanco Total" in {f.function for f in findings}

@@ -224,7 +224,7 @@ def test_a_strobe_value_lands_where_the_definition_says_it_strobes(library):
     drove exactly those channels at 250/255 for years.
     """
     ws = Workspace.load(SHOW)
-    generated = generate_strobe_effects(ws, library, full_id=0, black_id=1)
+    generated = generate_strobe_effects(ws, library)
     functions = _functions(ws.root)
     assert generated.on_id is not None
 
@@ -251,28 +251,38 @@ def test_a_strobe_value_lands_where_the_definition_says_it_strobes(library):
     assert bare >= 2  # the Vortex PARs and the panels
 
 
-def test_the_flash_strobes_are_bounded_bursts_capped_at_four_hz(library):
-    """2026-08-27, from the Codex review of the highlight plan: the fast
-    strobe looped at 50 ms a step - ten flashes a second, inside the
-    photosensitive-epilepsy band - latched behind a Toggle button. A strobe
-    hit is a burst now: SingleShot, it plays its pulses and ends itself, and
-    no half-cycle is shorter than 125 ms (4 Hz, the UK performance cap).
+def test_the_console_strobes_are_held_shutter_scenes(library):
+    """2026-09-02, cross-audit: the STROBO burst chasers alternated a white
+    scene and a black one, and the black step - all Intensity channels, HTP -
+    lost to any lit state: white / state-colour, never white / black. The two
+    console strobes are held Flash scenes now, every strobe-capable channel at
+    a rate and nothing else, fast on `F` and at the slow flash's pace on `T`
+    (the `flash lento` rule refuses anything under 70% of the run).
     """
-    ws = Workspace.load(SHOW)
-    generated = generate_strobe_effects(ws, library, full_id=42, black_id=43)
-    functions = _functions(ws.root)
+    from qlctool.generate.strobe_effects import FAST_FRACTION, MEDIUM_FRACTION
+    from qlctool.strobe_speed import strobe_speed_pairs
 
-    for chaser_id, expected_hold in (
-        (generated.fast_id, 125),
-        (generated.medium_id, 250),
-    ):
-        chaser = functions[chaser_id]
-        steps = findall_local(chaser, "Step")
-        assert [s.text for s in steps] == ["42", "43"] * 4
-        assert all(int(s.attrib["Hold"]) == expected_hold for s in steps)
-        assert expected_hold >= 125, "faster than 4 flashes a second"
-        assert find_local(chaser, "RunOrder").text == "SingleShot"
-        assert find_local(chaser, "SpeedModes").attrib["Duration"] == "Common"
+    ws = Workspace.load(SHOW)
+    generated = generate_strobe_effects(ws, library)
+    functions = _functions(ws.root)
+    expected = {
+        c.fixture.fixture_id: (
+            dict(strobe_speed_pairs(c, FAST_FRACTION)),
+            dict(strobe_speed_pairs(c, MEDIUM_FRACTION)),
+        )
+        for c in capabilities_of(ws.root, library)
+        if not c.is_smoke and strobe_speed_pairs(c, FAST_FRACTION)
+    }
+    assert MEDIUM_FRACTION >= 0.7
+
+    for scene_id, which in ((generated.fast_id, 0), (generated.medium_id, 1)):
+        scene = functions[scene_id]
+        assert scene.attrib["Type"] == "Scene"
+        written = {}
+        for element in findall_local(scene, "FixtureVal"):
+            numbers = [int(n) for n in (element.text or "").split(",") if n != ""]
+            written[int(element.attrib["ID"])] = dict(zip(numbers[0::2], numbers[1::2]))
+        assert written == {fixture_id: pair[which] for fixture_id, pair in expected.items()}
 
 
 def test_a_channel_that_labels_its_open_position_no_strobe_is_not_read_as_one(library):

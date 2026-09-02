@@ -176,9 +176,9 @@ HELP_LINES = (
         "(LOCURA). Cuando pase el momento, vuelve a pulsar AUTO."
     ),
     (
-        "Abajo: los GOLPES. Esos SÍ se suman a lo que esté sonando. FLASH y "
-        "HUMO YA funcionan mientras los mantienes pulsados y se apagan al "
-        "soltar."
+        "Abajo: los GOLPES. Esos SÍ se suman a lo que esté sonando. FLASH, "
+        "STROBO y HUMO YA funcionan mientras los mantienes pulsados y se "
+        "apagan al soltar."
     ),
     (
         "PARAR TODO apaga todas las funciones a la vez: es el botón de cuando "
@@ -706,7 +706,7 @@ def _page_manual(
     """Page 2: the layers, for somebody who wants to drive it by hand."""
     label(
         outer,
-        "2 · MANUAL — capas sueltas, se encienden sobre AUTO",
+        "2 · MANUAL — capas sobre AUTO. Colores, gobos, prisma y Escenario van mientras los mantienes.",
         LEFT_X,
         30,
         OUTER_WIDTH - 16,
@@ -755,18 +755,24 @@ def _page_manual(
     # `consola` rule reported and the generator's own "fits on one screen" line
     # had cheerfully denied. So the pitch comes from the room left between the
     # layers above and the dimmer frame below, never from a number typed here.
+    # Held, with ForceLTP, since 2026-09-02: RGB mixes HTP, so a latched bank
+    # on top of a running state never showed its colour - AUTO on cyan plus
+    # key 1 was white on twenty-seven fixtures (cross-audit). A Flash with
+    # Override and ForceLTP writes past the HTP compare and the state's own
+    # wheel steps, so "the heads are red" is true for as long as the key is
+    # down, and the state's colour comes straight back on release. A plain
+    # frame: momentary buttons have nothing for a solo frame to stop.
     y = BANK_COLUMN_TOP
     bank_pitch = bank_pitch_for(len(banks))
     for bank in banks:
         element = frame(
             outer,
-            f"Colores {bank.group_name} — teclas 1-0",
+            f"Colores {bank.group_name} — mantén 1-0",
             LEFT_X,
             y,
             LEFT_WIDTH,
             bank_pitch - 6,
             page=PAGE_MANUAL,
-            solo=True,
             font=TITLE_FONT,
         )
         # Keys 1-0 follow the bank's key list - eight solids, then the old
@@ -787,6 +793,9 @@ def _page_manual(
                 w=pitch - 3,
                 h=44,
                 key=BANK_KEYS[index] if index < len(keyed) else None,
+                action=FLASH,
+                flash_override=True,
+                flash_force_ltp=True,
                 background=_swatch(name),
                 foreground=_swatch(name, second=True) if split else DEFAULT,
                 font=TINY_FONT if split else SMALL_FONT,
@@ -901,14 +910,15 @@ def _page_manual(
         font=TITLE_FONT,
     )
     # One button per shape, sized to fit however many the rig now draws.
-    # `Escenario` (the measured stage aim) and `Cabezas Centro` (parked) sit
-    # in the same solo frame on purpose: aiming the heads somewhere fixed and
-    # drawing a figure with them are exclusive, and the solo frame is what
-    # stops the figure when the aim is pressed.
-    aims = [
-        (name, caption)
-        for name, caption in (("Escenario", "Escenario"), ("Cabezas Centro", "Centro"))
-    ]
+    # `Escenario` (the measured stage aim) sits in the same solo frame on
+    # purpose: aiming the heads somewhere fixed and drawing a figure with them
+    # are exclusive, and the solo frame stops the figure when the aim starts.
+    # It is held (a Flash with Override) since 2026-09-02: a latched aim on
+    # top of a moving state lasted until the state's next movement step, when
+    # the step's new fader took the heads back (cross-audit). `Cabezas Centro`
+    # is no longer a button: a parked head under a moving state is the same
+    # lie, and the state that parks them is `Momento Charla`.
+    aims = [(name, caption) for name, caption in (("Escenario", "Escenario (mantén)"),)]
     slots = len(movement.efx_ids) + len(aims)
     shape_step = (MIDDLE_WIDTH - GAP) // slots
     for index, function_id in enumerate(movement.efx_ids):
@@ -1065,15 +1075,16 @@ def _page_library(
         font=TITLE_FONT,
     )
 
+    # Held with ForceLTP like the banks (2026-09-02): a two-colour scene on a
+    # Toggle adds to the running state's colour instead of showing its own.
     mixes = frame(
         outer,
-        "Mezclas de dos colores",
+        "Mezclas de dos colores — mantén pulsado",
         LEFT_X,
         68,
         LEFT_WIDTH,
         230,
         page=PAGE_LIBRARY,
-        solo=True,
         pages=len(banks) or 1,
         font=TITLE_FONT,
     )
@@ -1103,6 +1114,9 @@ def _page_library(
                     y=HEADER + 24 + row * 51,
                     w=48,
                     h=45,
+                    action=FLASH,
+                    flash_override=True,
+                    flash_force_ltp=True,
                     background=_swatch(name),
                     foreground=_swatch(name, second=True),
                     font=TINY_FONT,
@@ -1238,8 +1252,11 @@ def _page_library(
         # The live fader over the panels' speed channel, beside the effects it
         # paces - the hand-built console's "Strobo LED Effect Speed", whose
         # slider sat at 253 with the show's own sequence stepping 160-255.
-        # HTP over the scenes' 200, so pushing it up speeds the running
-        # effect and pulling it to zero simply hands the pace back.
+        # The channel is in the Speed group, so it is LTP, not HTP: the slider
+        # monitors the running value until somebody moves it, and from then
+        # on its Override fader wins outright - at zero too, which is the
+        # slowest, not "the cycle's" - until the red reset X hands the channel
+        # back (`VCSlider::writeDMXLevel`; cross-audit, 2026-09-02).
         slider_id = ids.take()
         slider = build_level_slider(
             outer,
@@ -1255,7 +1272,8 @@ def _page_library(
         console.widget_ids.append(slider_id)
         label(
             outer,
-            "Velocidad de los efectos de los paneles. A cero, manda la del ciclo (200).",
+            "Velocidad de los efectos de los paneles. Sigue la del ciclo (200) hasta que "
+            "lo muevas; desde entonces manda el fader, también a cero. La X roja lo suelta.",
             RIGHT_X + 96,
             580,
             RIGHT_WIDTH - 96,
@@ -1322,18 +1340,26 @@ def _wheel_frame(
     page,
     columns,
 ) -> None:
-    """A solo frame of wheel positions - gobos, beam colours, prism."""
+    """A frame of held wheel positions - gobos, beam colours, prism.
+
+    Held (Flash with Override priority), not latched, since 2026-09-02: a
+    Toggle pick on an LTP wheel lasted exactly until the running state's own
+    chaser stepped - Gobo Animacion every 4 s, the prism dance every 8 s, the
+    colour wheel every 3.3 s - because the step's new fader is appended after
+    the button's and wins (cross-audit). An Override fader is placed last
+    whatever starts after it, so the pick holds while the finger does, and the
+    state writes the wheel back the moment it lifts.
+    """
     if not scene_ids:
         return
     element = frame(
         outer,
-        caption,
+        f"{caption} — mantén pulsado",
         x,
         y,
         width,
         height,
         page=page,
-        solo=True,
         font=TITLE_FONT,
     )
     step = (width - GAP * 2) // columns
@@ -1348,6 +1374,8 @@ def _wheel_frame(
             y=HEADER + row * 52,
             w=step - 4,
             h=46,
+            action=FLASH,
+            flash_override=True,
             font=TINY_FONT,
         )
 

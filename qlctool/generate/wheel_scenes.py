@@ -16,6 +16,7 @@ from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..multicolor_off import multicolor_off_pairs
 from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
@@ -82,6 +83,10 @@ def generate_wheel_scenes(
             # the role stays where it is - see wheel_for_role.
             offset, _ = capability.wheel_for_role(role)
             pairs = [(offset, position.middle)]
+            if role == roles.COLOR_MACRO:
+                # A colour is a whole detent: the half-colour channel beside
+                # the wheel goes back to zero with every pick.
+                pairs += multicolor_off_pairs(capability)
             engaged = (position.preset or "") not in off_presets
             for companion_role, on_value, off_value in companions:
                 pairs += [

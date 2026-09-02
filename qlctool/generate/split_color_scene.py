@@ -15,6 +15,7 @@ from ..internal_program import internal_program_off_pairs
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off import strobe_off_pairs
 from ..zoom_wide import zoom_wide_pairs
+from ..white_level import white_level
 from .wheel_color_values import wheel_color_values
 
 RGB = tuple[int, int, int]
@@ -58,6 +59,8 @@ def split_color_scene_values(
             pairs.append((offset, green))
         for offset in caps.offsets_for_role(roles.BLUE):
             pairs.append((offset, blue))
+        for offset in caps.offsets_for_role(roles.WHITE):
+            pairs.append((offset, white_level((red, green, blue))))
         # The beam's width belongs to the colour, not to the intensity: a
         # caller that leaves the dimmer to the energy levels still owns the
         # shape of the light it is painting, and nothing else writes zoom.
@@ -73,7 +76,9 @@ def split_color_scene_values(
         result[caps.fixture.fixture_id] = pairs
 
     if color_names is not None:
-        result.update(_wheel_halves(capabilities, wanted, color_names))
+        result.update(
+            _wheel_halves(capabilities, wanted, color_names, 255 if dimmer_full else None)
+        )
     return result
 
 
@@ -81,6 +86,7 @@ def _wheel_halves(
     capabilities: list[FixtureCapabilities],
     fixture_ids: Sequence[int] | None,
     color_names: tuple[str, str],
+    dimmer: int | None,
 ) -> dict[int, list[tuple[int, int]]]:
     """The same alternation over the wheel-coloured fixtures of the group.
 
@@ -101,7 +107,10 @@ def _wheel_halves(
     for index, caps in enumerate(ordered):
         values.update(
             wheel_color_values(
-                [caps], color_names[index % 2], fixture_ids=[caps.fixture.fixture_id]
+                [caps],
+                color_names[index % 2],
+                fixture_ids=[caps.fixture.fixture_id],
+                dimmer=dimmer,
             )
         )
     return values

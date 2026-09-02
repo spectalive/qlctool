@@ -84,11 +84,19 @@ def _bank_for_group(
     path = f"Colores {group.name}"
     scene_ids: list[int] = []
     for name in colors:
-        values = color_scene_values(caps, PALETTE[name], fixture_ids=group.fixture_ids)
+        # Colour only, no intensity: a bank is a held takeover (a Flash with
+        # ForceLTP on the console) of the colour the state is showing, and the
+        # state keeps owning the dimmers - a bank that opened them was one
+        # more HTP bid and one more thing a released hand left behind.
+        values = color_scene_values(
+            caps, PALETTE[name], fixture_ids=group.fixture_ids, dimmer_full=False
+        )
         # A group holding a BEAM 230W 7R holds a fixture with no red channel at
         # all. Colouring the group and skipping it is how the beams sat on last
         # night's colour while everything around them changed.
-        values.update(wheel_color_values(caps, name, fixture_ids=group.fixture_ids))
+        values.update(
+            wheel_color_values(caps, name, fixture_ids=group.fixture_ids, dimmer=None)
+        )
         if not values:
             return None  # no colour-capable fixture in this group
         function_id = next_function_id(workspace.root)
@@ -107,6 +115,7 @@ def _bank_for_group(
                 PALETTE[second],
                 fixture_ids=group.fixture_ids,
                 color_names=(first, second),
+                dimmer_full=False,
             )
             if len(values) < 2:
                 break  # a single fixture cannot show a split

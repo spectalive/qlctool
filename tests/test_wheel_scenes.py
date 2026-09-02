@@ -86,7 +86,9 @@ def test_a_wheel_scene_drives_the_wheel_and_not_its_neighbour():
     with 17 named positions, and the continuous half-colour channel at offset 8.
     Both resolve to the colour-macro role. Sending the wheel's value to offset 8
     as well parks the wheel between two colours, which is what the show did
-    before `wheel_for_role` existed."""
+    before `wheel_for_role` existed. Since 2026-09-02 the neighbour *is*
+    written - at zero, never at the wheel's value: a `MultiColor` press had
+    left it at 255 with nothing to put it back (cross-audit)."""
     from qlctool import roles
     from qlctool.capabilities_of import capabilities_of
     from qlctool.generate.wheel_scenes import generate_wheel_scenes
@@ -120,6 +122,7 @@ def test_a_wheel_scene_drives_the_wheel_and_not_its_neighbour():
     }
     for scene_id in result.scene_ids:
         for values in findall_local(scenes[str(scene_id)], "FixtureVal"):
-            offsets = [int(v) for v in (values.text or "").split(",")[::2]]
-            assert 8 not in offsets, f"scene {scene_id} still writes offset 8"
-            assert 7 in offsets
+            numbers = [int(v) for v in (values.text or "").split(",")]
+            pairs = dict(zip(numbers[0::2], numbers[1::2], strict=True))
+            assert 7 in pairs
+            assert pairs.get(8) == 0, f"scene {scene_id} parks offset 8 at {pairs.get(8)}"

@@ -16,6 +16,7 @@ from ..internal_program import internal_program_off_pairs
 from ..mode_park import mode_park_pairs
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off import strobe_off_pairs
+from ..white_level import white_level
 from ..zoom_wide import zoom_wide_pairs
 
 RGB = tuple[int, int, int]
@@ -52,6 +53,11 @@ def color_scene_values(
             pairs.append((offset, green))
         for offset in caps.offsets_for_role(roles.BLUE):
             pairs.append((offset, blue))
+        # The dedicated white emitter, where there is one: the share of white
+        # in the colour, so a white look uses the white LED and a red one says
+        # zero to it instead of leaving it to the last look (2026-09-02).
+        for offset in caps.offsets_for_role(roles.WHITE):
+            pairs.append((offset, white_level(rgb)))
         # The beam's width belongs to the colour, not to the intensity: a
         # caller that leaves the dimmer to the energy levels still owns the
         # shape of the light it is painting, and nothing else writes zoom.

@@ -15,6 +15,7 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
+from ..exclude_fade import pin_wheel_fades
 from ..fixture_group import fixture_groups
 from ..fog_off import fog_off_pairs
 from ..functions.chaser import build_chaser
@@ -59,6 +60,7 @@ from .multicolor_matrices import generate_multicolor_matrices
 from .multicolor_scene import generate_multicolor_scenes
 from .panel_manual import generate_panel_manual
 from .panel_speed_auto import generate_panel_speed_auto
+from .park_work_light import park_work_light
 from .pixel_base import generate_pixel_base
 from .pixel_wheel_matrices import generate_pixel_wheel_matrices
 from .prism_spins import generate_prism_spins
@@ -213,6 +215,13 @@ FLASH_FUNCTIONS = (
     "Humo ON",
     "Humo Vertical YA",
     "Golpe Graves",
+    # A strobe is a button somebody holds (the show's own rule), and since
+    # 2026-09-02 these two are shutter scenes rather than white/black chasers.
+    "Strobo Rapido",
+    "Strobo Medio",
+    # The stage aim: a latched aim under a moving state lasted one movement
+    # step; held with Override priority it lasts as long as the hand does.
+    "Escenario",
 )
 
 # Where the held flashes sit on every shutter's slow-to-fast run. The hand-built
@@ -278,6 +287,11 @@ def build_canonical_show(
     elif unplaced_fixtures(workspace):
         stage_placed = generate_stage_layout(workspace, library).placed
     caps = capabilities_of(workspace.root, library)
+    # Wheels snap, LEDs fade: every colour, gobo and prism wheel goes into its
+    # fixture's <ExcludeFade>, or the rig-wide wheel's 800 ms crossfade walks
+    # the beams' colour wheel through every detent between two colours
+    # (cross-audit, 2026-09-02).
+    pin_wheel_fades(workspace.root, caps)
     master: dict[str, int] = {}
 
     # Base looks first, so they are the lowest function IDs and read first.
@@ -538,27 +552,13 @@ def build_canonical_show(
     master["Dimmer Chase 2"] = dimmers.chase2_id
     master["Dimmer PingPong"] = dimmers.pingpong_id
 
-    # The burst chasers step a white and a black of their own. They used to
-    # step `Blanco Total` and `Todo Negro` directly - and a qmlui Toggle
-    # button hears its function start no matter who started it
-    # (VCButton::slotFunctionRunning emits functionStarting), so every pulse
-    # pressed a room-state button by proxy and the solo frame stopped AUTO
-    # mid-burst (owner, 2026-08-29: "alternan entre parar y apagon y luego se
-    # para el show"). Not "Flash 100%" either: that scene carries the
-    # hardware strobe, and a chaser latching it for 125 ms a step would stack
-    # a ~17 Hz shutter strobe on top of its own 4 Hz chop.
-    strobes = generate_strobe_effects(
-        workspace,
-        library,
-        full_id=_flat_scene(
-            workspace,
-            caps,
-            "Strobo Blanco",
-            (255, 255, 255),
-            wheel_color="Blanco",
-        ),
-        black_id=_blackout(workspace, caps, name="Strobo Negro"),
-    )
+    # The console strobes are held scenes on the shutters, not chasers: a
+    # chaser's black step is all Intensity channels, and Intensity is HTP, so
+    # under any lit state the zeros lost and the "strobe" was white over the
+    # room's colour with never a black between (cross-audit, 2026-09-02). The
+    # chaser twins of `Blanco Total`/`Todo Negro` that used to be here also
+    # pressed the state buttons by proxy (2026-08-29) before they got twins.
+    strobes = generate_strobe_effects(workspace, library)
     master["Strobo Rapido"] = strobes.fast_id
     master["Strobo Medio"] = strobes.medium_id
     if strobes.on_id is not None:
@@ -650,6 +650,13 @@ def build_canonical_show(
     # beam for the whole of the next quiet hour - the same LTP latch as the
     # gobo, on the channel one wheel over.
     prism_off_id = _first(prisms.scene_ids)
+    # The work light is a room state and inherits nothing: heads home, gobo
+    # open, prism out are folded into the scene itself, or `Todo Negro` ->
+    # `Blanco Total` after a party level is four white gobos through a spinning
+    # prism (cross-audit, 2026-09-02). `Momento Charla` carries the same three
+    # as members; the work light stays one scene because a state in the solo
+    # frame must not be started by anything else.
+    park_work_light(workspace, master["Blanco Total"], [home_id, gobo_open_id, prism_off_id])
     # Each level carries its own intensity base, and nobody else bids on those
     # dimmers: with the colour scenes stripped of theirs, "Ambiente" really is
     # dimmer than "Fiesta" for the first time. The pixel groups stay out -

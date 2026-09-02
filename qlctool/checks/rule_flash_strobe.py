@@ -24,12 +24,14 @@ half of the rule binds it to the second.
 
 from lxml import etree
 
+from .. import roles
+from ..shutter_open import shutter_open_ranges
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .audio_pressed_widgets import audio_pressed_widgets
 from .driven_channels import driven_channels
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph
+from .show_graph import ShowGraph, lit
 from .strobe_written import strobe_capable_offsets, value_strobes
 
 RULE = "flash sin estrobo"
@@ -101,6 +103,13 @@ def _strobe_writes(graph: ShowGraph, groups, scene) -> tuple[list[str], bool]:
         capable = strobe_capable_offsets(capability)
         if not capable:
             continue
+        # Only a flash that *raises light* on the fixture is a hit that owes
+        # the strobe. A held colour bank, a gobo pick or the stage aim
+        # (Flash buttons since 2026-09-02) state a wheel, a position or an
+        # RGB triple and leave every dimmer and shutter to the state beneath:
+        # they are accents, and an accent that strobed would be the bug.
+        if not _raises_light(capability, written):
+            continue
         strobed = any(
             offset in written
             and written[offset] is not None
@@ -112,3 +121,15 @@ def _strobe_writes(graph: ShowGraph, groups, scene) -> tuple[list[str], bool]:
         else:
             dark.append(capability.fixture.name or str(fixture_id))
     return dark, strobing_anywhere
+
+
+def _raises_light(capability, written: dict[int, int | None]) -> bool:
+    """Whether the scene opens this fixture's intensity path itself."""
+    if any(lit(written[o]) for o in capability.offsets_for_role(roles.DIMMER) if o in written):
+        return True
+    return any(
+        offset in written
+        and written[offset] is not None
+        and opening.minimum <= written[offset] <= opening.maximum
+        for offset, opening in shutter_open_ranges(capability)
+    )
