@@ -36,6 +36,8 @@ RULE = "marco solo sordo"
 def check_solo_handoff(graph: ShowGraph, root: etree._Element, states: set[int]) -> list[Finding]:
     findings: list[Finding] = []
     outside = _toggle_functions_by_frame(root)
+    # What every room state reaches, computed once: the walk is the cost.
+    reached = {state_id: graph.descendants(state_id) for state_id in states}
     for frame in iter_local(root, "SoloFrame"):
         toggles = outside.get(frame, set())
         if not toggles:
@@ -47,7 +49,7 @@ def check_solo_handoff(graph: ShowGraph, root: etree._Element, states: set[int])
         needing = sorted(
             function_id
             for function_id in toggles
-            if _started_as_child(graph, states, function_id) or function_id in elsewhere
+            if _started_as_child(graph, reached, function_id) or function_id in elsewhere
         )
         if not needing:
             continue
@@ -65,11 +67,11 @@ def check_solo_handoff(graph: ShowGraph, root: etree._Element, states: set[int])
     return findings
 
 
-def _started_as_child(graph: ShowGraph, states: set[int], function_id: int) -> bool:
+def _started_as_child(graph: ShowGraph, reached: dict[int, set[int]], function_id: int) -> bool:
     """A branching function that a room state other than itself reaches."""
     if graph.kind(function_id) not in BRANCHING:
         return False
-    return any(function_id in graph.descendants(state_id) for state_id in states if state_id != function_id)
+    return any(function_id in below for state_id, below in reached.items() if state_id != function_id)
 
 
 def _toggle_functions_by_frame(root: etree._Element) -> dict[etree._Element | None, set[int]]:
