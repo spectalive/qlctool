@@ -47,7 +47,7 @@ SAFETY_DETAIL_BY_KEY = {
     "todo-negro": "look a negro, no un stop",
 }
 SAFETY_DETAIL_BY_ROLE = {
-    "haze": "dispara ya, luego repite",
+    "haze": "dispara ya",
 }
 SECTION_TITLES = {
     "state": "LA SALA ESTÁ ASÍ",
