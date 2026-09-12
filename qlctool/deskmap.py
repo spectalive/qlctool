@@ -13,7 +13,15 @@ from pathlib import Path
 
 from .capabilities_of import capabilities_of
 from .checks.show_graph import build_show_graph, group_fixtures
-from .desk_policy import PAGES, SECTION_ORDER, SECTION_TITLES, place, split_caption
+from .desk_policy import (
+    PAGES,
+    SAFETY_DETAIL_BY_KEY,
+    SAFETY_DETAIL_BY_ROLE,
+    SECTION_ORDER,
+    SECTION_TITLES,
+    place,
+    split_caption,
+)
 from .desk_swatch import swatches
 from .desk_widgets import desk_widgets
 from .library import FixtureLibrary
@@ -48,6 +56,7 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
             # The section heading says HUMO; the tile says only the rhythm.
             caption = caption.removeprefix("HUMO ")
         key = _unique_key(controls, caption, widget.id)
+        detail = SAFETY_DETAIL_BY_KEY.get(key, SAFETY_DETAIL_BY_ROLE.get(placement.role, detail))
         controls[key] = {
             "widget": widget.id,
             "function": widget.function,

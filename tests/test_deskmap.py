@@ -69,6 +69,14 @@ def test_the_held_hits_are_carried_disabled(deskmap):
     assert toggles[0]["enabled"]
 
 
+def test_safety_details_replace_words_that_would_mislead(deskmap):
+    # "apaga las luces" reads as a stop; the tablet says what it is.
+    assert deskmap["controls"]["todo-negro"]["detail"] == "look a negro, no un stop"
+    for control in deskmap["controls"].values():
+        if control["role"] == "haze":
+            assert control["detail"] == "dispara ya, luego repite"
+
+
 def test_the_haze_rhythms_are_a_solo_section(deskmap):
     haze = _section(deskmap, "live", "haze")
     assert len(haze["controls"]) == 4

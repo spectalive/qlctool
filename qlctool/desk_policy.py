@@ -38,6 +38,17 @@ FAMILY_PAGES = dict(zip(FAMILY_FRAMES, ("color", "pixels", "heads", "gobos", "pr
 # The order sections take on a page: what the operator reaches for first,
 # and the hits the desk cannot press last.
 SECTION_ORDER = ("state", "hooks", "picks", "haze", "chases", "haze-light", "accents")
+
+# Words the tablet puts under a control where the show's own would mislead
+# an operator in the dark: a black look is not a stop, and a haze rhythm
+# fires the moment it starts. Keyed by the map key, or by role for a whole
+# section. The show's names are never touched.
+SAFETY_DETAIL_BY_KEY = {
+    "todo-negro": "look a negro, no un stop",
+}
+SAFETY_DETAIL_BY_ROLE = {
+    "haze": "dispara ya, luego repite",
+}
 SECTION_TITLES = {
     "state": "LA SALA ESTÁ ASÍ",
     "accents": "GOLPES",
