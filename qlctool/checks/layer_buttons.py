@@ -19,6 +19,7 @@ from ..xmlutil import find_local, iter_local
 class LayerButton:
     caption: str
     function_id: int
+    widget: etree._Element
 
 
 def layer_buttons(root: etree._Element, states: set[int]) -> list[LayerButton]:
@@ -39,5 +40,5 @@ def layer_buttons(root: etree._Element, states: set[int]) -> list[LayerButton]:
         if function_id == NO_FUNCTION or function_id in states or function_id in seen:
             continue
         seen.add(function_id)
-        found.append(LayerButton(button.attrib.get("Caption", ""), function_id))
+        found.append(LayerButton(button.attrib.get("Caption", ""), function_id, button))
     return found

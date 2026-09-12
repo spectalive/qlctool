@@ -13,8 +13,8 @@ Physical pad layout the colours follow (bank 1, as the owner arranged it):
      5 AUTO      6 Fiesta     7 Locura     8 Tranquilo
      1 Blanco    2 Negro      3 Charla     4 (free)
 
-And bank 2 (PAD BANK), where the manual page moved on 2026-08-29 once SHIFT
-turned out to send no MIDI at all:
+And bank 2 (PAD BANK), carrying the JUGAR/page-2 hooks because SHIFT sends no
+MIDI at all:
 
     13 RuedaCol 14 RuedaMez  15 Movim     16 Gobo
      9 Prisma   10 HumoAuto  11 ArcoSim   12 ArcoPasos

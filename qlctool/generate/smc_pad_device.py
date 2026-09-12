@@ -23,11 +23,11 @@ Measured 2026-08-29 with `tools/smc-pad/midicap.swift`, owner pressing:
   `FIRST_PAD_NOTE + pad - 1` counting up from the bottom-left.
 - **PAD BANK** (right edge) moves the whole surface a bank up: PAD1 answered 52
   instead of 36, so a bank is 16 notes. That is the pad's only second layer -
-  the console's manual page lives on bank 2.
+  the console's JUGAR/page-2 hooks live on bank 2.
 - **SHIFT** sends no MIDI at all. It selects the functions silkscreened on the
   pads themselves (SWING, LATCH, SYNC, TAP TEMPO), which are internal to the
-  device. Nothing on the console can be bound to it, which is why the manual
-  layer moved to bank 2 on 2026-08-29.
+  device. Nothing on the console can be bound to it, which is why the JUGAR
+  controls use PAD BANK instead.
 - The arrows `<` and `>` send CC 25 and CC 26 and do **not** change the bank -
   pressed between three hits of the same pad, the note never moved. So they are
   safe as the console's page arrows.
@@ -41,8 +41,8 @@ channel into bits 12+ of the input channel number, and offsets notes by 128
 (`CHANNEL_OFFSET_NOTE`); a control change is its CC number unchanged.
 
 The bank the pad powers up in is **remembered by the device**, not by the show:
-a pad left on bank 2 fires the manual layer where the show page expects its
-hits. `docs/show-operation.md` says so where an operator will read it.
+a pad left on bank 2 fires the JUGAR/page-2 hooks where the show page expects
+its hits. `docs/show-operation.md` says so where an operator will read it.
 """
 
 # 1-based, the way both the pad's manual and QLC+'s own UI count MIDI channels.

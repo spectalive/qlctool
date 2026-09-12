@@ -1,15 +1,15 @@
-"""Lay out the console the show is run from: three pages, biggest first.
+"""Lay out the console the show is run from: four pages, biggest first.
 
 The person in front of this laptop is not a lighting operator. They are whoever
 is nearest when something happens, on a 13" screen, in a dark room, with a party
-going on - so the console is built to a fixed 1440x900 and split into three
-pages that answer three different questions:
+going on - so the console is built to a fixed 1440x900 and split into four
+pages that answer four different questions:
 
 1. **Show** - what state is the room in, and how do I hit it? Seven big buttons
    for the state and six for the hits that ride on top. Nothing else.
-2. **Manual** - the layers, for somebody who does know the rig and wants to
-   drive it while AUTO runs.
-3. **Libreria** - the raw material the show is built from: 90 two-colour mixes,
+2. **Jugar** - family-scoped picks that release when the show's owner returns.
+3. **Control** - direct fixture banks, aiming, intensity, speed and smoke.
+4. **Libreria** - the raw material the show is built from: 90 two-colour mixes,
    100 matrix effects, 20 gobos, 17 beam colours. Nobody hunts through these
    mid-set; they are here to be borrowed, not pressed.
 
@@ -57,6 +57,7 @@ from ..vc.widget_ids import next_widget_id
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
+from .play_page import build_play_page
 from .smc_pad_bindings import SMC_PAD_BINDINGS
 from .smc_pad_colors import FUNCTION_COLORS, readable_foreground
 
@@ -69,8 +70,8 @@ GAP = 6
 # its header; these keys do the same without aiming a mouse in the dark.
 PAGE_NEXT_KEY = "PgDown"
 PAGE_PREVIOUS_KEY = "PgUp"
-PAGE_SHOW, PAGE_MANUAL, PAGE_LIBRARY = 0, 1, 2
-PAGES = 3
+PAGE_SHOW, PAGE_PLAY, PAGE_CONTROL, PAGE_LIBRARY = 0, 1, 2, 3
+PAGES = 4
 
 # The panic button. Backspace because it is big, reachable without looking, and
 # bound to nothing else in QLC+ or in this console.
@@ -185,9 +186,8 @@ HELP_LINES = (
         "algo se ha quedado encendido y no sabes cuál."
     ),
     (
-        "PgDn / PgUp cambian de página: 2 = control manual capa a capa, "
-        "3 = librería de colores, mezclas, matrices y gobos. Las teclas "
-        "funcionan desde cualquier página."
+        "PgDn / PgUp cambian de página: 2 = JUGAR, 3 = CONTROL, "
+        "4 = LIBRERÍA. Las teclas funcionan desde cualquier página."
     ),
 )
 
@@ -209,7 +209,7 @@ SMOKE_RHYTHMS = (
 # its shape - the "se vuelven todos los programas locos" the owner reported
 # was one dial writing the same raw interval into every wheel.
 #
-# The head movement gets a dial of its own, on page 2 and on the SAME tap key
+# The head movement gets a dial of its own, on page 3 and on the SAME tap key
 # (a key press reaches every widget bound to it - VCPage::handleKeyEvent walks
 # all matches - which is how the hand-built console had one M for three
 # dials). It is separate because its numbers are: a shape is sixteen taps
@@ -220,7 +220,7 @@ TEMPO_BEAT_MS = 500  # the dial's starting beat: 120 BPM
 TEMPO_LINES = (
     "TEMPO — pulsa M al ritmo: colores,",
     "gobos, prisma y dimmer siguen tu",
-    "compás. Las cabezas también (pág. 2).",
+    "compás. Las cabezas también (pág. 3).",
 )
 MOVEMENT_DIAL_LINES = (
     "Velocidad de las cabezas. La misma",
@@ -244,7 +244,7 @@ GRAND_MASTER_LINES = (
     "(255), abajo = todo apagado.",
 )
 
-# Page 3 says what it is for, because a page of 180 buttons otherwise reads as
+# Page 4 says what it is for, because a page of 180 buttons otherwise reads as
 # something somebody is supposed to be using.
 LIBRARY_LINES = (
     "Esta página es el almacén: las mezclas de dos colores, las matrices y",
@@ -320,6 +320,8 @@ def generate_live_console(
     tempo_functions: Sequence[DialFunction] = (),
     movement_functions: Sequence[DialFunction] = (),
     bpm_tap: bool = False,
+    play_wrappers=None,
+    colour_flash_ids: dict[str, int] | None = None,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame."""
     root_frame = _root_frame(workspace.root)
@@ -365,9 +367,22 @@ def generate_live_console(
         console.widget_ids.append(widget_id)
         return element
 
-    def master_button(parent, name, caption, x, y, w, h, page=None, **kwargs):
+    def master_button(
+        parent,
+        name,
+        caption,
+        x,
+        y,
+        w,
+        h,
+        page=None,
+        function_id=None,
+        include_key=True,
+        **kwargs,
+    ):
         """A button for a master function, with its key and its action."""
-        if name not in master:
+        target_id = function_id if function_id is not None else master.get(name)
+        if target_id is None:
             return None
         # A pad-bound function wears its palette colour, so the console button
         # and the pad LED read as the same surface.
@@ -377,14 +392,14 @@ def generate_live_console(
             kwargs.setdefault("foreground", str(argb_from_rgb(readable_foreground(colour))))
         element = button(
             parent,
-            master[name],
+            target_id,
             caption,
             x,
             y,
             w,
             h,
             page=page,
-            key=keys.get(name),
+            key=keys.get(name) if include_key else None,
             action=FLASH if name in flash else TOGGLE,
             # A hit must read over the running state, not merely join it:
             # without override priority a white flash is one more HTP bid.
@@ -423,7 +438,24 @@ def generate_live_console(
         tempo_functions,
         bpm_tap,
     )
-    _page_manual(
+    if play_wrappers is not None:
+        build_play_page(
+            outer,
+            button,
+            master_button,
+            frame,
+            label,
+            names,
+            master,
+            play_wrappers,
+            colour_flash_ids or {},
+            flash_functions,
+            PAGE_PLAY,
+            TITLE_FONT,
+            BIG_FONT,
+            SMALL_FONT,
+        )
+    _page_control(
         outer,
         button,
         master_button,
@@ -433,12 +465,8 @@ def generate_live_console(
         console,
         names,
         banks,
-        movement,
-        gobos,
         beam_colors,
-        prisms,
         mover_fixture_ids,
-        beam_subsets,
         movement_functions,
     )
     _page_library(
@@ -472,7 +500,7 @@ def generate_live_console(
             for name, target in AUDIO_BANDS
         ],
     )
-    _on_page(triggers, PAGE_MANUAL)
+    _on_page(triggers, PAGE_CONTROL)
     console.widget_ids.append(triggers_id)
 
     _set_canvas(workspace.root)
@@ -685,7 +713,7 @@ def _page_show(
         )
 
 
-def _page_manual(
+def _page_control(
     outer,
     button,
     master_button,
@@ -695,59 +723,21 @@ def _page_manual(
     console,
     names,
     banks,
-    movement,
-    gobos,
     beam_colors,
-    prisms,
     mover_fixture_ids,
-    beam_subsets,
     movement_functions,
 ) -> None:
-    """Page 2: the layers, for somebody who wants to drive it by hand."""
+    """Page 3: direct controls that remain useful beside the play families."""
     label(
         outer,
-        "2 · MANUAL — capas sobre AUTO. Colores, gobos, prisma y Escenario van mientras los mantienes.",
+        "3 · CONTROL — bancos, ruedas de BEAM, cabezas, intensidad y humo.",
         LEFT_X,
         30,
         OUTER_WIDTH - 16,
         30,
-        page=PAGE_MANUAL,
+        page=PAGE_CONTROL,
         font=TITLE_FONT,
     )
-
-    layers = frame(
-        outer,
-        "Capas del show",
-        LEFT_X,
-        68,
-        LEFT_WIDTH,
-        140,
-        page=PAGE_MANUAL,
-        font=TITLE_FONT,
-    )
-    # Four columns since the rainbows came back (2026-08-28): eight layers
-    # have to fit the same two rows the six fitted.
-    layer_names = (
-        ("Rueda Colores", "Rueda de colores · W"),
-        ("Rueda Mezcla", "Rueda de mezclas · E"),
-        ("Movimientos Cabezas", "Mover cabezas · A"),
-        ("Gobo Animacion", "Gobos girando · G"),
-        ("Prisma Animacion", "Prisma · P"),
-        ("Arcoiris Simultaneo", "Arcoiris junto · '"),
-        ("Arcoiris Pasos", "Arcoiris fases · ¡"),
-    )
-    for index, (name, caption) in enumerate(layer_names):
-        column, row = index % 4, index // 4
-        master_button(
-            layers,
-            name,
-            caption,
-            GAP + column * 129,
-            HEADER + row * 52,
-            124,
-            46,
-            font=SMALL_FONT,
-        )
 
     # The banks are one frame per fixture group, and the number of groups is
     # not a constant: a fifth group (the two MAC WASH, 2026-08-31) pushed this
@@ -772,7 +762,7 @@ def _page_manual(
             y,
             LEFT_WIDTH,
             bank_pitch - 6,
-            page=PAGE_MANUAL,
+            page=PAGE_CONTROL,
             font=TITLE_FONT,
         )
         # Keys 1-0 follow the bank's key list - eight solids, then the old
@@ -809,7 +799,7 @@ def _page_manual(
         y,
         LEFT_WIDTH,
         DIMMER_FRAME_HEIGHT,
-        page=PAGE_MANUAL,
+        page=PAGE_CONTROL,
         font=TITLE_FONT,
     )
     for index, (name, caption) in enumerate(
@@ -847,7 +837,7 @@ def _page_manual(
         grand_master_y,
         RIGHT_WIDTH - GRAND_MASTER_WIDTH - GAP,
         60,
-        page=PAGE_MANUAL,
+        page=PAGE_CONTROL,
     )
     grand_master_id = ids.take()
     grand_master = build_grand_master_slider(
@@ -860,7 +850,7 @@ def _page_manual(
         GRAND_MASTER_HEIGHT,
     )
     build_input_source(grand_master, SMC_PAD_BINDINGS["Master General"])
-    _on_page(grand_master, PAGE_MANUAL)
+    _on_page(grand_master, PAGE_CONTROL)
     console.widget_ids.append(grand_master_id)
     for index, line in enumerate(GRAND_MASTER_LINES):
         label(
@@ -870,7 +860,7 @@ def _page_manual(
             grand_master_y + GRAND_MASTER_HEIGHT + GAP + index * 22,
             RIGHT_WIDTH,
             20,
-            page=PAGE_MANUAL,
+            page=PAGE_CONTROL,
             font=HELP_FONT,
         )
 
@@ -884,7 +874,7 @@ def _page_manual(
         716,
         RIGHT_WIDTH,
         60,
-        page=PAGE_MANUAL,
+        page=PAGE_CONTROL,
     )
     label(
         outer,
@@ -894,71 +884,12 @@ def _page_manual(
         782,
         RIGHT_WIDTH,
         60,
-        page=PAGE_MANUAL,
+        page=PAGE_CONTROL,
         font=HELP_FONT,
     )
 
-    shapes = frame(
-        outer,
-        "Figura que dibujan las cabezas",
-        MIDDLE_X,
-        68,
-        MIDDLE_WIDTH,
-        80,
-        page=PAGE_MANUAL,
-        solo=True,
-        font=TITLE_FONT,
-    )
-    # One button per shape, sized to fit however many the rig now draws.
-    # `Escenario` (the measured stage aim) sits in the same solo frame on
-    # purpose: aiming the heads somewhere fixed and drawing a figure with them
-    # are exclusive, and the solo frame stops the figure when the aim starts.
-    # It is held (a Flash with Override) since 2026-09-02: a latched aim on
-    # top of a moving state lasted until the state's next movement step, when
-    # the step's new fader took the heads back (cross-audit). `Cabezas Centro`
-    # is no longer a button: a parked head under a moving state is the same
-    # lie, and the state that parks them is `Momento Charla`.
-    aims = [(name, caption) for name, caption in (("Escenario", "Escenario (mantén)"),)]
-    slots = len(movement.efx_ids) + len(aims)
-    shape_step = (MIDDLE_WIDTH - GAP) // slots
-    for index, function_id in enumerate(movement.efx_ids):
-        button(
-            shapes,
-            function_id,
-            _after(names.get(function_id, ""), "Movimiento "),
-            x=GAP + index * shape_step,
-            y=HEADER,
-            w=shape_step - GAP,
-            h=44,
-        )
-    for offset, (name, caption) in enumerate(aims):
-        master_button(
-            shapes,
-            name,
-            caption,
-            GAP + (len(movement.efx_ids) + offset) * shape_step,
-            HEADER,
-            shape_step - GAP,
-            44,
-        )
-
-    # The beams' wheels are a live decision, not library material: somebody
-    # picks a gobo while the show runs. They sit beside the movement shapes.
-    _wheel_frame(
-        outer,
-        button,
-        frame,
-        names,
-        gobos.scene_ids,
-        "Gobos — solo los 4 BEAM",
-        "Gobo - ",
-        MIDDLE_X,
-        156,
-        MIDDLE_WIDTH,
-        150,
-        PAGE_MANUAL,
-        columns=12,
-    )
+    # The beams' own colour wheel remains held here. A latched colour-wheel
+    # pick on JUGAR would stop the rig wheel and leave every RGB fixture dark.
     _wheel_frame(
         outer,
         button,
@@ -968,36 +899,24 @@ def _page_manual(
         "Color de los BEAM — su rueda, no RGB",
         "Color Beam - ",
         MIDDLE_X,
-        314,
+        68,
         MIDDLE_WIDTH,
         150,
-        PAGE_MANUAL,
-        columns=12,
-    )
-    _wheel_frame(
-        outer,
-        button,
-        frame,
-        names,
-        prisms.scene_ids + (beam_subsets.prism_scene_ids if beam_subsets is not None else []),
-        "Prisma — solo los 4 BEAM",
-        "Prisma - ",
-        MIDDLE_X,
-        472,
-        MIDDLE_WIDTH,
-        92,
-        PAGE_MANUAL,
+        PAGE_CONTROL,
         columns=12,
     )
 
+    # Keep the aiming controls directly below the beam wheel. The outer frame
+    # is 892px tall, so the pad leaves the same 6px inset at its bottom after
+    # taking the space released by moving the wheel up (2026-09-03).
     label(
         outer,
         "Apunta las 12 cabezas a mano — arrastra dentro del cuadro",
         MIDDLE_X,
-        574,
+        224,
         MIDDLE_WIDTH,
         20,
-        page=PAGE_MANUAL,
+        page=PAGE_CONTROL,
         font=HELP_FONT,
     )
     pad_id = ids.take()
@@ -1006,16 +925,16 @@ def _page_manual(
         pad_id,
         "Cabezas",
         MIDDLE_X,
-        598,
+        250,
         MIDDLE_WIDTH,
-        280,
+        636,
         fixture_ids=list(mover_fixture_ids),
     )
-    _on_page(pad, PAGE_MANUAL)
+    _on_page(pad, PAGE_CONTROL)
     console.widget_ids.append(pad_id)
 
-    # The movement dial, on the page where the shapes are chosen and on the
-    # same tap key as page 1's tempo. It re-times each rotation AND the EFX
+    # The movement dial stays with the direct controls and on the same tap key
+    # as page 1's tempo. It re-times each rotation AND the EFX
     # under it, chaser fade included, so the figure stays the same fraction
     # of its step whatever the room is doing.
     if movement_functions:
@@ -1033,7 +952,7 @@ def _page_manual(
             tap_key=TEMPO_TAP_KEY,
         )
         build_input_source(dial, SMC_PAD_BINDINGS["Vel. Movimiento"])
-        _on_page(dial, PAGE_MANUAL)
+        _on_page(dial, PAGE_CONTROL)
         console.widget_ids.append(dial_id)
         for index, line in enumerate(MOVEMENT_DIAL_LINES):
             label(
@@ -1043,7 +962,7 @@ def _page_manual(
                 228 + index * 22,
                 RIGHT_WIDTH,
                 20,
-                page=PAGE_MANUAL,
+                page=PAGE_CONTROL,
                 font=HELP_FONT,
             )
 
@@ -1063,10 +982,10 @@ def _page_library(
     matrix_algorithms,
     beam_subsets,
 ) -> None:
-    """Page 3: the material the show is built from, not buttons for a set."""
+    """Page 4: the material the show is built from, not buttons for a set."""
     label(
         outer,
-        "3 · LIBRERÍA — de aquí sale el show. No hace falta tocar nada de esto durante una fiesta.",
+        "4 · LIBRERÍA — de aquí sale el show. No hace falta tocar nada de esto durante una fiesta.",
         LEFT_X,
         30,
         OUTER_WIDTH - 16,

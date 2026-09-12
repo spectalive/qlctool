@@ -28,10 +28,12 @@ def color_scene_values(
     dimmer_full: bool = True,
     fixture_ids: Sequence[int] | None = None,
     internal_program_off: bool = True,
+    exclude_effect_mode_fixture_ids: Sequence[int] = (),
 ) -> dict[int, list[tuple[int, int]]]:
     red, green, blue = rgb
     result: dict[int, list[tuple[int, int]]] = {}
     wanted = None if fixture_ids is None else set(fixture_ids)
+    excluded_effect_modes = set(exclude_effect_mode_fixture_ids)
 
     for caps in capabilities:
         if wanted is not None and caps.fixture.fixture_id not in wanted:
@@ -77,12 +79,13 @@ def color_scene_values(
         # `Ciclo Paneles Mixto` decides whether they are listening. Only for a
         # caller that really runs such an owner; `rule_internal_program` holds
         # everyone else to writing the mode off right here.
-        if internal_program_off:
+        if internal_program_off and caps.fixture.fixture_id not in excluded_effect_modes:
             pairs += internal_program_off_pairs(caps)
         # And the fixtures whose self-running channel has no names to match on
         # - the MAC WASH's `Function Mode`, the MiN Wash's macros, the fog
         # machines' colour cycle. Same trap, parked the same way.
-        pairs += mode_park_pairs(caps)
+        if caps.fixture.fixture_id not in excluded_effect_modes:
+            pairs += mode_park_pairs(caps)
 
         result[caps.fixture.fixture_id] = pairs
 

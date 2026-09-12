@@ -29,6 +29,7 @@ from ..matrix_algorithms import CURATED_MATRICES
 from ..monitor_positions import house_right_fixture_ids
 from ..output_binding import pin_generic_output
 from ..palette import PALETTE, PRIMARY_COLORS
+from ..shutter_open import shutter_open_pairs
 from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
 from ..strobe_speed import strobe_speed_pairs
@@ -41,6 +42,7 @@ from .beam_subsets import generate_beam_subsets
 from .beat_tempo import BeatTiming, apply_beat_tempo
 from .builtin_effects import generate_builtin_effects
 from .color_banks import GeneratedBank, generate_color_banks
+from .color_flashes import generate_color_flashes
 from .color_scene import color_scene_values
 from .dealt_gobo_scenes import generate_dealt_gobo_scenes
 from .dimmer_chases import generate_dimmer_chases
@@ -49,6 +51,7 @@ from .dimmerless_intensity import generate_dimmerless_intensity
 from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
 from .flash_color import generate_flash_color
+from .generated_play_wrappers import GeneratedPlayWrappers
 from .gobo_shake import generate_gobo_shake
 from .home_position import generate_home_position
 from .live_console import generate_live_console
@@ -63,9 +66,11 @@ from .panel_speed_auto import generate_panel_speed_auto
 from .park_work_light import park_work_light
 from .pixel_base import generate_pixel_base
 from .pixel_wheel_matrices import generate_pixel_wheel_matrices
+from .play_wrappers import generate_play_wrappers
 from .prism_spins import generate_prism_spins
 from .quad_color_scenes import generate_quad_color_scenes
 from .rainbow_efx import generate_rainbow_efx
+from .rest_scene import generate_rest_scene
 from .smoke_auto import generate_smoke_auto
 from .stage_aim import generate_stage_aim
 from .stage_layout import generate_stage_layout, unplaced_fixtures
@@ -178,18 +183,17 @@ KEYS = {
     "Strobo Rapido": "F",
     "Strobo Medio": "T",
     "Color Beam Animacion": "C",
-    # Page 2: the layers, for somebody standing at the laptop.
+    # JUGAR hooks retain the hand-built show's global shortcuts; picks and
+    # duplicate reset-strip controls remain keyless.
     "Rueda Colores": "W",
     "Rueda Mezcla": "E",
     "Movimientos Cabezas": "A",
     "Gobo Animacion": "G",
     "Prisma Animacion": "P",
-    "Humo Auto": "J",
-    "Humo Vertical": "N",
-    # The two whole-rig rainbows, on the keys the hand-built console gave
-    # them (Spanish keyboard: the row left of 1 and right of 0).
     "Arcoiris Simultaneo": "'",
     "Arcoiris Pasos": "¡",
+    "Humo Auto": "J",
+    "Humo Vertical": "N",
     # Live-only looks. The hand-built console has these on V/B/C/Z; C is
     # already Color Beam here, so the sequence moves rather than clashes.
     # M is NOT in this family: it was the hand-built console's tap-tempo key
@@ -247,6 +251,8 @@ class CanonicalShow:
     efx_ids: list[int] = field(default_factory=list)
     gobo_ids: list[int] = field(default_factory=list)
     prism_ids: list[int] = field(default_factory=list)
+    play_wrappers: GeneratedPlayWrappers = field(default_factory=GeneratedPlayWrappers)
+    colour_flash_ids: dict[str, int] = field(default_factory=dict)
     master_ids: dict[str, int] = field(default_factory=dict)
     button_ids: list[int] = field(default_factory=list)
     function_count: int = 0
@@ -328,6 +334,13 @@ def build_canonical_show(
     # And the third flash the old console had on `.`: the strobe over whatever
     # colour is already running - dimmer and shutter only, RGB untouched.
     master["Flash Color"] = generate_flash_color(workspace, caps, fraction=FLASH_STROBE_FAST)
+    color_flashes = generate_color_flashes(
+        workspace,
+        caps,
+        {name: PALETTE[name] for name in PRIMARY_COLORS},
+        FLASH_STROBE_FAST,
+    )
+    master.update({f"Golpe {name}": function_id for name, function_id in color_flashes.ids.items()})
     # The bass bar's hit. It was `Flash 100%` - but that scene now strobes,
     # and a strobe fired by whatever the PA does is a strobe nobody chose. So
     # the bass keeps its own plain white: same look, shutters open, no strobe.
@@ -335,11 +348,14 @@ def build_canonical_show(
         workspace, caps, "Golpe Graves", (255, 255, 255), wheel_color="Blanco"
     )
 
-    banks = generate_color_banks(workspace, library)
-
     # The panels' own forty-two programmes. Nobody has watched them yet, so
     # every one is generated and the cycle is slow enough to see them.
     builtins = generate_builtin_effects(workspace, caps, label="Paneles")
+    banks = generate_color_banks(
+        workspace,
+        library,
+        exclude_effect_mode_fixture_ids=builtins.fixture_ids,
+    )
     if builtins.chaser_id is not None:
         master["Efectos Paneles"] = builtins.chaser_id
     # The two phases in one chaser: steps are alternatives, so the mode
@@ -407,9 +423,30 @@ def build_canonical_show(
     # A matrix writes RGB and nothing else, so the panels' master dimmer and
     # shutter need somebody. That used to be the rig-wide wheel, until these
     # fixtures were taken off it; without this they are coloured and dark.
-    pixel_base_id = generate_pixel_base(workspace, caps, sorted(matrix_lit_ids))
+    pixel_base_id = generate_pixel_base(
+        workspace,
+        caps,
+        sorted(matrix_lit_ids),
+        exclude_effect_mode_fixture_ids=builtins.fixture_ids,
+    )
     if pixel_base_id is not None:
         master["Pixeles ON"] = pixel_base_id
+    charla_pixel_intensity_id = generate_pixel_base(
+        workspace,
+        caps,
+        sorted(matrix_lit_ids | set(builtins.fixture_ids)),
+        name="Intensidad Charla Pixeles",
+        path="Momentos",
+        include_effect_mode=False,
+    )
+    paneles_charla_id = generate_panel_manual(
+        workspace,
+        caps,
+        builtins.fixture_ids,
+        name="Paneles Charla",
+        path="Momentos",
+        include_intensity=False,
+    )
     # Everything the pixel groups need beside the wheel: their intensity, and
     # the panels' own programmes. Their colour is not here - the wheel's steps
     # carry it, matrix included. Wherever the wheel goes, this goes.
@@ -456,7 +493,11 @@ def build_canonical_show(
     # The shake bursts ride inside the gobo wheel's own rotation - a shake is
     # a step, never a concurrent layer - and every plain gobo scene parks the
     # jitter channel at zero, so the burst always has somebody to end it.
-    shake = generate_gobo_shake(workspace, library)
+    shake = generate_gobo_shake(
+        workspace,
+        library,
+        companions=((roles.FOCUS, BEAM_FOCUS),),
+    )
     # Four heads, four different patterns, turning over together: the wheel's
     # own walk shows one shape at a time, and a room with four beams in it
     # should not look like one beam repeated (owner, 2026-08-30).
@@ -525,6 +566,17 @@ def build_canonical_show(
     )
     if prism_animation_id is not None:
         master["Prisma Animacion"] = prism_animation_id
+
+    gobo_rest_id = (
+        generate_rest_scene(workspace, gobos.scene_ids[0], "Gobo Reposo", "Gobos")
+        if gobos.scene_ids
+        else None
+    )
+    prism_rest_id = (
+        generate_rest_scene(workspace, prisms.scene_ids[0], "Prisma Reposo", "Prisma")
+        if prisms.scene_ids
+        else None
+    )
 
     smoke = generate_smoke_auto(workspace, library)
     # The haze timer, one function per rhythm. AUTO starts the default and the
@@ -644,12 +696,12 @@ def build_canonical_show(
     # into AUTO, because a level that owns the bars' colour hands it back on
     # every step - and because two levels running at once (which the console
     # used to allow) then put two colour sources on one fixture.
-    gobo_open_id = _first(gobos.scene_ids)
+    gobo_open_id = gobo_rest_id or _first(gobos.scene_ids)
     # The prism parked out, spin stopped: every level and moment that does not
     # run `Prisma Animacion` holds this, or the last peak's prism stays in the
     # beam for the whole of the next quiet hour - the same LTP latch as the
     # gobo, on the channel one wheel over.
-    prism_off_id = _first(prisms.scene_ids)
+    prism_off_id = prism_rest_id or _first(prisms.scene_ids)
     # The work light is a room state and inherits nothing: heads home, gobo
     # open, prism out are folded into the scene itself, or `Todo Negro` ->
     # `Blanco Total` after a party level is four white gobos through a spinning
@@ -666,6 +718,9 @@ def build_canonical_show(
         caps,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
     )
+    charla_intensity_ids = [intensity.full_id]
+    if charla_pixel_intensity_id is not None:
+        charla_intensity_ids.append(charla_pixel_intensity_id)
     if intensity.ambient_id is not None:
         master["Intensidad Ambiente"] = intensity.ambient_id
     if intensity.full_id is not None:
@@ -720,7 +775,6 @@ def build_canonical_show(
                     fid
                     for fid in (
                         movement.slow_id,
-                        movement.slow_beam_id,
                         gobo_open_id,
                         prism_off_id,
                         intensity.ambient_id,
@@ -740,8 +794,7 @@ def build_canonical_show(
                 [
                     fid
                     for fid in (
-                        movement.wash_id,
-                        movement.beam_id,
+                        movement.cabezas_id,
                         master["Gobo Animacion"],
                         master.get("Prisma Animacion", prism_off_id),
                         intensity.full_id,
@@ -755,8 +808,7 @@ def build_canonical_show(
                 [
                     fid
                     for fid in (
-                        movement.fast_wash_id,
-                        movement.fast_beam_id,
+                        movement.rapidos_id,
                         master["Gobo Animacion"],
                         master.get("Prisma Animacion"),
                         master["Dimmer Chase"],
@@ -774,8 +826,7 @@ def build_canonical_show(
                 [
                     fid
                     for fid in (
-                        movement.wash_id,
-                        movement.beam_id,
+                        movement.cabezas_id,
                         master["Gobo Animacion"],
                         master.get("Prisma Animacion", prism_off_id),
                         dimmer_programs_id,
@@ -816,10 +867,20 @@ def build_canonical_show(
     # a lull, the last track - and they are the reason the energy levels are no
     # longer buttons: pressing two of those at once is what put the room on
     # every colour at once.
-    master["Luz Charla"] = _flat_scene(workspace, caps, "Luz Charla", CHARLA_WHITE)
+    charla_scene_id = _flat_scene(
+        workspace,
+        caps,
+        "Luz Charla Base",
+        CHARLA_WHITE,
+        dimmer_full=False,
+        exclude_effect_mode_fixture_ids=builtins.fixture_ids,
+    )
     beam_white_id = _first(beam_colors.scene_ids)
+    master["Luz Charla"] = _collection(workspace, "Luz Charla", [charla_scene_id, beam_white_id])
     # Every moment brings its own intensity base beside its colour, because
-    # the colour scenes no longer open anything on their own.
+    # the colour scenes no longer open anything on their own. The talk state
+    # also owns the matrix/programmed-fixture base directly: `Intensidad Total`
+    # deliberately excludes those fixtures to keep their automatic owner unique.
     moments = generate_moments(
         workspace,
         [
@@ -832,8 +893,8 @@ def build_canonical_show(
                     master["Luz Charla"],
                     gobo_open_id,
                     prism_off_id,
-                    beam_white_id,
-                    intensity.full_id,
+                    *charla_intensity_ids,
+                    *([paneles_charla_id] if paneles_charla_id is not None else []),
                 ],
             ),
             # A lull: the colour bed and the pixels keep breathing at the low
@@ -846,10 +907,7 @@ def build_canonical_show(
                 [
                     master["Rueda Colores"],
                     *pixel_layer,
-                    *(
-                        [f for f in (movement.slow_id, movement.slow_beam_id) if f is not None]
-                        or [home_id]
-                    ),
+                    *([movement.slow_id] if movement.slow_id is not None else [home_id]),
                     gobo_open_id,
                     prism_off_id,
                     intensity.ambient_id,
@@ -891,6 +949,32 @@ def build_canonical_show(
         ],
     )
     master.update(moments)
+
+    color_step_ids: list[int] = []
+    if unison.wheel_id is not None:
+        wheel = next(
+            function
+            for function in findall_local(workspace.engine, "Function")
+            if function.attrib.get("ID") == str(unison.wheel_id)
+        )
+        color_step_ids = [int(step.text) for step in findall_local(wheel, "Step")]
+    play_wrappers = generate_play_wrappers(
+        workspace,
+        color_ids=color_step_ids,
+        rainbow_ids=[
+            function_id
+            for function_id in (rainbows.simultaneo_id, rainbows.pasos_id)
+            if function_id is not None
+        ],
+        panel_effect_ids=builtins.scene_ids,
+        panel_manual_id=panel_manual_id,
+        movement_ids=[
+            *movement.play_pick_ids,
+            *([stage_aim_id] if stage_aim_id is not None else []),
+        ],
+        gobo_ids=[*gobos.scene_ids[1:-2], *dealt, *shake.scene_ids],
+        prism_ids=[*prisms.scene_ids[1:], *beam_subsets.prism_scene_ids, *spins.scene_ids],
+    )
 
     # The show runs on the clock and is re-timed by the tap dial, which is the
     # only tempo control QLC+ 5.2.2 offers a keyboard key: its `ControlBPM`
@@ -951,6 +1035,8 @@ def build_canonical_show(
             tempo_functions=() if beats or bpm_tap else tempo_functions,
             movement_functions=() if beats or bpm_tap else movement_functions,
             bpm_tap=bpm_tap,
+            play_wrappers=play_wrappers,
+            colour_flash_ids=color_flashes.ids,
         )
         button_ids = console.button_ids
 
@@ -961,6 +1047,8 @@ def build_canonical_show(
         efx_ids=movement.efx_ids,
         gobo_ids=gobos.scene_ids + beam_colors.scene_ids,
         prism_ids=prisms.scene_ids + beam_subsets.prism_scene_ids,
+        play_wrappers=play_wrappers,
+        colour_flash_ids=color_flashes.ids,
         master_ids=master,
         button_ids=button_ids,
         function_count=len(functions),
@@ -1160,6 +1248,8 @@ def _flat_scene(
     wheel_color: str | None = None,
     wheel_dimmer: int = 255,
     strobe: float | None = None,
+    dimmer_full: bool = True,
+    exclude_effect_mode_fixture_ids: Sequence[int] = (),
 ) -> int:
     """One colour on every colour-capable fixture; smoke machines excluded.
 
@@ -1169,7 +1259,12 @@ def _flat_scene(
     run, overriding the open-shutter values a plain look carries - which is
     what turns the work light into a flash.
     """
-    values = color_scene_values(caps, rgb)
+    values = color_scene_values(
+        caps,
+        rgb,
+        dimmer_full=dimmer_full,
+        exclude_effect_mode_fixture_ids=exclude_effect_mode_fixture_ids,
+    )
     # The pump, shut. A work light is a room state, and a room state that never
     # writes the pump is what a released smoke flash latches against.
     for capability in caps:
@@ -1197,13 +1292,17 @@ def _flat_scene(
 
 
 def _blackout(workspace, caps, name: str = "Todo Negro") -> int:
-    """Everything to zero, the smoke pumps included - at zero, which is shut.
+    """Everything dark, with smoke pumps at zero and shutters explicitly owned.
 
     A lit fog machine's LED is part of the room's light and goes dark with the
     rest; its pump is a different role, so zeroing the dimmer cannot stop the
     fog. The pump is therefore written by name, at zero: a blackout that leaves
     a machine fogging is not a blackout, and a room state that never writes the
     pump is a room state a released smoke flash latches against (`fog_off`).
+
+    A labelled mechanical shutter stays in its open range while RGB and dimmer
+    remain zero. The state is still black, but a later family pick can introduce
+    colour without inheriting a closed shutter from the blackout.
     """
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in caps:
@@ -1219,6 +1318,7 @@ def _blackout(workspace, caps, name: str = "Todo Negro") -> int:
             for offset in capability.offsets_for_role(role)
         ]
         pairs = [(offset, 0) for offset in sorted(offsets)]
+        pairs += shutter_open_pairs(capability)
         # And out of its own programme: a blackout that leaves a panel
         # animating in the dark is a blackout that ends the moment somebody
         # raises a dimmer.

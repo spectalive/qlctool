@@ -18,36 +18,19 @@ is coloured and no member writes its dimmer? A fixture with no dimmer role is
 opened by an effect counts as open, because the effect writes it every cycle.
 """
 
-from .. import roles
-from .color_roles import COLOUR
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit, reach
-from .unowned_instant import unowned_while_lit
+from .instant_dark_fixtures import instant_dark_fixtures
+from .instant_evaluator import InstantEvaluator
+from .show_graph import ShowGraph
 
 RULE = "color sin dimmer en algun instante"
 
 
 def check_instant_dimmer(graph: ShowGraph, groups, states: set[int]) -> list[Finding]:
+    evaluator = InstantEvaluator(graph, groups)
     findings: list[Finding] = []
     for state_id in sorted(states):
-        dark: list[str] = []
-        for fixture_id, written in reach(graph, groups, state_id).items():
-            capability = graph.capabilities.get(fixture_id)
-            if capability is None or (capability.is_smoke and not capability.is_lit_smoke):
-                continue
-            dimmers = capability.offsets_for_role(roles.DIMMER)
-            coloured = tuple(
-                offset
-                for role in COLOUR
-                for offset in capability.offsets_for_role(role)
-                if offset in written and lit(written[offset])
-            )
-            if not dimmers or not coloured:
-                continue
-            if unowned_while_lit(
-                graph, groups, state_id, fixture_id, frozenset(dimmers), coloured
-            ):
-                dark.append(capability.fixture.name)
+        dark = instant_dark_fixtures(graph, groups, (state_id,), evaluator=evaluator)
         if not dark:
             continue
         findings.append(

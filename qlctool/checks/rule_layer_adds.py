@@ -24,9 +24,11 @@ from lxml import etree
 from .. import roles
 from .color_roles import COLOUR
 from .driven_channels import driven_channels
+from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph, lit, reach
+from .wrapper_leaves import wrapper_scenes
 
 RULE = "capa que se suma al estado"
 
@@ -39,31 +41,35 @@ def check_layer_adds(
     coloured_by_state = _coloured_by_states(graph, groups, states)
     findings: list[Finding] = []
     for button in layer_buttons(root, states):
-        scene = graph.functions.get(button.function_id)
-        if scene is None or scene.attrib.get("Type") != "Scene":
+        if family_frame_problems(graph, groups, states, button.widget) == ():
             continue
-        clashing = sorted(
+        scenes = wrapper_scenes(graph, button.function_id)
+        if not scenes:
+            continue
+        clashing = {
             graph.capabilities[fixture_id].fixture.name
-            for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items()
+            for scene_id in scenes
+            for fixture_id, written in driven_channels(
+                graph.functions[scene_id], graph.capabilities, groups
+            ).items()
             if fixture_id in coloured_by_state
             and _states_colour(graph.capabilities.get(fixture_id), written)
-        )
-        if not clashing:
-            continue
-        findings.append(
-            Finding(
-                rule=RULE,
-                severity=ERROR,
-                function=graph.name(button.function_id),
-                fixtures=tuple(clashing),
-                message=(
-                    f"es un Toggle («{button.caption}») que pone color sobre "
-                    f"{len(clashing)} aparatos que el estado ya colorea: RGB mezcla "
-                    f"HTP, asi que rojo sobre cyan es blanco, nunca rojo - un color "
-                    f"que sustituye es un Flash con ForceLTP"
-                ),
+        }
+        if clashing:
+            findings.append(
+                Finding(
+                    rule=RULE,
+                    severity=ERROR,
+                    function=graph.name(button.function_id),
+                    fixtures=tuple(sorted(clashing)),
+                    message=(
+                        f"es un Toggle («{button.caption}») que pone color sobre "
+                        f"{len(clashing)} aparatos que el estado ya colorea: RGB mezcla "
+                        "HTP, asi que rojo sobre cyan es blanco, nunca rojo - un color "
+                        "que sustituye es un Flash con ForceLTP"
+                    ),
+                )
             )
-        )
     return findings
 
 
@@ -77,7 +83,7 @@ def _coloured_by_states(graph: ShowGraph, groups, states: set[int]) -> set[int]:
 
 
 def _states_colour(capability, written: dict[int, int | None]) -> bool:
-    if capability is None or capability.is_smoke and not capability.is_lit_smoke:
+    if capability is None or (capability.is_smoke and not capability.is_lit_smoke):
         return False
     offsets = {offset for role in COLOUR for offset in capability.offsets_for_role(role)}
     wheel = capability.wheel_for_role(roles.COLOR_MACRO)

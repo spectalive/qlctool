@@ -62,7 +62,7 @@ HEADER_COMMENT = """
 
   Pads are numbered as the panel silkscreens them: PAD1 bottom-left, PAD13
   top-left. PAD BANK moves every pad one bank (+16 notes) and is where the
-  console's manual page lives; SHIFT sends no MIDI at all.
+  console's JUGAR/page-2 hooks live; SHIFT sends no MIDI at all.
 """
 
 

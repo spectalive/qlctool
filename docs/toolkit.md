@@ -49,7 +49,7 @@ Commands never overwrite their input; they write a new file.
 | `patch` | Check the patch for address overlaps, or edit it: add, re-address, rename, unpatch, and put fixtures in a group or resize its grid |
 | `layout` | Virtual Console buttons for every function, grouped by its UI folder |
 | `stage` | A position for every fixture in the 2D/3D view - `--plot` applies the real montage, without it the layout is generated from what each fixture can do |
-| `newshow` | A whole self-running show built on an existing patch, plus the three-page live console (show / manual / library) on one screen |
+| `newshow` | A whole self-running show built on an existing patch, plus the four-page live console (show / JUGAR / control / library) on one screen |
 | `check` | What the room will actually do: fixtures coloured but never lit, colour a fixture can only take on a wheel, two programmes writing one channel, and the console's own traps ([checks.md](checks.md)) |
 | | (rig-wide colour wheel, colour banks and mixes, matrices, movement mirrored side to side, gobos, beam colour, prism, smoke, dimmer chase and ping-pong, shutter and flash strobes, and the energy levels `AUTO` walks through - `--beats` puts the lot on the music's beat) |
 | `validate` | Load a workspace in headless QLC+ and report what it complains about |

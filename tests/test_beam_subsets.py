@@ -91,7 +91,7 @@ def test_multicolor_uses_the_half_colour_channel_without_moving_the_wheel(
 
 
 def test_every_restored_subset_is_reachable_from_the_generated_console():
-    """2026-08-27: a generated function without a button is still lost."""
+    """2026-08-27: a generated function without an operator path is still lost."""
     workspace = Workspace.load(SHOW)
     build_canonical_show(workspace, FixtureLibrary.load())
     functions = _functions(workspace.root)
@@ -109,4 +109,14 @@ def test_every_restored_subset_is_reachable_from_the_generated_console():
         *(f"MultiColor - {name}" for name in SUBSET_NAMES),
     }
     assert restored_names <= function_ids.keys()
-    assert {function_ids[name] for name in restored_names} <= button_function_ids
+    for name in restored_names:
+        function_id = function_ids[name]
+        if function_id in button_function_ids:
+            continue
+        wrappers = {
+            int(function.attrib["ID"])
+            for function in functions.values()
+            if function.attrib.get("Type") == "Collection"
+            and str(function_id) in {step.text for step in findall_local(function, "Step")}
+        }
+        assert wrappers & button_function_ids, f"{name} has no console button or JUGAR wrapper"

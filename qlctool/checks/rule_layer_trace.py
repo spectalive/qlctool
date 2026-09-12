@@ -22,9 +22,11 @@ be released under any of them.
 from lxml import etree
 
 from .driven_channels import driven_channels
+from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph, reach
+from .wrapper_leaves import wrapper_scenes
 
 RULE = "capa que deja huella"
 INTENSITY_GROUP = "Intensity"
@@ -38,20 +40,24 @@ def check_layer_trace(
     owned = _written_by_states(graph, groups, states)
     findings: list[Finding] = []
     for button in layer_buttons(root, states):
-        scene = graph.functions.get(button.function_id)
-        if scene is None or scene.attrib.get("Type") != "Scene":
+        if family_frame_problems(graph, groups, states, button.widget) == ():
+            continue
+        scenes = wrapper_scenes(graph, button.function_id)
+        if not scenes:
             continue
         stranded: list[str] = []
-        for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
-            capability = graph.capabilities.get(fixture_id)
-            if capability is None:
-                continue
-            for offset, value in written.items():
-                if capability.groups_by_offset[offset] == INTENSITY_GROUP:
+        for scene_id in scenes:
+            scene = graph.functions[scene_id]
+            for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
+                capability = graph.capabilities.get(fixture_id)
+                if capability is None:
                     continue
-                if value == 0 or (fixture_id, offset) in owned:
-                    continue
-                stranded.append(f"{capability.fixture.name} ch{offset + 1}")
+                for offset, value in written.items():
+                    if capability.groups_by_offset[offset] == INTENSITY_GROUP:
+                        continue
+                    if value == 0 or (fixture_id, offset) in owned:
+                        continue
+                    stranded.append(f"{capability.fixture.name} ch{offset + 1}")
         if not stranded:
             continue
         findings.append(

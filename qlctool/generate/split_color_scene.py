@@ -14,8 +14,8 @@ from ..capability import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off import strobe_off_pairs
-from ..zoom_wide import zoom_wide_pairs
 from ..white_level import white_level
+from ..zoom_wide import zoom_wide_pairs
 from .wheel_color_values import wheel_color_values
 
 RGB = tuple[int, int, int]
@@ -28,6 +28,7 @@ def split_color_scene_values(
     fixture_ids: Sequence[int] | None = None,
     dimmer_full: bool = True,
     color_names: tuple[str, str] | None = None,
+    exclude_effect_mode_fixture_ids: Sequence[int] = (),
 ) -> dict[int, list[tuple[int, int]]]:
     """Alternate two colours across the colour-capable fixtures, in patch order.
 
@@ -40,6 +41,7 @@ def split_color_scene_values(
     colours with the beams stuck on whatever they had.
     """
     wanted = None if fixture_ids is None else list(fixture_ids)
+    excluded_effect_modes = set(exclude_effect_mode_fixture_ids)
     ordered = [
         caps
         for caps in capabilities
@@ -72,7 +74,8 @@ def split_color_scene_values(
             # A strobe-only channel is LTP and a released Flash restores
             # nothing: the scene that owns the light writes the strobe off.
             pairs += strobe_off_pairs(caps)
-        pairs += internal_program_off_pairs(caps)
+        if caps.fixture.fixture_id not in excluded_effect_modes:
+            pairs += internal_program_off_pairs(caps)
         result[caps.fixture.fixture_id] = pairs
 
     if color_names is not None:

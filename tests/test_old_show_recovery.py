@@ -82,7 +82,7 @@ def test_keys_nine_and_zero_are_the_blue_red_splits(built):
 
 def test_the_rainbows_are_back_and_relative(built):
     """Audit finding 5: `Arcoiris Simultáneo` and `Arcoiris Pasos` - relative
-    Circle EFX in RGB mode over the whole rig, on their own keys - had no
+    Circle EFX in RGB mode over the whole rig, on JUGAR - had no
     equivalent among 32 absolute pan/tilt EFX."""
     show, out = built
     root = Workspace.load(out).root

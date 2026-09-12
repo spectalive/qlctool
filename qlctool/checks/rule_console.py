@@ -206,27 +206,35 @@ def _parent_bounds(frame: etree._Element) -> list[Finding]:
 
 
 def _double_buttons(graph: ShowGraph, frame: etree._Element) -> list[Finding]:
-    seen: dict[int, str] = {}
+    """One Blackout button owns QLC+'s button-local blackout state.
+
+    `vcbutton.cpp:186` handles Blackout without a function signal, while
+    `VCButtonItem.qml` reads that action's own state for its indicator. Regular
+    functions can deliberately have several controls; duplicate Blackout
+    controls instead show conflicting local state.
+    """
+    del graph
+    seen: str | None = None
     findings = []
     for widget, _, _ in _walk(frame):
         if localname(widget) != "Button":
             continue
-        function_id = _function_of(widget)
-        if function_id is None:
+        action = find_local(widget, "Action")
+        if action is None or (action.text or "").strip() != "Blackout":
             continue
         caption = widget.attrib.get("Caption", "")
-        if function_id in seen:
+        if seen is not None:
             findings.append(
                 Finding(
                     rule=RULE,
                     severity=ERROR,
-                    function=graph.name(function_id),
+                    function=caption,
                     message=(
-                        f"tiene dos botones («{seen[function_id]}» y «{caption}»): "
-                        f"uno de los dos siempre parecera apagado"
+                        f"tiene dos botones Blackout («{seen}» y «{caption}»): "
+                        "uno de los dos siempre parecera apagado"
                     ),
                 )
             )
         else:
-            seen[function_id] = caption
+            seen = caption
     return findings

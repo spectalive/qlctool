@@ -22,10 +22,12 @@ from lxml import etree
 
 from .. import roles
 from .driven_channels import driven_channels
+from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph
 from .stepped_leaves import stepped_leaves
+from .wrapper_leaves import wrapper_scenes
 
 RULE = "capa pisada por el ciclo"
 PICK_ROLES = (
@@ -50,22 +52,26 @@ def check_pick_overridden(
     stepped = _stepped_writes(graph, groups, states)
     findings: list[Finding] = []
     for button in layer_buttons(root, states):
-        scene = graph.functions.get(button.function_id)
-        if scene is None or scene.attrib.get("Type") != "Scene":
+        if family_frame_problems(graph, groups, states, button.widget) == ():
+            continue
+        scenes = wrapper_scenes(graph, button.function_id)
+        if not scenes:
             continue
         overridden: dict[str, set[str]] = {}
-        for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
-            capability = graph.capabilities.get(fixture_id)
-            if capability is None:
-                continue
-            for offset in written:
-                role = capability.roles_by_offset[offset]
-                if role not in PICK_ROLES:
+        for scene_id in scenes:
+            scene = graph.functions[scene_id]
+            for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
+                capability = graph.capabilities.get(fixture_id)
+                if capability is None:
                     continue
-                for state_id in stepped.get((fixture_id, offset), ()):
-                    overridden.setdefault(graph.name(state_id), set()).add(
-                        capability.fixture.name
-                    )
+                for offset in written:
+                    role = capability.roles_by_offset[offset]
+                    if role not in PICK_ROLES:
+                        continue
+                    for state_id in stepped.get((fixture_id, offset), ()):
+                        overridden.setdefault(graph.name(state_id), set()).add(
+                            capability.fixture.name
+                        )
         if not overridden:
             continue
         fixtures = sorted({name for names in overridden.values() for name in names})

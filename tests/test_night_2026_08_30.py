@@ -102,7 +102,7 @@ def test_every_colour_look_takes_the_washes_off_their_own_programme(built, libra
         # is that everything which *lights* it owns the mode channel.
         reaching = [
             name
-            for name in ("Blanco Total", "Rig Rojo", "Luz Charla")
+            for name in ("Blanco Total", "Rig Rojo", "Luz Charla Base")
             if _values(functions[name], fixture_id)
         ]
         assert reaching, f"no room look reaches {capability.fixture.name} at all"

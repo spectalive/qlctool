@@ -35,9 +35,10 @@ class GeneratedGoboShake:
 def generate_gobo_shake(
     workspace: Workspace,
     library: FixtureLibrary,
+    companions: Sequence[tuple[str, int]] = (),
     path: str = "Gobos",
 ) -> GeneratedGoboShake:
-    """Shake scenes over every fixture that has both a gobo wheel and a shake."""
+    """Shake scenes that also own every supplied gobo companion channel."""
     caps = [
         c
         for c in capabilities_of(workspace.root, library)
@@ -65,6 +66,11 @@ def generate_gobo_shake(
                 (shake_offset, SHAKE_VALUE)
                 for shake_offset in capability.offsets_for_role(roles.GOBO_SHAKE)
             ]
+            for role, value in companions:
+                pairs += [
+                    (companion_offset, value)
+                    for companion_offset in capability.offsets_for_role(role)
+                ]
             values[capability.fixture.fixture_id] = pairs
         function_id = next_function_id(workspace.root)
         workspace.add_function(

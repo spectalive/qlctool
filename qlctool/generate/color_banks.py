@@ -60,13 +60,23 @@ def generate_color_banks(
     split_colors: Sequence[str] = SPLIT_COLORS,
     hold: int = 1500,
     fade: int = 400,
+    exclude_effect_mode_fixture_ids: Sequence[int] = (),
 ) -> list[GeneratedBank]:
     """One colour bank plus wheels per fixture group that can do colour."""
     caps = capabilities_of(workspace.root, library)
     banks: list[GeneratedBank] = []
 
     for group in fixture_groups(workspace.root):
-        bank = _bank_for_group(workspace, caps, group, colors, split_colors, hold, fade)
+        bank = _bank_for_group(
+            workspace,
+            caps,
+            group,
+            colors,
+            split_colors,
+            hold,
+            fade,
+            exclude_effect_mode_fixture_ids,
+        )
         if bank is not None:
             banks.append(bank)
     return banks
@@ -80,6 +90,7 @@ def _bank_for_group(
     split_colors: Sequence[str],
     hold: int,
     fade: int,
+    exclude_effect_mode_fixture_ids: Sequence[int],
 ) -> GeneratedBank | None:
     path = f"Colores {group.name}"
     scene_ids: list[int] = []
@@ -89,14 +100,16 @@ def _bank_for_group(
         # state keeps owning the dimmers - a bank that opened them was one
         # more HTP bid and one more thing a released hand left behind.
         values = color_scene_values(
-            caps, PALETTE[name], fixture_ids=group.fixture_ids, dimmer_full=False
+            caps,
+            PALETTE[name],
+            fixture_ids=group.fixture_ids,
+            dimmer_full=False,
+            exclude_effect_mode_fixture_ids=exclude_effect_mode_fixture_ids,
         )
         # A group holding a BEAM 230W 7R holds a fixture with no red channel at
         # all. Colouring the group and skipping it is how the beams sat on last
         # night's colour while everything around them changed.
-        values.update(
-            wheel_color_values(caps, name, fixture_ids=group.fixture_ids, dimmer=None)
-        )
+        values.update(wheel_color_values(caps, name, fixture_ids=group.fixture_ids, dimmer=None))
         if not values:
             return None  # no colour-capable fixture in this group
         function_id = next_function_id(workspace.root)
@@ -116,6 +129,7 @@ def _bank_for_group(
                 fixture_ids=group.fixture_ids,
                 color_names=(first, second),
                 dimmer_full=False,
+                exclude_effect_mode_fixture_ids=exclude_effect_mode_fixture_ids,
             )
             if len(values) < 2:
                 break  # a single fixture cannot show a split

@@ -257,6 +257,8 @@ class GeneratedFamilies:
     # One entry per shape for the console's solo frame, and the chasers the
     # speed dial drives.
     efx_ids: list[int] = field(default_factory=list)
+    # Exact movement functions the play page may wrap as manual picks.
+    play_pick_ids: list[int] = field(default_factory=list)
     dial_ids: list[int] = field(default_factory=list)
 
 
@@ -304,9 +306,7 @@ def generate_movement_families(
         )
 
     slow = _family(washes, WASH_SLOW, None, "Suave", "Movimiento Suave", make_chaser=False)
-    slow_beam = _family(
-        beams, BEAM_SLOW, "Movimientos Suaves Beams", "Beam Suave", "Movimiento Suave"
-    )
+    slow_beam = _family(beams, BEAM_SLOW, "Suaves Beams", "Beam Suave", "Movimiento Suave")
     ola_suave = _family(
         washes,
         WASH_CASCADE,
@@ -402,14 +402,14 @@ def generate_movement_families(
     cross_id = generate_cross_position(workspace, library, beams)
 
     # The Suave family gets its own cascade wave beside the two plain shapes.
-    slow_id: int | None = None
+    slow_wash_id: int | None = None
     if slow is not None:
         steps = list(slow.efx_ids) + (list(ola_suave.efx_ids) if ola_suave is not None else [])
-        slow_id = next_function_id(workspace.root)
+        slow_wash_id = next_function_id(workspace.root)
         workspace.add_function(
             build_chaser(
-                slow_id,
-                "Movimientos Suaves",
+                slow_wash_id,
+                "Suaves Washes",
                 steps,
                 hold=WASH_SLOW.hold,
                 fade_in=MOVEMENT_CROSSFADE_MS,
@@ -417,6 +417,18 @@ def generate_movement_families(
                 run_order="Random",
                 path="Movimiento Suave",
             )
+        )
+
+    slow_id: int | None = None
+    slow_members = [
+        member
+        for member in (slow_wash_id, slow_beam.chaser_id if slow_beam else None)
+        if member is not None
+    ]
+    if slow_members:
+        slow_id = next_function_id(workspace.root)
+        workspace.add_function(
+            build_collection(slow_id, "Movimientos Suaves", slow_members, path="Movimiento Suave")
         )
 
     # The washes' rotation, assembled by hand like the beams' so the wave and
@@ -482,6 +494,7 @@ def generate_movement_families(
     # merging into it would fire a wash's plain Line whenever the cascade is
     # pressed, or vice versa.
     efx_ids: list[int] = []
+    play_pick_ids: list[int] = []
     by_shape: dict[str, list[int]] = {}
     for generated, envelope in (
         (wash, WASH),
@@ -506,6 +519,7 @@ def generate_movement_families(
             )
         )
         efx_ids.append(collection_id)
+        play_pick_ids.append(collection_id)
     if ola_suave is not None:
         efx_ids.append(ola_suave.efx_ids[0])
     if cascada_beams is not None:
@@ -527,9 +541,11 @@ def generate_movement_families(
             )
         )
         efx_ids.append(collection_id)
+        play_pick_ids.append(collection_id)
 
     _figure("Ola Vertical", ola_wash, ola_beam)
     _figure("Barrido Unison", unison_wash, unison_beam)
+    play_pick_ids += [function_id for function_id in (fan_id, cross_id) if function_id is not None]
 
     def _both(name, first, second, path):
         members = [m for m in (first, second) if m is not None]
@@ -557,5 +573,6 @@ def generate_movement_families(
             "Movimiento Rapido",
         ),
         efx_ids=efx_ids,
+        play_pick_ids=play_pick_ids,
         dial_ids=[m for m in (wash_id, beam_id) if m is not None],
     )

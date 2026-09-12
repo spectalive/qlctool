@@ -20,6 +20,7 @@ from qlctool import roles
 from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.console_states import room_states
+from qlctool.checks.rule_pick_darkens import check_pick_darkens
 from qlctool.checks.rule_undeclared_heads import check_undeclared_heads
 from qlctool.checks.run import check_workspace
 from qlctool.checks.show_graph import (
@@ -31,6 +32,7 @@ from qlctool.checks.show_graph import (
 from qlctool.checks.strobe_written import strobe_capable_offsets
 from qlctool.fixture_group import fixture_groups
 from qlctool.fog_offsets import fog_offsets
+from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname
@@ -78,7 +80,37 @@ def _twin_scene(workspace, functions, source_name, twin_name):
     return twin
 
 
-def _burst_chaser(workspace, hold=125):
+def _strip_strobe_writes_from_black_twin(black, capabilities):
+    """Make a Todo Negro twin model the old Intensity-only black step."""
+    for value in list(findall_local(black, "FixtureVal")):
+        fixture_id = int(value.attrib["ID"])
+        capability = capabilities.get(fixture_id)
+        assert capability is not None, f"black twin fixture {fixture_id} has no capability"
+        pairs = _pairs_of(value)
+        for offset in capability.offsets_for_role(roles.STROBE):
+            pairs.pop(offset, None)
+        if pairs:
+            _write_pairs(value, pairs)
+        else:
+            value.getparent().remove(value)
+
+    intensity_writes = 0
+    for value in findall_local(black, "FixtureVal"):
+        fixture_id = int(value.attrib["ID"])
+        capability = capabilities[fixture_id]
+        for offset, level in _pairs_of(value).items():
+            assert capability.roles_by_offset[offset] != roles.STROBE, (
+                f"black twin still writes a shutter/strobe on fixture {fixture_id}"
+            )
+            if capability.groups_by_offset[offset] == "Intensity":
+                assert level == 0, (
+                    f"black twin writes lit Intensity channel {offset} on fixture {fixture_id}"
+                )
+                intensity_writes += 1
+    assert intensity_writes, "black twin lost every zero-valued Intensity darkness claim"
+
+
+def _burst_chaser(workspace, library, hold=125):
     """Put the pre-2026-09-02 STROBO back: a white/black chaser on a Toggle.
 
     `Strobo Rapido` was a SingleShot chaser alternating a white scene and a
@@ -86,17 +118,20 @@ def _burst_chaser(workspace, hold=125):
     now, so the tests that need a strobe-shaped chaser build the old one here:
     twins of `Golpe Graves` (white, shutters open) and `Todo Negro`.
     """
-    from lxml import etree
 
-    from qlctool.constants import QLC_NS
     from qlctool.functions.chaser import build_chaser
     from qlctool.ids import next_function_id
     from qlctool.vc.button import build_button
     from qlctool.vc.widget_ids import next_widget_id
 
     functions = _functions(workspace)
+    capabilities = {
+        capability.fixture.fixture_id: capability
+        for capability in capabilities_of(workspace.root, library)
+    }
     white = _twin_scene(workspace, functions, "Golpe Graves", "Rafaga Blanco")
     black = _twin_scene(workspace, functions, "Todo Negro", "Rafaga Negro")
+    _strip_strobe_writes_from_black_twin(black, capabilities)
     chaser_id = next_function_id(workspace.root)
     chaser = build_chaser(
         chaser_id,
@@ -556,7 +591,7 @@ def test_a_strobe_flashing_faster_than_four_hertz(library):
     steps back into the burst.
     """
     workspace = _show()
-    chaser, _ = _burst_chaser(workspace, hold=50)
+    chaser, _ = _burst_chaser(workspace, library, hold=50)
 
     findings = [
         f for f in check_workspace(workspace, library) if f.rule == "estrobo demasiado rapido"
@@ -572,7 +607,7 @@ def test_a_strobe_that_loops_behind_a_button(library):
     burst that ends itself. Reproduced by putting the loop back.
     """
     workspace = _show()
-    chaser, _ = _burst_chaser(workspace)
+    chaser, _ = _burst_chaser(workspace, library)
     find_local(chaser, "RunOrder").text = "Loop"
 
     findings = [f for f in check_workspace(workspace, library) if f.rule == "estrobo enganchado"]
@@ -659,7 +694,7 @@ def test_a_chaser_that_presses_the_room_state_buttons(library):
     Strobo Rapido steps back at the state scenes instead of its twins.
     """
     workspace = _show()
-    chaser, _ = _burst_chaser(workspace)
+    chaser, _ = _burst_chaser(workspace, library)
     functions = _functions(workspace)
     state_ids = {name: functions[name].attrib["ID"] for name in ("Blanco Total", "Todo Negro")}
     for index, step in enumerate(findall_local(chaser, "Step")):
@@ -709,10 +744,23 @@ def test_a_flash_that_strobes_at_a_stroll(library):
         capability.fixture.fixture_id: capability
         for capability in capabilities_of(workspace.root, library)
     }
-    # The held strobes (Flash scenes since 2026-09-02) drive the same channels
-    # and are dropped with the flashes: the rule judges the fastest hand flash.
-    for name in ("Flash 100%", "Flash 50%", "Flash Color", "Strobo Rapido", "Strobo Medio"):
-        for value in findall_local(_functions(workspace)[name], "FixtureVal"):
+    functions = _functions(workspace)
+    functions_by_id = {function.attrib["ID"]: function for function in functions.values()}
+    flash_scene_ids = {
+        target.attrib["ID"]
+        for button in iter_local(workspace.root, "Button")
+        if (action := find_local(button, "Action")) is not None
+        and action.text == "Flash"
+        and (target := find_local(button, "Function")) is not None
+        and functions_by_id[target.attrib["ID"]].attrib.get("Type") == "Scene"
+    }
+    # The rule judges every Scene a hand can flash, including the library's
+    # held colour looks. Lower every such strobe so no unrelated fast pick can
+    # mask a room-wide slow flash.
+    for function in functions.values():
+        if function.attrib["ID"] not in flash_scene_ids:
+            continue
+        for value in findall_local(function, "FixtureVal"):
             capability = capabilities.get(int(value.attrib["ID"]))
             if capability is None or not value.text:
                 continue
@@ -945,11 +993,11 @@ def test_a_flash_accent_on_a_wheel_no_state_puts_back(library):
     scene that moves the beams' colour wheel releases cleanly only if the
     state underneath also drives that wheel; otherwise the accent's position
     simply stays, and nobody can say which button left it there. Reproduced
-    by taking the beams' white out of `Momento Charla`.
+    by taking the beams' white out of the `Luz Charla` COLOR hook.
     """
     workspace = _show()
     functions = _functions(workspace)
-    charla = functions["Momento Charla"]
+    charla = functions["Luz Charla"]
     white_id = functions["Color Beam - White"].attrib["ID"]
     for step in findall_local(charla, "Step"):
         if step.text == white_id:
@@ -1027,7 +1075,7 @@ def test_an_audio_trigger_bound_to_a_strobe(library):
     from qlctool.constants import QLC_NS
 
     workspace = _show()
-    _, strobe_button = _burst_chaser(workspace)
+    _, strobe_button = _burst_chaser(workspace, library)
     widget = next(w for w in workspace.root.iter() if localname(w) == "AudioTriggers")
     bar = etree.SubElement(widget, f"{{{QLC_NS}}}SpectrumBar")
     bar.set("Name", "Graves")
@@ -1326,28 +1374,27 @@ def test_a_rig_colour_that_spins_the_beams_wheel_instead_of_naming_one(library):
 def test_a_level_of_the_cycle_that_parks_half_the_movers(library):
     """2026-08-29: "las 7R ... no se mueven", again with only AUTO pressed.
 
-    `Nivel Ambiente` is the first and longest step of `Ciclo Energia`: it ran
-    the washes' slow shapes beside a *static* fan scene for the beams, so the
-    four 7R held one position for the level's whole four-minute hold. Rest that
-    long reads as four broken lights. Swap the beams' slow rotation back for
-    the fan and the rule must bite.
+    `Nivel Ambiente` is the first and longest step of `Ciclo Energia`: its
+    `Movimientos Suaves` Collection starts both slow chasers. Swap the beams'
+    slow rotation back for a static fan and the rule must bite.
     """
-    workspace = _show()
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library, with_layout=False)
     functions = _functions(workspace)
     by_name = {
         name: int(function.attrib["ID"])
         for name, function in functions.items()
         if function.attrib.get("ID")
     }
-    level = functions["Nivel Ambiente"]
-    slow_beams = str(by_name["Movimientos Suaves Beams"])
+    level = functions["Movimientos Suaves"]
+    slow_beams = str(by_name["Suaves Beams"])
     fan = str(by_name["Beams Abanico"])
     swapped = False
     for step in findall_local(level, "Step"):
         if (step.text or "").strip() == slow_beams:
             step.text = fan
             swapped = True
-    assert swapped, "`Nivel Ambiente` no longer moves the beams at all"
+    assert swapped, "`Movimientos Suaves` no longer moves the beams at all"
 
     findings = [
         f for f in check_workspace(workspace, library) if f.rule == "cabezas paradas en el ciclo"
@@ -1610,7 +1657,7 @@ def test_one_wheel_step_cannot_switch_the_strobe_off_for_all_of_them(library):
     # The two states that are a Scene themselves keep theirs, so that under the
     # old merged reach every lit state still had an owner and the rule was
     # silent - which is what this test is here to break.
-    kept = {"Paneles - Effect 1", "Blanco Total", "Luz Charla"}
+    kept = {"Paneles - Effect 1", "Blanco Total", "Intensidad Charla Pixeles"}
     stripped = 0
     for name, function in _functions(workspace).items():
         if function.attrib.get("Type") != "Scene" or name in kept:
@@ -1744,6 +1791,840 @@ def _button_of(workspace, function_id):
     )
 
 
+def _family_frame(workspace, function_names, *, caption="TEST FAMILY", solo=True, nested=False):
+    """Add a small test frame with Toggle buttons for the named functions."""
+    from qlctool.vc.button import build_button
+    from qlctool.vc.frame import build_frame
+    from qlctool.vc.widget_ids import next_widget_id
+
+    root = find_local(find_local(workspace.root, "VirtualConsole"), "Frame")
+    frame = build_frame(
+        root,
+        next_widget_id(workspace.root),
+        caption,
+        x=0,
+        y=0,
+        width=700,
+        height=100,
+        solo=solo,
+    )
+    button_parent = frame
+    if nested:
+        button_parent = build_frame(
+            frame,
+            next_widget_id(workspace.root),
+            "TEST NESTED FAMILY",
+            x=0,
+            y=0,
+            width=680,
+            height=70,
+            pages=2,
+        )
+    functions = _functions(workspace)
+    for index, name in enumerate(function_names):
+        build_button(
+            button_parent,
+            next_widget_id(workspace.root),
+            name,
+            int(functions[name].attrib["ID"]),
+            x=index * 110,
+            y=30,
+            width=105,
+            height=50,
+        )
+    return button_parent
+
+
+def _wrapper_button(workspace, frame, source_name, wrapper_name):
+    """Add a one-member Collection wrapper and its Toggle button."""
+    from qlctool.functions.collection import build_collection
+    from qlctool.ids import next_function_id
+    from qlctool.vc.button import build_button
+    from qlctool.vc.widget_ids import next_widget_id
+
+    source_id = int(_functions(workspace)[source_name].attrib["ID"])
+    wrapper_id = next_function_id(workspace.root)
+    workspace.add_function(build_collection(wrapper_id, wrapper_name, [source_id]))
+    build_button(
+        frame,
+        next_widget_id(workspace.root),
+        wrapper_name,
+        wrapper_id,
+        x=550,
+        y=30,
+        width=105,
+        height=50,
+    )
+    return wrapper_id
+
+
+def test_a_family_pick_that_is_reachable_from_a_room_state(library):
+    """2026-09-02, play-page design: a wheel step used as its own pick
+    reports that state-driven start to the SoloFrame and releases the hook.
+    The pick must target a one-member wrapper instead.
+    """
+    workspace = _show()
+    _family_frame(
+        workspace,
+        ("Rueda Colores", "Rueda Mezcla", "Luz Charla", "Rig Rojo + Pixeles"),
+    )
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert any(
+        f.function == "Rig Rojo + Pixeles" and "es un pick" in f.message for f in findings
+    ), "a state-reachable family pick went unnoticed"
+
+
+def test_a_family_frame_missing_a_state_owner(library):
+    """2026-09-02, play-page design: Momento Charla colours the rig through
+    Luz Charla, so the COLOR frame needs that hook as well as the AUTO wheel.
+    """
+    workspace = _show()
+    _family_frame(workspace, ("Rueda Colores", "Rueda Mezcla"))
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert any(
+        f.function == "Luz Charla" and "no tiene su Toggle" in f.message for f in findings
+    ), "a family frame missing Luz Charla's hook went unnoticed"
+
+
+def test_a_pick_cannot_dark_a_moment_by_stopping_its_hook(library):
+    """2026-09-02: pressing a COLOR pick stops its hook. If that hook alone
+    opens Momento Charla's dimmers, the pick paints a black room.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    functions = _functions(workspace)
+    charla = functions["Luz Charla"]
+    moment = functions["Momento Charla"]
+    intensity_id = functions["Intensidad Total"].attrib["ID"]
+
+    for step in findall_local(moment, "Step"):
+        if step.text == intensity_id:
+            moment.remove(step)
+    if intensity_id not in {step.text for step in findall_local(charla, "Step")}:
+        etree.SubElement(charla, f"{{{QLC_NS}}}Step").text = intensity_id
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "pick que apaga"]
+    assert any(f.function == "Momento Charla" for f in findings), (
+        "a pick darkening Momento Charla by stopping Luz Charla went unnoticed"
+    )
+
+
+def test_a_pick_only_colour_cannot_leave_a_dimmer_unwritten(library):
+    """2026-09-02: a latched JUGAR pick can be the only colour after it stops
+    Momento Charla's hook, so it still needs a dimmer writer.
+    """
+    workspace = _show("Vibra.qxw")
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    panel = next(
+        capability
+        for capability in graph.capabilities.values()
+        if "WX-60WPS" in capability.fixture.name
+    )
+    functions = _functions(workspace)
+    moment = functions["Momento Charla"]
+    charla_id = functions["Luz Charla"].attrib["ID"]
+    for step in findall_local(moment, "Step"):
+        if step.text != charla_id:
+            moment.remove(step)
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "pick que apaga"]
+
+    assert any(
+        f.function == "Momento Charla" and panel.fixture.name in f.fixtures for f in findings
+    ), "a pick-only colour with no dimmer writer went unnoticed"
+
+
+def test_pick_darkens_checks_a_state_with_no_active_hook(library):
+    """2026-09-02: Todo Negro reaches none of the COLOR frame's hooks, but a
+    latched colour pick still runs beside it and needs an open shutter owner.
+    """
+    workspace = _show("Vibra-split.qxw")
+    capabilities = capabilities_of(workspace.root, library)
+    graph = build_show_graph(workspace.root, capabilities)
+    groups = group_fixtures(workspace.root)
+    functions = _functions(workspace)
+    black_id = int(functions["Todo Negro"].attrib["ID"])
+    charla_id = int(functions["Momento Charla"].attrib["ID"])
+    pick_name = "Jugar · Rig Rojo + Pixeles"
+
+    hook_ids = {int(functions[name].attrib["ID"]) for name in ("Rueda Colores", "Luz Charla")}
+    assert not hook_ids & graph.descendants(black_id)
+
+    min_washes = {
+        capability.fixture.fixture_id: capability
+        for capability in capabilities
+        if capability.fixture.model == "MiN Wash"
+    }
+    assert len(min_washes) == 2
+    for value in findall_local(functions["Todo Negro"], "FixtureVal"):
+        fixture_id = int(value.attrib["ID"])
+        capability = min_washes.get(fixture_id)
+        if capability is None:
+            continue
+        pairs = _pairs_of(value)
+        for shutter in capability.offsets_for_role(roles.STROBE):
+            pairs.pop(shutter, None)
+        _write_pairs(value, pairs)
+
+    graph = build_show_graph(workspace.root, capabilities)
+    findings = check_pick_darkens(
+        graph,
+        groups,
+        workspace.root,
+        {black_id, charla_id},
+    )
+
+    assert any(
+        finding.function == "Todo Negro"
+        and f"«{pick_name}»" in finding.message
+        and set(finding.fixtures) == {"MiN Wash #1", "MiN Wash #2"}
+        for finding in findings
+    ), "the no-active-hook state/pick pair was skipped"
+
+
+def test_pick_darkens_reuses_instant_root_states(library):
+    """One room state is evaluated beside every latched pick; its immutable
+    graph states must not be rebuilt once per fixture channel and pick.
+    """
+    import cProfile
+
+    workspace = _show("Vibra-split.qxw")
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    charla_id = int(_functions(workspace)["Momento Charla"].attrib["ID"])
+    profiler = cProfile.Profile()
+
+    profiler.runcall(
+        check_pick_darkens,
+        graph,
+        groups,
+        workspace.root,
+        {charla_id},
+    )
+
+    node_state_calls = sum(
+        entry.callcount
+        for entry in profiler.getstats()
+        if getattr(entry.code, "co_name", "") == "_node_states"
+    )
+    assert node_state_calls < 40_000, (
+        f"one state rebuilt {node_state_calls} instant graph nodes across its picks"
+    )
+
+
+@pytest.mark.parametrize("name", SHOWS)
+def test_every_regenerated_show_has_no_dark_state_pick_pair(name, library):
+    """The generator fixes the state/pick behavior without touching shipped
+    workspaces in this focused fix wave.
+    """
+    workspace = _show(name)
+    build_canonical_show(workspace, library, with_layout=False)
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    states = room_states(workspace.root, graph, groups)
+
+    findings = check_pick_darkens(graph, groups, workspace.root, states)
+
+    assert not findings, "\n".join(str(finding) for finding in findings)
+
+
+def test_a_higher_pick_shutter_value_can_close_a_concurrent_state(library):
+    """2026-09-02: HTP chooses the higher shutter value, not whichever
+    concurrent root the predicate happened to visit first.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+    from qlctool.definition import Capability
+    from qlctool.functions.scene import build_scene
+    from qlctool.ids import next_function_id
+
+    workspace = _show("Vibra.qxw")
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    functions = _functions(workspace)
+    mac = graph.capabilities[33]
+    shutter = mac.offsets_for_role(roles.STROBE)[0]
+    mac.capabilities_by_offset[shutter] = (
+        Capability(0, 9, "Open", "ShutterOpen"),
+        Capability(10, 255, "Closed", "ShutterClose"),
+    )
+    open_id = next_function_id(workspace.root)
+    workspace.add_function(build_scene(open_id, "TEST low shutter", {33: [(shutter, 0)]}))
+    etree.SubElement(functions["Momento Charla"], f"{{{QLC_NS}}}Step").text = str(open_id)
+    closed_id = next_function_id(workspace.root)
+    workspace.add_function(
+        build_scene(closed_id, "TEST high shutter pick", {33: [(shutter, 255), (8, 255)]})
+    )
+    _family_frame(workspace, ("Luz Charla", "TEST high shutter pick"))
+    graph = build_show_graph(workspace.root, list(graph.capabilities.values()))
+    states = room_states(workspace.root, graph, groups)
+
+    findings = check_pick_darkens(graph, groups, workspace.root, states)
+
+    assert any(
+        f.function == "Momento Charla" and mac.fixture.name in f.fixtures for f in findings
+    ), "a higher closed shutter value did not win its concurrent open value"
+
+
+def test_pick_darkens_checks_each_pick_and_ignores_flash_buttons(library):
+    """2026-09-02: every Toggle pick is checked independently, while a Flash
+    does not latch and must not be treated as a SoloFrame replacement.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+
+    workspace = _show("Vibra.qxw")
+    functions = _functions(workspace)
+    charla_id = functions["Luz Charla"].attrib["ID"]
+    for state_name in ("Momento Charla", "Momento Tranquilo"):
+        state = functions[state_name]
+        for step in findall_local(state, "Step"):
+            state.remove(step)
+        step = etree.SubElement(state, f"{{{QLC_NS}}}Step")
+        step.text = charla_id
+    first_pick = "Jugar · Rig Rojo + Pixeles"
+    second_pick = "Jugar · Rig Verde + Pixeles"
+    first_button = _button_of(workspace, functions[first_pick].attrib["ID"])
+    action = find_local(first_button, "Action")
+    action.text = "Flash"
+    action.attrib.clear()
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "pick que apaga"]
+
+    assert not any(f"«{first_pick}»" in f.message for f in findings)
+    assert {
+        "Momento Charla",
+        "Momento Tranquilo",
+    } <= {finding.function for finding in findings if f"«{second_pick}»" in finding.message}
+
+
+def test_a_family_hook_reachable_from_another_frame_button(library):
+    """2026-09-02, play-page design: a wrapper over a hook in the same
+    SoloFrame starts that hook and immediately makes the frame stop it.
+    """
+    workspace = _show()
+    frame = _family_frame(workspace, ("Rueda Colores", "Rueda Mezcla", "Luz Charla"))
+    _wrapper_button(workspace, frame, "Rueda Colores", "TEST wrapped colour hook")
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert any(
+        f.function == "TEST wrapped colour hook" and "arranca el hook" in f.message
+        for f in findings
+    ), "a family hook started by another frame button went unnoticed"
+
+
+def test_a_complete_family_frame_with_wrapped_picks_is_silent(library):
+    """2026-09-02, play-page design: complete hooks and an isolated wrapper
+    let a pick replace AUTO without a state-driven start releasing it.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    frame = _family_frame(
+        workspace,
+        (
+            "Rueda Colores",
+            "Rueda Mezcla",
+            "Luz Charla",
+            "Ciclo Paneles Mixto",
+            "Paneles Charla",
+        ),
+    )
+    _wrapper_button(workspace, frame, "Rig Rojo + Pixeles", "TEST wrapped red pick")
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert not findings, "a correctly owned family frame should be silent"
+
+
+def test_a_nested_family_frame_still_requires_every_state_owner(library):
+    """2026-09-02, play-page design: a nested multipage frame still belongs
+    to its nearest SoloFrame, so the missing Charla hook cannot hide inside it.
+    """
+    workspace = _show()
+    _family_frame(workspace, ("Rueda Colores", "Rueda Mezcla"), nested=True)
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert any(f.function == "Luz Charla" for f in findings)
+
+
+def test_a_nested_family_frame_exempts_its_wrapper_pick(library):
+    """2026-09-02, play-page design: an inner plain/multipage frame inherits
+    the complete outer SoloFrame and therefore keeps its wrapper layer exempt.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    frame = _family_frame(
+        workspace,
+        (
+            "Rueda Colores",
+            "Rueda Mezcla",
+            "Luz Charla",
+            "Ciclo Paneles Mixto",
+            "Paneles Charla",
+        ),
+        nested=True,
+    )
+    _wrapper_button(workspace, frame, "Rig Rojo + Pixeles", "TEST nested red pick")
+
+    findings = check_workspace(workspace, library)
+    assert not [f for f in findings if f.rule == "familia con dueño"]
+    assert not [
+        f
+        for f in findings
+        if f.rule == "capa que se suma al estado" and f.function == "TEST nested red pick"
+    ]
+
+
+def test_a_zero_panel_effect_is_still_pixel_mode_ownership(library):
+    """2026-09-02: mode zero is an intentional write, not an unowned channel."""
+    from qlctool.checks.family_frames import _function_families
+
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    families = _function_families(
+        graph,
+        group_fixtures(workspace.root),
+        int(_functions(workspace)["Paneles Charla"].attrib["ID"]),
+    )
+
+    assert families["pixel-mode"]
+
+
+def test_talk_panel_mode_and_pixel_base_keep_distinct_owners(library):
+    """2026-09-02, re-review: programmed panels need a direct mode-only
+    talk owner while Pixeles ON retains mode parking for other matrix fixtures.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "Vibra.qxw")
+    build_canonical_show(workspace, library)
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    functions = _functions(workspace)
+    talk_panel_writes = reach(graph, groups, int(functions["Paneles Charla"].attrib["ID"]))
+    pixel_base_writes = reach(graph, groups, int(functions["Pixeles ON"].attrib["ID"]))
+
+    assert talk_panel_writes
+    for fixture_id, writes in talk_panel_writes.items():
+        written_roles = {
+            graph.capabilities[fixture_id].roles_by_offset[offset] for offset in writes
+        }
+        assert written_roles == {roles.EFFECT}
+        assert not any(
+            graph.capabilities[fixture_id].roles_by_offset[offset] == roles.EFFECT
+            for offset in pixel_base_writes.get(fixture_id, {})
+        )
+
+    assert any(
+        roles.EFFECT
+        in {graph.capabilities[fixture_id].roles_by_offset[offset] for offset in writes}
+        for fixture_id, writes in pixel_base_writes.items()
+        if fixture_id not in talk_panel_writes
+    ), "Pixeles ON stopped parking every non-cycle matrix fixture mode"
+
+
+def test_a_moments_pixel_intensity_companion_is_not_a_second_play_hook(library):
+    """2026-09-02: a moment's panel intensity support must not take over
+    pixel mode or demand a duplicate PIXELES hook.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    writes = reach(
+        graph,
+        group_fixtures(workspace.root),
+        int(_functions(workspace)["Intensidad Charla Pixeles"].attrib["ID"]),
+    )
+    assert not any(
+        graph.capabilities[fixture_id].roles_by_offset[offset] == roles.EFFECT
+        for fixture_id, offsets in writes.items()
+        for offset in offsets
+    )
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert not any(f.function == "Intensidad Charla Pixeles" for f in findings)
+
+
+def test_a_bare_pixel_mode_state_owner_still_requires_its_play_hook(library):
+    """2026-09-02: adding a second functional pixel owner to AUTO requires
+    its own PIXELES hook; an intensity-only companion must not hide it.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    functions = _functions(workspace)
+    copied = _twin_scene(
+        workspace,
+        functions,
+        "Ciclo Paneles Mixto",
+        "TEST independent pixel owner",
+    )
+    etree.SubElement(functions["AUTO"], f"{{{QLC_NS}}}Step").text = copied.attrib["ID"]
+    _family_frame(
+        workspace,
+        ("Rueda Colores", "Rueda Mezcla", "Luz Charla", "Ciclo Paneles Mixto"),
+    )
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert any(
+        f.function == "TEST independent pixel owner" and "no tiene su Toggle" in f.message
+        for f in findings
+    )
+
+
+def test_a_nonmoving_rgb_effect_fixture_is_a_pixel_mode_owner(library):
+    """2026-09-02: pixel-mode ownership follows capabilities, even if a
+    fixture type omits the word "pixel".
+    """
+    from dataclasses import replace
+    from types import SimpleNamespace
+
+    from qlctool.checks.family_frames import _is_pixel_fixture
+
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    capability = next(
+        c for c in capabilities_of(workspace.root, library) if c.fixture.fixture_id == 24
+    )
+
+    assert _is_pixel_fixture(replace(capability, fixture_type="LED PAR"))
+    assert not _is_pixel_fixture(
+        SimpleNamespace(is_smoke=False, roles=frozenset(capability.roles - {roles.EFFECT}))
+    )
+    assert not _is_pixel_fixture(
+        SimpleNamespace(is_smoke=False, roles=frozenset({*capability.roles, roles.PAN}))
+    )
+
+
+def test_a_state_started_movement_collection_is_its_own_required_hook(library):
+    """2026-09-02, play-page design: future `Movimientos Suaves` is a
+    functional Collection started by a state. Its hook is required, but its
+    two child movement functions are not separate hooks.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+    from qlctool.functions.collection import build_collection
+    from qlctool.ids import next_function_id
+    from qlctool.vc.button import build_button
+    from qlctool.vc.widget_ids import next_widget_id
+
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    functions = _functions(workspace)
+    washes_id = next_function_id(workspace.root)
+    workspace.add_function(
+        build_collection(
+            washes_id, "TEST Suaves Washes", [int(functions["Suaves Washes"].attrib["ID"])]
+        )
+    )
+    beams_id = next_function_id(workspace.root)
+    workspace.add_function(
+        build_collection(
+            beams_id,
+            "TEST Suaves Beams",
+            [int(functions["Suaves Beams"].attrib["ID"])],
+        )
+    )
+    smooth_id = next_function_id(workspace.root)
+    workspace.add_function(
+        build_collection(smooth_id, "TEST Movimientos Suaves", [washes_id, beams_id])
+    )
+    etree.SubElement(functions["AUTO"], f"{{{QLC_NS}}}Step").text = str(smooth_id)
+
+    frame = _family_frame(workspace, ("Movimientos Suaves",))
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert any(f.function == "TEST Movimientos Suaves" for f in findings)
+
+    build_button(
+        frame,
+        next_widget_id(workspace.root),
+        "TEST Movimientos Suaves",
+        smooth_id,
+        x=220,
+        y=30,
+        width=105,
+        height=50,
+    )
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert not [f for f in findings if f.function in {"TEST Suaves Washes", "TEST Suaves Beams"}]
+
+
+def test_a_multi_family_state_chaser_is_not_a_play_hook(library):
+    """2026-09-02: Ciclo Energia coordinates several families, so a family
+    frame must not demand it as a return hook for each one.
+    """
+    from qlctool.capabilities_of import capabilities_of
+    from qlctool.checks.console_states import room_states
+    from qlctool.checks.family_frames import _state_owners
+    from qlctool.checks.show_graph import build_show_graph, group_fixtures
+
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    states = room_states(workspace.root, graph, groups)
+    owners = _state_owners(graph, groups, states)
+    energy_id = int(_functions(workspace)["Ciclo Energia"].attrib["ID"])
+
+    assert not any(energy_id in function_ids for function_ids in owners.values())
+
+
+def test_an_energy_nested_owner_missing_from_its_family_frame_is_reported(library):
+    """2026-09-02: an owner within an energy-cycle level remains a required
+    hook, while Ciclo Energia itself stays structural and unplayable.
+    """
+    from lxml import etree
+
+    from qlctool.constants import QLC_NS
+
+    workspace = _show()
+    functions = _functions(workspace)
+    nested = _twin_scene(workspace, functions, "Gobo Reposo", "TEST energy gobo owner")
+    level = functions["Nivel Ambiente"]
+    etree.SubElement(level, f"{{{QLC_NS}}}Step").text = nested.attrib["ID"]
+    _family_frame(workspace, ("Gobo Reposo",))
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert any(
+        f.function == "TEST energy gobo owner" and "no tiene su Toggle" in f.message
+        for f in findings
+    ), "an energy-nested gobo owner went unnoticed"
+
+
+def test_the_talk_owners_have_one_family_each(library):
+    """2026-09-02, re-review: colour and panel-mode recovery are separate
+    state owners, so a renamed frame cannot hide shared hook semantics.
+    """
+    from qlctool.capabilities_of import capabilities_of
+    from qlctool.checks.console_states import room_states
+    from qlctool.checks.family_frames import _state_owners
+    from qlctool.checks.show_graph import build_show_graph, group_fixtures
+
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    states = room_states(workspace.root, graph, groups)
+    owners = _state_owners(graph, groups, states)
+    charla_id = int(_functions(workspace)["Luz Charla"].attrib["ID"])
+    panels_id = int(_functions(workspace)["Paneles Charla"].attrib["ID"])
+
+    assert charla_id in owners["color"]
+    assert charla_id not in owners["pixel-mode"]
+    assert panels_id not in owners["color"]
+    assert panels_id in owners["pixel-mode"]
+
+
+def test_color_hooks_do_not_take_the_panel_mode_contract(library):
+    """2026-09-02, re-review: graph-derived frame families keep COLOR from
+    inheriting PIXELES ownership through a mode-resetting colour hook.
+    """
+    from qlctool.checks.family_frames import _function_families
+
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    for name in ("Rueda Colores", "Rueda Mezcla", "Luz Charla"):
+        families = _function_families(graph, groups, int(_functions(workspace)[name].attrib["ID"]))
+        assert not families["pixel-mode"], name
+
+
+def test_the_room_state_selector_is_not_a_family_handoff(library):
+    """2026-09-02, re-review: selecting a whole-room state is graph-distinct
+    from replacing a family hook, even though both use a SoloFrame.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert not findings
+
+
+def test_a_scene_only_pixel_owner_requires_its_play_hook(library):
+    """2026-09-02, re-review: a direct Scene owner is still a state owner;
+    only its write capability decides which JUGAR family must include it.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    _family_frame(workspace, ("Ciclo Paneles Mixto",), caption="renamed")
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert any(
+        f.function == "Paneles Charla" and "no tiene su Toggle" in f.message for f in findings
+    )
+
+
+def test_a_renamed_frame_with_a_pixel_wrapper_requires_pixel_owners(library):
+    """2026-09-02, re-review: a wrapper's graph writes, not the frame
+    caption, choose the family contract.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    _family_frame(
+        workspace,
+        ("Rueda Colores", "Rueda Mezcla", "Luz Charla", "Jugar · Paneles - Effect 1"),
+        caption="COLOR RENOMBRADO",
+    )
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    missing = {f.function for f in findings if "no tiene su Toggle" in f.message}
+    assert {"Ciclo Paneles Mixto", "Paneles Charla"} <= missing
+
+
+def test_a_complete_renamed_pixel_frame_is_silent(library):
+    """2026-09-02, re-review: the graph-derived pixel handoff does not need
+    the colour wheel hooks, regardless of a frame's operator caption.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    _family_frame(
+        workspace,
+        ("Ciclo Paneles Mixto", "Paneles Charla"),
+        caption="no semantic label",
+    )
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
+    assert not findings
+
+
+def test_luz_charla_keeps_momento_intensity_outside_the_color_hook(library):
+    """2026-09-02: a COLOR pick stops Luz Charla but leaves Momento Charla's
+    dimmer source running, while the hook still restores the beams' wheel.
+    """
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    functions = _functions(workspace)
+    charla = functions["Luz Charla"]
+    moment = functions["Momento Charla"]
+    beam_white_id = functions["Color Beam - White"].attrib["ID"]
+    charla_base_id = functions["Luz Charla Base"].attrib["ID"]
+    charla_pixel_intensity_id = functions["Intensidad Charla Pixeles"].attrib["ID"]
+    intensity_id = functions["Intensidad Total"].attrib["ID"]
+
+    assert charla.attrib["Type"] == "Collection"
+    members = {step.text for step in findall_local(charla, "Step")}
+    assert members == {charla_base_id, beam_white_id}
+    assert intensity_id not in members
+    moment_members = {step.text for step in findall_local(moment, "Step")}
+    assert intensity_id in moment_members
+    assert charla_pixel_intensity_id in moment_members
+
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    charla_writes = reach(
+        graph,
+        group_fixtures(workspace.root),
+        int(charla.attrib["ID"]),
+    )
+    assert not any(
+        graph.capabilities[fixture_id].roles_by_offset[offset] in (roles.DIMMER, roles.DIMMER_FINE)
+        and lit(value)
+        for fixture_id, offsets in charla_writes.items()
+        for offset, value in offsets.items()
+    )
+    pick_writes = reach(
+        graph,
+        group_fixtures(workspace.root),
+        int(functions["Rig Rojo + Pixeles"].attrib["ID"]),
+    )
+    assert not any(
+        graph.capabilities[fixture_id].roles_by_offset[offset] in (roles.DIMMER, roles.DIMMER_FINE)
+        and lit(value)
+        for fixture_id, offsets in pick_writes.items()
+        for offset, value in offsets.items()
+    )
+    moment_writes = reach(
+        graph,
+        group_fixtures(workspace.root),
+        int(moment.attrib["ID"]),
+    )
+    colour_pick_fixtures = {
+        fixture_id
+        for fixture_id, offsets in pick_writes.items()
+        if any(
+            graph.capabilities[fixture_id].roles_by_offset[offset]
+            in {
+                roles.RED,
+                roles.GREEN,
+                roles.BLUE,
+            }
+            for offset in offsets
+        )
+    }
+    missing_moment_intensity = {
+        fixture_id
+        for fixture_id in colour_pick_fixtures
+        if graph.capabilities[fixture_id].offsets_for_role(roles.DIMMER)
+        and not any(
+            lit(moment_writes.get(fixture_id, {}).get(offset, 0))
+            for offset in graph.capabilities[fixture_id].offsets_for_role(roles.DIMMER)
+        )
+    }
+    assert not missing_moment_intensity, (
+        "a COLOR pick can still paint fixtures whose moment owns no direct intensity: "
+        f"{sorted(missing_moment_intensity)}"
+    )
+
+
+def test_a_wrapped_colour_scene_in_a_plain_frame_still_adds_to_the_state(library):
+    """2026-09-02, play-page design: a Collection wrapper must not hide a
+    latched colour Scene unless it lives under complete family hooks.
+    """
+    workspace = _show()
+    frame = _family_frame(workspace, (), solo=False)
+    wrapper_id = _wrapper_button(workspace, frame, "Rojo Cabezas", "TEST wrapped red layer")
+
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "capa que se suma al estado"
+    ]
+    assert findings, "a wrapped colour layer adding to the state went unnoticed"
+    assert _functions(workspace)["TEST wrapped red layer"].attrib["ID"] == str(wrapper_id)
+
+
+def test_a_wrapped_pick_in_a_plain_frame_is_still_overridden(library):
+    """2026-09-02, play-page design: a Collection wrapper does not make a
+    plain-frame Toggle immune to the state's next gobo step.
+    """
+    workspace = _show()
+    frame = _family_frame(workspace, (), solo=False)
+    _wrapper_button(workspace, frame, "Gobo - Gobo 5", "TEST wrapped gobo layer")
+
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "capa pisada por el ciclo"
+    ]
+    assert findings, "a wrapped pick overwritten by the state went unnoticed"
+
+
+def test_a_wrapped_colour_scene_in_a_plain_frame_still_leaves_a_trace(library):
+    """2026-09-02, play-page design: a Collection wrapper must not hide an
+    LTP colour channel no room state restores.
+    """
+    workspace = _show()
+    for name, function in _functions(workspace).items():
+        if function.attrib.get("Type") != "Scene" or name.startswith("MultiColor - "):
+            continue
+        for value in findall_local(function, "FixtureVal"):
+            if int(value.attrib["ID"]) in BEAMS and value.text:
+                pairs = _pairs_of(value)
+                pairs.pop(8, None)
+                _write_pairs(value, pairs)
+    frame = _family_frame(workspace, (), solo=False)
+    _wrapper_button(workspace, frame, "MultiColor - Todas", "TEST wrapped trace layer")
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "capa que deja huella"]
+    assert findings, "a wrapped layer leaving an LTP trace went unnoticed"
+
+
 def test_a_latched_colour_bank_on_top_of_the_running_state(library):
     """2026-09-02, cross-audit: AUTO on `Rig Cyan` plus key `1` was white on
     twenty-seven fixtures - RGB mixes HTP, so a Toggle bank adds to the
@@ -1771,7 +2652,7 @@ def test_a_strobe_whose_black_step_a_lit_state_outbids(library):
     by rebuilding that chaser on a show-page button.
     """
     workspace = _show()
-    chaser, _ = _burst_chaser(workspace)
+    chaser, _ = _burst_chaser(workspace, library)
 
     findings = [f for f in check_workspace(workspace, library) if f.rule == "estrobo sin negro"]
     assert findings, "a strobe that cannot reach black went unnoticed"
@@ -1832,7 +2713,8 @@ def test_the_fog_machines_leds_dark_for_a_whole_level(library):
     fog = {
         int(find_local(f, "ID").text)
         for f in find_local(workspace.root, "Engine")
-        if localname(f) == "Fixture" and (find_local(f, "Name").text or "").startswith("Humo Vertical")
+        if localname(f) == "Fixture"
+        and (find_local(f, "Name").text or "").startswith("Humo Vertical")
     }
     assert fog
     for value in findall_local(_functions(workspace)["Intensidad Peak"], "FixtureVal"):
@@ -1855,16 +2737,20 @@ def test_a_latched_pick_the_states_chaser_steps_over(library):
     """2026-09-02, cross-audit: a gobo picked on the manual page lasted until
     `Gobo Animacion`'s next step, four seconds later, because the step's new
     fader is appended after the button's and wins the LTP channel. Reproduced
-    by turning one gobo button back into a Toggle.
+    by putting the raw gobo leaf back on a plain Toggle frame instead of its
+    isolated JUGAR wrapper.
     """
     workspace = _show()
     functions = _functions(workspace)
+    _family_frame(workspace, ("Gobo - Gobo 5",), solo=False)
     button = _button_of(workspace, functions["Gobo - Gobo 5"].attrib["ID"])
     action = find_local(button, "Action")
     action.text = "Toggle"
     action.attrib.clear()
 
-    findings = [f for f in check_workspace(workspace, library) if f.rule == "capa pisada por el ciclo"]
+    findings = [
+        f for f in check_workspace(workspace, library) if f.rule == "capa pisada por el ciclo"
+    ]
     assert findings, "a latched pick the state overwrites went unnoticed"
     assert "Gobo - Gobo 5" in {f.function for f in findings}
 

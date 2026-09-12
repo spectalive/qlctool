@@ -23,6 +23,7 @@ from .rule_audio_triggers import check_audio_triggers
 from .rule_collision import check_collisions
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
+from .rule_family_owner import check_family_owner
 from .rule_flash_scene import check_flash_scene
 from .rule_flash_speed import check_flash_speed
 from .rule_flash_strobe import check_flash_strobe
@@ -40,8 +41,9 @@ from .rule_mode_owner import check_mode_owner
 from .rule_movement_families import check_movement_families
 from .rule_movement_window import check_movement_window
 from .rule_pad_input import check_pad_input
-from .rule_pick_overridden import check_pick_overridden
 from .rule_parked_movers import check_parked_movers
+from .rule_pick_darkens import check_pick_darkens
+from .rule_pick_overridden import check_pick_overridden
 from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_shutter_endpoint import check_shutter_endpoint
 from .rule_smoke import check_smoke
@@ -50,8 +52,8 @@ from .rule_smoke_restore import check_smoke_restore
 from .rule_state_handover import check_state_handover
 from .rule_state_proxy import check_state_proxy
 from .rule_stepped_dimmer import check_stepped_dimmer
-from .rule_strobe_coverage import check_strobe_coverage
 from .rule_strobe_black import check_strobe_black
+from .rule_strobe_coverage import check_strobe_coverage
 from .rule_strobe_in_cycle import check_strobe_in_cycle
 from .rule_strobe_rate import check_strobe_rate
 from .rule_strobe_restore import check_strobe_restore
@@ -62,8 +64,8 @@ from .rule_undeclared_heads import check_undeclared_heads
 from .rule_unfinished_effect import check_unfinished_effects
 from .rule_wheel_colour import check_wheel_colour
 from .rule_wheel_fade import check_wheel_fade
-from .rule_white_emitter import check_white_emitter
 from .rule_wheel_rotation import check_wheel_rotation
+from .rule_white_emitter import check_white_emitter
 from .rule_zoom_narrow import check_zoom_narrow
 from .show_graph import build_show_graph, group_fixtures
 
@@ -96,6 +98,8 @@ def check_workspace(
     findings += check_layer_adds(graph, groups, root, states)
     findings += check_layer_trace(graph, groups, root, states)
     findings += check_pick_overridden(graph, groups, root, states)
+    findings += check_family_owner(graph, groups, root, states)
+    findings += check_pick_darkens(graph, groups, root, states)
     findings += check_state_handover(graph, groups, states)
     findings += check_colour_clocks(graph, groups, entries, states)
     findings += check_unfinished_effects(graph, groups, entries)

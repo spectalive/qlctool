@@ -101,14 +101,14 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     # watched AUTO and reported them not moving: the hold is four minutes.
     ambient = _names("Nivel Ambiente")
     assert "Movimientos Suaves" in ambient
-    assert "Movimientos Suaves Beams" in ambient
+    assert "Suaves Washes" not in ambient
+    assert "Suaves Beams" not in ambient
     assert "Beams Abanico" not in ambient
     assert "Intensidad Ambiente" in ambient
 
     party = _names("Nivel Fiesta")
     assert {
-        "Movimientos Washes",
-        "Movimientos Beams",
+        "Movimientos Cabezas",
         "Gobo Animacion",
         "Intensidad Total",
     } <= party
@@ -119,7 +119,7 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     # (TODO.md). `Intensidad Peak` is its replacement: a static owner only for
     # the fixtures the chase cannot reach at all (no dimmer role).
     peak = _names("Nivel Peak")
-    assert {"Rapidos Washes", "Rapidos Beams", "Dimmer Chase", "Intensidad Peak"} <= peak
+    assert {"Movimientos Rapidos", "Dimmer Chase", "Intensidad Peak"} <= peak
     assert "Intensidad Total" not in peak
     # Held back for the peak, not running all night.
     assert "Dimmer Chase" not in party
@@ -639,7 +639,8 @@ def test_tranquilo_rests_the_heads_instead_of_parking_them(built):
     names = {functions[m].attrib.get("Name") for m in members}
 
     assert "Movimientos Suaves" in names
-    assert "Movimientos Suaves Beams" in names
+    assert "Suaves Washes" not in names
+    assert "Suaves Beams" not in names
     assert "Beams Abanico" not in names
     assert str(show.master_ids["Cabezas Centro"]) not in members
 

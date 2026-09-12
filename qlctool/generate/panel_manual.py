@@ -26,8 +26,9 @@ def generate_panel_manual(
     fixture_ids: Sequence[int],
     name: str = "Paneles Manual",
     path: str = "Efectos Propios",
+    include_intensity: bool = True,
 ) -> int | None:
-    """Manual mode, dimmer open, strobe off on `fixture_ids`. None when empty."""
+    """Manual mode plus optional intensity support on `fixture_ids`. None when empty."""
     wanted = set(fixture_ids)
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:
@@ -36,9 +37,10 @@ def generate_panel_manual(
         pairs = internal_program_off_pairs(capability)
         if not pairs:
             continue
-        pairs += [(offset, 255) for offset in capability.offsets_for_role(roles.DIMMER)]
-        pairs += shutter_open_pairs(capability)
-        pairs += strobe_off_pairs(capability)
+        if include_intensity:
+            pairs += [(offset, 255) for offset in capability.offsets_for_role(roles.DIMMER)]
+            pairs += shutter_open_pairs(capability)
+            pairs += strobe_off_pairs(capability)
         values[capability.fixture.fixture_id] = sorted(set(pairs))
     if not values:
         return None

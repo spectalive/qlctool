@@ -37,15 +37,22 @@ def generate_pixel_base(
     fixture_ids: Sequence[int],
     name: str = NAME,
     path: str = PATH,
+    include_effect_mode: bool = True,
+    exclude_effect_mode_fixture_ids: Sequence[int] = (),
 ) -> int | None:
     """A Scene opening dimmer and shutter on the matrix-lit fixtures.
 
     Only fixtures a matrix can really colour - the ones with RGB - and only
     those that have something to open: a bar with neither dimmer nor shutter
     needs nothing and is left out rather than written as an empty FixtureVal.
+    `include_effect_mode=False` leaves programme and mode channels to the
+    caller's colour owner, for a scene that is strictly an intensity base.
+    `exclude_effect_mode_fixture_ids` makes that exception only for fixtures
+    with a concurrent functional mode owner.
     Returns None when no fixture in the group needs opening.
     """
     wanted = set(fixture_ids)
+    excluded_effect_modes = set(exclude_effect_mode_fixture_ids)
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:
         if capability.fixture.fixture_id not in wanted or capability.is_smoke:
@@ -66,10 +73,12 @@ def generate_pixel_base(
         # under a matrix that thinks it is painting it. That is what the two
         # MAC WASH did on the night of 2026-08-29, "cambios de colores muy
         # rapidos", and what put them in a group in the first place.
-        pairs += internal_program_off_pairs(capability)
+        if include_effect_mode and capability.fixture.fixture_id not in excluded_effect_modes:
+            pairs += internal_program_off_pairs(capability)
         # And the ones whose self-running channel has no names to match
         # on - the MAC WASH's blanket `Function Mode` is exactly that.
-        pairs += mode_park_pairs(capability)
+        if include_effect_mode and capability.fixture.fixture_id not in excluded_effect_modes:
+            pairs += mode_park_pairs(capability)
         if pairs:
             values[capability.fixture.fixture_id] = pairs
 
