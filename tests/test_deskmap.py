@@ -125,3 +125,9 @@ def test_captions_split_into_name_and_explanation():
     assert split_caption("AUTO colores · W") == ("AUTO colores", "")
     assert split_caption("Rig Rojo") == ("Rig Rojo", "")
     assert split_caption("HUMO cada 1 min · J") == ("HUMO cada 1 min", "")
+    assert split_caption("Cabezas Rojo / Resto Azul") == ("Cabezas Rojo", "Resto Azul")
+
+
+def test_sections_put_the_held_hits_last():
+    from qlctool.desk_policy import SECTION_ORDER
+    assert SECTION_ORDER[-1] == "accents" and SECTION_ORDER[0] == "state"

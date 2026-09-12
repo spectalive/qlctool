@@ -13,7 +13,7 @@ from pathlib import Path
 
 from .capabilities_of import capabilities_of
 from .checks.show_graph import build_show_graph, group_fixtures
-from .desk_policy import PAGES, SECTION_TITLES, place, split_caption
+from .desk_policy import PAGES, SECTION_ORDER, SECTION_TITLES, place, split_caption
 from .desk_swatch import swatches
 from .desk_widgets import desk_widgets
 from .library import FixtureLibrary
@@ -65,16 +65,19 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
 
     pages = []
     for page_key, title in PAGES:
-        page_sections = [
-            {
-                "key": section,
-                "title": SECTION_TITLES[section],
-                "solo": section_solo[(page_key, section)],
-                "controls": keys,
-            }
-            for (page, section), keys in sections.items()
-            if page == page_key
-        ]
+        page_sections = sorted(
+            (
+                {
+                    "key": section,
+                    "title": SECTION_TITLES[section],
+                    "solo": section_solo[(page_key, section)],
+                    "controls": keys,
+                }
+                for (page, section), keys in sections.items()
+                if page == page_key
+            ),
+            key=lambda s: SECTION_ORDER.index(s["key"]),
+        )
         if page_sections:
             pages.append({"key": page_key, "title": title, "sections": page_sections})
 

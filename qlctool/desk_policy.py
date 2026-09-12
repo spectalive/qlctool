@@ -35,6 +35,9 @@ PAGES = (
     ("control", "CONTROL"),
 )
 FAMILY_PAGES = dict(zip(FAMILY_FRAMES, ("color", "pixels", "heads", "gobos", "prism")))
+# The order sections take on a page: what the operator reaches for first,
+# and the hits the desk cannot press last.
+SECTION_ORDER = ("state", "hooks", "picks", "haze", "chases", "haze-light", "accents")
 SECTION_TITLES = {
     "state": "LA SALA ESTÁ ASÍ",
     "accents": "GOLPES",
@@ -104,6 +107,10 @@ def split_caption(caption: str) -> tuple[str, str]:
     """
     text = re.sub(r"\s·\s\S+$", "", caption).strip()
     head, sep, detail = text.partition(" — ")
+    if not sep:
+        # A two-colour contrast, "Cabezas Rojo / Resto Azul", reads as a
+        # name and its second half rather than one long line.
+        head, sep, detail = text.partition(" / ")
     return head.strip(), detail.strip() if sep else ""
 
 
