@@ -2794,3 +2794,24 @@ def test_a_white_look_that_leaves_the_white_emitter_at_zero(library):
     ]
     assert findings, "an unused white emitter went unnoticed"
     assert "Blanco Total" in {f.function for f in findings}
+
+
+def test_a_solo_frame_deaf_to_its_monitored_hook(library):
+    """2026-09-12, found building the tablet desk: every generated solo frame
+    excluded monitored buttons, so a pick never stopped the wheel AUTO had
+    started (5.2.2 vcbutton.cpp:258) and the room had two colour sources. The
+    checker had nothing to say about it. Reproduced by putting the flag back on
+    the COLOR family frame of a generated show.
+    """
+    workspace = _show()
+    frames = list(iter_local(workspace.root, "SoloFrame"))
+    for frame in frames:
+        find_local(frame, "ExcludeMonitored").text = "False"
+    colour = next(f for f in frames if (f.attrib.get("Caption") or "").startswith("COLOR"))
+    find_local(colour, "ExcludeMonitored").text = "True"
+    findings = [f for f in check_workspace(workspace, library) if f.rule == "marco solo sordo"]
+    assert findings, "a solo frame deaf to its monitored hook went unnoticed"
+    assert all(f.function.startswith("COLOR") for f in findings)
+
+    find_local(colour, "ExcludeMonitored").text = "False"
+    assert not [f for f in check_workspace(workspace, library) if f.rule == "marco solo sordo"]

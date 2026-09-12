@@ -49,6 +49,7 @@ from .rule_shutter_endpoint import check_shutter_endpoint
 from .rule_smoke import check_smoke
 from .rule_smoke_light import check_smoke_light
 from .rule_smoke_restore import check_smoke_restore
+from .rule_solo_handoff import check_solo_handoff
 from .rule_state_handover import check_state_handover
 from .rule_state_proxy import check_state_proxy
 from .rule_stepped_dimmer import check_stepped_dimmer
@@ -99,6 +100,7 @@ def check_workspace(
     findings += check_layer_trace(graph, groups, root, states)
     findings += check_pick_overridden(graph, groups, root, states)
     findings += check_family_owner(graph, groups, root, states)
+    findings += check_solo_handoff(graph, root, states)
     findings += check_pick_darkens(graph, groups, root, states)
     findings += check_state_handover(graph, groups, states)
     findings += check_colour_clocks(graph, groups, entries, states)
