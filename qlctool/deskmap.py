@@ -44,6 +44,9 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
         if placement is None:
             continue
         caption, detail = split_caption(widget.caption)
+        if placement.role == "haze":
+            # The section heading says HUMO; the tile says only the rhythm.
+            caption = caption.removeprefix("HUMO ")
         key = _unique_key(controls, caption, widget.id)
         controls[key] = {
             "widget": widget.id,
