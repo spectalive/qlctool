@@ -543,6 +543,9 @@ def _page_show(
         322,
         page=PAGE_SHOW,
         solo=True,
+        # A moment must stop an AUTO that the page-2 duplicate started, which
+        # leaves this frame's AUTO button only monitoring it.
+        exclude_monitored=False,
         font=TITLE_FONT,
     )
     for name, caption, (x, y, w, h), font in ROOM_STATES:
@@ -662,6 +665,9 @@ def _page_show(
         60,
         page=PAGE_SHOW,
         solo=True,
+        # AUTO starts the one-minute rhythm as a child; choosing another must
+        # stop it, or two timers share the pump.
+        exclude_monitored=False,
         font=TITLE_FONT,
     )
     pitch = (RIGHT_X - LEFT_X - GAP - 2 * GAP) // len(SMOKE_RHYTHMS)

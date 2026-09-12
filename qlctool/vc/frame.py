@@ -26,6 +26,7 @@ def build_frame(
     width: int,
     height: int,
     solo: bool = False,
+    exclude_monitored: bool = True,
     pages: int = 1,
     next_page_key: str | None = None,
     previous_page_key: str | None = None,
@@ -48,11 +49,16 @@ def build_frame(
     ]
     if solo:
         children.append(("Mixing", "False"))
-        # Only stop the function of a button somebody actually pressed. Without
-        # this a chaser stepping through the looks in the frame makes every step
-        # cut the one before it dead, because each step's button reports its
-        # function starting - VCButton::notifyFunctionStarting.
-        children.append(("ExcludeMonitored", "True"))
+        # Whether a button that is only *monitoring* its function (started by
+        # something else, AUTO for instance) is spared when a sibling starts.
+        # A library frame wants it spared: a chaser stepping through looks that
+        # have buttons there would otherwise cut itself dead as each step's
+        # button reports its function starting (VCButton::notifyFunctionStarting).
+        # A frame whose Toggles are hooks that a room state starts as children
+        # wants the opposite, or a pick never takes the family from AUTO: with
+        # the exclusion the monitoring hook is skipped (5.2.2 vcbutton.cpp:258)
+        # and the wheel keeps painting under the pick - dated 2026-09-12.
+        children.append(("ExcludeMonitored", "True" if exclude_monitored else "False"))
     children += [("Collapsed", "False"), ("Disabled", "False")]
     for name, value in children:
         etree.SubElement(frame, f"{{{QLC_NS}}}{name}").text = value

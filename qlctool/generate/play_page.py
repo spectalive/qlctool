@@ -273,6 +273,7 @@ def _build_color_family(
         142,
         page=page,
         solo=True,
+        exclude_monitored=False,
         font=title_font,
     )
     label(family, _COLOR_GUIDANCE, _GAP, _HEADER, _WIDTH - 2 * _GAP, 18, font=small_font)
@@ -346,6 +347,7 @@ def _build_pixel_family(
         96,
         page=page,
         solo=True,
+        exclude_monitored=False,
         font=title_font,
     )
     label(
@@ -410,6 +412,7 @@ def _build_movement_family(
         142,
         page=page,
         solo=True,
+        exclude_monitored=False,
         font=title_font,
     )
     label(family, _CYCLE_GUIDANCE, _GAP, _HEADER, _WIDTH - 2 * _GAP, 18, font=small_font)
@@ -465,6 +468,7 @@ def _build_gobo_family(
         152,
         page=page,
         solo=True,
+        exclude_monitored=False,
         font=title_font,
     )
     _hook(
@@ -543,6 +547,7 @@ def _build_prism_family(
         100,
         page=page,
         solo=True,
+        exclude_monitored=False,
         font=title_font,
     )
     label(family, _CYCLE_GUIDANCE, _GAP, _HEADER, _WIDTH - 2 * _GAP, 18, font=small_font)
