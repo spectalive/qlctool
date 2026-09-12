@@ -13,6 +13,7 @@ from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
 from .checks.entry_points import entry_points
 from .checks.run import check_workspace
+from .cmd_deskmap import add_deskmap_parser
 from .compose import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
@@ -823,6 +824,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_dec.add_argument("workspace")
     p_dec.add_argument("out_dir")
     p_dec.set_defaults(func=cmd_decompose)
+
+    add_deskmap_parser(sub)
 
     p_com = sub.add_parser("compose", help="rebuild a workspace from a fragment tree")
     p_com.add_argument("src_dir")

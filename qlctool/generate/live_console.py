@@ -194,6 +194,14 @@ HELP_LINES = (
 # The haze rhythms, under the help text on page 1. The captions say minutes
 # because that is the question being asked - "cada cuanto" - and the first one
 # carries the key the hand-built console had on the haze.
+
+# The page-1 frames by caption, so a consumer (the tablet's map) can find them
+# without a second copy of the words.
+ROOM_FRAME = "LA SALA ESTÁ ASÍ — solo una a la vez"
+HITS_FRAME = "GOLPES — se suman a lo que ya está sonando"
+SMOKE_FRAME = "HUMO AMBIENTE — cada cuánto dispara solo"
+CHASES_FRAME = "Intensidad y strobo de fixture"
+SMOKE_LIGHT_CAPTION = "HUMO VERTICAL — su luz · N"
 SMOKE_ROW_Y = 830
 SMOKE_RHYTHMS = (
     ("Humo Auto", "HUMO cada 1 min · J"),
@@ -536,7 +544,7 @@ def _page_show(
     # another page, in a plain frame.
     room = frame(
         outer,
-        "LA SALA ESTÁ ASÍ — solo una a la vez",
+        ROOM_FRAME,
         LEFT_X,
         68,
         OUTER_WIDTH - 16,
@@ -553,7 +561,7 @@ def _page_show(
 
     hits = frame(
         outer,
-        "GOLPES — se suman a lo que ya está sonando",
+        HITS_FRAME,
         LEFT_X,
         400,
         OUTER_WIDTH - 16,
@@ -658,7 +666,7 @@ def _page_show(
     # only fire while HUMO VERT is held down (`rule_held_column`).
     smoke = frame(
         outer,
-        "HUMO AMBIENTE — cada cuánto dispara solo",
+        SMOKE_FRAME,
         LEFT_X,
         SMOKE_ROW_Y,
         RIGHT_X - LEFT_X - GAP,
@@ -800,7 +808,7 @@ def _page_control(
 
     dimmers = frame(
         outer,
-        "Intensidad y strobo de fixture",
+        CHASES_FRAME,
         LEFT_X,
         y,
         LEFT_WIDTH,
@@ -875,7 +883,7 @@ def _page_control(
     master_button(
         outer,
         "Humo Vertical",
-        "HUMO VERTICAL — su luz · N",
+        SMOKE_LIGHT_CAPTION,
         RIGHT_X,
         716,
         RIGHT_WIDTH,

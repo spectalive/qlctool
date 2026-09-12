@@ -8,6 +8,12 @@ from ..vc.button import FLASH, TOGGLE
 from .generated_play_wrappers import GeneratedPlayWrappers as _GeneratedPlayWrappers
 from .smc_pad_colors import readable_foreground
 
+
+# Names a consumer (the tablet's map) finds the page's parts by.
+FAMILY_FRAMES = ("COLOR", "PIXELES", "CABEZAS", "GOBOS", "PRISMA")
+RESET_FRAME = "VOLVER AL SHOW"
+COLOR_HITS_FRAME = "GOLPES DE COLOR — mantén pulsado"
+PICK_PREFIX = "Jugar · "
 _HEADER = 26
 _GAP = 6
 _LEFT = 8
@@ -174,7 +180,7 @@ def _build_reset_strip(
 ) -> None:
     strip = frame(
         outer,
-        "VOLVER AL SHOW",
+        RESET_FRAME,
         _LEFT,
         56,
         _WIDTH,
@@ -222,7 +228,7 @@ def _build_colour_hits(
 ) -> None:
     hits = frame(
         outer,
-        "GOLPES DE COLOR — mantén pulsado",
+        COLOR_HITS_FRAME,
         _LEFT,
         152,
         _WIDTH,
@@ -655,7 +661,7 @@ def _grid_position(index: int, columns: int, pitch: int, top: int) -> tuple[int,
 
 
 def _source_name(name: str) -> str:
-    return name.removeprefix("Jugar · ")
+    return name.removeprefix(PICK_PREFIX)
 
 
 def _pick_caption(name: str) -> str:
