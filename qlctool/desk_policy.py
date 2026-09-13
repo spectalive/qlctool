@@ -45,6 +45,14 @@ SECTION_ORDER = ("state", "hooks", "picks", "haze", "chases", "haze-light", "acc
 # section. The show's names are never touched.
 SAFETY_DETAIL_BY_KEY = {
     "todo-negro": "no es parar",
+    "pares": "",
+}
+# Names the tablet shows instead of the show's where the show's would be
+# read as something else: the fog fixture's light is not fog, and a chase
+# that alternates halves is one thing, not a name and a footnote.
+SAFETY_CAPTION_BY_KEY = {
+    "humo-vertical": "Luz del humo vertical",
+    "pares": "Pares / impares",
 }
 SAFETY_DETAIL_BY_ROLE = {
     "haze": "dispara ya",
@@ -55,8 +63,8 @@ SECTION_TITLES = {
     "haze": "HUMO AMBIENTE",
     "hooks": "AUTO",
     "picks": "ELEGIR",
-    "chases": "BARRIDOS",
-    "haze-light": "HUMO VERTICAL",
+    "chases": "BARRIDOS DE INTENSIDAD",
+    "haze-light": "LUZ DEL HUMO VERTICAL",
 }
 
 

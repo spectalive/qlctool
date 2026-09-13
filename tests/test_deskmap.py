@@ -75,6 +75,9 @@ def test_safety_details_replace_words_that_would_mislead(deskmap):
     for control in deskmap["controls"].values():
         if control["role"] == "haze":
             assert control["detail"] == "dispara ya"
+    assert deskmap["controls"]["humo-vertical"]["caption"] == "Luz del humo vertical"
+    assert deskmap["controls"]["pares"]["caption"] == "Pares / impares"
+    assert deskmap["controls"]["pares"]["detail"] == ""
 
 
 def test_the_haze_rhythms_are_a_solo_section(deskmap):

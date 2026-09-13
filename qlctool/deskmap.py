@@ -15,6 +15,7 @@ from .capabilities_of import capabilities_of
 from .checks.show_graph import build_show_graph, group_fixtures
 from .desk_policy import (
     PAGES,
+    SAFETY_CAPTION_BY_KEY,
     SAFETY_DETAIL_BY_KEY,
     SAFETY_DETAIL_BY_ROLE,
     SECTION_ORDER,
@@ -57,6 +58,7 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
             caption = caption.removeprefix("HUMO ")
         key = _unique_key(controls, caption, widget.id)
         detail = SAFETY_DETAIL_BY_KEY.get(key, SAFETY_DETAIL_BY_ROLE.get(placement.role, detail))
+        caption = SAFETY_CAPTION_BY_KEY.get(key, caption)
         controls[key] = {
             "widget": widget.id,
             "function": widget.function,
