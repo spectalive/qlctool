@@ -45,6 +45,7 @@ from .color_banks import GeneratedBank, generate_color_banks
 from .color_flashes import generate_color_flashes
 from .color_scene import color_scene_values
 from .dealt_gobo_scenes import generate_dealt_gobo_scenes
+from .desk_bursts import generate_desk_bursts
 from .dimmer_chases import generate_dimmer_chases
 from .dimmer_sequence import generate_dimmer_sequence
 from .dimmerless_intensity import generate_dimmerless_intensity
@@ -1039,6 +1040,7 @@ def build_canonical_show(
             colour_flash_ids=color_flashes.ids,
         )
         button_ids = console.button_ids
+        button_ids.extend(generate_desk_bursts(workspace))
 
     functions = [f for f in workspace.engine if f.tag.endswith("}Function")]
     return CanonicalShow(

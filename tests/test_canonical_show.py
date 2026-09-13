@@ -299,9 +299,17 @@ def test_no_scene_but_the_smoke_ones_touches_the_smoke_pump(built):
     like a floor PAR, so ordinary scenes may write it - but a value above zero
     on any pump channel outside the smoke scenes is a tank emptying itself."""
 
+    from qlctool.checks.show_graph import build_show_graph
+    from qlctool.checks.valid_desk_bursts import valid_desk_bursts
+
     show, out = built
     root = Workspace.load(out).root
     functions = _functions(root)
+    graph = build_show_graph(root, capabilities_of(root, FixtureLibrary.load()))
+    # 2026-09-13: only structurally verified private copies qualify as bursts.
+    private_scenes = {
+        scene_id for burst in valid_desk_bursts(graph, root) for scene_id in graph.members[burst]
+    }
 
     pumps = {
         c.fixture.fixture_id: set(fog_offsets(c))
@@ -313,6 +321,8 @@ def test_no_scene_but_the_smoke_ones_touches_the_smoke_pump(built):
         if function.attrib.get("Type") != "Scene":
             continue
         if function.attrib.get("Name") in smoke_scene_names:
+            continue
+        if int(function.attrib["ID"]) in private_scenes:
             continue
         for value in findall_local(function, "FixtureVal"):
             fixture_id = int(value.attrib["ID"])
@@ -342,11 +352,15 @@ def test_no_chaser_walks_itself_at_engine_speed(built):
     duration of 0 is already over on the tick the step began, so the chaser
     walks a step per engine tick and the show flickers through itself.
     Common is preferred - a Speed Dial and Chaser::tap() only drive that mode -
-    so PerStep is only for a chaser whose steps genuinely differ.
+    so PerStep is for differing steps or a verified desk burst with a fixed clock.
     """
     _, out = built
+    from qlctool.checks.show_graph import build_show_graph
+    from qlctool.checks.valid_desk_bursts import valid_desk_bursts
 
-    for function in _functions(Workspace.load(out).root).values():
+    root = Workspace.load(out).root
+    bursts = valid_desk_bursts(build_show_graph(root, []), root)
+    for function in _functions(root).values():
         if function.attrib.get("Type") != "Chaser":
             continue
         name = function.attrib.get("Name")
@@ -354,7 +368,9 @@ def test_no_chaser_walks_itself_at_engine_speed(built):
         assert holds and all(h > 0 for h in holds), name
 
         mode = find_local(function, "SpeedModes").attrib["Duration"]
-        if len(set(holds)) == 1:
+        if int(function.attrib["ID"]) in bursts:
+            assert mode == "PerStep", name
+        elif len(set(holds)) == 1:
             assert mode == "Common", name
             fade_in = int(find_local(function, "Speed").attrib["FadeIn"])
             duration = int(find_local(function, "Speed").attrib["Duration"])

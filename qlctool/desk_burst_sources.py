@@ -1,0 +1,22 @@
+"""Find the held desk accents through their console placement, before replacement."""
+
+from lxml import etree
+
+from .desk_policy import place, split_caption
+from .desk_widgets import DeskWidget, desk_widgets
+from .slug import slugify
+
+
+def desk_burst_sources(root: etree._Element) -> dict[str, DeskWidget]:
+    widgets = desk_widgets(root)
+    frames = {w.id: w for w in widgets if w.kind in ("Frame", "SoloFrame")}
+    sources = {}
+    for widget in widgets:
+        placement = place(widget, frames, None)
+        if placement is None or placement.role != "accent" or widget.action != "Flash":
+            continue
+        key = slugify(split_caption(widget.caption)[0])
+        if key in sources:
+            raise ValueError(f"duplicate desk accent: {key}")
+        sources[key] = widget
+    return sources

@@ -1,7 +1,7 @@
 """The tablet's map comes out of the generated show, and says what the desk needs.
 
-Built from the reference patch the way the console tests do: the map is a
-reading of the saved console, so it is exercised on a freshly generated one.
+Built from Vibra's own patch, including both fog types: the map is a reading
+of the saved console, so it is exercised on a freshly generated one.
 """
 
 import re
@@ -9,15 +9,15 @@ from pathlib import Path
 
 import pytest
 
-from qlctool.deskmap import build_deskmap
 from qlctool.desk_policy import split_caption
+from qlctool.deskmap import build_deskmap
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.speed_multiplier import multiplier
 from qlctool.workspace import Workspace
 
 REPO = Path(__file__).resolve().parents[3]
-SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
+SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 SWATCH = re.compile(r"^#[0-9a-f]{6}$")
 
 
@@ -58,15 +58,29 @@ def test_the_room_states_are_the_first_thing_on_live(deskmap):
     assert state["solo"] is not None
 
 
-def test_the_held_hits_are_carried_disabled(deskmap):
-    accents = _section(deskmap, "live", "accents")
-    held = [deskmap["controls"][k] for k in accents["controls"] if deskmap["controls"][k]["action"] == "flash"]
-    assert len(held) >= 6
-    for control in held:
-        assert control["role"] == "accent" and not control["enabled"] and control["reason"]
-    toggles = [deskmap["controls"][k] for k in accents["controls"] if deskmap["controls"][k]["action"] == "toggle"]
-    assert [t["caption"] for t in toggles] == ["COLOR BEAM"]
-    assert toggles[0]["enabled"]
+def test_2026_09_13_held_accents_are_replaced_by_bounded_bursts(deskmap):
+    from qlctool.desk_policy import BURST_MS
+
+    controls = deskmap["controls"]
+    bursts = {key: c for key, c in controls.items() if c["role"] == "burst"}
+    assert bursts.keys() == BURST_MS.keys()
+    for key, control in bursts.items():
+        assert control["source"] == key
+        assert control["burstMs"] == BURST_MS[key]
+        assert control["functionType"] == "Chaser"
+        assert control["action"] == "toggle" and control["enabled"]
+        assert control["reason"] == ""
+        assert isinstance(control["widget"], int) and isinstance(control["function"], int)
+        assert control["solo"] is None and control["key"] is None
+        assert control["caption"]
+        if key not in ("humo-ya", "humo-vert"):
+            assert control["burstNote"]
+    live = _section(deskmap, "live", "accents")["controls"]
+    color = _section(deskmap, "color", "accents")["controls"]
+    assert len(live) == 8 and len(color) == 10
+    assert controls["color-beam"]["role"] == "toggle"
+    assert not any(c["role"] == "accent" for c in controls.values())
+    assert bursts["rojo"]["swatches"][0] == "#ff0000"
 
 
 def test_safety_details_replace_words_that_would_mislead(deskmap):

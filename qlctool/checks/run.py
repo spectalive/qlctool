@@ -23,6 +23,7 @@ from .rule_audio_triggers import check_audio_triggers
 from .rule_collision import check_collisions
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
+from .rule_desk_bursts import check_desk_bursts
 from .rule_family_owner import check_family_owner
 from .rule_flash_scene import check_flash_scene
 from .rule_flash_speed import check_flash_speed
@@ -87,6 +88,7 @@ def check_workspace(
     states = room_states(root, graph, groups)
 
     findings: list[Finding] = []
+    findings += check_desk_bursts(graph, root)
     findings += check_intensity(graph, groups, entries, states)
     findings += check_instant_dimmer(graph, groups, states)
     findings += check_white_emitter(graph, groups)

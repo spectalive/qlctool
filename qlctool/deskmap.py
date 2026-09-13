@@ -12,8 +12,12 @@ import hashlib
 from pathlib import Path
 
 from .capabilities_of import capabilities_of
+from .checks.rule_desk_bursts import check_desk_bursts
 from .checks.show_graph import build_show_graph, group_fixtures
+from .desk_burst_buttons import desk_burst_buttons
+from .desk_burst_note import desk_burst_note
 from .desk_policy import (
+    BURST_MS,
     PAGES,
     SAFETY_CAPTION_BY_KEY,
     SAFETY_DETAIL_BY_KEY,
@@ -43,6 +47,10 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
     groups = group_fixtures(root)
     widgets = desk_widgets(root)
     frames = {w.id: w for w in widgets if w.kind in ("Frame", "SoloFrame")}
+    burst_findings = check_desk_bursts(graph, root)
+    if burst_findings:
+        raise ValueError("invalid desk bursts: " + "; ".join(f.message for f in burst_findings))
+    bursts = desk_burst_buttons(root)
 
     controls: dict[str, dict] = {}
     sections: dict[tuple[str, str], list[str]] = {}
@@ -73,6 +81,26 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
             "enabled": placement.enabled,
             "reason": placement.reason,
         }
+        if placement.role == "accent":
+            burst = bursts[key][0]
+            controls[key].update(
+                {
+                    "widget": burst.id,
+                    "function": burst.function,
+                    "functionType": "Chaser",
+                    "action": "toggle",
+                    "role": "burst",
+                    "burstMs": BURST_MS[key],
+                    "source": key,
+                    "solo": burst.solo,
+                    "key": burst.key,
+                    "enabled": True,
+                    "reason": "",
+                }
+            )
+            note = desk_burst_note(key)
+            if note is not None:
+                controls[key]["burstNote"] = note
         where = (placement.page, placement.section)
         sections.setdefault(where, []).append(key)
         section_solo.setdefault(where, widget.solo)
@@ -132,7 +160,11 @@ def _unique_key(existing: dict, caption: str, widget_id: int) -> str:
 
 def _dial(root, widget) -> dict:
     element = next(
-        (e for e in root.iter() if e.attrib.get("ID") == str(widget.id) and e.tag.endswith("SpeedDial")),
+        (
+            e
+            for e in root.iter()
+            if e.attrib.get("ID") == str(widget.id) and e.tag.endswith("SpeedDial")
+        ),
         None,
     )
     members = []

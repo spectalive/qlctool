@@ -46,6 +46,21 @@ BEAMS = (20, 21, 22, 23)
 KNOWN: set[tuple[str, str]] = set()
 
 
+def test_2026_09_13_desk_link_loss_requires_bounded_hits():
+    """Tablet bench night: losing a Flash release left its scene running."""
+    from qlctool.checks.rule_desk_bursts import check_desk_bursts
+    from qlctool.desk_policy import BURST_FRAME
+
+    workspace = _show()
+    for frame in list(iter_local(workspace.root, "Frame")):
+        if frame.get("Caption") == BURST_FRAME:
+            frame.getparent().remove(frame)
+    graph = build_show_graph(workspace.root, [])
+    findings = check_desk_bursts(graph, workspace.root)
+    assert len(findings) == 17
+    assert {f.function for f in findings} >= {"humo-ya", "humo-vert", "flash", "rojo"}
+
+
 @pytest.fixture(scope="module")
 def library():
     return FixtureLibrary.load()

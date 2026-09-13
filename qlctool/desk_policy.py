@@ -5,9 +5,9 @@ by what the operator is thinking about. This is the one place that says how:
 the frames are found by the captions the generators themselves define, so a
 renamed frame breaks here, loudly, rather than silently dropping a page.
 
-A Flash button is never a desk control: the desk holds nothing open across a
-network. It is carried in the map, disabled with the reason, so the tablet can
-show the operator that the Mac has it.
+A Flash button is never an enabled desk control: the map replaces held
+accents with validated private bursts. Placement retains each source accent
+so its caption, section and swatches survive the replacement.
 """
 
 import re
@@ -25,6 +25,28 @@ from .generate.play_page import COLOR_HITS_FRAME, FAMILY_FRAMES, PICK_PREFIX
 
 HELD_REASON = "held on the Mac"
 
+BURST_FRAME = "Ráfagas del desk"
+# Provisional durations in milliseconds, tunable by the owner after a rig test.
+BURST_MS = {
+    "flash": 8000,
+    "flash-lento": 8000,
+    "flash-color": 8000,
+    "strobo": 4000,
+    "strobo-suave": 4000,
+    "humo-ya": 3000,
+    "humo-vert": 3000,
+    "rojo": 8000,
+    "verde": 8000,
+    "azul": 8000,
+    "ultravioleta": 8000,
+    "amarillo": 8000,
+    "cyan": 8000,
+    "magenta": 8000,
+    "blanco": 8000,
+    "naranja": 8000,
+    "rosa": 8000,
+}
+
 PAGES = (
     ("live", "LIVE"),
     ("color", "COLOR"),
@@ -36,7 +58,7 @@ PAGES = (
 )
 FAMILY_PAGES = dict(zip(FAMILY_FRAMES, ("color", "pixels", "heads", "gobos", "prism")))
 # The order sections take on a page: what the operator reaches for first,
-# and the hits the desk cannot press last.
+# and the bounded hits last.
 SECTION_ORDER = ("state", "hooks", "picks", "haze", "chases", "haze-light", "accents")
 
 # Words the tablet puts under a control where the show's own would mislead
@@ -106,7 +128,9 @@ def place(
             if held:
                 return None
             pick = (function_name or "").startswith(PICK_PREFIX)
-            return Placement(page, "picks" if pick else "hooks", "pick" if pick else "hook", True, "")
+            return Placement(
+                page, "picks" if pick else "hooks", "pick" if pick else "hook", True, ""
+            )
     if _head(CHASES_FRAME) in heads:
         # The dimmer chases are what the desk offers here; the fixture strobe
         # toggles beside them are Scenes and wait for a later phase.
@@ -135,4 +159,4 @@ def split_caption(caption: str) -> tuple[str, str]:
 
 
 def _head(caption: str) -> str:
-    return caption.split(" — ")[0].strip()
+    return caption.split(" — ", maxsplit=1)[0].strip()
