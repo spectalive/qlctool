@@ -44,7 +44,7 @@ SECTION_ORDER = ("state", "hooks", "picks", "haze", "chases", "haze-light", "acc
 # fires the moment it starts. Keyed by the map key, or by role for a whole
 # section. The show's names are never touched.
 SAFETY_DETAIL_BY_KEY = {
-    "todo-negro": "look a negro, no un stop",
+    "todo-negro": "no es parar",
 }
 SAFETY_DETAIL_BY_ROLE = {
     "haze": "dispara ya",
