@@ -46,6 +46,7 @@ SECTION_ORDER = ("state", "hooks", "picks", "haze", "chases", "haze-light", "acc
 SAFETY_DETAIL_BY_KEY = {
     "todo-negro": "no es parar",
     "pares": "",
+    "humo-vertical": "",
 }
 # Names the tablet shows instead of the show's where the show's would be
 # read as something else: the fog fixture's light is not fog, and a chase
