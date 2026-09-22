@@ -51,7 +51,7 @@ fail_under = 85
 
 [dependency-groups]
 quality = [
-  "syntopica-codeality-py>=0.2,<1",
+  "syntopica-codeality-py>=0.2.3,<1",
   "deptry>=0.20,<1",
   "lxml-stubs>=0.5,<1",
   "mypy>=1.11,<2",

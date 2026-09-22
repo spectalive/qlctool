@@ -7,6 +7,9 @@ respect-gitignore = true
 # Measured 86.51% at adoption (2026-09-01). The floor sits above the shared 80
 # so the gain cannot drain away unnoticed. Raise it, never lower it.
 coverage-threshold = 85
+# 32 s on -n auto since 2026-09-22, 19 minutes the night before: the gate says
+# so if it ever creeps back. Lower this as the suite gets faster, never raise it.
+test-budget-seconds = 120
 
 [limits]
 max-file-lines = 150
