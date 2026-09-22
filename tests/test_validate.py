@@ -4,6 +4,7 @@ Skipped where QLC+ is not installed - the toolkit still has its semantic
 round-trip net there, but this stronger check needs the actual binary.
 """
 
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pytest
@@ -59,6 +60,26 @@ def test_generated_functions_load_in_qlcplus(tmp_path):
     result = validate_workspace(out)
 
     assert result.ok, result.describe()
+
+
+@needs_qlcplus
+def test_two_validations_at_once_keep_their_own_verdicts(tmp_path):
+    """2026-09-22, the suite goes parallel: QLC+'s -g log has one hard-coded
+    name, so two validations launched at the same moment - two pytest workers,
+    two shells - truncate each other's log, and whichever reads last sees the
+    other's session. A broken workspace then validates on the strength of its
+    neighbour's clean load, or the clean one inherits the complaint. Reproduced
+    by validating a truncated show and the real one from two threads.
+    """
+    broken = tmp_path / "broken.qxw"
+    broken.write_bytes(SHOW.read_bytes()[:4000])
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        good, bad = pool.map(validate_workspace, [SHOW, broken])
+
+    assert good.ok, good.describe()
+    assert not bad.ok
+    assert any("cannot be created" in error for error in bad.errors)
 
 
 def test_missing_binary_raises_rather_than_passing(monkeypatch):

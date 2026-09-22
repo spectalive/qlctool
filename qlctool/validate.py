@@ -17,12 +17,16 @@ window and keeps logging while it renders, so loading is considered finished onc
 its end-of-load markers appear and the log settles.
 """
 
+import fcntl
 import os
 import select
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
+from collections.abc import Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -45,6 +49,12 @@ SESSION_START_MARKER = "QLCFixtureDefCache::load(const QDir &)"
 # QLC+ processes this module started that had not exited when the call gave up
 # waiting. The next launch waits for them first.
 _UNREAPED: set[int] = set()
+# One background launch at a time, across processes: two validations started
+# together - two pytest workers, two shells - truncate each other's copy of
+# that shared log, and whichever reads last inherits the other's session, so
+# the real show failed with a truncated neighbour's "cannot be created"
+# (2026-09-22, when the suite went parallel).
+LAUNCH_LOCK = Path(tempfile.gettempdir()) / "qlctool-qlcplus.lock"
 
 DEFAULT_BINARIES = (
     # 4.x first: it is the only build that loads with no GUI at all.
@@ -108,12 +118,18 @@ def validate_workspace(
     path: str | Path,
     binary: str | None = None,
     timeout: float = 30.0,
-    quiet_period: float = 2.0,
+    quiet_period: float = 1.0,
 ) -> ValidationResult:
     """Load the workspace in headless QLC+ and collect its complaints.
 
     Raises FileNotFoundError when no QLC+ is installed - a missing validator must
     never read as a passing validation.
+
+    `quiet_period` is how long after the end-of-load markers the log is still
+    read. Measured over nine launches of the QML build (2026-09-22): a fixture
+    complaint lands in the same 20 ms as the first marker and the log stops
+    growing 0,2 s after it, so one second is a fivefold margin - and half of
+    what every validation used to wait.
     """
     # Absolute: a background launch goes through `open`, which does not
     # inherit this process's working directory.
@@ -131,7 +147,8 @@ def validate_workspace(
     )
     bundle = _app_bundle(executable)
     if qml and bundle is not None and not os.environ.get("QLCTOOL_FOREGROUND"):
-        output = _run_in_background(bundle, executable, path, timeout, quiet_period)
+        with _launch_lock():
+            output = _run_in_background(bundle, executable, path, timeout, quiet_period)
         if output is not None:
             return _verdict(output)
 
@@ -241,6 +258,17 @@ def _run_in_background(
         return None
     _wait_for_exit(started, executable)
     return current_session(QML_LOG_FILE.read_text(errors="replace"))
+
+
+@contextmanager
+def _launch_lock() -> Iterator[None]:
+    """Hold the shared log for one background launch, waiting for any other."""
+    with LAUNCH_LOCK.open("w") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
 
 
 def _wait_for_exit(started: set[int], executable: str) -> None:
