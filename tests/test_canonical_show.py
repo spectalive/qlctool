@@ -260,18 +260,59 @@ def test_only_a_pixel_group_gets_matrices_inside_the_wheel(built):
     assert {find_local(m, "FixtureGroup").text for m in matrices} == {pixel_group}
     # The step's scene and its matrix state the same colour, by name: the
     # solid steps their own, a contrast step the colour of the "resto". The
-    # multicolour steps are the exception that proves the clock: there is no
-    # single colour for their matrix to agree on. Until 2026-09-22 they rode a
-    # rainbow plasma; the owner had that removed ("quitar multicolores muy
-    # feos"), so they now take one of the wheel's plain colour matrices - the
-    # pixel groups stay lit and simple while the rest of the rig is wild.
+    # multicolour steps left this wheel on 2026-09-22 ("los colores siguen
+    # siendo una feria", owner) for `Rueda Multicolor`, so every step here
+    # has one colour for its matrix to agree on.
     for step, matrix in zip(steps, matrices, strict=True):
-        if step.attrib["Name"].startswith(("Rig Multicolor", "Rig 4 Colores")):
-            assert "Plasma Rainbow" not in matrix.attrib["Name"]
-            assert matrix.attrib["Name"].endswith("(Rueda)")
-            continue
+        assert not step.attrib["Name"].startswith(("Rig Multicolor", "Rig 4 Colores"))
         colour = step.attrib["Name"].split(" + ")[0].split()[-1]
         assert f" {colour} (Rueda)" in matrix.attrib["Name"], step.attrib["Name"]
+    # White is nobody's step: "luz blanca solo para blanco total" (owner,
+    # 2026-09-22). The wheels the states run, the simple and the pastel modes.
+    for wheel_name in ("Rueda Colores", "Rueda Simples", "Rueda Pastel"):
+        wheel = functions[str(show.master_ids[wheel_name])]
+        names = [functions[s.text].attrib["Name"] for s in findall_local(wheel, "Step")]
+        assert not any("Blanco" in n for n in names), (wheel_name, names)
+
+
+def test_the_multicolour_looks_rotate_on_a_wheel_no_state_starts(built):
+    """2026-09-22: "un modo multicolor solo por si acaso (casi nunca se va a
+    usar) y los otros modos con colores sutiles, como mucho 2 mezclas".
+
+    The wild steps - every fixture its own colour, the four-colour deals -
+    are a Random wheel of their own, on a button, reachable from neither
+    AUTO nor any moment.
+    """
+    show, out = built
+    root = Workspace.load(out).root
+    functions = _functions(root)
+
+    wheel = functions[str(show.master_ids["Rueda Multicolor"])]
+    assert wheel.attrib["Type"] == "Chaser"
+    assert find_local(wheel, "RunOrder").text == "Random"
+    names = [functions[s.text].attrib["Name"] for s in findall_local(wheel, "Step")]
+    assert len([n for n in names if n.startswith("Rig Multicolor")]) == 2
+    assert len([n for n in names if n.startswith("Rig 4 Colores")]) == 4
+    assert len(names) == 6
+
+    members = {}
+    for function in functions.values():
+        if function.attrib["Type"] in ("Collection", "Chaser"):
+            members[function.attrib["ID"]] = {s.text for s in findall_local(function, "Step")}
+
+    def reachable(function_id):
+        seen, stack = set(), [str(function_id)]
+        while stack:
+            current = stack.pop()
+            if current in seen:
+                continue
+            seen.add(current)
+            stack.extend(members.get(current, ()))
+        return seen
+
+    wheel_id = str(show.master_ids["Rueda Multicolor"])
+    for state in ("AUTO", "Momento Tranquilo", "Momento Fiesta", "Momento Locura"):
+        assert wheel_id not in reachable(show.master_ids[state]), state
 
     for level in ("Nivel Ambiente", "Nivel Fiesta", "Nivel Peak"):
         collection = functions[str(show.master_ids[level])]

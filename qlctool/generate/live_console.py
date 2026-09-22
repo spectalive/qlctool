@@ -132,6 +132,9 @@ MIX_CODE = {
     "Verde": "Ve",
     "Azul": "Az",
     "Amarillo": "Am",
+    # Ambar joined the mixes on 2026-09-22 and shares Amarillo's first two
+    # letters, the same trap as Azul.
+    "Ambar": "Ab",
     "Cyan": "Cy",
     "Magenta": "Ma",
     "Blanco": "Bl",

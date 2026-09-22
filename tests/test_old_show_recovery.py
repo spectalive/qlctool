@@ -14,7 +14,7 @@ import pytest
 
 from qlctool.generate.canonical_show import KEYS, build_canonical_show
 from qlctool.library import FixtureLibrary
-from qlctool.palette import PALETTE
+from qlctool.wheel_palette import WHEEL_PALETTE
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname
 
@@ -56,7 +56,10 @@ def test_every_palette_colour_reaches_the_show(built):
                 if element is not None and element.text:
                     argb = int(element.text)
                     emitted.add(((argb >> 16) & 255, (argb >> 8) & 255, argb & 255))
-    missing = {name for name, rgb in PALETTE.items() if rgb not in emitted}
+    # Every colour but white: since 2026-09-22 no matrix paints white, because
+    # every matrix sits on a rotation and white is `Blanco Total`'s alone -
+    # a Scene, which the console tests cover.
+    missing = {name for name, rgb in WHEEL_PALETTE.items() if rgb not in emitted}
     # Scenes emit the primary colours; the matrices must cover the rest. The
     # assertion is over matrices alone because that is where the seven lost
     # colours were put back - if this fails, run the audit again.
@@ -216,14 +219,15 @@ def test_the_output_binds_to_whatever_interface_is_connected(built):
 
 def test_the_quad_colour_deals_ride_the_wheel(built):
     """Audit finding (judgement call, restored): the four deterministic
-    "4 Colores" rotations - blue/red/green/white dealt across the rig, the
-    deal walking one seat per scene - are wheel steps beside the wild
-    multicolor ones."""
+    "4 Colores" rotations - blue/red/green dealt across the rig with the
+    white seat given to yellow since 2026-09-22, the deal walking one seat
+    per scene - are wheel steps beside the wild multicolor ones. On the
+    multicolour wheel since that day, not the rig wheel a state runs."""
     show, out = built
     root = Workspace.load(out).root
     functions = _functions(root)
 
-    wheel = functions[str(show.master_ids["Rueda Colores"])]
+    wheel = functions[str(show.master_ids["Rueda Multicolor"])]
     step_names = [functions[s.text].attrib["Name"] for s in findall_local(wheel, "Step")]
     quads = [n for n in step_names if n.startswith("Rig 4 Colores")]
     assert len(quads) == 4

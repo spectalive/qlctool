@@ -62,12 +62,12 @@ def test_a_unison_scene_lights_every_colour_fixture_in_the_patch(tmp_path):
     }
     assert beams
 
-    white = next(
-        f for f in (functions[str(i)] for i in unison.scene_ids) if f.attrib["Name"] == "Rig Blanco"
+    red = next(
+        f for f in (functions[str(i)] for i in unison.scene_ids) if f.attrib["Name"] == "Rig Rojo"
     )
     # Including the two CLB2.4, which are in no fixture group and therefore in
     # no colour bank and no matrix: without this wheel AUTO leaves them dark.
-    assert _driven(white) == colored | beams
+    assert _driven(red) == colored | beams
 
 
 def test_a_contrast_puts_the_movers_against_everything_else(tmp_path):

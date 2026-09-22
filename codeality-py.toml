@@ -17,7 +17,16 @@ test-max-file-lines = 300
 [roles]
 # Constant tables the show reads: a palette, a mode's colour list, the glyphs a
 # pick family marks its tiles with. They carry no unit by design.
-data = ["qlctool/pastel_palette.py", "qlctool/pick_marks.py", "qlctool/simple_colors.py"]
+data = [
+  "qlctool/analogous_pairs.py",
+  "qlctool/complementary_pairs.py",
+  "qlctool/key_split_pairs.py",
+  "qlctool/pastel_palette.py",
+  "qlctool/pick_marks.py",
+  "qlctool/simple_colors.py",
+  "qlctool/split_pairs.py",
+  "qlctool/wheel_palette.py",
+]
 registry = []
 entrypoint = []
 generated = []

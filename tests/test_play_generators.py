@@ -145,9 +145,11 @@ def test_play_wrappers_are_single_member_collections_in_their_families(built):
     functions = _functions(workspace)
 
     expected = {
-        # 18 since 2026-09-22: the multicolour picks went ("quitar
-        # multicolores muy feos", owner), leaving the solid palette steps.
-        "Color": (show.play_wrappers.color_ids, 18),
+        # 17 since 2026-09-22: the multicolour picks went ("quitar
+        # multicolores muy feos", owner), leaving the solid palette steps -
+        # minus white, which no rotation steps and no pick offers ("luz
+        # blanca solo para blanco total"; `Blanco Total` is the button).
+        "Color": (show.play_wrappers.color_ids, 17),
         "Pixeles": (show.play_wrappers.panel_ids, 13),
         # 26 since 2026-09-22: every one of the seven figures gained its two
         # twins, one where the heads go together and one where each goes the

@@ -283,7 +283,7 @@ def test_curated_scripts_are_stepped_for_a_full_pass_each():
     ws = Workspace.load(SHOW)
     curated = [
         CuratedScript("BarrasLed", "Sine Wave", {"orientation": "Horizontal"}, ("Rojo", "Azul")),
-        CuratedScript("BarrasLed", "Plasma", {"presetIndex": "Rainbow"}, ("Blanco",)),
+        CuratedScript("BarrasLed", "Plasma", {"presetIndex": "Rainbow"}, ("Cyan",)),
     ]
     result = generate_matrix_effects(
         ws,

@@ -25,8 +25,10 @@ from ..workspace import Workspace
 from .color_scene import color_scene_values
 from .wheel_color_values import wheel_color_values
 
-# The old scenes' own deal, in their own order.
-QUAD_COLORS: tuple[str, ...] = ("Azul", "Rojo", "Verde", "Blanco")
+# The old scenes' own deal, in their own order - with the white seat given to
+# yellow (2026-09-22): a rotation puts no white on the room, however few the
+# fixtures ("luz blanca solo para blanco total", owner; `rule_wheel_white`).
+QUAD_COLORS: tuple[str, ...] = ("Azul", "Rojo", "Verde", "Amarillo")
 
 
 def generate_quad_color_scenes(

@@ -15,18 +15,12 @@ one clock at most. A manual layer is not judged here: pressing two colour
 layers together is an operator's choice, a state is a promise.
 """
 
-from lxml import etree
-
-from .. import roles
-from ..xmlutil import find_local, findall_local
-from .driven_channels import driven_channels
+from .colour_clocks_below import colour_clocks_below
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
+from .step_colours import step_colours
 
 RULE = "relojes de color"
-
-# One step's colour claim: hashable items a signature is made of.
-Signature = frozenset
 
 
 def check_colour_clocks(
@@ -39,7 +33,7 @@ def check_colour_clocks(
         for collection_id in sorted(graph.collections(function_id)):
             clocks: dict[int, set[int]] = {}
             for member in graph.members.get(collection_id, ()):
-                found = _clocks_below(graph, groups, member)
+                found = colour_clocks_below(graph, groups, member)
                 if found:
                     clocks[member] = found
             distinct = set().union(*clocks.values()) if clocks else set()
@@ -63,92 +57,13 @@ def check_colour_clocks(
     return findings
 
 
-def _clocks_below(graph: ShowGraph, groups, function_id: int) -> set[int]:
-    """The colour clocks among this function and everything it starts."""
-    return {
-        member
-        for member in graph.descendants(function_id)
-        if graph.kind(member) == "Chaser" and _is_colour_clock(graph, groups, member)
-    }
-
-
-def _is_colour_clock(graph: ShowGraph, groups, chaser_id: int) -> bool:
-    """At least two of the chaser's steps state different, non-dark colours."""
-    stated: set[Signature] = set()
-    for step in graph.members.get(chaser_id, ()):
-        signature = _step_colours(graph, groups, step)
-        if signature:
-            stated.add(signature)
-        if len(stated) >= 2:
-            return True
-    return False
-
-
-def _step_colours(graph: ShowGraph, groups, step_id: int) -> Signature:
-    """What colour this step puts where, over everything the step starts."""
-    items: set[tuple] = set()
-    for member in graph.descendants(step_id):
-        function = graph.functions.get(member)
-        if function is None:
-            continue
-        kind = function.attrib.get("Type")
-        if kind in ("Scene", "Sequence"):
-            items |= _scene_colours(graph, function)
-        elif kind == "RGBMatrix":
-            items |= _matrix_colours(graph, groups, function)
-    return frozenset(items)
-
-
-def _scene_colours(graph: ShowGraph, function: etree._Element) -> set[tuple]:
-    items: set[tuple] = set()
-    for fixture_id, pairs in driven_channels(function, graph.capabilities, {}).items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None:
-            continue
-        rgb = {
-            offset
-            for role in (roles.RED, roles.GREEN, roles.BLUE)
-            for offset in capability.offsets_for_role(role)
-        }
-        items |= {
-            (fixture_id, offset, value)
-            for offset, value in pairs.items()
-            if offset in rgb and value
-        }
-    return items
-
-
-def _matrix_colours(graph: ShowGraph, groups, function: etree._Element) -> set[tuple]:
-    group = find_local(function, "FixtureGroup")
-    colour = _matrix_colour(function)
-    if group is None or not (group.text or "").isdigit() or colour is None:
-        return set()
-    return {
-        (fixture_id, "matrix", colour)
-        for fixture_id in groups.get(int(group.text), ())
-        if (capability := graph.capabilities.get(fixture_id)) is not None
-        and any(capability.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE))
-    }
-
-
-def _matrix_colour(function: etree._Element) -> int | None:
-    """The ARGB an RGBMatrix paints with, in either colour format."""
-    mono = find_local(function, "MonoColor")
-    if mono is not None and (mono.text or "").isdigit():
-        return int(mono.text)
-    for colour in findall_local(function, "Color"):
-        if colour.attrib.get("Index") == "0" and (colour.text or "").isdigit():
-            return int(colour.text)
-    return None
-
-
 def _stray_fixtures(graph: ShowGraph, groups, clock_ids: set[int]) -> tuple[str, ...]:
     """The fixtures the narrower clocks paint: the group off on its own beat."""
     painted = {
         clock: {
             item[0]
             for step in graph.members.get(clock, ())
-            for item in _step_colours(graph, groups, step)
+            for item in step_colours(graph, groups, step)
         }
         for clock in clock_ids
     }

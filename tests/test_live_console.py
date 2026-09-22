@@ -449,6 +449,7 @@ def test_every_play_family_is_solo_and_starts_with_its_hooks(console):
             ("Rueda Colores", "Colores completos · W"),
             ("Rueda Simples", "Colores simples · C"),
             ("Rueda Pastel", "Pastel tenue · L"),
+            ("Rueda Multicolor", "Multicolor · R"),
             ("Rueda Mezcla", "Mezcla · E"),
             ("Luz Charla", "Luz Charla"),
         ),
@@ -483,8 +484,9 @@ def test_every_play_family_is_solo_and_starts_with_its_hooks(console):
 def test_the_play_hooks_restore_their_global_keys_and_captions(console):
     """2026-09-02: the operator's JUGAR shortcuts are exact.
 
-    Nine since 2026-09-22: the automatic colour split into the whole palette,
-    the simple colours and the pastels, which the owner asked for by name.
+    Ten since 2026-09-22: the automatic colour split into the whole palette,
+    the simple colours and the pastels, which the owner asked for by name -
+    and the multicolour wheel the same evening, "solo por si acaso".
     """
     root, outer = console
     functions = _functions_by_id(root)
@@ -492,6 +494,7 @@ def test_the_play_hooks_restore_their_global_keys_and_captions(console):
         "Rueda Colores": ("Colores completos · W", "W"),
         "Rueda Simples": ("Colores simples · C", "C"),
         "Rueda Pastel": ("Pastel tenue · L", "L"),
+        "Rueda Multicolor": ("Multicolor · R", "R"),
         "Rueda Mezcla": ("Mezcla · E", "E"),
         "Movimientos Cabezas": ("AUTO normal · A", "A"),
         "Gobo Animacion": ("AUTO gobos · G", "G"),
@@ -555,6 +558,7 @@ def test_no_play_pick_is_reachable_from_a_room_state(console):
         "Rueda Colores",
         "Rueda Simples",
         "Rueda Pastel",
+        "Rueda Multicolor",
         "Rueda Mezcla",
         "Luz Charla",
         "Ciclo Paneles Mixto",
@@ -582,7 +586,7 @@ def test_every_play_pick_is_a_one_member_family_wrapper(console):
     root, outer = console
     functions = _functions_by_id(root)
     hooks_per_family = {
-        "COLOR": 5,  # 2026-09-22: three colour modes, the mix, and Luz Charla
+        "COLOR": 6,  # 2026-09-22: four colour modes, the mix, and Luz Charla
         "PIXELES": 2,
         "CABEZAS": 4,
         "GOBOS": 2,
@@ -641,6 +645,7 @@ def test_every_play_pick_and_reset_strip_is_keyless(console):
         "Rueda Colores",
         "Rueda Simples",
         "Rueda Pastel",
+        "Rueda Multicolor",
         "Rueda Mezcla",
         "Luz Charla",
         "Arcoiris Simultaneo",

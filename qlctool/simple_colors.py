@@ -1,9 +1,11 @@
 """The colours a room reads without thinking, for the plain automatic mode.
 
 The owner's first automatic mode is "colores simples" (2026-09-22): the six
-primaries and secondaries plus white, and nothing between them. No amber beside
-orange, no three blues - the mode exists so the room can be on an obvious
-colour, and every name a viewer would hesitate over belongs to the full mode.
+primaries and secondaries and nothing between them. No amber beside orange, no
+three blues - the mode exists so the room can be on an obvious colour, and
+every name a viewer would hesitate over belongs to the full mode. No white
+either, since the same day: "en directo se ve todo iluminado y queda
+horrible", so white is `Blanco Total`'s and no rotation's (`wheel_palette`).
 """
 
 SIMPLE_COLORS: tuple[str, ...] = (
@@ -13,5 +15,4 @@ SIMPLE_COLORS: tuple[str, ...] = (
     "Cyan",
     "Azul",
     "Magenta",
-    "Blanco",
 )

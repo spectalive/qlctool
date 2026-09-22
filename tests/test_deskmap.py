@@ -117,14 +117,17 @@ def test_the_haze_rhythms_are_a_solo_section(deskmap):
 def test_the_colour_family_has_hooks_then_picks_with_swatches(deskmap):
     hooks = _section(deskmap, "color", "hooks")
     picks = _section(deskmap, "color", "picks")
-    # The automatic colour comes in three flavours since 2026-09-22: the whole
-    # palette, the simple colours, and the pastels.
-    assert [deskmap["controls"][k]["caption"] for k in hooks["controls"]][:3] == [
+    # The automatic colour comes in four flavours since 2026-09-22: the whole
+    # palette, the simple colours, the pastels and the multicolour wheel.
+    assert [deskmap["controls"][k]["caption"] for k in hooks["controls"]][:4] == [
         "Colores completos",
         "Colores simples",
         "Pastel tenue",
+        "Multicolor",
     ]
-    assert len(picks["controls"]) >= 20
+    # Seventeen solid picks - the palette minus white, which no rotation
+    # steps and no pick offers since 2026-09-22 - plus the two rainbows.
+    assert len(picks["controls"]) == 19
     red = next(deskmap["controls"][k] for k in picks["controls"] if deskmap["controls"][k]["caption"] == "Rig Rojo")
     assert red["role"] == "pick" and red["functionType"] == "Collection"
     assert red["swatches"] and all(SWATCH.match(s) for s in red["swatches"])

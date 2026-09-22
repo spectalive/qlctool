@@ -292,6 +292,7 @@ def _build_color_family(
         ("Rueda Colores", "Colores completos · W", True),
         ("Rueda Simples", "Colores simples · C", True),
         ("Rueda Pastel", "Pastel tenue · L", True),
+        ("Rueda Multicolor", "Multicolor · R", True),
         ("Rueda Mezcla", "Mezcla · E", True),
         ("Luz Charla", "Luz Charla", False),
     )

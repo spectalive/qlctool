@@ -40,6 +40,7 @@ GLYPHS: dict[str, str] = {
     "Rueda Colores": "🎨",
     "Rueda Simples": "🎨",
     "Rueda Pastel": "🎨",
+    "Rueda Multicolor": "🎨",
     "Rueda Mezcla": "🎨",
     "Luz Charla": "🎤",
     "Movimientos Cabezas": "↔",

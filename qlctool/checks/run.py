@@ -53,7 +53,9 @@ from .rule_smoke import check_smoke
 from .rule_smoke_light import check_smoke_light
 from .rule_smoke_restore import check_smoke_restore
 from .rule_solo_handoff import check_solo_handoff
+from .rule_split_complementary import check_split_complementary
 from .rule_state_handover import check_state_handover
+from .rule_state_palette import check_state_palette
 from .rule_state_proxy import check_state_proxy
 from .rule_stepped_dimmer import check_stepped_dimmer
 from .rule_strobe_black import check_strobe_black
@@ -70,6 +72,7 @@ from .rule_untempoed_rhythm import check_untempoed_rhythm
 from .rule_wheel_colour import check_wheel_colour
 from .rule_wheel_fade import check_wheel_fade
 from .rule_wheel_rotation import check_wheel_rotation
+from .rule_wheel_white import check_wheel_white
 from .rule_white_emitter import check_white_emitter
 from .rule_white_twice import check_white_twice
 from .rule_zoom_narrow import check_zoom_narrow
@@ -113,6 +116,9 @@ def check_workspace(
     findings += check_pick_darkens(graph, groups, root, states)
     findings += check_state_handover(graph, groups, states)
     findings += check_colour_clocks(graph, groups, entries, states)
+    findings += check_wheel_white(graph, groups, entries)
+    findings += check_state_palette(graph, groups, entries, states)
+    findings += check_split_complementary(graph, groups, entries)
     findings += check_unfinished_effects(graph, groups, entries)
     findings += check_strobe_in_cycle(graph, groups, entries)
     findings += check_strobe_rate(graph, groups, entries)

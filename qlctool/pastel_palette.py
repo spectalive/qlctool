@@ -1,14 +1,15 @@
 """The whole palette, taken towards white: the third automatic colour mode.
 
-"Colores pastel tenues" (owner, 2026-09-22). Same eighteen names and the same
-hues as `PALETTE`, each blended towards white by `pastel`, so the wheel of the
-pastel mode reads as the same show with the volume down rather than as a
-different set of colours.
+"Colores pastel tenues" (owner, 2026-09-22). Same seventeen names and the
+same hues as `WHEEL_PALETTE`, each blended towards white by `pastel`, so the
+wheel of the pastel mode reads as the same show with the volume down rather
+than as a different set of colours. Not the palette's white: a pastel white is
+white, and white is no rotation's (`wheel_palette`).
 """
 
-from .palette import PALETTE
 from .pastel import pastel
+from .wheel_palette import WHEEL_PALETTE
 
 PASTEL_PALETTE: dict[str, tuple[int, int, int]] = {
-    name: pastel(rgb) for name, rgb in PALETTE.items()
+    name: pastel(rgb) for name, rgb in WHEEL_PALETTE.items()
 }

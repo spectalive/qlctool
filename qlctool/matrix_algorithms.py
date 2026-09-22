@@ -82,8 +82,10 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # acceptColors to 0 - the preset supplies its own spectrum and a chosen
     # colour would be silently ignored, which is exactly why "Rainbow" is the
     # preset picked here (brief: "plasma (Rainbow preset)"). The colour below
-    # is a required build_rgbmatrix argument the script never reads.
-    CuratedScript("BarrasLed", "Plasma", {"presetIndex": "Rainbow"}, ("Blanco",)),
+    # is a required build_rgbmatrix argument the script never reads - and not
+    # white, because the checker reads the file, not the script, and a white
+    # matrix on a rotation is what `rule_wheel_white` exists to catch.
+    CuratedScript("BarrasLed", "Plasma", {"presetIndex": "Rainbow"}, ("Cyan",)),
     # onebyone.js: declares no properties and no acceptColors at all - QLC+
     # defaults an undeclared acceptColors to 2 (rgbscript.cpp), but the script
     # only ever reads rgb[0], so one colour is what the light shows.
@@ -108,8 +110,10 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # starfield.js: acceptColors 1. On a 15x1 row halfHeight rounds to 0, so a
     # star only draws when its projected y lands on that single row - the
     # simulation is still real, it just reads as stars in one dimension
-    # instead of two. No property here changes that.
-    CuratedScript("PAR", "3D Starfield", {}, ("Blanco",)),
+    # instead of two. No property here changes that. Cool stars, not white
+    # ones: the cycle rotates by itself and white is `Blanco Total`'s alone
+    # (owner, 2026-09-22; `rule_wheel_white`).
+    CuratedScript("PAR", "3D Starfield", {}, ("Celeste",)),
     # gradient.js: acceptColors 0 - it paints from its own preset palette and
     # never reads a chosen colour at all (unlike the brief's example, which
     # named gradient among the two-colour scripts; verifying the script says

@@ -3,9 +3,9 @@
 The per-group banks give each group its own Random wheel, and three Random
 wheels running unattended never agree: the heads sit on magenta while the PARs
 sit on green, which is not a look, it is three shows in one room. What the owner
-asks for is the rig reading as *one* colour on most steps - white, amber, red
+asks for is the rig reading as *one* colour on most steps - amber, red, blue
 everywhere at the same time - with the two-colour contrast as the exception
-rather than the rule.
+rather than the rule, and white on none of them (`wheel_palette`).
 
 So this builds the wheel that AUTO actually runs: a scene per colour over every
 colour-capable fixture in the patch, plus a handful of heads-against-the-rest
@@ -22,6 +22,7 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..capability import FixtureCapabilities
+from ..complementary_pairs import COMPLEMENTARY_PAIRS
 from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..functions.scene import build_scene
@@ -33,15 +34,20 @@ from .color_scene import color_scene_values
 from .wheel_color_values import wheel_color_values
 
 PATH = "Colores Rig"
+# The wheel's pace. Slower than a per-group wheel on purpose: a whole-room
+# colour change every 1,5 s reads as flicker, where one group changing that
+# often reads as motion.
+WHEEL_HOLD = 2500
+WHEEL_FADE = 800
 
-# The moving heads against everything else. Two colours the room can tell apart
-# at a glance, which a neighbouring pair of the palette cannot.
-CONTRAST_PAIRS: tuple[tuple[str, str], ...] = (
-    ("Rojo", "Azul"),
-    ("Azul", "Ambar"),
-    ("Magenta", "Cyan"),
-    ("Amarillo", "UltraVioleta"),
-    ("Blanco", "Rojo"),
+# The moving heads against everything else: (heads, rest). Two is the most a
+# rotation may put on the room at once ("colores sutiles, como mucho 2 mezclas
+# de colores", owner, 2026-09-22), and which two is the professionals' rule,
+# not taste: complementary colours, placed between roles, the warm one leading
+# (`complementary_pairs`). No white: it read as the room lit up, on the
+# wheel's own clock (`rule_wheel_white`).
+CONTRAST_PAIRS: tuple[tuple[str, str], ...] = tuple(
+    (pair.lead, pair.bed) for pair in COMPLEMENTARY_PAIRS
 )
 
 
@@ -62,20 +68,16 @@ def generate_unison_colors(
     library: FixtureLibrary,
     colors: Sequence[str] = PRIMARY_COLORS,
     contrasts: Sequence[tuple[str, str]] = CONTRAST_PAIRS,
-    hold: int = 2500,
-    fade: int = 800,
+    hold: int = WHEEL_HOLD,
+    fade: int = WHEEL_FADE,
     exclude_fixture_ids: Sequence[int] = (),
     step_extras: dict[str, Sequence[int]] | None = None,
     program_gated_ids: Sequence[int] = (),
-    extra_step_ids: Sequence[int] = (),
     palette: dict[str, tuple[int, int, int]] | None = None,
     wheel_name: str = "Rueda Colores",
     scene_prefix: str = "Rig",
 ) -> GeneratedUnison:
     """Rig-wide colour scenes and one Random wheel over them.
-
-    Slower than a per-group wheel on purpose: a whole-room colour change every
-    1,5 s reads as flicker, where one group changing that often reads as motion.
 
     `exclude_fixture_ids` keeps the wheel off fixtures a matrix already paints.
     RGB channels mix HTP, so a fixture told red by this wheel and blue by a
@@ -98,12 +100,8 @@ def generate_unison_colors(
     which flips them between their own programmes and manual. One colour
     clock, one mode owner.
 
-    `extra_step_ids` are ready-made steps appended to the wheel - the
-    multicolour looks - so they rotate on this one clock instead of
-    becoming a chaser of their own.
-
     `palette` supplies the values behind the names, so a mode can mean the same
-    eighteen colours with less of each: the pastel wheel passes the palette run
+    seventeen colours with less of each: the pastel wheel passes the palette run
     through `pastel` and keeps the names, which is also what lets the beams'
     wheel match - a wheel has red, not pale red. `wheel_name` and
     `scene_prefix` keep the three modes' functions apart in one workspace.
@@ -172,7 +170,6 @@ def generate_unison_colors(
         contrast_ids.append(scene_id)
         steps.append(_step(workspace, name, scene_id, extras.get(rest_color)))
 
-    steps += list(extra_step_ids)
     wheel_id: int | None = None
     if steps:
         wheel_id = next_function_id(workspace.root)

@@ -38,6 +38,7 @@ from ..strobe_speed import strobe_speed_pairs
 from ..vc.beat_multiplier import beat_multiplier
 from ..vc.dial_function import DialFunction
 from ..vc.speed_dial import MULTIPLIER_NONE
+from ..wheel_palette import WHEEL_PALETTE
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
 from .beam_rainbow_spin import generate_beam_rainbow_spin
@@ -79,7 +80,15 @@ from .stage_aim import generate_stage_aim
 from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .stage_plot_layout import apply_stage_plot
 from .strobe_effects import generate_strobe_effects
-from .unison_colors import CONTRAST_PAIRS, generate_unison_colors
+from .unison_colors import (
+    CONTRAST_PAIRS,
+    WHEEL_FADE,
+    WHEEL_HOLD,
+    generate_unison_colors,
+)
+from .unison_colors import (
+    PATH as UNISON_PATH,
+)
 from .vertical_smoke_burst import generate_vertical_smoke_burst
 from .vertical_smoke_light import generate_vertical_smoke_light
 from .wheel_color_values import wheel_color_values
@@ -92,7 +101,9 @@ MATRIX_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Strobe", "Wave
 # somebody holds, not one look in a rotation that loops all night. On the bars
 # it was a third of the reason the pixels read as "off half the time".
 CYCLE_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Waves", None)
-MATRIX_COLORS = ("Rojo", "Verde", "Azul", "Ambar", "Magenta", "Blanco")
+# No white: the per-group matrix cycles rotate by themselves, and a white
+# pass is the room lit up on their clock (owner, 2026-09-22; `rule_wheel_white`).
+MATRIX_COLORS = ("Rojo", "Verde", "Azul", "Ambar", "Magenta", "Cyan")
 
 # The light somebody is lit by when they speak: white, warmed off daylight so a
 # face does not read as a mortuary, and flat enough that nothing draws the eye.
@@ -191,6 +202,9 @@ KEYS = {
     # the beams' own wheel walk lost its button.
     "Rueda Simples": "C",
     "Rueda Pastel": "L",
+    # The wild looks, on a wheel of their own since 2026-09-22 ("un modo
+    # multicolor solo por si acaso", owner). R was free.
+    "Rueda Multicolor": "R",
     "Rueda Mezcla": "E",
     "Movimientos Cabezas": "A",
     "Gobo Animacion": "G",
@@ -655,9 +669,11 @@ def build_canonical_show(
     # its own (the old DeluxeEventos2 patch kept two of them inside the bars'
     # group, and that patch still builds).
     program_gated = sorted(set(builtins.fixture_ids) - matrix_lit_ids)
-    # The wild steps: every fixture its own colour, the beams on their rainbow
-    # scroll, the bars under a rainbow plasma - entering the wheel as ordinary
-    # steps, so "de vez en cuando" is the Random rotation doing its job.
+    # The wild steps: every fixture its own colour. Until 2026-09-22 they were
+    # ordinary steps of the rig wheel, so "de vez en cuando" was the Random
+    # rotation doing its job - and what the room got was a fair ("los colores
+    # siguen siendo una feria", owner). They are a wheel of their own now,
+    # `Rueda Multicolor`, that no state starts: "solo por si acaso".
     multicolor_ids = generate_multicolor_scenes(
         workspace,
         library,
@@ -693,25 +709,43 @@ def build_canonical_show(
             if extras
             else scene_id
         )
-    # Three automatic colour modes, one clock each and only one ever running:
+    # Four automatic colour modes, one clock each and only one ever running:
     # "modos auto deberia tener solo colores simples, colores completos,
-    # colores pastel tenues" (owner, 2026-09-22). AUTO starts the full one; the
-    # console's three buttons share a solo frame, so choosing one stops the
-    # others and the room keeps exactly one colour source.
+    # colores pastel tenues" (owner, 2026-09-22), plus the multicolour wheel
+    # the same evening. AUTO starts the full one; the console's buttons share
+    # a solo frame, so choosing one stops the others and the room keeps
+    # exactly one colour source. None of them steps white: "luz blanca solo
+    # para blanco total" (`wheel_palette`, `rule_wheel_white`), and none a
+    # state runs puts more than two colours on the room at once
+    # (`rule_state_palette`).
     excluded_from_wheel = sorted(matrix_lit_ids | set(builtins.fixture_ids))
     unison = generate_unison_colors(
         workspace,
         library,
-        colors=tuple(PALETTE),
+        colors=tuple(WHEEL_PALETTE),
         exclude_fixture_ids=excluded_from_wheel,
         step_extras=step_matrices,
         program_gated_ids=program_gated,
-        extra_step_ids=multicolor_steps,
     )
     if unison.wheel_id is not None:
         master["Rueda Colores"] = unison.wheel_id
-    # The plain mode: the six primaries and white, one at a time, no contrasts
-    # and none of the wild multicolour steps.
+    if multicolor_steps:
+        multicolor_wheel_id = next_function_id(workspace.root)
+        workspace.add_function(
+            build_chaser(
+                multicolor_wheel_id,
+                "Rueda Multicolor",
+                multicolor_steps,
+                fade_in=WHEEL_FADE,
+                hold=WHEEL_HOLD,
+                fade_out=WHEEL_FADE,
+                run_order="Random",
+                path=UNISON_PATH,
+            )
+        )
+        master["Rueda Multicolor"] = multicolor_wheel_id
+    # The plain mode: the six primaries, one at a time, no contrasts and none
+    # of the wild multicolour steps.
     simples = generate_unison_colors(
         workspace,
         library,
@@ -1191,11 +1225,12 @@ def _wheel_colors() -> dict[str, tuple[int, int, int]]:
     that is not a moving head - the pixel groups included - on its *rest*
     colour, so those are wheel colours too even when the primaries skip them.
     """
-    # Every palette name since 2026-09-22: the full automatic mode runs all
-    # eighteen, so the pixel groups need a matrix for each of them.
-    names = list(PALETTE)
+    # Every wheel colour since 2026-09-22: the full automatic mode runs all
+    # seventeen, so the pixel groups need a matrix for each of them. Never
+    # white - no rotation steps it (`wheel_palette`).
+    names = list(WHEEL_PALETTE)
     names += [rest for _, rest in CONTRAST_PAIRS if rest not in names]
-    return {name: PALETTE[name] for name in names}
+    return {name: WHEEL_PALETTE[name] for name in names}
 
 
 def _is_pixel_group(caps, fixture_ids) -> bool:
@@ -1289,6 +1324,7 @@ def _tempo_functions(workspace, master, matrices) -> list[DialFunction]:
         "Rueda Colores",
         "Rueda Simples",
         "Rueda Pastel",
+        "Rueda Multicolor",
         "Rueda Mezcla",
         "Gobo Animacion",
         "Prisma Animacion",

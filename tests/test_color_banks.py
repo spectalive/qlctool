@@ -4,9 +4,10 @@ from pathlib import Path
 
 import pytest
 
-from qlctool.generate.color_banks import SPLIT_COLORS, generate_color_banks
+from qlctool.generate.color_banks import generate_color_banks
 from qlctool.library import FixtureLibrary
 from qlctool.palette import PALETTE, PRIMARY_COLORS
+from qlctool.split_pairs import SPLIT_PAIRS
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
@@ -35,8 +36,8 @@ def test_every_group_gets_a_bank_and_two_wheels(tmp_path):
 
     for bank in banks:
         assert len(bank.scene_ids) == len(PRIMARY_COLORS)
-        # Ordered pairs of the split colours, both directions.
-        assert len(bank.split_ids) == len(SPLIT_COLORS) * (len(SPLIT_COLORS) - 1)
+        # The neighbouring pairs both ways round, plus the show's own keys.
+        assert len(bank.split_ids) == len(SPLIT_PAIRS)
         assert functions[str(bank.scene_ids[0])].attrib["Name"] == (
             f"{PRIMARY_COLORS[0]} {bank.group_name}"
         )
@@ -44,7 +45,14 @@ def test_every_group_gets_a_bank_and_two_wheels(tmp_path):
         assert wheel.attrib["Type"] == "Chaser"
         # Random, because a fixed order reads as a loop when nobody is watching.
         assert find_local(wheel, "RunOrder").text == "Random"
-        assert len(findall_local(wheel, "Step")) == len(bank.scene_ids)
+        # Every solid but white: white stays a hand pick (key 8) and no
+        # rotation steps it ("luz blanca solo para blanco total", 2026-09-22).
+        stepped = {functions[s.text].attrib["Name"] for s in findall_local(wheel, "Step")}
+        assert stepped == {
+            functions[str(i)].attrib["Name"]
+            for i in bank.scene_ids
+            if not functions[str(i)].attrib["Name"].startswith("Blanco")
+        }
         mix = functions[str(bank.mix_wheel_id)]
         assert len(findall_local(mix, "Step")) == len(bank.split_ids)
 
