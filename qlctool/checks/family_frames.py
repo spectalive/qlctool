@@ -27,6 +27,14 @@ FAMILIES = {
     "prism": frozenset((roles.PRISM, roles.PRISM_ROTATION)),
 }
 _OWNER_CACHE: list[tuple[ShowGraph, dict, frozenset[int], dict[str, set[int]]]] = []
+# The buttons, Toggles, hooks, hook families and owners of one family frame.
+_Handoff = tuple[
+    dict[int, etree._Element],
+    dict[int, etree._Element],
+    set[int],
+    set[str],
+    dict[str, set[int]],
+]
 
 
 @dataclass(frozen=True)
@@ -35,11 +43,36 @@ class _Problem:
     message: str
 
 
+# One frame's problems and handoff, per graph and room states: the layer rules
+# ask about every button, and each button used to re-read its whole frame.
+_FRAME_CACHE: list[
+    tuple[
+        ShowGraph,
+        object,
+        frozenset[int],
+        dict[etree._Element, tuple[_Problem, ...] | None],
+        dict[etree._Element, _Handoff | None],
+    ]
+] = []
+
+
 def family_frame_problems(
     graph: ShowGraph, groups, states: set[int], widget: etree._Element | None
 ) -> tuple[_Problem, ...] | None:
     """Problems in a family SoloFrame, or None when the frame has no hook."""
-    handoff = _family_frame_handoff(graph, groups, states, widget)
+    frame = _solo_frame_of(widget)
+    if frame is None:
+        return None
+    problems, _ = _frame_memo(graph, groups, states)
+    if frame not in problems:
+        problems[frame] = _frame_problems(graph, groups, states, frame)
+    return problems[frame]
+
+
+def _frame_problems(
+    graph: ShowGraph, groups, states: set[int], frame: etree._Element
+) -> tuple[_Problem, ...] | None:
+    handoff = _family_frame_handoff(graph, groups, states, frame)
     if handoff is None:
         return None
     buttons, toggles, hooks, hook_families, owners = handoff
@@ -83,20 +116,36 @@ def family_frame_problems(
 
 def _family_frame_handoff(
     graph: ShowGraph, groups, states: set[int], widget: etree._Element | None
-) -> (
-    tuple[
-        dict[int, etree._Element],
-        dict[int, etree._Element],
-        set[int],
-        set[str],
-        dict[str, set[int]],
-    ]
-    | None
-):
+) -> _Handoff | None:
     """The graph-derived members and hooks of one semantic family frame."""
     frame = _solo_frame_of(widget)
     if frame is None or localname(frame) != "SoloFrame":
         return None
+    _, handoffs = _frame_memo(graph, groups, states)
+    if frame not in handoffs:
+        handoffs[frame] = _frame_handoff(graph, groups, states, frame)
+    return handoffs[frame]
+
+
+def _frame_memo(
+    graph: ShowGraph, groups: object, states: set[int]
+) -> tuple[
+    dict[etree._Element, tuple[_Problem, ...] | None],
+    dict[etree._Element, _Handoff | None],
+]:
+    state_ids = frozenset(states)
+    if _FRAME_CACHE:
+        cached_graph, cached_groups, cached_states, problems, handoffs = _FRAME_CACHE[0]
+        if cached_graph is graph and cached_groups is groups and cached_states == state_ids:
+            return problems, handoffs
+    problems, handoffs = {}, {}
+    _FRAME_CACHE[:] = [(graph, groups, state_ids, problems, handoffs)]
+    return problems, handoffs
+
+
+def _frame_handoff(
+    graph: ShowGraph, groups, states: set[int], frame: etree._Element
+) -> _Handoff | None:
     buttons = _buttons(frame)
     toggles = {function_id: button for function_id, button in buttons.items() if _is_toggle(button)}
     owners = _cached_state_owners(graph, groups, states)

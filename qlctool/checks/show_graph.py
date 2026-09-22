@@ -47,9 +47,22 @@ class ShowGraph:
     # re-parsed the FixtureVal text 620 951 times and took 11,5 s, which made
     # the suite 19 minutes long (2026-09-22). Keyed by the groups the matrices
     # are read against, because a matrix drives nothing outside its group.
-    driven_cache: dict[tuple[object, ...], Driven] = field(default_factory=dict, repr=False, compare=False)
+    driven_cache: dict[tuple[object, ...], Driven] = field(
+        default_factory=dict, repr=False, compare=False
+    )
     # And what each function reaches, for the same reason (`reach`).
-    reach_cache: dict[tuple[object, ...], Driven] = field(default_factory=dict, repr=False, compare=False)
+    reach_cache: dict[tuple[object, ...], Driven] = field(
+        default_factory=dict, repr=False, compare=False
+    )
+    # What each function starts, transitively: asked 36 000 times per pass.
+    descendants_cache: dict[int, frozenset[int]] = field(
+        default_factory=dict, repr=False, compare=False
+    )
+    # The hashable form of a `groups` mapping, by the object's identity, which
+    # is kept alive alongside so the identity cannot be reused.
+    groups_keys: dict[int, tuple[object, tuple[object, ...]]] = field(
+        default_factory=dict, repr=False, compare=False
+    )
 
     def name(self, function_id: int) -> str:
         function = self.functions.get(function_id)
@@ -63,8 +76,11 @@ class ShowGraph:
         function = self.functions.get(function_id)
         return function.attrib.get("Type", "") if function is not None else ""
 
-    def descendants(self, function_id: int) -> set[int]:
+    def descendants(self, function_id: int) -> frozenset[int]:
         """Every function reachable from this one, itself included."""
+        cached = self.descendants_cache.get(function_id)
+        if cached is not None:
+            return cached
         seen: set[int] = set()
         stack = [function_id]
         while stack:
@@ -73,11 +89,21 @@ class ShowGraph:
                 continue
             seen.add(current)
             stack.extend(self.members.get(current, ()))
-        return seen
+        cached = frozenset(seen)
+        self.descendants_cache[function_id] = cached
+        return cached
+
+    def groups_key(self, groups: dict[int, tuple[int, ...]]) -> tuple[object, ...]:
+        """A hashable stand-in for one `groups` mapping, built once per mapping."""
+        entry = self.groups_keys.get(id(groups))
+        if entry is None or entry[0] is not groups:
+            entry = (groups, tuple(sorted(groups.items())))
+            self.groups_keys[id(groups)] = entry
+        return entry[1]
 
     def driven(self, function_id: int, groups: dict[int, tuple[int, ...]]) -> Driven:
         """Every channel one leaf drives, parsed once per graph."""
-        key = (function_id, tuple(sorted(groups.items())))
+        key = (function_id, self.groups_key(groups))
         cached = self.driven_cache.get(key)
         if cached is None:
             function = self.functions[function_id]
@@ -138,7 +164,7 @@ def reach(
     it: the rules ask this of the same functions some sixteen thousand times
     per pass (2026-09-22).
     """
-    key = (function_id, kinds, tuple(sorted(groups.items())))
+    key = (function_id, kinds, graph.groups_key(groups))
     cached = graph.reach_cache.get(key)
     if cached is None:
         cached = _reach(graph, groups, function_id, kinds)

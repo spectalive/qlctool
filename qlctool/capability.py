@@ -7,6 +7,7 @@ offsets carry role X on this fixture?" A role can map to several offsets - an
 """
 
 from dataclasses import dataclass
+from functools import cached_property
 
 from . import roles
 from .definition import Capability, Dimensions, FixtureDefinition
@@ -66,7 +67,17 @@ class FixtureCapabilities:
         return self.is_smoke and roles.RED in self.roles_by_offset
 
     def offsets_for_role(self, role: str) -> list[int]:
-        return [i for i, r in enumerate(self.roles_by_offset) if r == role]
+        return list(self._offsets_by_role.get(role, ()))
+
+    @cached_property
+    def _offsets_by_role(self) -> dict[str, tuple[int, ...]]:
+        # The checks ask this 880 000 times per pass of one fixture's dozen
+        # roles, so the scan of `roles_by_offset` happens once per role.
+        found: dict[str, list[int]] = {}
+        for offset, role in enumerate(self.roles_by_offset):
+            if role is not None:
+                found.setdefault(role, []).append(offset)
+        return {role: tuple(offsets) for role, offsets in found.items()}
 
     def has_role(self, role: str) -> bool:
         return role in self.roles_by_offset

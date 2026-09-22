@@ -32,6 +32,10 @@ class InstantEvaluator:
             ],
             frozenset[_Instant],
         ] = {}
+        self._roots: dict[
+            tuple[tuple[int, ...], int, int, tuple[int, ...], frozenset[int]],
+            frozenset[_Instant],
+        ] = {}
 
     def states(
         self,
@@ -43,6 +47,10 @@ class InstantEvaluator:
     ) -> frozenset[_Instant]:
         """Every reachable HTP channel result for concurrent function roots."""
         roots = (function_ids,) if isinstance(function_ids, int) else function_ids
+        key = (roots, fixture_id, offset, light_offsets, stopped)
+        cached = self._roots.get(key)
+        if cached is not None:
+            return cached
         states = frozenset((_Instant(False, False, 0),))
         for root_id in roots:
             states = _concurrent(
@@ -56,6 +64,7 @@ class InstantEvaluator:
                     frozenset(),
                 ),
             )
+        self._roots[key] = states
         return states
 
     def _node_states(
@@ -67,8 +76,20 @@ class InstantEvaluator:
         stopped: frozenset[int],
         seen: frozenset[int],
     ) -> frozenset[_Instant]:
-        """Possible channel results for one graph node and traversal frontier."""
-        key = (function_id, fixture_id, offset, light_offsets, stopped, seen)
+        """Possible channel results for one graph node and traversal frontier.
+
+        The frontier only matters where it meets what this node can reach, so
+        the memo is keyed on that meeting - empty on any acyclic show - and a
+        node reached along two paths is evaluated once (2026-09-22).
+        """
+        key = (
+            function_id,
+            fixture_id,
+            offset,
+            light_offsets,
+            stopped,
+            seen & self._graph.descendants(function_id),
+        )
         cached = self._states.get(key)
         if cached is not None:
             return cached
