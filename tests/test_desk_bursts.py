@@ -146,8 +146,8 @@ def test_burst_map_keeps_source_captions_and_swatches(generated, tmp_path):
     workspace, library = generated
     from qlctool.checks.show_graph import group_fixtures
     from qlctool.desk_policy import split_caption
-    from qlctool.leading_glyph import leading_glyph
     from qlctool.desk_swatch import swatches
+    from qlctool.leading_glyph import leading_glyph
 
     path = tmp_path / "show.qxw"
     workspace.save(path)

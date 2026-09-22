@@ -14,7 +14,6 @@ import re
 from dataclasses import dataclass
 
 from .desk_widgets import DeskWidget
-from .leading_glyph import leading_glyph
 from .generate.live_console import (
     CHASES_FRAME,
     HITS_FRAME,
@@ -23,6 +22,7 @@ from .generate.live_console import (
     SMOKE_LIGHT_CAPTION,
 )
 from .generate.play_page import COLOR_HITS_FRAME, FAMILY_FRAMES, PICK_PREFIX
+from .leading_glyph import leading_glyph
 
 HELD_REASON = "held on the Mac"
 
