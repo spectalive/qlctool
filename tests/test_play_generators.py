@@ -12,9 +12,9 @@ from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.canonical_show import FLASH_STROBE_FAST, build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.palette import PALETTE, PRIMARY_COLORS
+from qlctool.rgbw_split import rgbw_split
 from qlctool.shutter_open import shutter_open_pairs
 from qlctool.strobe_speed import strobe_speed_pairs
-from qlctool.white_level import white_level
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
@@ -145,9 +145,14 @@ def test_play_wrappers_are_single_member_collections_in_their_families(built):
     functions = _functions(workspace)
 
     expected = {
-        "Color": (show.play_wrappers.color_ids, 21),
+        # 18 since 2026-09-22: the multicolour picks went ("quitar
+        # multicolores muy feos", owner), leaving the solid palette steps.
+        "Color": (show.play_wrappers.color_ids, 18),
         "Pixeles": (show.play_wrappers.panel_ids, 13),
-        "Cabezas": (show.play_wrappers.movement_ids, 12),
+        # 26 since 2026-09-22: every one of the seven figures gained its two
+        # twins, one where the heads go together and one where each goes the
+        # other way ("unos iban a la vez otros iban alternados", owner).
+        "Cabezas": (show.play_wrappers.movement_ids, 26),
         "Gobos": (show.play_wrappers.gobo_ids, 28),
         "Prisma": (show.play_wrappers.prism_ids, 9),
     }
@@ -169,9 +174,15 @@ def test_play_wrappers_are_single_member_collections_in_their_families(built):
 
     names = {function.attrib["Name"]: function for function in functions.values()}
     color_wheel_sources = [step.text for step in findall_local(names["Rueda Colores"], "Step")]
-    assert [
+    picked = [
         source.attrib["ID"] for source in _wrapper_sources(show.play_wrappers.color_ids, functions)
-    ] == color_wheel_sources
+    ]
+    # 2026-09-22: the picks are the wheel's solid colours, in the wheel's own
+    # order - a subsequence of it, not all of it. The wheel also steps the wild
+    # looks, which carry a matrix per pixel group and are not a colour to hold.
+    assert picked
+    remaining = iter(color_wheel_sources)
+    assert all(any(step == pick for step in remaining) for pick in picked)
     assert [
         source.attrib["Name"]
         for source in _wrapper_sources(show.play_wrappers.rainbow_ids, functions)
@@ -189,14 +200,32 @@ def test_play_wrappers_are_single_member_collections_in_their_families(built):
         "Movimiento Cuadrado",
         "Movimiento Hoja",
         "Movimiento Lissajous",
+        "Movimiento Circulo Simultaneo",
+        "Movimiento Ocho Simultaneo",
+        "Movimiento Linea Simultaneo",
+        "Movimiento Diamante Simultaneo",
+        "Movimiento Cuadrado Simultaneo",
+        "Movimiento Hoja Simultaneo",
+        "Movimiento Lissajous Simultaneo",
+        "Movimiento Circulo Alternado",
+        "Movimiento Ocho Alternado",
+        "Movimiento Linea Alternado",
+        "Movimiento Diamante Alternado",
+        "Movimiento Cuadrado Alternado",
+        "Movimiento Hoja Alternado",
+        "Movimiento Lissajous Alternado",
         "Ola Vertical",
         "Barrido Unison",
         "Beams Abanico",
         "Beams Cruce",
         "Escenario",
     ]
-    assert all(source.attrib["Type"] == "Collection" for source in movement_sources[:9])
-    assert [source.attrib["Type"] for source in movement_sources[9:]] == ["Scene", "Scene", "Scene"]
+    assert all(source.attrib["Type"] == "Collection" for source in movement_sources[:23])
+    assert [source.attrib["Type"] for source in movement_sources[23:]] == [
+        "Scene",
+        "Scene",
+        "Scene",
+    ]
 
     assert [
         source.attrib["Name"] for source in _wrapper_sources(show.play_wrappers.gobo_ids, functions)
@@ -267,7 +296,7 @@ def test_colour_hits_match_every_flash_100_fixture_and_strobe_write(built):
                 for offset in fog_offsets(capability):
                     assert values[offset] == 0
             for offset in capability.offsets_for_role(roles.WHITE):
-                assert values[offset] == white_level(PALETTE[color_name])
+                assert values[offset] == rgbw_split(PALETTE[color_name])[3]
             for offset, value in color_wheel_pairs(capability, color_name):
                 assert values[offset] == value
             for offset in capability.offsets_for_role(roles.DIMMER):

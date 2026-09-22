@@ -34,7 +34,6 @@ SMC_PAD_BINDINGS: dict[str, int] = {
     "Flash 100%": pad_channel(13),  # the punch
     "Flash 50%": pad_channel(14),  # the gentler fill
     "Flash Color": pad_channel(15),
-    "Color Beam Animacion": pad_channel(16),
     # Bank 1, second row (pads 9-12): smoke and strobes.
     "Humo Vertical YA": pad_channel(9),  # the punch, under pad 13
     "Humo ON": pad_channel(10),  # the fill, under pad 14

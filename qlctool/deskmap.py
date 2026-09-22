@@ -29,6 +29,7 @@ from .desk_policy import (
 )
 from .desk_swatch import swatches
 from .desk_widgets import desk_widgets
+from .leading_glyph import leading_glyph
 from .library import FixtureLibrary
 from .slug import slugify
 from .speed_multiplier import multiplier
@@ -61,6 +62,9 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
         if placement is None:
             continue
         caption, detail = split_caption(widget.caption)
+        # The console keeps the glyph in the caption; the desk gets it as a
+        # field of its own, to draw at tile size (2026-09-22).
+        icon, caption = leading_glyph(caption)
         if placement.role == "haze":
             # The section heading says HUMO; the tile says only the rhythm.
             caption = caption.removeprefix("HUMO ")
@@ -73,6 +77,7 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
             "functionType": graph.kind(widget.function),
             "action": "toggle" if widget.action == "Toggle" else "flash",
             "caption": caption,
+            "icon": icon,
             "detail": detail,
             "role": placement.role,
             "solo": widget.solo,

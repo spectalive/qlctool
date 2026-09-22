@@ -35,6 +35,7 @@ from dataclasses import dataclass, field
 from lxml import etree
 
 from ..argb import argb_from_rgb
+from ..control_glyph import glyph
 from ..palette import PALETTE
 from ..vc.appearance import DEFAULT
 from ..vc.audio_triggers import build_audio_triggers
@@ -161,7 +162,6 @@ HITS: tuple[tuple[str, str], ...] = (
     ("Humo Vertical YA", "HUMO VERT · U"),
     ("Strobo Rapido", "STROBO · F"),
     ("Strobo Medio", "STROBO SUAVE · T"),
-    ("Color Beam Animacion", "COLOR BEAM · C"),
 )
 
 # What page 1 says about itself, because nobody reads a manual at a venue.
@@ -202,7 +202,14 @@ HITS_FRAME = "GOLPES — se suman a lo que ya está sonando"
 SMOKE_FRAME = "HUMO AMBIENTE — cada cuánto dispara solo"
 CHASES_FRAME = "Intensidad y strobo de fixture"
 SMOKE_LIGHT_CAPTION = "HUMO VERTICAL — su luz · N"
-SMOKE_ROW_Y = 830
+HELP_ROW_Y = 630
+# The haze row was 28px tall under SMALL_FONT while every other button on the
+# page was 92 or 118 under BIG_FONT: "botones de humo pequeños comparados con el
+# resto" (owner, 2026-09-22). Page 1 had 86px of dead space between the room
+# states and the hits, which is what pays for this.
+SMOKE_ROW_Y = 770
+SMOKE_ROW_HEIGHT = 110
+SMOKE_BUTTON_HEIGHT = 74
 SMOKE_RHYTHMS = (
     ("Humo Auto", "HUMO cada 1 min · J"),
     ("Humo Auto 2 min", "cada 2 min"),
@@ -388,10 +395,16 @@ def generate_live_console(
         include_key=True,
         **kwargs,
     ):
-        """A button for a master function, with its key and its action."""
+        """A button for a master function, with its key, glyph and action."""
         target_id = function_id if function_id is not None else master.get(name)
         if target_id is None:
             return None
+        # The glyph travels in the caption: QLC+'s own <Icon> is a path into the
+        # show Mac's disk, and a missing file is a blank button there and
+        # nowhere else (`control_glyph`, 2026-09-22).
+        mark = glyph(name)
+        if mark and not caption.startswith(mark):
+            caption = f"{mark} {caption}"
         # A pad-bound function wears its palette colour, so the console button
         # and the pad LED read as the same surface.
         colour = FUNCTION_COLORS.get(name)
@@ -563,7 +576,7 @@ def _page_show(
         outer,
         HITS_FRAME,
         LEFT_X,
-        400,
+        330,
         OUTER_WIDTH - 16,
         160,
         page=PAGE_SHOW,
@@ -588,7 +601,7 @@ def _page_show(
         outer,
         "SI ALGO VA MAL",
         LEFT_X,
-        570,
+        500,
         OUTER_WIDTH - 16,
         118,
         page=PAGE_SHOW,
@@ -652,7 +665,7 @@ def _page_show(
             outer,
             line,
             LEFT_X,
-            700 + index * 26,
+            HELP_ROW_Y + index * 26,
             RIGHT_X - LEFT_X - GAP,
             24,
             page=PAGE_SHOW,
@@ -670,7 +683,7 @@ def _page_show(
         LEFT_X,
         SMOKE_ROW_Y,
         RIGHT_X - LEFT_X - GAP,
-        60,
+        SMOKE_ROW_HEIGHT,
         page=PAGE_SHOW,
         solo=True,
         # AUTO starts the one-minute rhythm as a child; choosing another must
@@ -685,10 +698,10 @@ def _page_show(
             name,
             caption,
             GAP + index * pitch,
-            HEADER + 2,
+            HEADER + 4,
             pitch - 6,
-            28,
-            font=SMALL_FONT,
+            SMOKE_BUTTON_HEIGHT,
+            font=BIG_FONT,
         )
 
     # The tempo dial, where the operator is looking, with the hand-built

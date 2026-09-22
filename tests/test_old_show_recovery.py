@@ -89,8 +89,14 @@ def test_the_rainbows_are_back_and_relative(built):
     functions = _functions(root)
 
     for name, spread in (("Arcoiris Simultaneo", False), ("Arcoiris Pasos", True)):
-        efx = functions[str(show.master_ids[name])]
-        assert efx.attrib["Type"] == "EFX"
+        # 2026-09-22: each rainbow is now a Collection of the RGB EFX and the
+        # layer that spins the beams' colour wheel, because an EFX in RGB mode
+        # says nothing at all to a fixture whose colour is a wheel.
+        collection = functions[str(show.master_ids[name])]
+        assert collection.attrib["Type"] == "Collection"
+        members = [functions[step.text] for step in findall_local(collection, "Step")]
+        assert [m.attrib["Type"] for m in members] == ["EFX", "Scene"]
+        efx = members[0]
         assert find_local(efx, "IsRelative").text == "1"
         assert find_local(efx, "Algorithm").text == "Circle"
         fixtures = findall_local(efx, "Fixture")

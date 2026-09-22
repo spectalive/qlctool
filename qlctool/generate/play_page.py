@@ -8,7 +8,6 @@ from ..vc.button import FLASH, TOGGLE
 from .generated_play_wrappers import GeneratedPlayWrappers as _GeneratedPlayWrappers
 from .smc_pad_colors import readable_foreground
 
-
 # Names a consumer (the tablet's map) finds the page's parts by.
 FAMILY_FRAMES = ("COLOR", "PIXELES", "CABEZAS", "GOBOS", "PRISMA")
 RESET_FRAME = "VOLVER AL SHOW"
@@ -285,8 +284,14 @@ def _build_color_family(
     label(family, _COLOR_GUIDANCE, _GAP, _HEADER, _WIDTH - 2 * _GAP, 18, font=small_font)
     columns = 13
     pitch = (_WIDTH - 2 * _GAP) // columns
+    # The three automatic colour modes sit first, in this frame, which is solo:
+    # choosing one stops the other two, so the room always has exactly one
+    # colour clock ("colores simples, colores completos, colores pastel
+    # tenues", owner, 2026-09-22).
     hooks = (
-        ("Rueda Colores", "AUTO colores · W", True),
+        ("Rueda Colores", "Colores completos · W", True),
+        ("Rueda Simples", "Colores simples · C", True),
+        ("Rueda Pastel", "Pastel tenue · L", True),
         ("Rueda Mezcla", "Mezcla · E", True),
         ("Luz Charla", "Luz Charla", False),
     )
@@ -307,7 +312,9 @@ def _build_color_family(
         )
         index += 1
     for function_id in wrappers.color_ids:
-        _pick(button, family, names, function_id, index, columns, pitch, small_font, top=46)
+        _pick(
+            button, family, names, function_id, index, columns, pitch, small_font, top=46, mark="🎨"
+        )
         index += 1
     for function_id in wrappers.rainbow_ids:
         name = _source_name(names.get(function_id, ""))
@@ -392,7 +399,9 @@ def _build_pixel_family(
         top=46,
     )
     for index, function_id in enumerate(wrappers.panel_ids, start=2):
-        _pick(button, family, names, function_id, index, columns, pitch, small_font, top=46)
+        _pick(
+            button, family, names, function_id, index, columns, pitch, small_font, top=46, mark="▦"
+        )
 
 
 def _build_movement_family(
@@ -422,7 +431,11 @@ def _build_movement_family(
         font=title_font,
     )
     label(family, _CYCLE_GUIDANCE, _GAP, _HEADER, _WIDTH - 2 * _GAP, 18, font=small_font)
-    columns = 8
+    # Fifteen across since 2026-09-22: the shape picks tripled when every
+    # figure got its simultaneous and its alternating twin, and this frame has
+    # no room to grow - GOBOS starts 148 px below it. Four hooks and twenty-six
+    # picks fit exactly two rows at fifteen (`rule_console` measures it).
+    columns = 15
     pitch = (_WIDTH - 2 * _GAP) // columns
     hooks = (
         ("Movimientos Suaves", "AUTO lento", False),
@@ -447,7 +460,9 @@ def _build_movement_family(
         )
         index += 1
     for function_id in wrappers.movement_ids:
-        _pick(button, family, names, function_id, index, columns, pitch, small_font, top=46)
+        _pick(
+            button, family, names, function_id, index, columns, pitch, small_font, top=46, mark="↔"
+        )
         index += 1
 
 
@@ -520,7 +535,7 @@ def _build_gobo_family(
         button(
             picks,
             function_id,
-            _pick_caption(names.get(function_id, "")),
+            f"❋ {_pick_caption(names.get(function_id, ''))}",
             _GAP + (index % per_page) * pitch,
             _HEADER,
             pitch - 4,
@@ -580,7 +595,9 @@ def _build_prism_family(
         )
         index += 1
     for function_id in wrappers.prism_ids:
-        _pick(button, family, names, function_id, index, columns, pitch, small_font, top=46)
+        _pick(
+            button, family, names, function_id, index, columns, pitch, small_font, top=46, mark="✧"
+        )
         index += 1
 
 
@@ -642,12 +659,16 @@ def _bound_pick(
     )
 
 
-def _pick(button, parent, names, function_id, index, columns, pitch, font, top) -> None:
+def _pick(button, parent, names, function_id, index, columns, pitch, font, top, mark="") -> None:
+    """One manual pick. `mark` is the family's glyph, so a full page of picks
+    still says which family each tile belongs to (owner, 2026-09-22).
+    """
     x, y = _grid_position(index, columns, pitch, top)
+    caption = _pick_caption(names.get(function_id, ""))
     button(
         parent,
         function_id,
-        _pick_caption(names.get(function_id, "")),
+        f"{mark} {caption}" if mark else caption,
         x,
         y,
         pitch - 4,

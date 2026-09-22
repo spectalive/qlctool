@@ -14,9 +14,9 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
 from ..mode_park import mode_park_pairs
+from ..rgbw_split import rgbw_split
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off import strobe_off_pairs
-from ..white_level import white_level
 from ..zoom_wide import zoom_wide_pairs
 
 RGB = tuple[int, int, int]
@@ -30,7 +30,9 @@ def color_scene_values(
     internal_program_off: bool = True,
     exclude_effect_mode_fixture_ids: Sequence[int] = (),
 ) -> dict[int, list[tuple[int, int]]]:
-    red, green, blue = rgb
+    # One emitter owns the colour's white share, or the tint is washed out by
+    # its own achromatic part arriving twice (`rule_white_twice`, 2026-09-22).
+    red, green, blue, white = rgbw_split(rgb)
     result: dict[int, list[tuple[int, int]]] = {}
     wanted = None if fixture_ids is None else set(fixture_ids)
     excluded_effect_modes = set(exclude_effect_mode_fixture_ids)
@@ -59,7 +61,7 @@ def color_scene_values(
         # in the colour, so a white look uses the white LED and a red one says
         # zero to it instead of leaving it to the last look (2026-09-02).
         for offset in caps.offsets_for_role(roles.WHITE):
-            pairs.append((offset, white_level(rgb)))
+            pairs.append((offset, white))
         # The beam's width belongs to the colour, not to the intensity: a
         # caller that leaves the dimmer to the energy levels still owns the
         # shape of the light it is painting, and nothing else writes zoom.

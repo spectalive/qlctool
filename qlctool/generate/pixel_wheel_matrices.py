@@ -37,11 +37,16 @@ def generate_pixel_wheel_matrices(
     algorithms: Sequence[str | None],
     fit_ms: int = WHEEL_HOLD,
     path: str = "Colores Rig",
+    tag: str = "Rueda",
 ) -> dict[str, list[int]]:
     """Colour name -> the matrices a wheel step of that colour also starts.
 
     One matrix per (pixel group, colour); the algorithm walks `algorithms` as
     the colour list advances, so consecutive wheel colours draw differently.
+
+    `tag` names which wheel these belong to, since a show now carries more than
+    one - the full colours and the pastel ones ride separate wheels over the
+    same groups and the same names.
     """
     color_format = color_format_of(workspace.root)
     groups = [g for g in fixture_groups(workspace.root) if g.group_id in set(group_ids)]
@@ -57,7 +62,7 @@ def generate_pixel_wheel_matrices(
             workspace.add_function(
                 build_rgbmatrix(
                     function_id,
-                    f"{group.name} - {label} {name} (Rueda)",
+                    f"{group.name} - {label} {name} ({tag})",
                     algorithm=algorithm,
                     mono_color=rgb,
                     group_id=group.group_id,

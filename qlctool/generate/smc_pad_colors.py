@@ -8,10 +8,13 @@ two palettes in step: the bridge hard-codes the matching values by physical pad.
 
 Physical pad layout the colours follow (bank 1, as the owner arranged it):
 
-    13 Flash    14 Flash50   15 FlashCol  16 ColorBeam
+    13 Flash    14 Flash50   15 FlashCol  16 (free)
      9 HumoVert 10 Humo      11 Strobo    12 StroboMed
      5 AUTO      6 Fiesta     7 Locura     8 Tranquilo
      1 Blanco    2 Negro      3 Charla     4 (free)
+
+Pad 16 went free on 2026-09-22 with COLOR BEAM, the button that looked like an
+on/off and actually stepped the beams' colour wheel.
 
 And bank 2 (PAD BANK), carrying the JUGAR/page-2 hooks because SHIFT sends no
 MIDI at all:
@@ -41,7 +44,6 @@ FUNCTION_COLORS: dict[str, RGB] = {
     "Flash 100%": (255, 255, 255),  # pad 13 - white
     "Flash 50%": (255, 225, 180),  # pad 14 - warm white
     "Flash Color": (255, 0, 255),  # pad 15 - magenta
-    "Color Beam Animacion": (0, 255, 255),  # pad 16 - cyan
     # Bank 2, second row: the effects you layer by hand.
     "Prisma Animacion": (255, 255, 255),  # pad 9  - white
     "Humo Auto": (150, 220, 255),  # pad 10 - pale cyan, the smoke family

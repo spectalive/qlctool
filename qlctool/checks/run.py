@@ -21,6 +21,7 @@ from .finding import ERROR, Finding
 from .rule_accent_restore import check_accent_restore
 from .rule_audio_triggers import check_audio_triggers
 from .rule_collision import check_collisions
+from .rule_colour_animation_wheel import check_colour_animation_wheel
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
 from .rule_desk_bursts import check_desk_bursts
@@ -40,6 +41,7 @@ from .rule_layer_trace import check_layer_trace
 from .rule_masked_dimmer_efx import check_masked_dimmer_efx
 from .rule_mode_owner import check_mode_owner
 from .rule_movement_families import check_movement_families
+from .rule_movement_figure_coverage import check_movement_figure_coverage
 from .rule_movement_window import check_movement_window
 from .rule_pad_input import check_pad_input
 from .rule_parked_movers import check_parked_movers
@@ -64,10 +66,12 @@ from .rule_tempo_units import check_tempo_units
 from .rule_unaimed_movement import check_unaimed_movement
 from .rule_undeclared_heads import check_undeclared_heads
 from .rule_unfinished_effect import check_unfinished_effects
+from .rule_untempoed_rhythm import check_untempoed_rhythm
 from .rule_wheel_colour import check_wheel_colour
 from .rule_wheel_fade import check_wheel_fade
 from .rule_wheel_rotation import check_wheel_rotation
 from .rule_white_emitter import check_white_emitter
+from .rule_white_twice import check_white_twice
 from .rule_zoom_narrow import check_zoom_narrow
 from .show_graph import build_show_graph, group_fixtures
 
@@ -92,7 +96,10 @@ def check_workspace(
     findings += check_intensity(graph, groups, entries, states)
     findings += check_instant_dimmer(graph, groups, states)
     findings += check_white_emitter(graph, groups)
+    findings += check_white_twice(graph, groups)
     findings += check_wheel_colour(graph, groups, entries)
+    findings += check_colour_animation_wheel(graph, groups, entries)
+    findings += check_movement_figure_coverage(graph, groups, entries)
     findings += check_wheel_rotation(graph, groups)
     findings += check_wheel_fade(graph, groups, root)
     findings += check_internal_programs(graph, groups, entries, states)
@@ -124,6 +131,7 @@ def check_workspace(
     findings += check_strobe_restore(graph, groups, root, states)
     findings += check_state_proxy(graph, states)
     findings += check_tap_dial(root)
+    findings += check_untempoed_rhythm(graph, groups, root, entries)
     findings += check_tempo_units(graph)
     findings += check_movement_families(graph)
     findings += check_parked_movers(graph)

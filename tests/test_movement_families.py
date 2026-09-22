@@ -145,3 +145,63 @@ def test_every_shipped_efx_still_has_the_family_shapes(library):
     functions = _efx_by_name(ws.root)
     for name in ("Wash Circulo", "Beam Circulo", "Suave Circulo"):
         assert name in functions
+
+
+def test_2026_09_22_every_shape_button_moves_the_beams_and_the_washes(library):
+    """The owner's night: "algunos movimientos de cabeza no incluyen las beam".
+
+    A shape button is a Collection of the per-family EFX that draw that figure,
+    and a family that never defined the shape simply did not appear in it - so
+    the button moved the six washes and left the four 7R standing, with nothing
+    in the file saying anything was missing. The invariant is coverage: every
+    movement Collection on the CABEZAS page drives pan and tilt on a fixture of
+    each family, whichever figure and whichever way it is phased.
+
+    A one-family look is a different function (`Cascada Beams`, `Beams Abanico`)
+    and lives under its own name, so it is not in this list: the picks here are
+    exactly what `generate_movement_families` returns as shape buttons.
+    """
+    from qlctool import roles
+    from qlctool.capabilities_of import capabilities_of
+    from qlctool.checks.driven_channels import driven_channels
+    from qlctool.checks.show_graph import group_fixtures
+
+    ws = strip_to_skeleton(Workspace.load(SHOW))
+    mirrored = house_right_fixture_ids(ws.root)
+    generated = generate_movement_families(ws, library, mirrored_ids=mirrored)
+    capabilities = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, library)}
+    groups = group_fixtures(ws.root)
+    by_id = {f.attrib["ID"]: f for f in iter_local(ws.root, "Function") if "ID" in f.attrib}
+
+    def _moved(function):
+        """The fixture ids this function or its members put pan or tilt on."""
+        moved = set()
+        for step in findall_local(function, "Step"):
+            member = by_id.get((step.text or "").strip())
+            if member is not None:
+                moved |= _moved(member)
+        for fixture_id, pairs in driven_channels(function, capabilities, groups).items():
+            caps = capabilities.get(fixture_id)
+            if caps is None:
+                continue
+            for role in (roles.PAN, roles.TILT):
+                if any(offset in pairs for offset in caps.offsets_for_role(role)):
+                    moved.add(fixture_id)
+        return moved
+
+    def _is_beam(fixture_id):
+        return capabilities[fixture_id].has_role(roles.GOBO)
+
+    # A figure is a Collection of the per-family EFX that draw it; the aims and
+    # the fan are Scenes, and one of those is beams-only on purpose.
+    shapes = [
+        by_id[str(pick_id)]
+        for pick_id in generated.play_pick_ids
+        if by_id[str(pick_id)].attrib.get("Type") == "Collection"
+    ]
+    assert len(shapes) >= 21  # seven figures, each plain, together and opposed
+    for shape in shapes:
+        moved = _moved(shape)
+        name = shape.attrib["Name"]
+        assert any(_is_beam(fixture_id) for fixture_id in moved), name
+        assert any(not _is_beam(fixture_id) for fixture_id in moved), name

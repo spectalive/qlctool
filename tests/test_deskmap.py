@@ -77,8 +77,10 @@ def test_2026_09_13_held_accents_are_replaced_by_bounded_bursts(deskmap):
             assert control["burstNote"]
     live = _section(deskmap, "live", "accents")["controls"]
     color = _section(deskmap, "color", "accents")["controls"]
-    assert len(live) == 8 and len(color) == 10
-    assert controls["color-beam"]["role"] == "toggle"
+    # Seven since COLOR BEAM went: a button that looked like an on/off and
+    # actually stepped the wheel (owner, 2026-09-22).
+    assert len(live) == 7 and len(color) == 10
+    assert "color-beam" not in controls
     assert not any(c["role"] == "accent" for c in controls.values())
     assert bursts["rojo"]["swatches"][0] == "#ff0000"
 
@@ -94,6 +96,18 @@ def test_safety_details_replace_words_that_would_mislead(deskmap):
     assert deskmap["controls"]["pares"]["detail"] == ""
 
 
+def test_2026_09_22_no_tile_carries_its_glyph_inside_its_caption(deskmap):
+    """The console keeps a control's glyph in the caption; the desk gets it as a
+    field, so a tile can draw it at icon size. A glyph left in the caption is a
+    label starting with a character the tablet cannot size or align - and it
+    changes the control's key, which is how the fog light's tile disappeared
+    from the map on 2026-09-22."""
+    for key, control in deskmap["controls"].items():
+        first = control["caption"][:1]
+        assert first.isalnum() or first in "¿¡#", (key, control["caption"])
+        assert control["icon"] == "" or not control["icon"].isalnum()
+
+
 def test_the_haze_rhythms_are_a_solo_section(deskmap):
     haze = _section(deskmap, "live", "haze")
     assert len(haze["controls"]) == 4
@@ -103,7 +117,13 @@ def test_the_haze_rhythms_are_a_solo_section(deskmap):
 def test_the_colour_family_has_hooks_then_picks_with_swatches(deskmap):
     hooks = _section(deskmap, "color", "hooks")
     picks = _section(deskmap, "color", "picks")
-    assert [deskmap["controls"][k]["caption"] for k in hooks["controls"]][:2] == ["AUTO colores", "Mezcla"]
+    # The automatic colour comes in three flavours since 2026-09-22: the whole
+    # palette, the simple colours, and the pastels.
+    assert [deskmap["controls"][k]["caption"] for k in hooks["controls"]][:3] == [
+        "Colores completos",
+        "Colores simples",
+        "Pastel tenue",
+    ]
     assert len(picks["controls"]) >= 20
     red = next(deskmap["controls"][k] for k in picks["controls"] if deskmap["controls"][k]["caption"] == "Rig Rojo")
     assert red["role"] == "pick" and red["functionType"] == "Collection"

@@ -9,7 +9,7 @@ generator only ever spoke red, green and blue.
 
 The rule: a Scene that writes red, green or blue on a fixture writes that
 fixture's white channels too, at whatever value the colour calls for (zero for
-a saturated one - `white_level`). A matrix cannot, and is not asked to: it
+a saturated one - `rgbw_split`). A matrix cannot, and is not asked to: it
 paints RGB by design.
 """
 

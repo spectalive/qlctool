@@ -146,6 +146,7 @@ def test_burst_map_keeps_source_captions_and_swatches(generated, tmp_path):
     workspace, library = generated
     from qlctool.checks.show_graph import group_fixtures
     from qlctool.desk_policy import split_caption
+    from qlctool.leading_glyph import leading_glyph
     from qlctool.desk_swatch import swatches
 
     path = tmp_path / "show.qxw"
@@ -154,7 +155,9 @@ def test_burst_map_keeps_source_captions_and_swatches(generated, tmp_path):
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     for key, source in desk_burst_sources(workspace.root).items():
         control = deskmap["controls"][key]
-        assert control["caption"] == split_caption(source.caption)[0]
+        glyph, caption = leading_glyph(split_caption(source.caption)[0])
+        assert control["caption"] == caption
+        assert control["icon"] == glyph
         assert control["swatches"] == swatches(
             graph, group_fixtures(workspace.root), source.function
         )

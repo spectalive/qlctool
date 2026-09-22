@@ -14,6 +14,7 @@ import re
 from dataclasses import dataclass
 
 from .desk_widgets import DeskWidget
+from .leading_glyph import leading_glyph
 from .generate.live_console import (
     CHASES_FRAME,
     HITS_FRAME,
@@ -137,7 +138,9 @@ def place(
         if held or function_kind not in ("Chaser", "Collection", "Sequence"):
             return None
         return Placement("control", "chases", "chase", True, "")
-    if widget.caption == SMOKE_LIGHT_CAPTION:
+    # The console prefixes each master button with its glyph; the caption this
+    # compares against is the one the generator names (2026-09-22).
+    if leading_glyph(widget.caption)[1] == SMOKE_LIGHT_CAPTION:
         return Placement("control", "haze-light", "toggle", True, "")
     return None
 

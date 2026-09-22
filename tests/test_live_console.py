@@ -12,6 +12,7 @@ from pathlib import Path
 
 import pytest
 
+from qlctool.control_glyph import glyph
 from qlctool.generate.canonical_show import KEYS, build_canonical_show
 from qlctool.generate.live_console import (
     BIG_FONT,
@@ -22,6 +23,7 @@ from qlctool.generate.live_console import (
     PAGE_CONTROL,
     ROOM_STATES,
 )
+from qlctool.leading_glyph import leading_glyph
 from qlctool.library import FixtureLibrary
 from qlctool.palette import PRIMARY_COLORS
 from qlctool.workspace import Workspace
@@ -264,7 +266,14 @@ def test_the_room_is_in_exactly_one_state(console):
     _, frame = console
     room = _frame_named(frame, "LA SALA ESTÁ ASÍ")
     assert localname(room) == "SoloFrame"
-    assert _captions(room) == [caption for _, caption, _, _ in ROOM_STATES]
+    # Each state wears its glyph since 2026-09-22 ("ni un solo icono en los
+    # botones", owner): the caption after it is still the show's own.
+    assert [leading_glyph(c)[1] for c in _captions(room)] == [
+        caption for _, caption, _, _ in ROOM_STATES
+    ]
+    assert [leading_glyph(c)[0] for c in _captions(room)] == [
+        glyph(name) for name, _, _, _ in ROOM_STATES
+    ]
 
 
 def test_no_energy_level_is_a_button(console):
@@ -325,7 +334,7 @@ def test_every_button_on_the_show_page_says_its_own_key(console):
         _frame_named(frame, "GOLPES")
     ):
         assert " · " in caption, caption
-    actual = _captions(_frame_named(frame, "GOLPES"))
+    actual = [leading_glyph(c)[1] for c in _captions(_frame_named(frame, "GOLPES"))]
     expected = [caption for name, caption in HITS if name not in OPTIONAL_KEYS or caption in actual]
     assert expected == actual
 
@@ -437,7 +446,9 @@ def test_every_play_family_is_solo_and_starts_with_its_hooks(console):
     functions = _functions_by_id(root)
     expected = {
         "COLOR": (
-            ("Rueda Colores", "AUTO colores · W"),
+            ("Rueda Colores", "Colores completos · W"),
+            ("Rueda Simples", "Colores simples · C"),
+            ("Rueda Pastel", "Pastel tenue · L"),
             ("Rueda Mezcla", "Mezcla · E"),
             ("Luz Charla", "Luz Charla"),
         ),
@@ -460,7 +471,7 @@ def test_every_play_family_is_solo_and_starts_with_its_hooks(console):
         buttons = _buttons(family)
         names = [functions[_function_id(button)].attrib["Name"] for button in buttons]
         assert names[: len(hooks)] == [name for name, _ in hooks], caption
-        assert [button.attrib["Caption"] for button in buttons[: len(hooks)]] == [
+        assert [leading_glyph(button.attrib["Caption"])[1] for button in buttons[: len(hooks)]] == [
             hook_caption for _, hook_caption in hooks
         ]
         for hook in buttons[: len(hooks)]:
@@ -469,12 +480,18 @@ def test_every_play_family_is_solo_and_starts_with_its_hooks(console):
             assert find_local(appearance, "BackgroundColor").text != "Default"
 
 
-def test_the_seven_play_hooks_restore_their_global_keys_and_captions(console):
-    """2026-09-02: the operator's seven JUGAR shortcuts are exact."""
+def test_the_play_hooks_restore_their_global_keys_and_captions(console):
+    """2026-09-02: the operator's JUGAR shortcuts are exact.
+
+    Nine since 2026-09-22: the automatic colour split into the whole palette,
+    the simple colours and the pastels, which the owner asked for by name.
+    """
     root, outer = console
     functions = _functions_by_id(root)
     expected = {
-        "Rueda Colores": ("AUTO colores · W", "W"),
+        "Rueda Colores": ("Colores completos · W", "W"),
+        "Rueda Simples": ("Colores simples · C", "C"),
+        "Rueda Pastel": ("Pastel tenue · L", "L"),
         "Rueda Mezcla": ("Mezcla · E", "E"),
         "Movimientos Cabezas": ("AUTO normal · A", "A"),
         "Gobo Animacion": ("AUTO gobos · G", "G"),
@@ -488,7 +505,10 @@ def test_the_seven_play_hooks_restore_their_global_keys_and_captions(console):
         function = functions[_function_id(button)]
         name = function.attrib["Name"].removeprefix("Jugar · ")
         if name in expected:
-            actual[name] = (button.attrib["Caption"], find_local(button, "Key").text)
+            actual[name] = (
+                leading_glyph(button.attrib["Caption"])[1],
+                find_local(button, "Key").text,
+            )
     assert actual == expected
 
 
@@ -533,6 +553,8 @@ def test_no_play_pick_is_reachable_from_a_room_state(console):
 
     hook_names = {
         "Rueda Colores",
+        "Rueda Simples",
+        "Rueda Pastel",
         "Rueda Mezcla",
         "Luz Charla",
         "Ciclo Paneles Mixto",
@@ -560,7 +582,7 @@ def test_every_play_pick_is_a_one_member_family_wrapper(console):
     root, outer = console
     functions = _functions_by_id(root)
     hooks_per_family = {
-        "COLOR": 3,
+        "COLOR": 5,  # 2026-09-22: three colour modes, the mix, and Luz Charla
         "PIXELES": 2,
         "CABEZAS": 4,
         "GOBOS": 2,
@@ -617,6 +639,8 @@ def test_every_play_pick_and_reset_strip_is_keyless(console):
     functions = _functions_by_id(root)
     hook_names = {
         "Rueda Colores",
+        "Rueda Simples",
+        "Rueda Pastel",
         "Rueda Mezcla",
         "Luz Charla",
         "Arcoiris Simultaneo",
@@ -675,7 +699,7 @@ def test_the_smc_pad_bindings_follow_the_play_hooks(console):
 
     _, outer = console
     captions = {
-        "AUTO colores · W": "Rueda Colores",
+        "Colores completos · W": "Rueda Colores",
         "Mezcla · E": "Rueda Mezcla",
         "AUTO normal · A": "Movimientos Cabezas",
         "AUTO gobos · G": "Gobo Animacion",
@@ -690,7 +714,7 @@ def test_the_smc_pad_bindings_follow_the_play_hooks(console):
         inputs = [source for source in findall_local(button, "Input") if "Channel" in source.attrib]
         if inputs:
             assert len(inputs) == 1
-            bound[button.attrib["Caption"]] = int(inputs[0].attrib["Channel"])
+            bound[leading_glyph(button.attrib["Caption"])[1]] = int(inputs[0].attrib["Channel"])
     assert bound == {caption: SMC_PAD_BINDINGS[name] for caption, name in captions.items()}
 
 
@@ -724,7 +748,8 @@ def test_control_retains_every_direct_operator_contract(console):
         matches = [
             widget
             for widget in widgets
-            if localname(widget) == tag and widget.attrib.get("Caption", "").startswith(caption)
+            if localname(widget) == tag
+            and leading_glyph(widget.attrib.get("Caption", ""))[1].startswith(caption)
         ]
         assert len(matches) == 1, (tag, caption)
         assert _console_page(matches[0], console_frame) == PAGE_CONTROL

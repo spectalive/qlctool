@@ -36,6 +36,7 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..efx_algorithms import SPANISH_LABELS
+from ..every_other import every_other
 from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..ids import next_function_id
@@ -98,7 +99,8 @@ WASH_SLOW = Envelope(
 # the same shape drawn smaller and slower, which is the only room left to vary.
 BEAM_SLOW = Envelope(
     ("Circle", "Line"),
-    34000,
+    # The slow family shares the washes' figure time for the same reason.
+    28000,
     BEAM_PAN_SPAN * 2 // 3,
     BEAM_TILT_SPAN * 2 // 3,
     56000,
@@ -116,7 +118,10 @@ WASH = Envelope(
 )
 BEAM = Envelope(
     ("Circle", "Eight", "Line"),
-    11000,
+    # Half the washes' figure, so the two families rhyme instead of drifting:
+    # one wash curve to two beam curves, the same 10 s hold under both ("hay
+    # que mirar la sincronizacion para que tengan sentido", owner, 2026-09-22).
+    WASH.duration // 2,
     BEAM_PAN_SPAN,
     BEAM_TILT_SPAN,
     10000,
@@ -160,6 +165,18 @@ BEAM_ROTATED_SHAPES = Envelope(
     BEAM.height,
     BEAM.hold,
     rotation_by_algorithm={"Diamond": 90, "Leaf": 45},
+    pan_offset=BEAM.pan_offset,
+    tilt_offset=BEAM.tilt_offset,
+)
+# Square and Lissajous were wash-only, so their buttons left the four beams
+# standing still - "algunos movimientos de cabezas no incluyen las beam" (owner,
+# 2026-09-22). Same shapes, the beams' own window and figure time.
+BEAM_WIDE_SHAPES = Envelope(
+    ("Square", "Lissajous"),
+    BEAM.duration,
+    BEAM.width,
+    BEAM.height,
+    BEAM.hold,
     pan_offset=BEAM.pan_offset,
     tilt_offset=BEAM.tilt_offset,
 )
@@ -231,6 +248,45 @@ WASH_UNISON = Envelope(
     pan_offset=WASH_SLOW.pan_offset,
     tilt_offset=WASH_SLOW.tilt_offset,
 )
+# Every shape the washes draw, in the beams' own window and figure time. The
+# plain buttons reach all seven through three envelopes (BEAM, plus the rotated
+# and the wide shapes); the twins need the same seven or they repeat the fault
+# the wide shapes fixed - a button that moves the washes and leaves the four
+# beams standing ("algunos movimientos de cabeza no incluyen las beam", owner,
+# 2026-09-22). The rotations are BEAM_ROTATED_SHAPES': a diamond and a leaf
+# read on a beam only turned onto the truss.
+BEAM_TWIN_SHAPES = Envelope(
+    WASH.algorithms,
+    BEAM.duration,
+    BEAM.width,
+    BEAM.height,
+    BEAM.hold,
+    rotation_by_algorithm={"Diamond": 90, "Leaf": 45},
+    pan_offset=BEAM.pan_offset,
+    tilt_offset=BEAM.tilt_offset,
+)
+# Same figure, alternate heads reversed: the contrast to the unison push. Every
+# shape gets the twin, so the tablet offers the same figure both ways round
+# instead of only where somebody thought to define it.
+WASH_ALTERNATE = Envelope(
+    WASH.algorithms,
+    WASH.duration,
+    WASH.width,
+    WASH.height,
+    WASH.hold,
+    pan_offset=WASH.pan_offset,
+    tilt_offset=WASH.tilt_offset,
+)
+BEAM_ALTERNATE = Envelope(
+    BEAM_TWIN_SHAPES.algorithms,
+    BEAM_TWIN_SHAPES.duration,
+    BEAM_TWIN_SHAPES.width,
+    BEAM_TWIN_SHAPES.height,
+    BEAM_TWIN_SHAPES.hold,
+    rotation_by_algorithm=BEAM_TWIN_SHAPES.rotation_by_algorithm,
+    pan_offset=BEAM_TWIN_SHAPES.pan_offset,
+    tilt_offset=BEAM_TWIN_SHAPES.tilt_offset,
+)
 BEAM_UNISON = Envelope(
     ("Line",),
     BEAM.duration,
@@ -278,7 +334,17 @@ def generate_movement_families(
     if not washes and not beams:
         raise ValueError("no fixture in this workspace has both pan and tilt")
 
-    def _family(ids, envelope, name, prefix, path, make_chaser=True, names=None, spread_phase=True):
+    def _family(
+        ids,
+        envelope,
+        name,
+        prefix,
+        path,
+        make_chaser=True,
+        names=None,
+        spread_phase=True,
+        mirrored=None,
+    ):
         if not ids:
             return None
         return generate_movement_efx(
@@ -295,7 +361,7 @@ def generate_movement_families(
             chaser_run_order="Random",
             chaser_name=name,
             label_prefix=prefix,
-            mirrored_ids=mirrored_ids,
+            mirrored_ids=mirrored_ids if mirrored is None else mirrored,
             propagation_mode=envelope.propagation,
             rotation=envelope.rotation,
             rotation_by_algorithm=envelope.rotation_by_algorithm or None,
@@ -335,18 +401,48 @@ def generate_movement_families(
     )
     beam_sim = _family(
         beams,
-        BEAM,
+        BEAM_TWIN_SHAPES,
         None,
         "Beam",
         "Movimiento",
         make_chaser=False,
         names={
             shape: f"Beam {SPANISH_LABELS.get(shape, shape)} Simultaneo"
-            for shape in BEAM.algorithms
+            for shape in BEAM_TWIN_SHAPES.algorithms
         },
         spread_phase=False,
     )
     beam_shapes = _family(beams, BEAM_ROTATED_SHAPES, None, "Beam", "Movimiento", make_chaser=False)
+    beam_wide = _family(beams, BEAM_WIDE_SHAPES, None, "Beam", "Movimiento", make_chaser=False)
+    # Each head against its neighbour: the same figure with every other fixture
+    # running it backwards, which is the "cada cabeza para un lado" the owner
+    # missed.
+    wash_alt = _family(
+        washes,
+        WASH_ALTERNATE,
+        None,
+        "Wash",
+        "Movimiento",
+        make_chaser=False,
+        names={
+            shape: f"Wash {SPANISH_LABELS.get(shape, shape)} Alternado"
+            for shape in WASH_ALTERNATE.algorithms
+        },
+        mirrored=every_other(washes),
+    )
+    beam_alt = _family(
+        beams,
+        BEAM_ALTERNATE,
+        None,
+        "Beam",
+        "Movimiento",
+        make_chaser=False,
+        names={
+            shape: f"Beam {SPANISH_LABELS.get(shape, shape)} Alternado"
+            for shape in BEAM_ALTERNATE.algorithms
+        },
+        mirrored=every_other(beams),
+    )
     cascada_beams = _family(
         beams,
         BEAM_CASCADE,
@@ -500,6 +596,7 @@ def generate_movement_families(
         (wash, WASH),
         (beam, BEAM),
         (beam_shapes, BEAM_ROTATED_SHAPES),
+        (beam_wide, BEAM_WIDE_SHAPES),
     ):
         if generated is None:
             continue
@@ -520,6 +617,35 @@ def generate_movement_families(
         )
         efx_ids.append(collection_id)
         play_pick_ids.append(collection_id)
+    # The twins the hand-built console had and this one only ran inside the
+    # automatic rotation: "faltan movimientos, unos iban a la vez otros iban
+    # alternados" (owner, 2026-09-22). One button per shape and per way of
+    # phasing it, each spanning both families like the plain shapes do.
+    for suffix, parts in (
+        ("Simultaneo", ((wash_sim, WASH), (beam_sim, BEAM_TWIN_SHAPES))),
+        ("Alternado", ((wash_alt, WASH_ALTERNATE), (beam_alt, BEAM_ALTERNATE))),
+    ):
+        twins: dict[str, list[int]] = {}
+        for generated, envelope in parts:
+            if generated is None:
+                continue
+            for shape, efx in zip(envelope.algorithms, generated.efx_ids):
+                twins.setdefault(shape, []).append(efx)
+        for shape in WASH.algorithms:
+            members = twins.get(shape)
+            if not members:
+                continue
+            collection_id = next_function_id(workspace.root)
+            workspace.add_function(
+                build_collection(
+                    collection_id,
+                    f"Movimiento {SPANISH_LABELS.get(shape, shape)} {suffix}",
+                    members,
+                    path="Movimiento",
+                )
+            )
+            efx_ids.append(collection_id)
+            play_pick_ids.append(collection_id)
     if ola_suave is not None:
         efx_ids.append(ola_suave.efx_ids[0])
     if cascada_beams is not None:

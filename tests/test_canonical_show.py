@@ -260,13 +260,15 @@ def test_only_a_pixel_group_gets_matrices_inside_the_wheel(built):
     assert {find_local(m, "FixtureGroup").text for m in matrices} == {pixel_group}
     # The step's scene and its matrix state the same colour, by name: the
     # solid steps their own, a contrast step the colour of the "resto". The
-    # multicolour steps are the exception that proves the clock: no single
-    # colour to agree on, so their matrix is the rainbow plasma (2026-08-28) -
-    # and the recovered "Rig 4 Colores" deals (same audit) are multicolour
-    # steps by nature, so they ride the same plasma.
+    # multicolour steps are the exception that proves the clock: there is no
+    # single colour for their matrix to agree on. Until 2026-09-22 they rode a
+    # rainbow plasma; the owner had that removed ("quitar multicolores muy
+    # feos"), so they now take one of the wheel's plain colour matrices - the
+    # pixel groups stay lit and simple while the rest of the rig is wild.
     for step, matrix in zip(steps, matrices, strict=True):
         if step.attrib["Name"].startswith(("Rig Multicolor", "Rig 4 Colores")):
-            assert "Plasma Rainbow (Rueda)" in matrix.attrib["Name"]
+            assert "Plasma Rainbow" not in matrix.attrib["Name"]
+            assert matrix.attrib["Name"].endswith("(Rueda)")
             continue
         colour = step.attrib["Name"].split(" + ")[0].split()[-1]
         assert f" {colour} (Rueda)" in matrix.attrib["Name"], step.attrib["Name"]

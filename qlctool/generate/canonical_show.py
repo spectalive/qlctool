@@ -29,7 +29,9 @@ from ..matrix_algorithms import CURATED_MATRICES
 from ..monitor_positions import house_right_fixture_ids
 from ..output_binding import pin_generic_output
 from ..palette import PALETTE, PRIMARY_COLORS
+from ..pastel_palette import PASTEL_PALETTE
 from ..shutter_open import shutter_open_pairs
+from ..simple_colors import SIMPLE_COLORS
 from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
 from ..strobe_speed import strobe_speed_pairs
@@ -38,6 +40,7 @@ from ..vc.dial_function import DialFunction
 from ..vc.speed_dial import MULTIPLIER_NONE
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
+from .beam_rainbow_spin import generate_beam_rainbow_spin
 from .beam_subsets import generate_beam_subsets
 from .beat_tempo import BeatTiming, apply_beat_tempo
 from .builtin_effects import generate_builtin_effects
@@ -60,7 +63,6 @@ from .matrix_effects import GeneratedMatrices, generate_matrix_effects
 from .moments import Moment, generate_moments
 from .movement_efx import moving_head_ids
 from .movement_families import generate_movement_families
-from .multicolor_matrices import generate_multicolor_matrices
 from .multicolor_scene import generate_multicolor_scenes
 from .panel_manual import generate_panel_manual
 from .panel_speed_auto import generate_panel_speed_auto
@@ -157,7 +159,6 @@ BEAT_TIMINGS: dict[str, BeatTiming] = {
     "Rapidos Washes": BeatTiming(hold=16),
     "Rapidos Beams": BeatTiming(hold=16),
     "Gobo Animacion": BeatTiming(hold=16),
-    "Color Beam Animacion": BeatTiming(hold=16),
     "Prisma Animacion": BeatTiming(hold=32),
     "Dimmer Chase": BeatTiming(hold=4),
     "Dimmer PingPong": BeatTiming(hold=2),
@@ -183,10 +184,13 @@ KEYS = {
     "Humo Vertical YA": "U",
     "Strobo Rapido": "F",
     "Strobo Medio": "T",
-    "Color Beam Animacion": "C",
     # JUGAR hooks retain the hand-built show's global shortcuts; picks and
     # duplicate reset-strip controls remain keyless.
     "Rueda Colores": "W",
+    # The other two automatic colour modes (2026-09-22). C is free again since
+    # the beams' own wheel walk lost its button.
+    "Rueda Simples": "C",
+    "Rueda Pastel": "L",
     "Rueda Mezcla": "E",
     "Movimientos Cabezas": "A",
     "Gobo Animacion": "G",
@@ -399,6 +403,11 @@ def build_canonical_show(
     # matrix comes out magenta, and a third source makes it white. One fixture,
     # one colour source.
     matrix_lit_ids: set[int] = set()
+    # The wheel-coloured fixtures' answer to a hue that travels, generated
+    # before the looks that need it: a matrix cycle and both rainbows run it
+    # beside themselves so the beams sweep colour with the room instead of
+    # holding one detent (`rule_colour_animation_wheel`, 2026-09-22).
+    beam_spin_id = generate_beam_rainbow_spin(workspace, caps)
     subset = {name: PALETTE[name] for name in matrix_colors}
     for group in fixture_groups(workspace.root):
         # A fixture with forty-two animations of its own does not need a
@@ -462,6 +471,19 @@ def build_canonical_show(
             pixel_group_ids,
             _wheel_colors(),
             CYCLE_ALGORITHMS,
+        )
+        if pixel_group_ids
+        else {}
+    )
+    # And the same for the pastel mode, whose colours are the same names with
+    # less of each: the pixel groups follow whichever wheel is running.
+    pastel_step_matrices = (
+        generate_pixel_wheel_matrices(
+            workspace,
+            pixel_group_ids,
+            {name: PASTEL_PALETTE[name] for name in _wheel_colors()},
+            CYCLE_ALGORITHMS,
+            tag="Rueda Pastel",
         )
         if pixel_group_ids
         else {}
@@ -535,9 +557,13 @@ def build_canonical_show(
         hold=6000,
         path="Color Beam",
         dimmer_full=False,
+        # No chaser of its own since 2026-09-22. A button that walked the beams
+        # through their wheel looked like an on/off and behaved like a colour
+        # pick ("el boton color beam parece un on of pero realmente cambia como
+        # la rueda", owner), and the beams already take the rig's colour from
+        # the rig-wide scenes. The wheel's positions stay, as picks on CONTROL.
+        make_chaser=False,
     )
-    if beam_colors.chaser_id is not None:
-        master["Color Beam Animacion"] = beam_colors.chaser_id
 
     # The prism spins while it is in: its rotation channel is LTP like the
     # wheel, so every prism scene owns it - slow forward when the prism is
@@ -647,34 +673,72 @@ def build_canonical_show(
         exclude_fixture_ids=sorted(matrix_lit_ids),
         program_gated_ids=program_gated,
     )
-    multicolor_matrix_ids = (
-        generate_multicolor_matrices(workspace, pixel_group_ids)
-        if pixel_group_ids and (multicolor_ids or quad_ids)
-        else []
-    )
+    # The wild steps: every fixture its own colour. The Plasma Rainbow matrices
+    # that used to slide a whole gradient across the bars beside them are gone -
+    # "quitar multicolores muy feos" (owner, 2026-09-22), and they were the one
+    # look that guaranteed a colour hit landing on a bar already mixed towards
+    # white. The pixel groups still need a colour while a wild step runs, since
+    # the scene excludes them (one fixture, one colour source), so each step
+    # takes the plain matrices of one palette colour, walked so consecutive
+    # steps differ.
     wild_scenes = [
         (scene_id, f"Rig Multicolor {n}") for n, scene_id in enumerate(multicolor_ids, start=1)
     ] + [(scene_id, f"Rig 4 Colores {n}") for n, scene_id in enumerate(quad_ids, start=1)]
-    multicolor_steps = [
-        _collection(
-            workspace,
-            f"{graph_name} + Pixeles",
-            [scene_id, *multicolor_matrix_ids],
+    wild_palette = list(step_matrices)
+    multicolor_steps = []
+    for index, (scene_id, step_name) in enumerate(wild_scenes):
+        extras = step_matrices[wild_palette[index % len(wild_palette)]] if wild_palette else []
+        multicolor_steps.append(
+            _collection(workspace, f"{step_name} + Pixeles", [scene_id, *extras])
+            if extras
+            else scene_id
         )
-        if multicolor_matrix_ids
-        else scene_id
-        for scene_id, graph_name in wild_scenes
-    ]
+    # Three automatic colour modes, one clock each and only one ever running:
+    # "modos auto deberia tener solo colores simples, colores completos,
+    # colores pastel tenues" (owner, 2026-09-22). AUTO starts the full one; the
+    # console's three buttons share a solo frame, so choosing one stops the
+    # others and the room keeps exactly one colour source.
+    excluded_from_wheel = sorted(matrix_lit_ids | set(builtins.fixture_ids))
     unison = generate_unison_colors(
         workspace,
         library,
-        exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
+        colors=tuple(PALETTE),
+        exclude_fixture_ids=excluded_from_wheel,
         step_extras=step_matrices,
         program_gated_ids=program_gated,
         extra_step_ids=multicolor_steps,
     )
     if unison.wheel_id is not None:
         master["Rueda Colores"] = unison.wheel_id
+    # The plain mode: the six primaries and white, one at a time, no contrasts
+    # and none of the wild multicolour steps.
+    simples = generate_unison_colors(
+        workspace,
+        library,
+        colors=SIMPLE_COLORS,
+        contrasts=(),
+        exclude_fixture_ids=excluded_from_wheel,
+        step_extras=step_matrices,
+        program_gated_ids=program_gated,
+        wheel_name="Rueda Simples",
+        scene_prefix="Rig Simple",
+    )
+    if simples.wheel_id is not None:
+        master["Rueda Simples"] = simples.wheel_id
+    pasteles = generate_unison_colors(
+        workspace,
+        library,
+        colors=tuple(PASTEL_PALETTE),
+        contrasts=(),
+        exclude_fixture_ids=excluded_from_wheel,
+        step_extras=pastel_step_matrices,
+        program_gated_ids=program_gated,
+        palette=PASTEL_PALETTE,
+        wheel_name="Rueda Pastel",
+        scene_prefix="Rig Pastel",
+    )
+    if pasteles.wheel_id is not None:
+        master["Rueda Pastel"] = pasteles.wheel_id
     master["Rueda Mezcla"] = _collection(
         workspace,
         "Rueda Mezcla",
@@ -684,10 +748,21 @@ def build_canonical_show(
     # own: console layers, like the group wheels - somebody starts them over
     # (instead of) the wheel, and stops them. AUTO never does.
     rainbows = generate_rainbow_efx(workspace, library)
-    if rainbows.simultaneo_id is not None:
-        master["Arcoiris Simultaneo"] = rainbows.simultaneo_id
-    if rainbows.pasos_id is not None:
-        master["Arcoiris Pasos"] = rainbows.pasos_id
+    rainbow_ids: list[int] = []
+    for name, function_id in (
+        ("Arcoiris Simultaneo", rainbows.simultaneo_id),
+        ("Arcoiris Pasos", rainbows.pasos_id),
+    ):
+        if function_id is None:
+            continue
+        # An EFX in RGB mode reaches no wheel, so the rainbow is the EFX plus
+        # the beams' own rainbow spin: one button, the whole rig sweeping.
+        master[name] = (
+            _collection(workspace, name, [function_id, beam_spin_id])
+            if beam_spin_id is not None
+            else function_id
+        )
+        rainbow_ids.append(master[name])
     # The night goes somewhere: the colour bed, the pixels and the haze run
     # underneath, and what sits on top is a level that changes every few
     # minutes. Everything a room reads as "peak" - fast movement, prism, the
@@ -853,8 +928,8 @@ def build_canonical_show(
     # energy cycle. Not the beams' colour wheel: it started after the colour
     # wheel and so won the beams' one colour channel, which is what kept them
     # off whatever the rest of the rig was doing. The rig-wide scenes set that
-    # wheel themselves now, and `Color Beam Animacion` stays as a button for
-    # somebody at the laptop.
+    # wheel themselves now, and the beams' own wheel walk is gone with its
+    # button (2026-09-22).
     auto_members = [master["Rueda Colores"], master["Humo Auto"], *pixel_layer]
     if "Ciclo Energia" in master:
         auto_members.append(master["Ciclo Energia"])
@@ -951,22 +1026,16 @@ def build_canonical_show(
     )
     master.update(moments)
 
-    color_step_ids: list[int] = []
-    if unison.wheel_id is not None:
-        wheel = next(
-            function
-            for function in findall_local(workspace.engine, "Function")
-            if function.attrib.get("ID") == str(unison.wheel_id)
-        )
-        color_step_ids = [int(step.text) for step in findall_local(wheel, "Step")]
+    # The hand picks are the wheel's plain colours, not every step it takes:
+    # the contrast looks and the wild multicolour steps belong to the automatic
+    # rotation, and picking one by hand is a look nobody asked for. With
+    # eighteen colours in the full mode since 2026-09-22, they are also what
+    # keeps the COLOR frame two rows tall (`rule_console` measures it).
+    color_step_ids = list(unison.solid_step_ids)
     play_wrappers = generate_play_wrappers(
         workspace,
         color_ids=color_step_ids,
-        rainbow_ids=[
-            function_id
-            for function_id in (rainbows.simultaneo_id, rainbows.pasos_id)
-            if function_id is not None
-        ],
+        rainbow_ids=rainbow_ids,
         panel_effect_ids=builtins.scene_ids,
         panel_manual_id=panel_manual_id,
         movement_ids=[
@@ -1122,7 +1191,9 @@ def _wheel_colors() -> dict[str, tuple[int, int, int]]:
     that is not a moving head - the pixel groups included - on its *rest*
     colour, so those are wheel colours too even when the primaries skip them.
     """
-    names = list(PRIMARY_COLORS)
+    # Every palette name since 2026-09-22: the full automatic mode runs all
+    # eighteen, so the pixel groups need a matrix for each of them.
+    names = list(PALETTE)
     names += [rest for _, rest in CONTRAST_PAIRS if rest not in names]
     return {name: PALETTE[name] for name in names}
 
@@ -1216,11 +1287,19 @@ def _tempo_functions(workspace, master, matrices) -> list[DialFunction]:
     """
     wanted = (
         "Rueda Colores",
+        "Rueda Simples",
+        "Rueda Pastel",
         "Rueda Mezcla",
         "Gobo Animacion",
-        "Color Beam Animacion",
         "Prisma Animacion",
         "Dimmer PingPong",
+        # The two intensity sweeps. Each is a Collection of one EFX per fixture
+        # family, so the dial has to reach the EFX inside: a Collection has no
+        # speed of its own and the sweeps kept their own pace whatever the room
+        # was doing ("los barridos de intensidad van a su bola", owner,
+        # 2026-09-22; `rule_untempoed_rhythm`).
+        "Dimmer Chase",
+        "Dimmer Chase 2",
     )
     by_id = {f.attrib.get("ID"): f for f in workspace.engine if f.tag.endswith("}Function")}
     functions: list[DialFunction] = []
@@ -1229,17 +1308,34 @@ def _tempo_functions(workspace, master, matrices) -> list[DialFunction]:
         element = by_id.get(str(function_id))
         if element is None:
             continue
-        speed = find_local(element, "Speed")
-        if speed is None:
-            continue  # a Collection has no speed of its own to re-time
-        duration = int(speed.attrib.get("Duration", 0))
-        functions.append(
-            DialFunction(
-                function_id=function_id,
-                duration=beat_multiplier(duration, TAP_BEAT_MS),
+        for timed in _timed_parts(element, by_id):
+            speed = find_local(timed, "Speed")
+            if speed is None:
+                continue
+            functions.append(
+                DialFunction(
+                    function_id=int(timed.attrib["ID"]),
+                    duration=beat_multiplier(int(speed.attrib.get("Duration", 0)), TAP_BEAT_MS),
+                )
             )
-        )
     return functions
+
+
+def _timed_parts(element, by_id) -> list:
+    """The functions under this one that carry a duration a dial can write.
+
+    A Chaser or an EFX answers for itself. A Collection has no speed of its own,
+    so what the dial re-times is each of its members - which is the only way to
+    tap a look built as "one EFX per fixture family".
+    """
+    if element.attrib.get("Type") != "Collection":
+        return [element]
+    parts = []
+    for step in findall_local(element, "Step"):
+        member = by_id.get((step.text or "").strip())
+        if member is not None and member.attrib.get("Type") in ("EFX", "Chaser"):
+            parts.append(member)
+    return parts
 
 
 def _flat_scene(
