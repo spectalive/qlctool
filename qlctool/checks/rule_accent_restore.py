@@ -22,6 +22,7 @@ from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .driven_channels import driven_channels
 from .finding import WARNING, Finding
+from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph
 from .unowned_instant import unowned_while_lit
 
@@ -36,6 +37,9 @@ def check_accent_restore(
     if console is None or not states:
         return []
     findings: list[Finding] = []
+    # One evaluator for the whole rule: its instant cache is what makes asking
+    # the same state about every strobe channel of every flash affordable.
+    evaluator = InstantEvaluator(graph, groups)
     for button in iter_local(console, "Button"):
         action = find_local(button, "Action")
         if action is None or (action.text or "").strip() != "Flash":
@@ -54,12 +58,19 @@ def check_accent_restore(
             scene,
             states,
             button.attrib.get("Caption", ""),
+            evaluator,
         )
     return findings
 
 
 def _orphaned(
-    graph: ShowGraph, groups, function_id: int, scene, states, caption: str
+    graph: ShowGraph,
+    groups,
+    function_id: int,
+    scene,
+    states,
+    caption: str,
+    evaluator: InstantEvaluator,
 ) -> list[Finding]:
     findings: list[Finding] = []
     for fixture_id, written in driven_channels(scene, graph.capabilities, {}).items():
@@ -81,6 +92,7 @@ def _orphaned(
                 fixture_id,
                 frozenset(touched),
                 tuple(dimmers),
+                evaluator=evaluator,
             )
         )
         if not orphan_states:

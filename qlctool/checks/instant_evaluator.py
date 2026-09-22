@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from .driven_channels import Driven, driven_channels
+from .driven_channels import Driven
 from .show_graph import ShowGraph, lit
 
 
@@ -21,7 +21,6 @@ class InstantEvaluator:
     def __init__(self, graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> None:
         self._graph = graph
         self._groups = groups
-        self._driven: dict[int, Driven] = {}
         self._states: dict[
             tuple[
                 int,
@@ -116,13 +115,7 @@ class InstantEvaluator:
         return states
 
     def _driven_channels(self, function_id: int) -> Driven:
-        cached = self._driven.get(function_id)
-        if cached is not None:
-            return cached
-        function = self._graph.functions[function_id]
-        driven = driven_channels(function, self._graph.capabilities, self._groups)
-        self._driven[function_id] = driven
-        return driven
+        return self._graph.driven(function_id, self._groups)
 
 
 def _concurrent(first: frozenset[_Instant], second: frozenset[_Instant]) -> frozenset[_Instant]:

@@ -41,6 +41,15 @@ class ShowGraph:
     # group id -> the (width, height) an RGBMatrix paints across. The grid, not
     # the head count: how long one pass of a script takes depends on it.
     grids: dict[int, tuple[int, int]] = field(default_factory=dict)
+    # What each leaf drives, parsed once. A show is immutable while it is
+    # checked, and the instant rules ask the same question of the same scene
+    # hundreds of thousands of times: without this, one pass of every rule
+    # re-parsed the FixtureVal text 620 951 times and took 11,5 s, which made
+    # the suite 19 minutes long (2026-09-22). Keyed by the groups the matrices
+    # are read against, because a matrix drives nothing outside its group.
+    driven_cache: dict[tuple[object, ...], Driven] = field(default_factory=dict, repr=False, compare=False)
+    # And what each function reaches, for the same reason (`reach`).
+    reach_cache: dict[tuple[object, ...], Driven] = field(default_factory=dict, repr=False, compare=False)
 
     def name(self, function_id: int) -> str:
         function = self.functions.get(function_id)
@@ -65,6 +74,16 @@ class ShowGraph:
             seen.add(current)
             stack.extend(self.members.get(current, ()))
         return seen
+
+    def driven(self, function_id: int, groups: dict[int, tuple[int, ...]]) -> Driven:
+        """Every channel one leaf drives, parsed once per graph."""
+        key = (function_id, tuple(sorted(groups.items())))
+        cached = self.driven_cache.get(key)
+        if cached is None:
+            function = self.functions[function_id]
+            cached = driven_channels(function, self.capabilities, groups)
+            self.driven_cache[key] = cached
+        return cached
 
     def collections(self, function_id: int) -> list[int]:
         """The Collections reachable from here - every point of simultaneity."""
@@ -114,7 +133,25 @@ def reach(
     channels HTP, so what the room sees from two sources on one channel is the
     louder of them. `None` - an effect driving a channel to a value nobody can
     predict - beats any number, since it may be anything at any moment.
+
+    Memoised on the graph, and handed out as a copy so a caller may write into
+    it: the rules ask this of the same functions some sixteen thousand times
+    per pass (2026-09-22).
     """
+    key = (function_id, kinds, tuple(sorted(groups.items())))
+    cached = graph.reach_cache.get(key)
+    if cached is None:
+        cached = _reach(graph, groups, function_id, kinds)
+        graph.reach_cache[key] = cached
+    return {fixture_id: dict(pairs) for fixture_id, pairs in cached.items()}
+
+
+def _reach(
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    function_id: int,
+    kinds: tuple[str, ...] | None,
+) -> Driven:
     merged: Driven = {}
     for member in graph.descendants(function_id):
         function = graph.functions.get(member)
@@ -122,7 +159,7 @@ def reach(
             continue
         if kinds is not None and function.attrib.get("Type") not in kinds:
             continue
-        for fixture_id, pairs in driven_channels(function, graph.capabilities, groups).items():
+        for fixture_id, pairs in graph.driven(member, groups).items():
             target = merged.setdefault(fixture_id, {})
             for offset, value in pairs.items():
                 target[offset] = _higher(target.get(offset, 0), value)
