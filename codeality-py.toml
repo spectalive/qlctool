@@ -1,4 +1,4 @@
-# baseline-py configuration - https://github.com/BusiRocket/baseline
+# codeality-py configuration - https://github.com/syntopica/codeality
 schema-version = 1
 source-roots = ["qlctool"]
 test-roots = ["tests"]
@@ -15,7 +15,9 @@ test-max-file-lines = 300
 # A role states what a file is. Prefer a role over a suppression: it explains
 # the file instead of silencing an alarm.
 [roles]
-data = []
+# Constant tables the show reads: a palette, a mode's colour list, the glyphs a
+# pick family marks its tiles with. They carry no unit by design.
+data = ["qlctool/pastel_palette.py", "qlctool/pick_marks.py", "qlctool/simple_colors.py"]
 registry = []
 entrypoint = []
 generated = []

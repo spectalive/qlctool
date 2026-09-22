@@ -16,19 +16,6 @@ wheels = [
 ]
 
 [[package]]
-name = "busirocket-baseline-py"
-version = "0.1.12"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-    { name = "tomlkit" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e2/df/8d8ba4f1b9cf5e704032332c1f9fc520fe53307a34dc62fb3080121b9814/busirocket_baseline_py-0.1.12.tar.gz", hash = "sha256:f548a0ccbb2a84449cfde29273101099c2a246dcc1f6f372e4d1dbe14b319fdd", size = 126696, upload-time = "2026-09-02T01:26:21.536Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/67/eabefc323cae3b363704a3c3076c5df125c141502b4d2d34489b02dfe382/busirocket_baseline_py-0.1.12-py3-none-any.whl", hash = "sha256:2571c982874a40f530009a7da4800a90f46187a43adf674cf8e9f4a4c1cbbdaa", size = 94016, upload-time = "2026-09-02T01:26:20.11Z" },
-]
-
-[[package]]
 name = "cachecontrol"
 version = "0.14.4"
 source = { registry = "https://pypi.org/simple" }
@@ -1030,7 +1017,6 @@ dev = [
 
 [package.dev-dependencies]
 quality = [
-    { name = "busirocket-baseline-py" },
     { name = "deptry" },
     { name = "lxml-stubs" },
     { name = "mypy" },
@@ -1038,6 +1024,7 @@ quality = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
+    { name = "syntopica-codeality-py" },
 ]
 
 [package.metadata]
@@ -1049,7 +1036,6 @@ provides-extras = ["dev"]
 
 [package.metadata.requires-dev]
 quality = [
-    { name = "busirocket-baseline-py", specifier = ">=0.1,<1" },
     { name = "deptry", specifier = ">=0.20,<1" },
     { name = "lxml-stubs", specifier = ">=0.5,<1" },
     { name = "mypy", specifier = ">=1.11,<2" },
@@ -1057,6 +1043,7 @@ quality = [
     { name = "pytest", specifier = ">=8,<10" },
     { name = "pytest-cov", specifier = ">=5,<8" },
     { name = "ruff", specifier = ">=0.15,<1" },
+    { name = "syntopica-codeality-py", specifier = ">=0.2,<1" },
 ]
 
 [[package]]
@@ -1131,6 +1118,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e8/c4/ba2f8066cceb6f23394729afe52f3bf7adec04bf9ed2c820b39e19299111/sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88", size = 30594, upload-time = "2021-05-16T22:03:42.897Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0", size = 29575, upload-time = "2021-05-16T22:03:41.177Z" },
+]
+
+[[package]]
+name = "syntopica-codeality-py"
+version = "0.2.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "tomlkit" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ce/d5/eb27286988b3e9e14f675260e4affbaf615f1924defd6e12dda182e02ea4/syntopica_codeality_py-0.2.2.tar.gz", hash = "sha256:d33244315847f134ad4c5b14f5eff517928ef1d426b9fa565da81c00420ded82", size = 127433, upload-time = "2026-09-17T02:26:17.572Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/56/0f/c853e3f017e02a65626af885ade593899b6125bf7c83c62ddbadabd5ff5c/syntopica_codeality_py-0.2.2-py3-none-any.whl", hash = "sha256:3e202cd84540676e4b3ce2fbf9bae08af8d56ba3141a3b94f44916d0243f6055", size = 94667, upload-time = "2026-09-17T02:26:16.226Z" },
 ]
 
 [[package]]
