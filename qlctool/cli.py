@@ -32,6 +32,7 @@ from .install_plan import install_plan
 from .library import FixtureLibrary
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .monitor_node import POINTS_OF_VIEW
+from .mvr.write_mvr import write_mvr
 from .patch_conflicts import patch_conflicts
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
@@ -441,6 +442,22 @@ def cmd_stage(args: argparse.Namespace) -> int:
     return _finish(out, args.validate)
 
 
+def cmd_mvr(args: argparse.Namespace) -> int:
+    src = Path(args.workspace)
+    out = Path(args.out) if args.out else src.with_suffix(".mvr")
+    gobos = Path(args.gobos) if args.gobos else src.parent / "Gobos"
+    export = write_mvr(Workspace.load(src), FixtureLibrary.load(), out, gobos)
+    print(
+        f"Wrote {export.path}: {len(export.fixtures)} fixtures placed, "
+        f"{len(export.gdtf_files)} GDTF fixture types inside."
+    )
+    for name in export.gdtf_files:
+        print(f"  {name}")
+    for name, why in export.skipped.items():
+        print(f"  skipped {name}: {why}")
+    return 0
+
+
 def cmd_validate(args: argparse.Namespace) -> int:
     result = validate_workspace(args.workspace)
     if result.ok:
@@ -784,6 +801,21 @@ def build_parser() -> argparse.ArgumentParser:
         "--validate", action="store_true", help="load the result in QLC+ and fail on any problem"
     )
     p_stage.set_defaults(func=cmd_stage)
+
+    p_mvr = sub.add_parser(
+        "mvr",
+        help="export the placed rig as an MVR package with a GDTF per definition, "
+        "for BlenderDMX or any GDTF visualiser",
+    )
+    p_mvr.add_argument("workspace")
+    p_mvr.add_argument("--out", help="output file (default: <workspace>.mvr next to it)")
+    p_mvr.add_argument(
+        "--gobos",
+        metavar="DIR",
+        help="folder holding the gobo images the definitions name "
+        "(default: Gobos/ next to the workspace)",
+    )
+    p_mvr.set_defaults(func=cmd_mvr)
 
     p_val = sub.add_parser("validate", help="load a workspace in headless QLC+ and report problems")
     p_val.add_argument("workspace")

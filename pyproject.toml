@@ -3,7 +3,7 @@ name = "qlctool"
 version = "0.1.0"
 description = "Programmatic editing of QLC+ workspaces (.qxw) for the Vibra lighting show"
 requires-python = ">=3.11"
-dependencies = ["lxml>=5"]
+dependencies = ["lxml>=5", "pygdtf>=1.4.5", "pymvr>=1.0.7"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-xdist>=3"]

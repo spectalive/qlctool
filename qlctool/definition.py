@@ -26,6 +26,11 @@ class Capability:
     # matters for the ranges a generator has to find on its own: which value
     # opens a mechanical shutter, above all.
     preset: str = ""
+    # `Res1` and `Res2`, verbatim: the colour a wheel slot shows (`#ff0000`),
+    # the image a gobo slot projects (`BEAM-230W-7R/Gobo1.png`), the two ends
+    # of a strobe range in hertz. A visualiser needs them; nothing else does.
+    resource: str = ""
+    resource2: str = ""
 
     @property
     def middle(self) -> int:
@@ -55,6 +60,24 @@ class Dimensions:
 
 
 @dataclass(frozen=True)
+class Optics:
+    """What the `<Physical>` block says about the light itself.
+
+    Read for the 3D export: a visualiser draws a beam by its angle and its
+    output, and points a moving head by how far its pan and tilt travel.
+    QLC+ stores degrees and lumens; zero means the definition does not say.
+    """
+
+    lumens: float
+    degrees_min: float
+    degrees_max: float
+    pan_max: float
+    tilt_max: float
+    # `<Layout>`: how the heads are arranged, columns x rows.
+    layout: tuple[int, int]
+
+
+@dataclass(frozen=True)
 class FixtureDefinition:
     manufacturer: str
     model: str
@@ -73,6 +96,7 @@ class FixtureDefinition:
     # ring, silently.
     heads: dict[str, tuple[tuple[int, ...], ...]] = field(default_factory=dict)
     dimensions: Dimensions | None = None
+    optics: Optics | None = None
 
     def mode_heads(self, mode: str) -> tuple[tuple[int, ...], ...]:
         """The channel offsets of each <Head> the mode declares."""
@@ -120,6 +144,8 @@ def load_definition(path: str | Path) -> FixtureDefinition:
                 maximum=int(cap.attrib["Max"]),
                 name=(cap.text or "").strip(),
                 preset=cap.attrib.get("Preset", ""),
+                resource=cap.attrib.get("Res1", ""),
+                resource2=cap.attrib.get("Res2", ""),
             )
             for cap in findall_local(ch, "Capability")
             if "Min" in cap.attrib and "Max" in cap.attrib
@@ -159,6 +185,7 @@ def load_definition(path: str | Path) -> FixtureDefinition:
         if size is not None
         else None
     )
+    optics = _optics(physical) if physical is not None else None
 
     return FixtureDefinition(
         manufacturer=manufacturer,
@@ -168,6 +195,22 @@ def load_definition(path: str | Path) -> FixtureDefinition:
         channels=channels,
         modes=modes,
         heads=heads,
+        optics=optics,
+    )
+
+
+def _optics(physical: etree._Element) -> Optics:
+    def attr(name: str, key: str, fallback: str = "0") -> float:
+        element = find_local(physical, name)
+        return float(element.attrib.get(key, fallback)) if element is not None else 0.0
+
+    return Optics(
+        lumens=attr("Bulb", "Lumens"),
+        degrees_min=attr("Lens", "DegreesMin"),
+        degrees_max=attr("Lens", "DegreesMax"),
+        pan_max=attr("Focus", "PanMax"),
+        tilt_max=attr("Focus", "TiltMax"),
+        layout=(int(attr("Layout", "Width", "1")) or 1, int(attr("Layout", "Height", "1")) or 1),
     )
 
 
