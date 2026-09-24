@@ -2,8 +2,8 @@
 
 The first source that names any folder wins: the command line, then the
 description's [rig] fixtures, then QLCTOOL_FIXTURES, then the nearest
-qlctool.toml found walking up from the workspace or the description, then
-from the current directory.
+qlctool.toml found walking up from the workspace (a description beside it
+shares that folder), then from the current directory.
 """
 
 import os

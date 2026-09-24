@@ -66,8 +66,9 @@ The first of these sources that names any folder wins:
 2. The description's `[rig] fixtures = ["dir", ...]`, relative to the
    description file.
 3. `QLCTOOL_FIXTURES`, folders separated by `:` (`;` on Windows).
-4. The nearest `qlctool.toml` found by walking up from the workspace or the
-   description, and failing that from the current directory.
+4. The nearest `qlctool.toml` found by walking up from the workspace (a
+   description beside it shares that folder), and failing that from the
+   current directory.
 
 Within one source the first folder wins a model clash, and every one of them
 beats the QLC+ system definitions bundled with the toolkit. A patched fixture
