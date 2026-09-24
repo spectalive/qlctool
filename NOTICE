@@ -1,0 +1,7 @@
+vibra-lighting
+Copyright 2024-2026 Cristian Deluxe
+
+This product includes software developed as part of Q Light Controller Plus
+(QLC+), https://github.com/mcallegari/qlcplus, licensed under the Apache
+License, Version 2.0: the fixture schema and the system fixture definitions
+vendored in tools/qlctool/qlctool/library/.
