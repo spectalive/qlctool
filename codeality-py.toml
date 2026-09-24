@@ -29,6 +29,11 @@ data = [
   "qlctool/simple_colors.py",
   "qlctool/split_pairs.py",
   "qlctool/wheel_palette.py",
+  "qlctool/vibra/timing.py",
+  "qlctool/vibra/tuning.py",
+  "qlctool/vibra/keys.py",
+  "qlctool/vibra/flash_functions.py",
+  "qlctool/vibra/console.py",
 ]
 registry = []
 entrypoint = []

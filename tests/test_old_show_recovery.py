@@ -12,8 +12,9 @@ from pathlib import Path
 
 import pytest
 
-from qlctool.generate.canonical_show import KEYS, build_canonical_show
+from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
+from qlctool.vibra.keys import KEYS
 from qlctool.wheel_palette import WHEEL_PALETTE
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname

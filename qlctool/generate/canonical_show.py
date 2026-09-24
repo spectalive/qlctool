@@ -15,6 +15,7 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
+from ..description.show_description import ShowDescription
 from ..exclude_fade import pin_wheel_fades
 from ..fixture_group import fixture_groups
 from ..fog_off import fog_off_pairs
@@ -25,7 +26,6 @@ from ..ids import next_function_id
 from ..input_binding import pin_midi_input
 from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
-from ..matrix_algorithms import CURATED_MATRICES
 from ..monitor_positions import house_right_fixture_ids
 from ..output_binding import pin_generic_output
 from ..palette import PALETTE, PRIMARY_COLORS
@@ -38,12 +38,13 @@ from ..strobe_speed import strobe_speed_pairs
 from ..vc.beat_multiplier import beat_multiplier
 from ..vc.dial_function import DialFunction
 from ..vc.speed_dial import MULTIPLIER_NONE
+from ..vibra.description import vibra_description
 from ..wheel_palette import WHEEL_PALETTE
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
 from .beam_rainbow_spin import generate_beam_rainbow_spin
 from .beam_subsets import generate_beam_subsets
-from .beat_tempo import BeatTiming, apply_beat_tempo
+from .beat_tempo import apply_beat_tempo
 from .builtin_effects import generate_builtin_effects
 from .color_banks import GeneratedBank, generate_color_banks
 from .color_flashes import generate_color_flashes
@@ -105,163 +106,6 @@ CYCLE_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Waves", None)
 # pass is the room lit up on their clock (owner, 2026-09-22; `rule_wheel_white`).
 MATRIX_COLORS = ("Rojo", "Verde", "Azul", "Ambar", "Magenta", "Cyan")
 
-# The light somebody is lit by when they speak: white, warmed off daylight so a
-# face does not read as a mortuary, and flat enough that nothing draws the eye.
-CHARLA_WHITE = (255, 214, 170)
-
-# Slow forward on the 7R prism rotation's 0-127 slow-to-fast run: the inserted
-# prism turns, which is what makes it read as a kaleidoscope and not a smudge.
-PRISM_SPIN_SLOW = 25
-# Where the beams' focus channel sits. Nothing wrote it until 2026-08-30, which
-# means it sat at DMX 0 - one end of the travel - for every gobo this rig has
-# ever projected: seventeen patterns thrown out of focus, which is most of why
-# "se echaba en falta mas variedad" (owner). Mid-travel is a starting point and
-# nothing more; the number that is *right* depends on the throw, so it is one
-# constant, it travels with the gobo scenes, and TODO.md carries the job of
-# reading it off the room.
-BEAM_FOCUS = 127
-
-# How long the night spends at each level, in milliseconds. A wave rather than a
-# ramp: the cycle comes down through the middle level instead of jumping from
-# peak to quiet. Peak is a burst, not a block - two continuous minutes of fast
-# movement and prism stopped reading as a peak at all (Codex review,
-# 2026-08-27: 20-45 s); the wave passes through it twice per cycle anyway.
-AMBIENT_HOLD = 4 * 60 * 1000
-PARTY_HOLD = 8 * 60 * 1000
-PEAK_HOLD = 40 * 1000
-# The descent from the peak: party pace, but the intensity moves - the running
-# chase, then the odd/even ping-pong - so the room reads "some on, some off"
-# instead of a flat wall of light ("a veces se apagan unos y se encienden
-# otros", owner, 2026-08-28).
-DYNAMIC_HOLD = 4 * 60 * 1000
-# Inside that level the two dimmer programmes take turns - serialized in one
-# chaser, because two of them at once are not an ownership handover: intensity
-# mixes HTP and the ping-pong's 255 half simply masks the chase.
-DYNAMIC_CHASE_HOLD = 30 * 1000
-DYNAMIC_PINGPONG_HOLD = 8 * 1000
-
-# The panels' night, in phases: their own forty-one programmes most of the
-# time, then a stretch in manual listening to the rig wheel's RGB - "estaría
-# bien usar rgb para que vaya con el resto de vez en cuando" (owner,
-# 2026-08-28). The wheel writes their colour on every step all night; this
-# cycle only decides whether they are listening.
-PANEL_EFFECTS_HOLD = 8 * 60 * 1000
-PANEL_MANUAL_HOLD = 4 * 60 * 1000
-
-# Beat-locked timings, in beats, for every generated show. Two bars of colour,
-# one bar of matrix, eight bars of one movement shape: the counts a chase is
-# actually written in. On the clock these ratios were fixed milliseconds and
-# the only way to re-time them live was a dial writing raw durations - which is
-# how tapping a 500 ms beat put every wheel on 500 ms flat ("se vuelven todos
-# los programas locos", owner, 2026-08-29). In Beats each layer keeps its own
-# count and one global BPM moves them all together.
-MATRIX_BEATS = BeatTiming(hold=4)
-# Where the internal clock starts. 120 is the middle of the room this show
-# plays, and the beat the tap dial's multipliers are figured against.
-DEFAULT_BPM = 120
-TAP_BEAT_MS = 60_000 // DEFAULT_BPM
-BEAT_TIMINGS: dict[str, BeatTiming] = {
-    "Rueda Colores": BeatTiming(hold=8, fade=1),
-    "Movimientos Suaves": BeatTiming(hold=64, fade=10),
-    # The 5 s crossfade between movement blocks (old Chaser 23, restored
-    # 2026-08-28) is 10 beats at the default 120 BPM.
-    "Movimientos Washes": BeatTiming(hold=32, fade=10),
-    "Movimientos Beams": BeatTiming(hold=32, fade=10),
-    "Rapidos Washes": BeatTiming(hold=16),
-    "Rapidos Beams": BeatTiming(hold=16),
-    "Gobo Animacion": BeatTiming(hold=16),
-    "Prisma Animacion": BeatTiming(hold=32),
-    "Dimmer Chase": BeatTiming(hold=4),
-    "Dimmer PingPong": BeatTiming(hold=2),
-}
-
-# The console the owner works with: one key each. The night-running looks keep
-# the letters the hand-built show had, so muscle memory carries over; the
-# moments - the states somebody takes the room into by hand - are on F1-F4,
-# which is a row of its own and cannot collide with a colour bank on 1-0.
-KEYS = {
-    # Page 1: the state the room is in, and the hits that ride on top of it.
-    "AUTO": "Q",
-    "Momento Charla": "F1",
-    "Momento Tranquilo": "F2",
-    "Momento Fiesta": "F3",
-    "Momento Locura": "F4",
-    "Blanco Total": "X",
-    "Todo Negro": "º",
-    "Flash 100%": "Space",
-    "Flash 50%": "-",
-    "Flash Color": ".",
-    "Humo ON": "H",
-    "Humo Vertical YA": "U",
-    "Strobo Rapido": "F",
-    "Strobo Medio": "T",
-    # JUGAR hooks retain the hand-built show's global shortcuts; picks and
-    # duplicate reset-strip controls remain keyless.
-    "Rueda Colores": "W",
-    # The other two automatic colour modes (2026-09-22). C is free again since
-    # the beams' own wheel walk lost its button.
-    "Rueda Simples": "C",
-    "Rueda Pastel": "L",
-    # The wild looks, on a wheel of their own since 2026-09-22 ("un modo
-    # multicolor solo por si acaso", owner). R was free.
-    "Rueda Multicolor": "R",
-    "Rueda Mezcla": "E",
-    "Movimientos Cabezas": "A",
-    "Gobo Animacion": "G",
-    "Prisma Animacion": "P",
-    "Arcoiris Simultaneo": "'",
-    "Arcoiris Pasos": "¡",
-    "Humo Auto": "J",
-    "Humo Vertical": "N",
-    # Live-only looks. The hand-built console has these on V/B/C/Z; C is
-    # already Color Beam here, so the sequence moves rather than clashes.
-    # M is NOT in this family: it was the hand-built console's tap-tempo key
-    # on every speed dial, and the owner's tapping hand remembers it - so the
-    # sequence sits on K and M goes back to the colour dial's tap
-    # (2026-08-29, "ajustar la velocidad con tap ... es algo que usamos
-    # bastante").
-    "Dimmer Chase": "V",
-    "Dimmer Chase 2": "B",
-    "Dimmer Secuencia": "K",
-    "Dimmer PingPong": "Z",
-    "Strobo ON": "S",
-    "Strobo OFF": "D",
-}
-# Held, not latched. The smoke burst is one of them on purpose: a pump on a
-# Toggle button is how a tank ends up empty when somebody walks away from it.
-# Holding it only *releases* because both pumps sit in the Intensity group,
-# which is the group QLC+ resets every cycle - see `Generic-LED-Spray-Fog.qxf`.
-FLASH_FUNCTIONS = (
-    "Flash 100%",
-    "Flash 50%",
-    "Flash Color",
-    "Humo ON",
-    "Humo Vertical YA",
-    "Golpe Graves",
-    # A strobe is a button somebody holds (the show's own rule), and since
-    # 2026-09-02 these two are shutter scenes rather than white/black chasers.
-    "Strobo Rapido",
-    "Strobo Medio",
-    # The stage aim: a latched aim under a moving state lasted one movement
-    # step; held with Override priority it lasts as long as the hand does.
-    "Escenario",
-)
-
-# Where the held flashes sit on every shutter's slow-to-fast run. The hand-built
-# show's `Flash 100%` strobed the rig near the top of each channel (CromoWash
-# 240 of 10-255, Vortex 250, panels 255) and its `Flash 50%` was the *same*
-# full white at roughly half the strobe speed (Vortex 220, panels 140, beams
-# 120) - not half the brightness. Space without the strobe is the regression
-# the owner caught at home on 2026-08-27: "esto no hace estrobo y antes lo
-# hacia". 0.85 was still a stroll next to those numbers - the owner clocked it
-# on the PARs on 2026-08-29, "el flash es entre 246-248, como lo tenemos ahora
-# es muy lento" - and 0.97 is that: 247 on the CLB2.4's 1-255, 248 on the
-# CromoWash's 10-255. Same night for the slow one: "el flash slow para los par
-# es unos 200, no lo que esta ahora" - 0.45 had it at 115, and 0.785 is the
-# 200 the owner asked for (CromoWash 202).
-FLASH_STROBE_FAST = 0.97
-FLASH_STROBE_SLOW = 0.785
-
 
 @dataclass(frozen=True)
 class CanonicalShow:
@@ -287,8 +131,11 @@ def build_canonical_show(
     plot_path: str | None = None,
     beats: bool = False,
     bpm_tap: bool = False,
+    description: ShowDescription | None = None,
 ) -> CanonicalShow:
     """Strip the workspace to its patch and generate a self-running show on it."""
+    described = description if description is not None else vibra_description()
+    beats = beats or described.timing.beats
     strip_to_skeleton(workspace)
     # Whatever machine the source file was saved on, the show binds to the
     # USB-DMX interface that is actually plugged in (docs/rig.md; the three
@@ -340,7 +187,7 @@ def build_canonical_show(
         "Flash 100%",
         (255, 255, 255),
         wheel_color="Blanco",
-        strobe=FLASH_STROBE_FAST,
+        strobe=described.tuning.strobe_fast,
     )
     master["Flash 50%"] = _flat_scene(
         workspace,
@@ -348,16 +195,18 @@ def build_canonical_show(
         "Flash 50%",
         (255, 255, 255),
         wheel_color="Blanco",
-        strobe=FLASH_STROBE_SLOW,
+        strobe=described.tuning.strobe_slow,
     )
     # And the third flash the old console had on `.`: the strobe over whatever
     # colour is already running - dimmer and shutter only, RGB untouched.
-    master["Flash Color"] = generate_flash_color(workspace, caps, fraction=FLASH_STROBE_FAST)
+    master["Flash Color"] = generate_flash_color(
+        workspace, caps, fraction=described.tuning.strobe_fast
+    )
     color_flashes = generate_color_flashes(
         workspace,
         caps,
         {name: PALETTE[name] for name in PRIMARY_COLORS},
-        FLASH_STROBE_FAST,
+        described.tuning.strobe_fast,
     )
     master.update({f"Golpe {name}": function_id for name, function_id in color_flashes.ids.items()})
     # The bass bar's hit. It was `Flash 100%` - but that scene now strobes,
@@ -387,7 +236,7 @@ def build_canonical_show(
             workspace,
             "Ciclo Paneles Mixto",
             [builtins.chaser_id, panel_manual_id],
-            holds=[PANEL_EFFECTS_HOLD, PANEL_MANUAL_HOLD],
+            holds=[described.timing.panel_effects_ms, described.timing.panel_manual_ms],
             path="Efectos Propios",
         )
         master["Ciclo Paneles Mixto"] = panel_cycle_id
@@ -436,7 +285,7 @@ def build_canonical_show(
             chaser_algorithms=CYCLE_ALGORITHMS,
             palette=subset,
             path=f"Matrices {group.name}",
-            curated=[c for c in CURATED_MATRICES if c.group_name == group.name],
+            curated=list(described.matrices.get(group.name, ())),
         )
         matrices.append(generated)
         if generated.chaser_id is not None and _is_pixel_group(caps, group.fixture_ids):
@@ -533,7 +382,7 @@ def build_canonical_show(
     shake = generate_gobo_shake(
         workspace,
         library,
-        companions=((roles.FOCUS, BEAM_FOCUS),),
+        companions=((roles.FOCUS, described.tuning.beam_focus),),
     )
     # Four heads, four different patterns, turning over together: the wheel's
     # own walk shows one shape at a time, and a room with four beams in it
@@ -541,7 +390,7 @@ def build_canonical_show(
     dealt = generate_dealt_gobo_scenes(
         workspace,
         library,
-        companions=((roles.GOBO_SHAKE, 0), (roles.FOCUS, BEAM_FOCUS)),
+        companions=((roles.GOBO_SHAKE, 0), (roles.FOCUS, described.tuning.beam_focus)),
     )
     gobos = generate_wheel_scenes(
         workspace,
@@ -550,7 +399,10 @@ def build_canonical_show(
         label="Gobo",
         path="Gobos",
         dimmer_full=False,
-        companions=((roles.GOBO_SHAKE, 0, 0), (roles.FOCUS, BEAM_FOCUS, BEAM_FOCUS)),
+        companions=(
+            (roles.GOBO_SHAKE, 0, 0),
+            (roles.FOCUS, described.tuning.beam_focus, described.tuning.beam_focus),
+        ),
         extra_step_ids=shake.scene_ids + dealt,
     )
     if gobos.chaser_id is not None:
@@ -593,7 +445,7 @@ def build_canonical_show(
         path="Prisma",
         dimmer_full=False,
         make_chaser=False,
-        companions=((roles.PRISM_ROTATION, PRISM_SPIN_SLOW, 0),),
+        companions=((roles.PRISM_ROTATION, described.tuning.prism_spin_slow, 0),),
     )
     # And the same prism turning fast, and turning the other way: one rotation
     # channel, three looks, none of which the show used before 2026-08-30.
@@ -604,6 +456,7 @@ def build_canonical_show(
         prisms.scene_ids,
         beam_subsets.prism_scene_ids,
         extra_step_ids=spins.scene_ids,
+        hold=described.timing.prism_step_ms,
     )
     if prism_animation_id is not None:
         master["Prisma Animacion"] = prism_animation_id
@@ -863,7 +716,7 @@ def build_canonical_show(
         workspace,
         "Dimmer Programas",
         [dimmers.chase2_id, dimmers.pingpong_id],
-        holds=[DYNAMIC_CHASE_HOLD, DYNAMIC_PINGPONG_HOLD],
+        holds=[described.timing.dynamic_chase_ms, described.timing.dynamic_pingpong_ms],
         path="Dimmers",
     )
     master["Dimmer Programas"] = dimmer_programs_id
@@ -891,7 +744,7 @@ def build_canonical_show(
                     )
                     if fid is not None
                 ],
-                AMBIENT_HOLD,
+                described.timing.ambient_ms,
             ),
             EnergyLevel(
                 "Nivel Fiesta",
@@ -911,7 +764,7 @@ def build_canonical_show(
                     )
                     if fid is not None
                 ],
-                PARTY_HOLD,
+                described.timing.party_ms,
             ),
             EnergyLevel(
                 "Nivel Peak",
@@ -926,7 +779,7 @@ def build_canonical_show(
                     )
                     if fid is not None
                 ],
-                PEAK_HOLD,
+                described.timing.peak_ms,
             ),
             # The way down from the peak: party movement, but the dimmers
             # belong to the serialized programmes - lights taking turns
@@ -944,7 +797,7 @@ def build_canonical_show(
                     )
                     if fid is not None
                 ],
-                DYNAMIC_HOLD,
+                described.timing.dynamic_ms,
             ),
         ],
         order=(
@@ -981,7 +834,7 @@ def build_canonical_show(
         workspace,
         caps,
         "Luz Charla Base",
-        CHARLA_WHITE,
+        described.tuning.talk_white,
         dimmer_full=False,
         exclude_effect_mode_fixture_ids=builtins.fixture_ids,
     )
@@ -1096,10 +949,10 @@ def build_canonical_show(
     set_beat_generator(
         workspace.root,
         "Audio" if beats else "Internal",
-        bpm=0 if beats else DEFAULT_BPM,
+        bpm=0 if beats else described.timing.bpm,
     )
-    tempo_functions = _tempo_functions(workspace, master, matrices)
-    movement_functions = _movement_tempo_functions(workspace)
+    tempo_functions = _tempo_functions(workspace, master, matrices, described.timing.beat_ms)
+    movement_functions = _movement_tempo_functions(workspace, described.timing.beat_ms)
 
     if beats or bpm_tap:
         # The PA-driven variant hands the pace to the audio beat instead. Only
@@ -1111,11 +964,15 @@ def build_canonical_show(
         present = {f.attrib.get("Name") for f in workspace.engine}
         timings = {
             name: timing
-            for name, timing in BEAT_TIMINGS.items()
+            for name, timing in described.timing.beat_timings.items()
             if name in present and _steps_are_scenes(workspace, name)
         }
         timings.update(
-            {name: MATRIX_BEATS for name in present if name and name.startswith("Ciclo Matrices")}
+            {
+                name: described.timing.matrix_beats
+                for name in present
+                if name and name.startswith("Ciclo Matrices")
+            }
         )
         apply_beat_tempo(workspace, timings)
 
@@ -1132,8 +989,8 @@ def build_canonical_show(
             prisms=prisms,
             mover_fixture_ids=moving_head_ids(workspace, library),
             builtins=builtins,
-            keys=KEYS,
-            flash_functions=FLASH_FUNCTIONS,
+            keys=dict(described.console.keys),
+            flash_functions=described.console.flash_functions,
             matrix_algorithms=[a for a in algorithms if a],
             beam_subsets=beam_subsets,
             tempo_functions=() if beats or bpm_tap else tempo_functions,
@@ -1141,6 +998,8 @@ def build_canonical_show(
             bpm_tap=bpm_tap,
             play_wrappers=play_wrappers,
             colour_flash_ids=color_flashes.ids,
+            canvas=described.console.canvas,
+            tempo_beat_ms=described.timing.beat_ms,
         )
         button_ids = console.button_ids
         button_ids.extend(generate_desk_bursts(workspace))
@@ -1176,7 +1035,6 @@ def _first(ids) -> int | None:
 # `generate_beam_subsets`'s fixed order ("1","2","3","4","1 y 3","2 y 4");
 # None means the whole-rig wheel scene (False=out, True=in).
 _PRISM_CHOREOGRAPHY: tuple[int | bool, ...] = (3, 5, 0, 1, True, 2, 4, False)
-PRISM_STEP_HOLD_MS = 8000
 
 
 def _prism_choreography(
@@ -1184,6 +1042,8 @@ def _prism_choreography(
     wheel_scene_ids: list[int],
     subset_scene_ids: list[int],
     extra_step_ids: list[int] | None = None,
+    *,
+    hold: int,
 ) -> int | None:
     """The old eight-step prism dance, or the plain out/in walk as fallback.
 
@@ -1211,7 +1071,7 @@ def _prism_choreography(
             function_id,
             "Prisma Animacion",
             steps,
-            hold=PRISM_STEP_HOLD_MS,
+            hold=hold,
             path="Prisma",
         )
     )
@@ -1261,7 +1121,7 @@ def _steps_are_scenes(workspace: Workspace, name: str) -> bool:
     )
 
 
-def _movement_tempo_functions(workspace) -> list[DialFunction]:
+def _movement_tempo_functions(workspace, beat_ms: int) -> list[DialFunction]:
     """(function, multipliers) for the movement dial - rotations and their EFX.
 
     Both halves, because they are one clock: the chaser says how long a shape
@@ -1294,8 +1154,8 @@ def _movement_tempo_functions(workspace) -> list[DialFunction]:
         fade = int(speed.attrib.get("FadeIn", 0))
         functions[int(chaser.attrib["ID"])] = DialFunction(
             function_id=int(chaser.attrib["ID"]),
-            duration=beat_multiplier(duration, TAP_BEAT_MS),
-            fade=beat_multiplier(fade, TAP_BEAT_MS) if fade else MULTIPLIER_NONE,
+            duration=beat_multiplier(duration, beat_ms),
+            fade=beat_multiplier(fade, beat_ms) if fade else MULTIPLIER_NONE,
         )
         for step in findall_local(chaser, "Step"):
             shape = by_id.get(step.text)
@@ -1307,12 +1167,12 @@ def _movement_tempo_functions(workspace) -> list[DialFunction]:
             shape_id = int(shape.attrib["ID"])
             functions[shape_id] = DialFunction(
                 function_id=shape_id,
-                duration=beat_multiplier(int(shape_speed.attrib.get("Duration", 0)), TAP_BEAT_MS),
+                duration=beat_multiplier(int(shape_speed.attrib.get("Duration", 0)), beat_ms),
             )
     return [functions[key] for key in sorted(functions)]
 
 
-def _tempo_functions(workspace, master, matrices) -> list[DialFunction]:
+def _tempo_functions(workspace, master, matrices, beat_ms: int) -> list[DialFunction]:
     """(function id, multiplier) for every layer the tap dial re-times.
 
     Movement is deliberately absent: a shape takes fifteen seconds and the
@@ -1351,7 +1211,7 @@ def _tempo_functions(workspace, master, matrices) -> list[DialFunction]:
             functions.append(
                 DialFunction(
                     function_id=int(timed.attrib["ID"]),
-                    duration=beat_multiplier(int(speed.attrib.get("Duration", 0)), TAP_BEAT_MS),
+                    duration=beat_multiplier(int(speed.attrib.get("Duration", 0)), beat_ms),
                 )
             )
     return functions

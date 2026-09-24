@@ -27,9 +27,10 @@ import pytest
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
-from qlctool.generate.canonical_show import BEAM_FOCUS, build_canonical_show
+from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.generate.smoke_auto import SMOKE_INTERVALS_MIN
 from qlctool.library import FixtureLibrary
+from qlctool.vibra.tuning import VIBRA_TUNING
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
@@ -151,7 +152,7 @@ def test_the_gobos_are_focused_and_the_four_beams_differ(built, library):
         focus = capability.offsets_for_role(roles.FOCUS)
         written = _values(plain, capability.fixture.fixture_id)
         assert focus, f"{capability.fixture.name} has no focus channel"
-        assert all(written.get(offset) == BEAM_FOCUS for offset in focus), (
+        assert all(written.get(offset) == VIBRA_TUNING.beam_focus for offset in focus), (
             "a gobo scene that states no focus is a gobo out of focus"
         )
 

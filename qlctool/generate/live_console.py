@@ -340,6 +340,8 @@ def generate_live_console(
     bpm_tap: bool = False,
     play_wrappers=None,
     colour_flash_ids: dict[str, int] | None = None,
+    canvas: tuple[int, int] = (CANVAS_WIDTH, CANVAS_HEIGHT),
+    tempo_beat_ms: int = TEMPO_BEAT_MS,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame."""
     root_frame = _root_frame(workspace.root)
@@ -461,6 +463,7 @@ def generate_live_console(
         console,
         tempo_functions,
         bpm_tap,
+        tempo_beat_ms,
     )
     if play_wrappers is not None:
         build_play_page(
@@ -492,6 +495,7 @@ def generate_live_console(
         beam_colors,
         mover_fixture_ids,
         movement_functions,
+        tempo_beat_ms,
     )
     _page_library(
         outer,
@@ -527,7 +531,7 @@ def generate_live_console(
     _on_page(triggers, PAGE_CONTROL)
     console.widget_ids.append(triggers_id)
 
-    _set_canvas(workspace.root)
+    _set_canvas(workspace.root, canvas)
     return console
 
 
@@ -541,6 +545,7 @@ def _page_show(
     console,
     tempo_functions,
     bpm_tap,
+    tempo_beat_ms,
 ) -> None:
     """Page 1: the state the room is in, the hits, and the panic button."""
     label(
@@ -723,7 +728,7 @@ def _page_show(
         RIGHT_WIDTH,
         120,
         functions=tempo_functions,
-        time_ms=TEMPO_BEAT_MS,
+        time_ms=tempo_beat_ms,
         tap_key=TEMPO_TAP_KEY,
         control_bpm=bpm_tap,
     )
@@ -756,6 +761,7 @@ def _page_control(
     beam_colors,
     mover_fixture_ids,
     movement_functions,
+    tempo_beat_ms,
 ) -> None:
     """Page 3: direct controls that remain useful beside the play families."""
     label(
@@ -978,7 +984,7 @@ def _page_control(
             124,
             150,
             functions=movement_functions,
-            time_ms=TEMPO_BEAT_MS,
+            time_ms=tempo_beat_ms,
             tap_key=TEMPO_TAP_KEY,
         )
         build_input_source(dial, SMC_PAD_BINDINGS["Vel. Movimiento"])
@@ -1402,7 +1408,7 @@ def _before(name: str, marker: str) -> str:
     return head if separator else name
 
 
-def _set_canvas(root: etree._Element) -> None:
+def _set_canvas(root: etree._Element, canvas: tuple[int, int]) -> None:
     console = find_local(root, "VirtualConsole")
     properties = find_local(console, "Properties")
     if properties is None:
@@ -1410,5 +1416,5 @@ def _set_canvas(root: etree._Element) -> None:
     size = find_local(properties, "Size")
     if size is None:
         return
-    size.set("Width", str(CANVAS_WIDTH))
-    size.set("Height", str(CANVAS_HEIGHT))
+    size.set("Width", str(canvas[0]))
+    size.set("Height", str(canvas[1]))

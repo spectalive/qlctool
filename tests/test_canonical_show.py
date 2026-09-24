@@ -14,10 +14,11 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.fixture import patched_fixtures
 from qlctool.fixture_group import fixture_groups
 from qlctool.fog_offsets import fog_offsets
-from qlctool.generate.canonical_show import KEYS, build_canonical_show
+from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.patch_conflicts import patch_conflicts
 from qlctool.validate import qlcplus_binary, validate_workspace
+from qlctool.vibra.keys import KEYS
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 

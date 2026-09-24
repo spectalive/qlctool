@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 from qlctool.control_glyph import glyph
-from qlctool.generate.canonical_show import KEYS, build_canonical_show
+from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.generate.live_console import (
     BIG_FONT,
     CANVAS_HEIGHT,
@@ -26,6 +26,7 @@ from qlctool.generate.live_console import (
 from qlctool.leading_glyph import leading_glyph
 from qlctool.library import FixtureLibrary
 from qlctool.palette import PRIMARY_COLORS
+from qlctool.vibra.keys import KEYS
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
@@ -741,8 +742,8 @@ def test_colour_hits_force_their_colour_over_the_running_state(console):
 
 def test_control_retains_every_direct_operator_contract(console):
     """2026-09-02: moving families to JUGAR must not empty the Control desk."""
-    from qlctool.generate.canonical_show import KEYS
     from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
+    from qlctool.vibra.keys import KEYS
 
     root, root_frame = console
     console_frame = _console_frame(root_frame)

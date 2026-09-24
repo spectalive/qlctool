@@ -9,12 +9,13 @@ from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.color_wheel_match import color_wheel_pairs
 from qlctool.fog_offsets import fog_offsets
-from qlctool.generate.canonical_show import FLASH_STROBE_FAST, build_canonical_show
+from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.rgbw_split import rgbw_split
 from qlctool.shutter_open import shutter_open_pairs
 from qlctool.strobe_speed import strobe_speed_pairs
+from qlctool.vibra.tuning import VIBRA_TUNING
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
@@ -303,6 +304,6 @@ def test_colour_hits_match_every_flash_100_fixture_and_strobe_write(built):
                 assert values[offset] == value
             for offset in capability.offsets_for_role(roles.DIMMER):
                 if offset not in dict(
-                    strobe_speed_pairs(capability, FLASH_STROBE_FAST)
+                    strobe_speed_pairs(capability, VIBRA_TUNING.strobe_fast)
                 ) and offset not in fog_offsets(capability):
                     assert values[offset] == 255
