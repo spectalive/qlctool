@@ -54,8 +54,35 @@ Commands never overwrite their input; they write a new file.
 | `check` | What the room will actually do: fixtures coloured but never lit, colour a fixture can only take on a wheel, two programmes writing one channel, and the console's own traps ([checks.md](checks.md)) |
 | | (rig-wide colour wheel, colour banks and mixes, matrices, movement mirrored side to side, gobos, beam colour, prism, smoke, dimmer chase and ping-pong, shutter and flash strobes, and the energy levels `AUTO` walks through - `--beats` puts the lot on the music's beat) |
 | `validate` | Load a workspace in headless QLC+ and report what it complains about |
-| `install` | Hand the installed QLC+ the repo's fixture definitions, input profile and gobo images; `--check` reports the copies that are stale or missing and exits 1, because QLC+ runs on copies and never says when they are behind |
+| `install` | Hand the installed QLC+ the configured fixture definitions, input profiles and gobo images; `--check` reports the copies that are stale or missing and exits 1, because QLC+ runs on copies and never says when they are behind |
 | `decompose` / `compose` | Split a workspace into one file per function and rebuild it - a git-diffable source of truth |
+
+## Where the toolkit finds your files
+
+The toolkit assumes nothing about where a rig keeps its fixture definitions.
+The first of these sources that names any folder wins:
+
+1. `qlctool --fixtures DIR`, repeatable, before the subcommand.
+2. The description's `[rig] fixtures = ["dir", ...]`, relative to the
+   description file.
+3. `QLCTOOL_FIXTURES`, folders separated by `:` (`;` on Windows).
+4. The nearest `qlctool.toml` found by walking up from the workspace, and
+   failing that from the current directory.
+
+Within one source the first folder wins a model clash, and every one of them
+beats the QLC+ system definitions bundled with the toolkit. A patched fixture
+with no definition is a warning on stderr naming the fixtures and the folders
+searched. `qlctool install` reads the same file for the input profiles and
+gobo images it copies. This repository's `qlctool.toml`:
+
+```toml
+# Where qlctool finds this repository's own files (spec step 6). Paths are
+# relative to this file. Overridden by `qlctool --fixtures`, a description's
+# [rig] fixtures, or QLCTOOL_FIXTURES, in that order.
+fixtures = ["QLC+ Fixtures"]
+input_profiles = ["QLC+ InputProfiles"]
+gobos = ["QLC+ Setups/Gobos"]
+```
 
 ## Design notes worth keeping
 

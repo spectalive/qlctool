@@ -1826,7 +1826,7 @@ def test_a_fixture_with_three_rings_and_one_head_is_caught(tmp_path):
             text = re.sub(r" *<Head>.*?</Head>\n", "", text, flags=re.S)
             assert "<Head>" not in text
         (tmp_path / qxf.name).write_text(text, encoding="utf-8")
-    headless = FixtureLibrary.load(tmp_path)
+    headless = FixtureLibrary.load([tmp_path])
 
     from lxml import etree
 
@@ -1877,7 +1877,7 @@ def test_three_empty_head_blocks_do_not_satisfy_the_rule(tmp_path):
             )
             assert text.count("<Head>") == 3
         (tmp_path / qxf.name).write_text(text, encoding="utf-8")
-    colourless = FixtureLibrary.load(tmp_path)
+    colourless = FixtureLibrary.load([tmp_path])
 
     workspace = _show()
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, colourless))

@@ -10,9 +10,12 @@ from pathlib import Path
 import pytest
 
 from qlctool.definition_schema import SCHEMA_PATH, definition_errors
-from qlctool.library import REPO_FIXTURES, SYSTEM_FIXTURES
+from qlctool.fixture_dirs import fixture_dirs
+from qlctool.library import SYSTEM_FIXTURES
 
-DEFINITIONS = sorted(REPO_FIXTURES.glob("*.qxf")) + sorted(SYSTEM_FIXTURES.glob("*.qxf"))
+DEFINITIONS = sorted(q for d in fixture_dirs() for q in d.glob("*.qxf")) + sorted(
+    SYSTEM_FIXTURES.glob("*.qxf")
+)
 
 
 def test_the_schema_is_vendored():

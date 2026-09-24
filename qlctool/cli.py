@@ -6,6 +6,7 @@ copy. Never overwrites the input - it always writes a new file.
 """
 
 import argparse
+from dataclasses import replace
 from pathlib import Path
 
 from .apply_install import apply_install
@@ -20,6 +21,7 @@ from .decompose import decompose_workspace
 from .description.described_files import described_files
 from .description.load_show_description import load_show_description
 from .efx_algorithms import EFX_ALGORITHMS
+from .fixture_dirs import fixture_dirs
 from .fixture_group import fixture_groups
 from .generate.canonical_show import build_canonical_show
 from .generate.channel_probe import generate_channel_probe
@@ -31,7 +33,7 @@ from .generate.stage_layout import DEFAULT_STAGE, generate_stage_layout
 from .generate.stage_plot_layout import apply_stage_plot
 from .generate.vc_layout import generate_vc_layout
 from .install_plan import install_plan
-from .library import FixtureLibrary
+from .library_for import library_for
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .monitor_node import POINTS_OF_VIEW
 from .mvr.write_mvr import write_mvr
@@ -50,8 +52,10 @@ from .repatch.group_sort import sort_group_by_stage
 from .repatch.remove import remove_fixture
 from .repatch.rename import rename_fixture
 from .stage_plot import load_stage_plot
+from .toolkit_config_from import toolkit_config_from
 from .validate import validate_workspace
 from .vibra.description import vibra_description
+from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
 
 
@@ -99,7 +103,8 @@ def _stage_size(spec: str | None) -> tuple[int, int, int]:
 
 def cmd_info(args: argparse.Namespace) -> int:
     ws = Workspace.load(args.workspace)
-    library = FixtureLibrary.load()
+    library = library_for(args.fixtures, Path(args.workspace))
+    warn_unresolved(ws.root, library)
     caps = capabilities_of(ws.root, library)
     print(f"{args.workspace}: {len(caps)} fixtures with resolved capabilities")
     for c in caps:
@@ -121,7 +126,7 @@ def cmd_palette(args: argparse.Namespace) -> int:
     out = Path(args.out) if args.out else _default_out(src)
 
     ws = Workspace.load(src)
-    library = FixtureLibrary.load()
+    library = library_for(args.fixtures, src)
     result = generate_color_palette(ws, library, make_chaser=not args.no_chaser)
     created = result.scene_ids + ([] if result.chaser_id is None else [result.chaser_id])
     _lay_out(ws, created, args.buttons)
@@ -174,7 +179,7 @@ def cmd_movement(args: argparse.Namespace) -> int:
     ws = Workspace.load(src)
     result = generate_movement_efx(
         ws,
-        FixtureLibrary.load(),
+        library_for(args.fixtures, src),
         algorithms=algorithms,
         propagation_mode=args.propagation,
         make_chaser=not args.no_chaser,
@@ -220,7 +225,7 @@ def cmd_patch(args: argparse.Namespace) -> int:
             print(f"  {conflict.describe()}")
         return 1
 
-    library = FixtureLibrary.load()
+    library = library_for(args.fixtures, src)
     for spec in args.add or []:
         parts = spec.split("|")
         if len(parts) not in (5, 6):
@@ -349,9 +354,11 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     auto_key = shown.console.keys.get("auto")
     auto_hint = f" (key {auto_key})" if auto_key else ""
 
+    library = library_for(args.fixtures, src, description.rig.fixtures if description else ())
+    warn_unresolved(ws.root, library)
     show = build_canonical_show(
         ws,
-        FixtureLibrary.load(),
+        library,
         with_layout=not args.no_buttons,
         plot_path=plot,
         beats=args.beats,
@@ -427,6 +434,8 @@ def cmd_stage(args: argparse.Namespace) -> int:
     out = Path(args.out) if args.out else _default_out(src)
 
     ws = Workspace.load(src)
+    library = library_for(args.fixtures, src)
+    warn_unresolved(ws.root, library)
     if args.plot:
         plot = apply_stage_plot(ws, load_stage_plot(args.plot, ws.root))
         ws.save(out)
@@ -438,7 +447,7 @@ def cmd_stage(args: argparse.Namespace) -> int:
         )
         # Where each beam ends up, because an angle that looks right in the
         # preview can still be putting the light on the DJ's face.
-        caps = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, FixtureLibrary.load())}
+        caps = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, library)}
         for item in sorted(plot.items, key=lambda i: i.fixture_id):
             if item.hidden or item.fixture_id not in caps:
                 continue
@@ -449,7 +458,7 @@ def cmd_stage(args: argparse.Namespace) -> int:
 
     stage = generate_stage_layout(
         ws,
-        FixtureLibrary.load(),
+        library,
         stage=_stage_size(args.stage),
         point_of_view=args.pov,
     )
@@ -469,7 +478,10 @@ def cmd_mvr(args: argparse.Namespace) -> int:
     src = Path(args.workspace)
     out = Path(args.out) if args.out else src.with_suffix(".mvr")
     gobos = Path(args.gobos) if args.gobos else src.parent / "Gobos"
-    export = write_mvr(Workspace.load(src), FixtureLibrary.load(), out, gobos)
+    ws = Workspace.load(src)
+    library = library_for(args.fixtures, src)
+    warn_unresolved(ws.root, library)
+    export = write_mvr(ws, library, out, gobos)
     print(
         f"Wrote {export.path}: {len(export.fixtures)} fixtures placed, "
         f"{len(export.gdtf_files)} GDTF fixture types inside."
@@ -495,7 +507,9 @@ def cmd_validate(args: argparse.Namespace) -> int:
 def cmd_check(args: argparse.Namespace) -> int:
     """Say what the room will do, which is not what QLC+ loading it says."""
     workspace = Workspace.load(args.workspace)
-    findings = check_workspace(workspace, FixtureLibrary.load())
+    library = library_for(args.fixtures, Path(args.workspace))
+    warn_unresolved(workspace.root, library)
+    findings = check_workspace(workspace, library)
     if not findings:
         print(
             f"{args.workspace}: {len(entry_points(workspace.root))} botones "
@@ -518,13 +532,19 @@ def cmd_check(args: argparse.Namespace) -> int:
 
 
 def cmd_install(args: argparse.Namespace) -> int:
-    """Hand QLC+ the repo's definitions, profile and gobos - or say what it lacks.
+    """Hand QLC+ the configured definitions, profile and gobos - or say what it lacks.
 
+    The fixture folders follow ruling B3 (`--fixtures`, QLCTOOL_FIXTURES, then
+    the nearest qlctool.toml); the profiles and gobos come from qlctool.toml.
     A definition the repo fixed and QLC+ never received is the silent failure
     this exists for: the show loads, validates and runs on last week's channel
     map. `--check` is the question, exit 1 is the answer.
     """
-    items = install_plan(user_dir=qlc_user_dir(), gobo_dir=qlc_gobo_dir())
+    config = toolkit_config_from(Path.cwd())
+    fixtures = fixture_dirs(args.fixtures or (), (), None, Path.cwd())
+    if fixtures:
+        config = replace(config, fixtures=fixtures)
+    items = install_plan(config, user_dir=qlc_user_dir(), gobo_dir=qlc_gobo_dir())
     behind = [item for item in items if item.needs_copy]
     if not args.check:
         for item in apply_install(behind):
@@ -538,7 +558,7 @@ def cmd_install(args: argparse.Namespace) -> int:
             f"QLC+ is behind the repo on {len(behind)} of {len(items)} file(s); run qlctool install"
         )
         return 1
-    print(f"QLC+ has every one of the repo's {len(items)} file(s)")
+    print(f"QLC+ has every one of the configured {len(items)} file(s)")
     return 0
 
 
@@ -565,6 +585,12 @@ def cmd_compose(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="qlctool", description=__doc__)
+    parser.add_argument(
+        "--fixtures",
+        action="append",
+        metavar="DIR",
+        help="a folder of .qxf definitions; repeat for more (default: qlctool.toml)",
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_info = sub.add_parser("info", help="list patched fixtures and their roles")
@@ -815,9 +841,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_stage.add_argument(
         "--plot",
         metavar="FILE",
-        help="a written stage plot to apply verbatim "
-        "(QLC+ Setups/vibra-stage-plot.json is the rig "
-        "we always build); without it the layout is "
+        help="a written stage plot to apply verbatim; without it the layout is "
         "generated from what each fixture can do",
     )
     p_stage.add_argument(
@@ -871,7 +895,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_inst = sub.add_parser(
         "install",
-        help="copy the repo's fixture definitions, input profile and gobos "
+        help="copy the configured fixture definitions, input profiles and gobos "
         "into the installed QLC+; --check only reports what it is missing",
     )
     p_inst.add_argument(

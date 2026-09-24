@@ -13,6 +13,7 @@ from pathlib import Path
 from qlctool.apply_install import apply_install
 from qlctool.install_item import MISSING, STALE, SYNCED
 from qlctool.install_plan import install_plan
+from qlctool.toolkit_config import ToolkitConfig
 
 REPO = Path(__file__).resolve().parents[3]
 
@@ -30,6 +31,14 @@ def _fake_repo(tmp_path: Path) -> Path:
     return repo
 
 
+def _config(repo: Path) -> ToolkitConfig:
+    return ToolkitConfig(
+        fixtures=(repo / "QLC+ Fixtures",),
+        input_profiles=(repo / "QLC+ InputProfiles",),
+        gobos=(repo / "QLC+ Setups" / "Gobos",),
+    )
+
+
 def test_plan_sees_missing_stale_and_synced(tmp_path: Path) -> None:
     repo = _fake_repo(tmp_path)
     user = tmp_path / "user"
@@ -38,7 +47,7 @@ def test_plan_sees_missing_stale_and_synced(tmp_path: Path) -> None:
     shutil.copy(repo / "QLC+ Fixtures" / "Vortex-PC-64-LED-S.qxf", user / "Fixtures")
     (user / "Fixtures" / "BEAM-LIGHT-230W-7R.qxf").write_text("<old/>")
 
-    plan = {item.source.name: item for item in install_plan(repo, user, gobos)}
+    plan = {item.source.name: item for item in install_plan(_config(repo), user, gobos)}
 
     assert plan["Vortex-PC-64-LED-S.qxf"].state == SYNCED
     assert plan["BEAM-LIGHT-230W-7R.qxf"].state == STALE
@@ -57,16 +66,19 @@ def test_apply_copies_only_what_is_behind_and_leaves_it_in_sync(tmp_path: Path) 
     (user / "Fixtures").mkdir(parents=True)
     shutil.copy(repo / "QLC+ Fixtures" / "Vortex-PC-64-LED-S.qxf", user / "Fixtures")
 
-    copied = apply_install(install_plan(repo, user, gobos))
+    copied = apply_install(install_plan(_config(repo), user, gobos))
 
     assert sorted(item.source.name for item in copied) == [
         "BEAM-LIGHT-230W-7R.qxf",
         "Gobo1.png",
         "M-VAVE-SMC-PAD.qxi",
     ]
-    assert all(item.state == SYNCED for item in install_plan(repo, user, gobos))
+    assert all(item.state == SYNCED for item in install_plan(_config(repo), user, gobos))
 
 
 def test_no_qlcplus_means_no_gobo_items(tmp_path: Path) -> None:
     repo = _fake_repo(tmp_path)
-    assert all(item.source.suffix != ".png" for item in install_plan(repo, tmp_path / "user", None))
+    assert all(
+        item.source.suffix != ".png"
+        for item in install_plan(_config(repo), tmp_path / "user", None)
+    )
