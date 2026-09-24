@@ -15,6 +15,7 @@ from .capabilities_of import capabilities_of
 from .checks.rule_desk_bursts import check_desk_bursts
 from .checks.show_graph import build_show_graph, group_fixtures
 from .desk_burst_buttons import desk_burst_buttons
+from .desk_burst_identifier import desk_burst_identifier
 from .desk_burst_note import desk_burst_note
 from .desk_policy import (
     BURST_MS,
@@ -31,6 +32,8 @@ from .desk_swatch import swatches
 from .desk_widgets import desk_widgets
 from .leading_glyph import leading_glyph
 from .library import FixtureLibrary
+from .names.default_names import default_names
+from .names.names import Names
 from .slug import slugify
 from .speed_multiplier import multiplier
 from .workspace import Workspace
@@ -41,24 +44,29 @@ GENERATOR = "qlctool deskmap"
 TARGET_QLC = "5.2.2"
 
 
-def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Path) -> dict:
+def build_deskmap(
+    workspace: Workspace, library: FixtureLibrary, path: str | Path, names: Names | None = None
+) -> dict:
+    vocabulary = default_names() if names is None else names
     root = workspace.root
     capabilities = capabilities_of(root, library)
     graph = build_show_graph(root, capabilities)
     groups = group_fixtures(root)
     widgets = desk_widgets(root)
     frames = {w.id: w for w in widgets if w.kind in ("Frame", "SoloFrame")}
-    burst_findings = check_desk_bursts(graph, root)
+    burst_findings = check_desk_bursts(graph, root, vocabulary)
     if burst_findings:
         raise ValueError("invalid desk bursts: " + "; ".join(f.message for f in burst_findings))
-    bursts = desk_burst_buttons(root)
+    bursts = desk_burst_buttons(root, vocabulary)
 
     controls: dict[str, dict] = {}
     sections: dict[tuple[str, str], list[str]] = {}
     section_solo: dict[tuple[str, str], int | None] = {}
     for widget in widgets:
         function_name = graph.name(widget.function) if widget.function is not None else None
-        placement = place(widget, frames, function_name, graph.kind(widget.function))
+        placement = place(
+            widget, frames, function_name, graph.kind(widget.function), names=vocabulary
+        )
         if placement is None:
             continue
         caption, detail = split_caption(widget.caption)
@@ -88,6 +96,7 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
         }
         if placement.role == "accent":
             burst = bursts[key][0]
+            identifier = desk_burst_identifier(widget.caption, vocabulary)
             controls[key].update(
                 {
                     "widget": burst.id,
@@ -95,7 +104,7 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
                     "functionType": "Chaser",
                     "action": "toggle",
                     "role": "burst",
-                    "burstMs": BURST_MS[key],
+                    "burstMs": BURST_MS[identifier],
                     "source": key,
                     "solo": burst.solo,
                     "key": burst.key,
@@ -103,7 +112,7 @@ def build_deskmap(workspace: Workspace, library: FixtureLibrary, path: str | Pat
                     "reason": "",
                 }
             )
-            note = desk_burst_note(key)
+            note = desk_burst_note(identifier)
             if note is not None:
                 controls[key]["burstNote"] = note
         where = (placement.page, placement.section)

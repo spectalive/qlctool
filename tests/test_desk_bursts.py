@@ -11,11 +11,13 @@ from qlctool.checks.rule_desk_bursts import check_desk_bursts
 from qlctool.checks.rule_held_column import check_held_column
 from qlctool.checks.show_graph import build_show_graph, group_fixtures
 from qlctool.desk_burst_buttons import desk_burst_buttons
+from qlctool.desk_burst_identifier import desk_burst_identifier
 from qlctool.desk_burst_sources import desk_burst_sources
 from qlctool.desk_policy import BURST_MS
 from qlctool.deskmap import build_deskmap
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
+from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 
@@ -36,7 +38,9 @@ def test_bursts_preserve_sources_and_validate_without_function_names(generated):
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     sources = desk_burst_sources(workspace.root)
     buttons = desk_burst_buttons(workspace.root)
-    assert sources.keys() == buttons.keys() == BURST_MS.keys()
+    assert sources.keys() == buttons.keys()
+    names = default_names()
+    assert {desk_burst_identifier(s.caption, names) for s in sources.values()} == BURST_MS.keys()
     for key, candidates in buttons.items():
         button = candidates[0]
         chaser = graph.functions[button.function]

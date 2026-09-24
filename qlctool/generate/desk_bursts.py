@@ -2,10 +2,12 @@
 
 from copy import deepcopy
 
+from ..desk_burst_duration import desk_burst_duration
 from ..desk_burst_sources import desk_burst_sources
-from ..desk_policy import BURST_FRAME, BURST_MS, split_caption
+from ..desk_policy import BURST_FRAME, split_caption
 from ..functions.chaser import build_chaser
 from ..ids import next_function_id
+from ..names.default_names import default_names
 from ..vc.button import build_button
 from ..vc.frame import build_frame
 from ..vc.label import build_label
@@ -47,8 +49,8 @@ def generate_desk_bursts(workspace: Workspace) -> list[int]:
     frame.set("Page", str(PAGE_CONTROL))
     button_ids = []
     for index, (key, source) in enumerate(sources.items()):
-        duration = BURST_MS[key]
-        if duration <= 0:
+        duration = desk_burst_duration(source, default_names())
+        if duration is None or duration <= 0:
             raise ValueError(f"burst duration must be positive: {key}")
         original = functions[source.function]
         if original.get("Type") != "Scene":

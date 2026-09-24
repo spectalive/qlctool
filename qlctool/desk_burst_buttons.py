@@ -2,15 +2,23 @@
 
 from lxml import etree
 
-from .desk_policy import BURST_FRAME
+from .desk_frame_identifier import desk_frame_identifier
 from .desk_widgets import DeskWidget, desk_widgets
+from .names.default_names import default_names
+from .names.names import Names
 from .slug import slugify
 
 
-def desk_burst_buttons(root: etree._Element) -> dict[str, list[DeskWidget]]:
+def desk_burst_buttons(
+    root: etree._Element, names: Names | None = None
+) -> dict[str, list[DeskWidget]]:
+    vocabulary = default_names() if names is None else names
     widgets = desk_widgets(root)
     frames = {
-        w.id for w in widgets if w.caption == BURST_FRAME and w.kind in ("Frame", "SoloFrame")
+        w.id
+        for w in widgets
+        if w.kind in ("Frame", "SoloFrame")
+        and desk_frame_identifier(w.caption, vocabulary) == "desk_bursts"
     }
     found: dict[str, list[DeskWidget]] = {}
     for widget in widgets:

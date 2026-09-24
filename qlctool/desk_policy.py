@@ -2,8 +2,8 @@
 
 The tablet does not mirror the Mac's console; it reorganises the same widgets
 by what the operator is thinking about. This is the one place that says how:
-the frames are found by the captions the generators themselves define, so a
-renamed frame breaks here, loudly, rather than silently dropping a page.
+frames are found by catalogue identifier (`qlctool/locales`), so a frame
+caption in any shipped language places the same.
 
 A Flash button is never an enabled desk control: the map replaces held
 accents with validated private bursts. Placement retains each source accent
@@ -13,39 +13,34 @@ so its caption, section and swatches survive the replacement.
 import re
 from dataclasses import dataclass
 
+from .desk_frame_identifier import desk_frame_identifier
 from .desk_widgets import DeskWidget
-from .generate.live_console import (
-    CHASES_FRAME,
-    HITS_FRAME,
-    ROOM_FRAME,
-    SMOKE_FRAME,
-    SMOKE_LIGHT_CAPTION,
-)
-from .generate.play_page import COLOR_HITS_FRAME, FAMILY_FRAMES, PICK_PREFIX
 from .leading_glyph import leading_glyph
+from .names.default_names import default_names
+from .names.names import Names
 
 HELD_REASON = "held on the Mac"
 
 BURST_FRAME = "Ráfagas del desk"
 # Provisional durations in milliseconds, tunable by the owner after a rig test.
 BURST_MS = {
-    "flash": 8000,
-    "flash-lento": 8000,
-    "flash-color": 8000,
-    "strobo": 4000,
-    "strobo-suave": 4000,
-    "humo-ya": 3000,
-    "humo-vert": 3000,
-    "rojo": 8000,
-    "verde": 8000,
-    "azul": 8000,
-    "ultravioleta": 8000,
-    "amarillo": 8000,
+    "hit_flash": 8000,
+    "hit_flash_slow": 8000,
+    "hit_flash_colour": 8000,
+    "hit_strobe": 4000,
+    "hit_strobe_soft": 4000,
+    "hit_smoke_now": 3000,
+    "hit_vertical_smoke_now": 3000,
+    "red": 8000,
+    "green": 8000,
+    "blue": 8000,
+    "ultraviolet": 8000,
+    "yellow": 8000,
     "cyan": 8000,
     "magenta": 8000,
-    "blanco": 8000,
-    "naranja": 8000,
-    "rosa": 8000,
+    "white": 8000,
+    "orange": 8000,
+    "pink": 8000,
 }
 
 PAGES = (
@@ -57,7 +52,13 @@ PAGES = (
     ("prism", "PRISMA"),
     ("control", "CONTROL"),
 )
-FAMILY_PAGES = dict(zip(FAMILY_FRAMES, ("color", "pixels", "heads", "gobos", "prism")))
+FAMILY_PAGES = {
+    "family_colour": "color",
+    "family_pixels": "pixels",
+    "family_heads": "heads",
+    "family_gobos": "gobos",
+    "family_prism": "prism",
+}
 # The order sections take on a page: what the operator reaches for first,
 # and the bounded hits last.
 SECTION_ORDER = ("state", "hooks", "picks", "haze", "chases", "haze-light", "accents")
@@ -106,33 +107,40 @@ def place(
     frames: dict[int, DeskWidget],
     function_name: str | None,
     function_kind: str = "",
+    names: Names | None = None,
 ) -> Placement | None:
     """Where a widget goes on the desk, or None when the desk does not show it."""
+    vocabulary = default_names() if names is None else names
     if widget.kind != "Button" or widget.function is None:
         return None
     held = widget.action == "Flash"
     if widget.action not in ("Toggle", "Flash"):
         return None
-    heads = [_head(frames[fid].caption) for fid in widget.frames if fid in frames]
-    if _head(ROOM_FRAME) in heads:
+    within = {
+        desk_frame_identifier(frames[fid].caption, vocabulary)
+        for fid in widget.frames
+        if fid in frames
+    }
+    if "room_states" in within:
         return Placement("live", "state", "state", True, "")
-    if _head(HITS_FRAME) in heads:
+    if "hits" in within:
         if held:
             return Placement("live", "accents", "accent", False, HELD_REASON)
         return Placement("live", "accents", "toggle", True, "")
-    if _head(SMOKE_FRAME) in heads:
+    if "haze" in within:
         return Placement("live", "haze", "haze", True, "")
-    if _head(COLOR_HITS_FRAME) in heads:
+    if "colour_hits" in within:
         return Placement("color", "accents", "accent", False, HELD_REASON)
     for family, page in FAMILY_PAGES.items():
-        if family in heads:
+        if family in within:
             if held:
                 return None
-            pick = (function_name or "").startswith(PICK_PREFIX)
+            prefixes = vocabulary.spellings("pick_prefix")
+            pick = any((function_name or "").startswith(prefix) for prefix in prefixes)
             return Placement(
                 page, "picks" if pick else "hooks", "pick" if pick else "hook", True, ""
             )
-    if _head(CHASES_FRAME) in heads:
+    if "intensity_chases" in within:
         # The dimmer chases are what the desk offers here; the fixture strobe
         # toggles beside them are Scenes and wait for a later phase.
         if held or function_kind not in ("Chaser", "Collection", "Sequence"):
@@ -140,7 +148,9 @@ def place(
         return Placement("control", "chases", "chase", True, "")
     # The console prefixes each master button with its glyph; the caption this
     # compares against is the one the generator names (2026-09-22).
-    if leading_glyph(widget.caption)[1] == SMOKE_LIGHT_CAPTION:
+    if vocabulary.lookup(leading_glyph(widget.caption)[1], ("captions",)) == (
+        "vertical_smoke_light",
+    ):
         return Placement("control", "haze-light", "toggle", True, "")
     return None
 
@@ -159,7 +169,3 @@ def split_caption(caption: str) -> tuple[str, str]:
         # name and its second half rather than one long line.
         head, sep, detail = text.partition(" / ")
     return head.strip(), detail.strip() if sep else ""
-
-
-def _head(caption: str) -> str:
-    return caption.split(" — ", maxsplit=1)[0].strip()
