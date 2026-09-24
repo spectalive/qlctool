@@ -5,6 +5,7 @@ not run", and `qlctool check` still runs every check that applies, found
 through the `qlctool.rules` entry points.
 """
 
+import re
 from dataclasses import replace
 from pathlib import Path
 
@@ -81,3 +82,37 @@ def test_an_unknown_pad_is_refused(library):
     description = replace(vibra_description(), controllers=ControllerSettings(midi_pad="launchpad"))
     with pytest.raises(ValueError, match="smc-pad"):
         build_canonical_show(Workspace.load(SHOW), library, description=description)
+
+
+@pytest.fixture
+def fresh_registry(monkeypatch):
+    """A registry read afresh, and the real one restored after the test."""
+    import qlctool.checks.rule_providers as module
+
+    rule_providers.cache_clear()
+    yield module
+    monkeypatch.undo()
+    rule_providers.cache_clear()
+
+
+def test_a_stale_install_fails_loudly(fresh_registry, monkeypatch):
+    """Ruling R10 (Plan A Task 7, 2026-09-24): a checkout pulled without `pip install -e`
+    must not skip the desk and pad checks in silence - that looks like a clean desk."""
+    monkeypatch.setattr(fresh_registry, "installed_entry_points", lambda group: [])
+    with pytest.raises(RuntimeError, match=re.escape(".venv/bin/pip install -e '.[dev]'")):
+        rule_providers()
+
+
+def test_an_entry_point_that_is_not_a_provider_is_refused(fresh_registry, monkeypatch):
+    """Ruling R10 (Plan A Task 7, 2026-09-24): a registered object must be a RuleProvider."""
+
+    class NotAProvider:
+        name = "bogus"
+        value = "somewhere:THING"
+
+        def load(self):
+            return object()
+
+    monkeypatch.setattr(fresh_registry, "installed_entry_points", lambda group: [NotAProvider()])
+    with pytest.raises(TypeError, match="bogus"):
+        rule_providers()

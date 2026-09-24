@@ -452,8 +452,9 @@ def generate_live_console(
         previous_page_key=PAGE_PREVIOUS_KEY,
         font=TITLE_FONT,
     )
-    # The SMC-PAD's arrow buttons page the console: a frame's Next Page is
-    # external control 0 and Previous Page is 1 (qmlui vcframe.h).
+    # When a pad profile is given, its arrow buttons page the console: a
+    # frame's Next Page is external control 0 and Previous Page is 1 (qmlui
+    # vcframe.h). Without a pad, nothing is bound.
     bind_pad(outer, pad_bindings, "Pagina Siguiente")
     bind_pad(outer, pad_bindings, "Pagina Anterior", source_id=1)
 
