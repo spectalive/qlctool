@@ -29,7 +29,7 @@ makes "Ambiente and Fiesta at the same time" - two energy levels stacked on one
 rig, which is what turned the room white - impossible to press.
 """
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
 from lxml import etree
@@ -342,8 +342,10 @@ def generate_live_console(
     colour_flash_ids: dict[str, int] | None = None,
     canvas: tuple[int, int] = (CANVAS_WIDTH, CANVAS_HEIGHT),
     tempo_beat_ms: int = TEMPO_BEAT_MS,
+    palette: Mapping[str, tuple[int, int, int]] | None = None,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame."""
+    colours = PALETTE if palette is None else palette
     root_frame = _root_frame(workspace.root)
     names = _function_names(workspace)
     ids = _Ids(workspace.root)
@@ -481,6 +483,7 @@ def generate_live_console(
             TITLE_FONT,
             BIG_FONT,
             SMALL_FONT,
+            palette=colours,
         )
     _page_control(
         outer,
@@ -496,6 +499,7 @@ def generate_live_console(
         mover_fixture_ids,
         movement_functions,
         tempo_beat_ms,
+        colours,
     )
     _page_library(
         outer,
@@ -511,6 +515,7 @@ def generate_live_console(
         builtins,
         matrix_algorithms,
         beam_subsets,
+        colours,
     )
 
     # Last, because a band presses a button and needs its widget ID.
@@ -762,6 +767,7 @@ def _page_control(
     mover_fixture_ids,
     movement_functions,
     tempo_beat_ms,
+    palette: Mapping[str, tuple[int, int, int]],
 ) -> None:
     """Page 3: direct controls that remain useful beside the play families."""
     label(
@@ -822,8 +828,8 @@ def _page_control(
                 action=FLASH,
                 flash_override=True,
                 flash_force_ltp=True,
-                background=_swatch(name),
-                foreground=_swatch(name, second=True) if split else DEFAULT,
+                background=_swatch(name, palette),
+                foreground=_swatch(name, palette, second=True) if split else DEFAULT,
                 font=TINY_FONT if split else SMALL_FONT,
             )
         y += bank_pitch
@@ -1017,6 +1023,7 @@ def _page_library(
     builtins,
     matrix_algorithms,
     beam_subsets,
+    palette: Mapping[str, tuple[int, int, int]],
 ) -> None:
     """Page 4: the material the show is built from, not buttons for a set."""
     label(
@@ -1072,8 +1079,8 @@ def _page_library(
                     action=FLASH,
                     flash_override=True,
                     flash_force_ltp=True,
-                    background=_swatch(name),
-                    foreground=_swatch(name, second=True),
+                    background=_swatch(name, palette),
+                    foreground=_swatch(name, palette, second=True),
                     font=TINY_FONT,
                 ),
                 page,
@@ -1363,13 +1370,13 @@ def _first(ids):
     return ids[0] if ids else None
 
 
-def _swatch(name: str, second: bool = False) -> str:
+def _swatch(name: str, palette: Mapping[str, tuple[int, int, int]], second: bool = False) -> str:
     """The ARGB of the palette colour a scene is named after, or Default."""
     parts = [p.strip() for p in name.split(" / ")]
     text = parts[1] if second and len(parts) > 1 else parts[0]
-    for color_name in sorted(PALETTE, key=len, reverse=True):
+    for color_name in sorted(palette, key=len, reverse=True):
         if text == color_name or text.startswith(f"{color_name} "):
-            return str(argb_from_rgb(PALETTE[color_name]))
+            return str(argb_from_rgb(palette[color_name]))
     return DEFAULT
 
 

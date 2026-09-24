@@ -6,7 +6,7 @@ that matrix of combinations by hand is the single biggest time sink in QLC+, so
 this does the whole cross-product in one call, optionally chained into a chaser.
 """
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
 from ..argb import RGB
@@ -41,6 +41,7 @@ def generate_matrix_effects(
     chaser_max_hold: int = 8000,
     chaser_algorithms: Sequence[str | None] | None = None,
     curated: Sequence[CuratedScript] = (),
+    curated_palette: Mapping[str, RGB] | None = None,
 ) -> GeneratedMatrices:
     """Create one RGBMatrix per (algorithm, colour) for one fixture group.
 
@@ -97,13 +98,14 @@ def generate_matrix_effects(
             if algorithm in stepped:
                 steps.append((fid, max(chaser_hold, pass_ms)))
 
+    curated_colors = PALETTE if curated_palette is None else curated_palette
     for entry in curated:
         fid, pass_ms = _add_matrix(
             workspace,
             f"{group_name} - {entry.algorithm} {'/'.join(entry.colors)}",
             entry.algorithm,
-            PALETTE[entry.colors[0]],
-            PALETTE[entry.colors[1]] if len(entry.colors) > 1 else None,
+            curated_colors[entry.colors[0]],
+            curated_colors[entry.colors[1]] if len(entry.colors) > 1 else None,
             group_id,
             color_format,
             direction,

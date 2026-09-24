@@ -4,6 +4,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 
 from ..matrix_algorithms import CuratedScript
+from .colour_settings import ColourSettings
 from .console_settings import ConsoleSettings
 from .fixture_tuning import FixtureTuning
 from .show_timing import ShowTiming
@@ -17,6 +18,7 @@ class ShowDescription:
     that group's cycle steps them; a group the patch lacks is simply unused.
     """
 
+    colours: ColourSettings
     matrices: Mapping[str, tuple[CuratedScript, ...]]
     timing: ShowTiming
     tuning: FixtureTuning

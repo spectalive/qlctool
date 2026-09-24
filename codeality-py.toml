@@ -34,6 +34,8 @@ data = [
   "qlctool/vibra/keys.py",
   "qlctool/vibra/flash_functions.py",
   "qlctool/vibra/console.py",
+  "qlctool/vibra/matrix_colors.py",
+  "qlctool/vibra/colours.py",
 ]
 registry = []
 entrypoint = []

@@ -7,9 +7,10 @@ when nobody is at the console. This generates that shape: one scene per colour
 per group, the two-colour splits, and a wheel for each.
 """
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
+from ..argb import RGB
 from ..capabilities_of import capabilities_of
 from ..fixture_group import DefinedFixtureGroup, fixture_groups
 from ..functions.chaser import build_chaser
@@ -47,10 +48,15 @@ def generate_color_banks(
     hold: int = 1500,
     fade: int = 400,
     exclude_effect_mode_fixture_ids: Sequence[int] = (),
+    palette: Mapping[str, RGB] | None = None,
+    wheel_palette: Mapping[str, RGB] | None = None,
+    key_split_pairs: Sequence[tuple[str, str]] = KEY_SPLIT_PAIRS,
 ) -> list[GeneratedBank]:
     """One colour bank plus wheels per fixture group that can do colour."""
     caps = capabilities_of(workspace.root, library)
     banks: list[GeneratedBank] = []
+    values_of = PALETTE if palette is None else palette
+    wheel_of = WHEEL_PALETTE if wheel_palette is None else wheel_palette
 
     for group in fixture_groups(workspace.root):
         bank = _bank_for_group(
@@ -62,6 +68,9 @@ def generate_color_banks(
             hold,
             fade,
             exclude_effect_mode_fixture_ids,
+            values_of,
+            wheel_of,
+            key_split_pairs,
         )
         if bank is not None:
             banks.append(bank)
@@ -77,6 +86,9 @@ def _bank_for_group(
     hold: int,
     fade: int,
     exclude_effect_mode_fixture_ids: Sequence[int],
+    values_of: Mapping[str, RGB],
+    wheel_of: Mapping[str, RGB],
+    key_split_pairs: Sequence[tuple[str, str]],
 ) -> GeneratedBank | None:
     path = f"Colores {group.name}"
     scene_ids: list[int] = []
@@ -90,7 +102,7 @@ def _bank_for_group(
         # more HTP bid and one more thing a released hand left behind.
         values = color_scene_values(
             caps,
-            PALETTE[name],
+            values_of[name],
             fixture_ids=group.fixture_ids,
             dimmer_full=False,
             exclude_effect_mode_fixture_ids=exclude_effect_mode_fixture_ids,
@@ -104,7 +116,7 @@ def _bank_for_group(
         function_id = next_function_id(workspace.root)
         workspace.add_function(build_scene(function_id, f"{name} {group.name}", values, path=path))
         scene_ids.append(function_id)
-        if name in WHEEL_PALETTE:
+        if name in wheel_of:
             wheel_scene_ids.append(function_id)
 
     split_ids: list[int] = []
@@ -112,8 +124,8 @@ def _bank_for_group(
     for first, second in split_pairs:
         values = split_color_scene_values(
             caps,
-            PALETTE[first],
-            PALETTE[second],
+            values_of[first],
+            values_of[second],
             fixture_ids=group.fixture_ids,
             color_names=(first, second),
             dimmer_full=False,
@@ -135,9 +147,9 @@ def _bank_for_group(
 
     # Keys 1-8 stay the first solids; 9 and 0 are the old blue/red pair. A
     # group whose splits never built (single fixture) keeps plain solids.
-    key_splits = [split_of[pair] for pair in KEY_SPLIT_PAIRS if pair in split_of]
-    if len(key_splits) == len(KEY_SPLIT_PAIRS):
-        key_ids = scene_ids[: len(colors) - len(KEY_SPLIT_PAIRS)] + key_splits
+    key_splits = [split_of[pair] for pair in key_split_pairs if pair in split_of]
+    if len(key_splits) == len(key_split_pairs):
+        key_ids = scene_ids[: len(colors) - len(key_split_pairs)] + key_splits
     else:
         key_ids = list(scene_ids)
 

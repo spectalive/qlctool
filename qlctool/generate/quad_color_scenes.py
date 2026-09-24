@@ -13,9 +13,10 @@ Colour only, no intensity: like every wheel step since 2026-08-27, the energy
 levels own the dimmers.
 """
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
 from .. import roles
+from ..argb import RGB
 from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -37,8 +38,10 @@ def generate_quad_color_scenes(
     exclude_fixture_ids: Sequence[int] = (),
     program_gated_ids: Sequence[int] = (),
     path: str = "Colores Rig",
+    palette: Mapping[str, RGB] | None = None,
 ) -> list[int]:
     """One scene per rotation of the four-colour deal; [] when nothing colours."""
+    values_of = PALETTE if palette is None else palette
     caps = capabilities_of(workspace.root, library)
     excluded = set(exclude_fixture_ids)
     gated = set(program_gated_ids)
@@ -69,7 +72,7 @@ def generate_quad_color_scenes(
             values.update(
                 color_scene_values(
                     caps,
-                    PALETTE[name],
+                    values_of[name],
                     fixture_ids=[fixture_id],
                     dimmer_full=False,
                     internal_program_off=fixture_id not in gated,

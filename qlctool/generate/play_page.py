@@ -59,6 +59,7 @@ def build_play_page(
     title_font: str,
     big_font: str,
     small_font: str,
+    palette: Mapping[str, tuple[int, int, int]] | None = None,
 ) -> None:
     """Append page two; only its picks and reset-strip duplicates stay keyless."""
     ids_by_name = {name: function_id for function_id, name in names.items()}
@@ -93,6 +94,7 @@ def build_play_page(
         page,
         title_font,
         small_font,
+        PALETTE if palette is None else palette,
     )
     _build_color_family(
         outer,
@@ -224,6 +226,7 @@ def _build_colour_hits(
     page,
     title_font,
     small_font,
+    palette: Mapping[str, tuple[int, int, int]],
 ) -> None:
     hits = frame(
         outer,
@@ -237,7 +240,7 @@ def _build_colour_hits(
     )
     pitch = (_WIDTH - 2 * _GAP) // max(len(colour_flash_ids), 1)
     for index, (colour_name, function_id) in enumerate(colour_flash_ids.items()):
-        colour = PALETTE[colour_name]
+        colour = palette[colour_name]
         button(
             hits,
             function_id,

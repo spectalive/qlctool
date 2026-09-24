@@ -9,13 +9,17 @@ Random wheels, mixed two-colour looks, gobo and prism animations, movement, and
 smoke on a timer.
 """
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
 from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
+from ..description.contrast_pairs_of import contrast_pairs_of
+from ..description.pastel_palette_of import pastel_palette_of
 from ..description.show_description import ShowDescription
+from ..description.split_pairs_of import split_pairs_of
+from ..description.wheel_palette_of import wheel_palette_of
 from ..exclude_fade import pin_wheel_fades
 from ..fixture_group import fixture_groups
 from ..fog_off import fog_off_pairs
@@ -28,10 +32,7 @@ from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..monitor_positions import house_right_fixture_ids
 from ..output_binding import pin_generic_output
-from ..palette import PALETTE, PRIMARY_COLORS
-from ..pastel_palette import PASTEL_PALETTE
 from ..shutter_open import shutter_open_pairs
-from ..simple_colors import SIMPLE_COLORS
 from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
 from ..strobe_speed import strobe_speed_pairs
@@ -39,7 +40,6 @@ from ..vc.beat_multiplier import beat_multiplier
 from ..vc.dial_function import DialFunction
 from ..vc.speed_dial import MULTIPLIER_NONE
 from ..vibra.description import vibra_description
-from ..wheel_palette import WHEEL_PALETTE
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
 from .beam_rainbow_spin import generate_beam_rainbow_spin
@@ -82,13 +82,12 @@ from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .stage_plot_layout import apply_stage_plot
 from .strobe_effects import generate_strobe_effects
 from .unison_colors import (
-    CONTRAST_PAIRS,
+    PATH as UNISON_PATH,
+)
+from .unison_colors import (
     WHEEL_FADE,
     WHEEL_HOLD,
     generate_unison_colors,
-)
-from .unison_colors import (
-    PATH as UNISON_PATH,
 )
 from .vertical_smoke_burst import generate_vertical_smoke_burst
 from .vertical_smoke_light import generate_vertical_smoke_light
@@ -102,9 +101,6 @@ MATRIX_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Strobe", "Wave
 # somebody holds, not one look in a rotation that loops all night. On the bars
 # it was a third of the reason the pixels read as "off half the time".
 CYCLE_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Waves", None)
-# No white: the per-group matrix cycles rotate by themselves, and a white
-# pass is the room lit up on their clock (owner, 2026-09-22; `rule_wheel_white`).
-MATRIX_COLORS = ("Rojo", "Verde", "Azul", "Ambar", "Magenta", "Cyan")
 
 
 @dataclass(frozen=True)
@@ -126,7 +122,7 @@ def build_canonical_show(
     workspace: Workspace,
     library: FixtureLibrary,
     algorithms: Sequence[str | None] = MATRIX_ALGORITHMS,
-    matrix_colors: Sequence[str] = MATRIX_COLORS,
+    matrix_colors: Sequence[str] | None = None,
     with_layout: bool = True,
     plot_path: str | None = None,
     beats: bool = False,
@@ -135,6 +131,10 @@ def build_canonical_show(
 ) -> CanonicalShow:
     """Strip the workspace to its patch and generate a self-running show on it."""
     described = description if description is not None else vibra_description()
+    colours = described.colours
+    wheel = wheel_palette_of(colours)
+    pastels = pastel_palette_of(colours)
+    contrasts = contrast_pairs_of(colours)
     beats = beats or described.timing.beats
     strip_to_skeleton(workspace)
     # Whatever machine the source file was saved on, the show binds to the
@@ -205,7 +205,7 @@ def build_canonical_show(
     color_flashes = generate_color_flashes(
         workspace,
         caps,
-        {name: PALETTE[name] for name in PRIMARY_COLORS},
+        {name: colours.palette[name] for name in colours.primary},
         described.tuning.strobe_fast,
     )
     master.update({f"Golpe {name}": function_id for name, function_id in color_flashes.ids.items()})
@@ -223,6 +223,11 @@ def build_canonical_show(
         workspace,
         library,
         exclude_effect_mode_fixture_ids=builtins.fixture_ids,
+        colors=colours.primary,
+        split_pairs=split_pairs_of(colours),
+        palette=colours.palette,
+        wheel_palette=wheel,
+        key_split_pairs=colours.key_split_pairs,
     )
     if builtins.chaser_id is not None:
         master["Efectos Paneles"] = builtins.chaser_id
@@ -271,7 +276,10 @@ def build_canonical_show(
     # beside themselves so the beams sweep colour with the room instead of
     # holding one detent (`rule_colour_animation_wheel`, 2026-09-22).
     beam_spin_id = generate_beam_rainbow_spin(workspace, caps)
-    subset = {name: PALETTE[name] for name in matrix_colors}
+    subset = {
+        name: colours.palette[name]
+        for name in (colours.matrix_colors if matrix_colors is None else matrix_colors)
+    }
     for group in fixture_groups(workspace.root):
         # A fixture with forty-two animations of its own does not need a
         # four-cell chase drawn over it, and could not show one anyway: in its
@@ -286,6 +294,7 @@ def build_canonical_show(
             palette=subset,
             path=f"Matrices {group.name}",
             curated=list(described.matrices.get(group.name, ())),
+            curated_palette=colours.palette,
         )
         matrices.append(generated)
         if generated.chaser_id is not None and _is_pixel_group(caps, group.fixture_ids):
@@ -332,7 +341,7 @@ def build_canonical_show(
         generate_pixel_wheel_matrices(
             workspace,
             pixel_group_ids,
-            _wheel_colors(),
+            _wheel_colors(wheel, contrasts),
             CYCLE_ALGORITHMS,
         )
         if pixel_group_ids
@@ -344,7 +353,7 @@ def build_canonical_show(
         generate_pixel_wheel_matrices(
             workspace,
             pixel_group_ids,
-            {name: PASTEL_PALETTE[name] for name in _wheel_colors()},
+            {name: pastels[name] for name in _wheel_colors(wheel, contrasts)},
             CYCLE_ALGORITHMS,
             tag="Rueda Pastel",
         )
@@ -530,7 +539,7 @@ def build_canonical_show(
     multicolor_ids = generate_multicolor_scenes(
         workspace,
         library,
-        colors=list(_wheel_colors().items()),
+        colors=list(_wheel_colors(wheel, contrasts).items()),
         exclude_fixture_ids=sorted(matrix_lit_ids),
         program_gated_ids=program_gated,
     )
@@ -541,6 +550,7 @@ def build_canonical_show(
         library,
         exclude_fixture_ids=sorted(matrix_lit_ids),
         program_gated_ids=program_gated,
+        palette=colours.palette,
     )
     # The wild steps: every fixture its own colour. The Plasma Rainbow matrices
     # that used to slide a whole gradient across the bars beside them are gone -
@@ -575,10 +585,12 @@ def build_canonical_show(
     unison = generate_unison_colors(
         workspace,
         library,
-        colors=tuple(WHEEL_PALETTE),
+        colors=tuple(wheel),
         exclude_fixture_ids=excluded_from_wheel,
         step_extras=step_matrices,
         program_gated_ids=program_gated,
+        contrasts=contrasts,
+        palette=dict(colours.palette),
     )
     if unison.wheel_id is not None:
         master["Rueda Colores"] = unison.wheel_id
@@ -602,25 +614,26 @@ def build_canonical_show(
     simples = generate_unison_colors(
         workspace,
         library,
-        colors=SIMPLE_COLORS,
+        colors=colours.simple,
         contrasts=(),
         exclude_fixture_ids=excluded_from_wheel,
         step_extras=step_matrices,
         program_gated_ids=program_gated,
         wheel_name="Rueda Simples",
         scene_prefix="Rig Simple",
+        palette=dict(colours.palette),
     )
     if simples.wheel_id is not None:
         master["Rueda Simples"] = simples.wheel_id
     pasteles = generate_unison_colors(
         workspace,
         library,
-        colors=tuple(PASTEL_PALETTE),
+        colors=tuple(pastels),
         contrasts=(),
         exclude_fixture_ids=excluded_from_wheel,
         step_extras=pastel_step_matrices,
         program_gated_ids=program_gated,
-        palette=PASTEL_PALETTE,
+        palette=pastels,
         wheel_name="Rueda Pastel",
         scene_prefix="Rig Pastel",
     )
@@ -1000,6 +1013,7 @@ def build_canonical_show(
             colour_flash_ids=color_flashes.ids,
             canvas=described.console.canvas,
             tempo_beat_ms=described.timing.beat_ms,
+            palette=colours.palette,
         )
         button_ids = console.button_ids
         button_ids.extend(generate_desk_bursts(workspace))
@@ -1078,7 +1092,9 @@ def _prism_choreography(
     return function_id
 
 
-def _wheel_colors() -> dict[str, tuple[int, int, int]]:
+def _wheel_colors(
+    wheel: Mapping[str, tuple[int, int, int]], contrasts: Sequence[tuple[str, str]]
+) -> dict[str, tuple[int, int, int]]:
     """Every colour a wheel step can put the room on, in wheel order.
 
     The solid steps use the primary palette; a contrast step puts everything
@@ -1088,9 +1104,9 @@ def _wheel_colors() -> dict[str, tuple[int, int, int]]:
     # Every wheel colour since 2026-09-22: the full automatic mode runs all
     # seventeen, so the pixel groups need a matrix for each of them. Never
     # white - no rotation steps it (`wheel_palette`).
-    names = list(WHEEL_PALETTE)
-    names += [rest for _, rest in CONTRAST_PAIRS if rest not in names]
-    return {name: WHEEL_PALETTE[name] for name in names}
+    names = list(wheel)
+    names += [rest for _, rest in contrasts if rest not in names]
+    return {name: wheel[name] for name in names}
 
 
 def _is_pixel_group(caps, fixture_ids) -> bool:
