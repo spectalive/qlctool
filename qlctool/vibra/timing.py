@@ -4,6 +4,8 @@ from ..description.show_timing import ShowTiming
 from ..generate.beat_tempo import BeatTiming
 
 VIBRA_TIMING = ShowTiming(
+    # Where the internal clock starts. 120 is the middle of the room this show
+    # plays, and the beat the tap dial's multipliers are figured against.
     bpm=120,
     # How long the night spends at each level, in milliseconds. A wave rather
     # than a ramp: the cycle comes down through the middle level instead of
@@ -40,8 +42,6 @@ VIBRA_TIMING = ShowTiming(
     # 500 ms flat ("se vuelven todos los programas locos", owner,
     # 2026-08-29). In Beats each layer keeps its own count and one global BPM
     # moves them all together.
-    # Where the internal clock starts. 120 is the middle of the room this show
-    # plays, and the beat the tap dial's multipliers are figured against.
     beat_timings={
         "Rueda Colores": BeatTiming(hold=8, fade=1),
         "Movimientos Suaves": BeatTiming(hold=64, fade=10),
