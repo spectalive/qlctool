@@ -23,3 +23,8 @@ def test_the_baseline_is_what_the_repository_ships():
 
 def test_the_three_vibra_workspaces_regenerate_byte_for_byte(tmp_path):
     assert regenerate_vibra(tmp_path) == {name: entry["sha256"] for name, entry in BASELINE.items()}
+
+
+def test_the_three_vibra_descriptions_regenerate_byte_for_byte(tmp_path):
+    hashes = regenerate_vibra(tmp_path, use_descriptions=True)
+    assert hashes == {name: entry["sha256"] for name, entry in BASELINE.items()}

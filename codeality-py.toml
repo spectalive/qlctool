@@ -37,6 +37,8 @@ data = [
   "qlctool/vibra/matrix_colors.py",
   "qlctool/vibra/colours.py",
   "qlctool/vibra/controllers.py",
+  "qlctool/description/reading/description_sections.py",
+  "qlctool/description/reading/duration_tables.py",
 ]
 registry = []
 entrypoint = []

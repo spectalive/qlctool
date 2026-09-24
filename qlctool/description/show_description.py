@@ -8,6 +8,7 @@ from .colour_settings import ColourSettings
 from .console_settings import ConsoleSettings
 from .controller_settings import ControllerSettings
 from .fixture_tuning import FixtureTuning
+from .rig_files import RigFiles
 from .show_timing import ShowTiming
 
 
@@ -28,3 +29,6 @@ class ShowDescription:
     # language -> identifier -> the show's own word for it ([names.<lang>]).
     names: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
     controllers: ControllerSettings = field(default_factory=ControllerSettings)
+    name: str = ""
+    # The files a description names in [rig]; empty for a show built in code.
+    rig: RigFiles = field(default_factory=RigFiles)

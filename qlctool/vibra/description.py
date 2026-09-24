@@ -21,5 +21,6 @@ def vibra_description() -> ShowDescription:
         tuning=VIBRA_TUNING,
         console=VIBRA_CONSOLE,
         controllers=VIBRA_CONTROLLERS,
+        name="Vibra",
     )
     return identify_description(spoken, default_names())

@@ -98,6 +98,11 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
   --plot "../../QLC+ Setups/vibra-stage-plot.json" \
   --out "../../QLC+ Setups/Vibra-beats.qxw" --validate
 
+# ...or from a show description: the patch stays in QLC+, the .toml says the
+# rest (palette, matrices, timing, console, controllers). Names may be written
+# in any shipped language: red, Red and rojo are the same colour.
+.venv/bin/qlctool newshow --description "../../QLC+ Setups/vibra.toml" --validate
+
 # find out what each DMX channel of an undocumented fixture does, on site
 .venv/bin/qlctool probe "../../QLC+ Setups/DeluxeEventos2.qxw" 25 --base "1=255" --buttons
 
@@ -125,6 +130,25 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
 Engine's child order. Edit or add fragment files, then `compose` to rebuild.
 `decompose -> compose` is a verified lossless round trip.
 
+A show description (`QLC+ Setups/vibra.toml` is the worked example) falls back
+to Vibra's values for anything it leaves out, except `[controllers]`: leaving
+that out means no MIDI pad and no tablet desk. What a stated key replaces:
+
+- **Scalars merge key by key.** `[timing] bpm`, `beats`, `prism_step_s`,
+  `matrix_beats`, every `[fixture_tuning]` key (and `strobe.fast` /
+  `strobe.slow` on their own), `[console] canvas`, and `[palette] white` each
+  replace just that value; the rest of the section keeps its default.
+- **Named tables and lists replace whole.** `[palette.colors]`, `primary`,
+  `simple`, `matrix_colors`, the three pair lists, `[console.keys]`,
+  `flash_functions`, `[timing.beat_timings]` and `[groups]` (every group's
+  matrices at once) are the whole thing when stated: a key in
+  `[console.keys]` binds only the functions it lists. The duration tables
+  `levels`, `dynamic` and `panels` are stated whole too, so each must give
+  all its keys.
+- **One name, one row.** A table naming the same thing twice, even in two
+  languages (`red` and `Rojo` in `[palette.colors]`), is refused with both
+  spellings, the file and the section.
+
 ## Layout
 
 - `workspace.py`, `xmlsemantics.py`, `xmlutil.py` - load/save + the round-trip net
@@ -142,6 +166,7 @@ Engine's child order. Edit or add fragment files, then `compose` to rebuild.
 - `generate/` - the mass generators (colour scene, colour palette, matrix
   effects, movement EFX, Virtual Console layout, channel probe)
 - `palette.py`, `ids.py`, `cli.py` - palette data, ID allocation, command line
+- description/, names/, locales/, vibra/, controllers/ - the show description, its name catalogues, Vibra's values, and the optional controller profiles with their rule providers
 - `library/system/` - QLC+ system fixture defs the patch needs, bundled from the Mac
 
 ## Fixture library note

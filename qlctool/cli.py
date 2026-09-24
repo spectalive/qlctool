@@ -17,6 +17,8 @@ from .cmd_deskmap import add_deskmap_parser
 from .compose import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
+from .description.description_workspace import description_workspace
+from .description.load_show_description import load_show_description
 from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_group import fixture_groups
 from .generate.canonical_show import build_canonical_show
@@ -49,6 +51,7 @@ from .repatch.remove import remove_fixture
 from .repatch.rename import rename_fixture
 from .stage_plot import load_stage_plot
 from .validate import validate_workspace
+from .vibra.description import vibra_description
 from .workspace import Workspace
 
 
@@ -324,17 +327,36 @@ def cmd_patch(args: argparse.Namespace) -> int:
 
 
 def cmd_newshow(args: argparse.Namespace) -> int:
-    src = Path(args.workspace)
-    out = Path(args.out) if args.out else src.with_name("Vibra.qxw")
+    if args.workspace is None and args.description is None:
+        raise SystemExit("newshow needs a workspace or --description")
+    try:
+        src = Path(args.workspace) if args.workspace else description_workspace(args.description)
+        ws = Workspace.load(src)
+        description = load_show_description(args.description, ws.root) if args.description else None
+    except (ValueError, OSError) as error:
+        # A mistake in the file the user wrote, or a patch it names that is not
+        # there: say what and where, no traceback.
+        raise SystemExit(str(error)) from error
+    if args.out:
+        out = Path(args.out)
+    elif description is not None:
+        out = description.rig.output or src
+    else:
+        out = src.with_name("Vibra.qxw")
+    plot = args.plot
+    if plot is None and description is not None and description.rig.stage_plot is not None:
+        plot = str(description.rig.stage_plot)
+    shown = description or vibra_description()
+    beats = args.beats or shown.timing.beats
 
-    ws = Workspace.load(src)
     show = build_canonical_show(
         ws,
         FixtureLibrary.load(),
         with_layout=not args.no_buttons,
-        plot_path=args.plot,
+        plot_path=plot,
         beats=args.beats,
         bpm_tap=args.bpm_tap,
+        description=description,
     )
     ws.save(out)
 
@@ -345,11 +367,12 @@ def cmd_newshow(args: argparse.Namespace) -> int:
         f"{len(show.matrix_ids)} matrices, {len(show.efx_ids)} movement EFX, "
         f"{len(show.gobo_ids)} gobos, {len(show.prism_ids)} prism, plus "
         f"dimmer chase, ping-pong and strobes), "
-        f"{len(show.button_ids)} console buttons on one 1440x900 screen, "
+        f"{len(show.button_ids)} console buttons on one "
+        f"{shown.console.canvas[0]}x{shown.console.canvas[1]} screen, "
         f"{show.stage_placed} fixtures placed in the 2D/3D view. "
         f"Press AUTO (key Q)."
     )
-    if args.beats:
+    if beats:
         print(
             "Chases are on Beats tempo and the beat generator is the audio "
             "input: pick one under QLC+ Configuration, or nothing advances."
@@ -707,7 +730,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="build a fresh show on an existing patch: strip the functions, "
         "generate palette + matrices + movement + console",
     )
-    p_new.add_argument("workspace", help="the show to take the patch from")
+    p_new.add_argument(
+        "workspace",
+        nargs="?",
+        help="the show to take the patch from (default: the description's [rig] workspace)",
+    )
+    p_new.add_argument(
+        "--description",
+        metavar="FILE",
+        help="a show description (.toml): palette, matrices, timing, console, controllers",
+    )
     p_new.add_argument("--out", help="output file (default: Vibra.qxw beside it)")
     p_new.add_argument(
         "--plot",
