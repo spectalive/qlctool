@@ -40,12 +40,18 @@ def read_timing(table: Mapping[str, Any], base: ShowTiming, names: Names, where:
     if "prism_step_s" in table:
         changes["prism_step_ms"] = milliseconds(table["prism_step_s"], f"{here} prism_step_s")
     if "matrix_beats" in table:
-        changes["matrix_beats"] = beat_timing_value(table["matrix_beats"], f"{here} matrix_beats")
+        changes["matrix_beats"] = beat_timing_value(
+            table["matrix_beats"], f"{here} matrix_beats", base.matrix_beats
+        )
     if "beat_timings" in table:
         timings = table_at(table, "beat_timings", here)
         spelled = identified_keys(timings, names, "functions", f"{here} beat_timings")
         changes["beat_timings"] = {
-            identifier: beat_timing_value(timings[spelling], f"{here} beat_timings.{spelling}")
+            identifier: beat_timing_value(
+                timings[spelling],
+                f"{here} beat_timings.{spelling}",
+                base.beat_timings.get(identifier),
+            )
             for identifier, spelling in spelled.items()
         }
     return replace(base, **changes)

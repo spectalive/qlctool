@@ -348,6 +348,8 @@ def cmd_newshow(args: argparse.Namespace) -> int:
         plot = str(description.rig.stage_plot)
     shown = description or vibra_description()
     beats = args.beats or shown.timing.beats
+    auto_key = shown.console.keys.get("auto")
+    auto_hint = f" (key {auto_key})" if auto_key else ""
 
     show = build_canonical_show(
         ws,
@@ -370,7 +372,7 @@ def cmd_newshow(args: argparse.Namespace) -> int:
         f"{len(show.button_ids)} console buttons on one "
         f"{shown.console.canvas[0]}x{shown.console.canvas[1]} screen, "
         f"{show.stage_placed} fixtures placed in the 2D/3D view. "
-        f"Press AUTO (key Q)."
+        f"Press AUTO{auto_hint}."
     )
     if beats:
         print(

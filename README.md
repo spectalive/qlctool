@@ -145,6 +145,11 @@ that out means no MIDI pad and no tablet desk. What a stated key replaces:
   `[console.keys]` binds only the functions it lists. The duration tables
   `levels`, `dynamic` and `panels` are stated whole too, so each must give
   all its keys.
+- **Inline tables inside `[timing]` and `[fixture_tuning]`.** `levels`,
+  `dynamic` and `panels` are given whole; `strobe`, `matrix_beats` and each
+  `[timing.beat_timings]` entry merge per key, so `colour_wheel = { hold = 4 }`
+  keeps Vibra's fade. An entry for a function Vibra gives no timing needs a
+  `hold`, and its `fade` defaults to 0.
 - **One name, one row.** A table naming the same thing twice, even in two
   languages (`red` and `Rojo` in `[palette.colors]`), is refused with both
   spellings, the file and the section.
@@ -166,7 +171,7 @@ that out means no MIDI pad and no tablet desk. What a stated key replaces:
 - `generate/` - the mass generators (colour scene, colour palette, matrix
   effects, movement EFX, Virtual Console layout, channel probe)
 - `palette.py`, `ids.py`, `cli.py` - palette data, ID allocation, command line
-- description/, names/, locales/, vibra/, controllers/ - the show description, its name catalogues, Vibra's values, and the optional controller profiles with their rule providers
+- `description/`, `names/`, `locales/`, `vibra/`, `controllers/` - the show description, its name catalogues, Vibra's values, and the optional controller profiles with their rule providers
 - `library/system/` - QLC+ system fixture defs the patch needs, bundled from the Mac
 
 ## Fixture library note

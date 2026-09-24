@@ -10,7 +10,7 @@ from .reading.table_at import table_at
 def description_workspace(path: str | Path) -> Path:
     """`[rig] workspace`, resolved against the description's folder."""
     source = Path(path)
-    rig = read_rig(table_at(read_toml_file(source), "rig", str(source)), source)
-    if rig.workspace is None:
-        raise ValueError(f"{source}: [rig] workspace is required")
-    return rig.workspace
+    workspace = read_rig(table_at(read_toml_file(source), "rig", str(source)), source).workspace
+    # read_rig refuses a [rig] without a workspace, so this only narrows the type.
+    assert workspace is not None
+    return workspace

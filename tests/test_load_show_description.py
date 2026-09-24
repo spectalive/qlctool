@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import shutil
 from dataclasses import replace
 from pathlib import Path
 
@@ -165,3 +166,55 @@ def test_newshow_reports_a_bad_description_without_a_traceback(tmp_path):
 def test_newshow_reports_a_missing_patch_without_a_traceback(tmp_path):
     with pytest.raises(SystemExit, match=r"Vibra\.qxw"):
         main(["newshow", "--description", str(_write(tmp_path, ""))])
+
+
+# Fix round 1 (2026-09-24, ruling F11): the generator's Spanish-only vocabulary
+# (R1) is refused while the file is read, naming it, not later as a traceback.
+@pytest.mark.parametrize(
+    ("text", "section"),
+    [
+        ('[show]\nlanguage = "en"\n', r"\[show\].*language 'en'"),
+        ('[names.es]\nparty_moment = "Fiesta"\n', r"\[names\].*party_moment"),
+    ],
+)
+def test_a_vocabulary_the_generator_cannot_write_is_refused(tmp_path, patch_root, text, section):
+    path = _write(tmp_path, text)
+    with pytest.raises(ValueError, match=section) as refused:
+        load_show_description(path, patch_root)
+    assert str(path) in str(refused.value)
+
+
+def test_newshow_refuses_an_english_show_without_a_traceback(tmp_path):
+    path = _write(tmp_path, '[show]\nlanguage = "en"\n')
+    with pytest.raises(SystemExit, match="language"):
+        main(["newshow", str(SETUPS / "Vibra.qxw"), "--description", str(path)])
+
+
+def test_a_beat_timing_keeps_the_default_it_does_not_state(tmp_path, patch_root):
+    text = (
+        "[timing]\nmatrix_beats = { fade = 2 }\n"
+        "[timing.beat_timings]\ncolour_wheel = { hold = 4 }\nsimple_wheel = { hold = 4 }\n"
+    )
+    timing = load_show_description(_write(tmp_path, text), patch_root).timing
+    vibra = vibra_description().timing
+    assert (timing.matrix_beats.hold, timing.matrix_beats.fade) == (vibra.matrix_beats.hold, 2)
+    assert timing.beat_timings["colour_wheel"].fade == vibra.beat_timings["colour_wheel"].fade == 1
+    assert timing.beat_timings["simple_wheel"].fade == 0
+    with pytest.raises(ValueError, match="simple_wheel"):
+        load_show_description(
+            _write(tmp_path, "[timing.beat_timings]\nsimple_wheel = { fade = 1 }\n"), patch_root
+        )
+
+
+def test_the_beats_variant_is_written_beside_its_patch(patch_root):
+    loaded = load_show_description(SETUPS / "vibra-beats.toml", patch_root)
+    assert loaded.rig.output == SETUPS / "Vibra-beats.qxw"
+
+
+def test_newshow_without_out_writes_the_rig_output(tmp_path, capsys):
+    for name in ("Vibra.qxw", "vibra-stage-plot.json", "vibra-beats.toml"):
+        shutil.copyfile(SETUPS / name, tmp_path / name)
+    assert main(["newshow", "--description", str(tmp_path / "vibra-beats.toml")]) == 0
+    written = hashlib.sha256((tmp_path / "Vibra-beats.qxw").read_bytes()).hexdigest()
+    assert written == BASELINE["Vibra-beats.qxw"]["sha256"]
+    assert "Press AUTO (key Q)." in capsys.readouterr().out
