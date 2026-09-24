@@ -1,0 +1,20 @@
+{
+  "Vibra.qxw": {
+    "source": "Vibra.qxw",
+    "plot": "vibra-stage-plot.json",
+    "beats": false,
+    "sha256": "10c12af24a1c72718906f77698f447998ddcdc7ef01b934fdf9ad90f35b706f8"
+  },
+  "Vibra-beats.qxw": {
+    "source": "Vibra.qxw",
+    "plot": "vibra-stage-plot.json",
+    "beats": true,
+    "sha256": "10fff86ffa3d062c982db89c97aa33a451f54fa7eb8dca0a40808d5cc6dea882"
+  },
+  "Vibra-split.qxw": {
+    "source": "Vibra-split.qxw",
+    "plot": "vibra-stage-plot-split.json",
+    "beats": false,
+    "sha256": "c7f73cd621914a44f671ea02b06bc733187e14e10eca369f3f6a592f075d862e"
+  }
+}
