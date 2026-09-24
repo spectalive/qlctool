@@ -1,7 +1,7 @@
 """One show, described: everything the generator used to hard-code for Vibra."""
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from ..matrix_algorithms import CuratedScript
 from .colour_settings import ColourSettings
@@ -23,3 +23,6 @@ class ShowDescription:
     timing: ShowTiming
     tuning: FixtureTuning
     console: ConsoleSettings
+    language: str = "es"
+    # language -> identifier -> the show's own word for it ([names.<lang>]).
+    names: Mapping[str, Mapping[str, str]] = field(default_factory=dict)

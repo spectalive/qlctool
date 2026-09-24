@@ -16,6 +16,8 @@ from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
 from ..description.contrast_pairs_of import contrast_pairs_of
+from ..description.description_names import description_names
+from ..description.localize_description import localize_description
 from ..description.pastel_palette_of import pastel_palette_of
 from ..description.show_description import ShowDescription
 from ..description.split_pairs_of import split_pairs_of
@@ -31,6 +33,7 @@ from ..input_binding import pin_midi_input
 from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..monitor_positions import house_right_fixture_ids
+from ..names.check_generator_vocabulary import check_generator_vocabulary
 from ..output_binding import pin_generic_output
 from ..shutter_open import shutter_open_pairs
 from ..skeleton import strip_to_skeleton
@@ -130,7 +133,10 @@ def build_canonical_show(
     description: ShowDescription | None = None,
 ) -> CanonicalShow:
     """Strip the workspace to its patch and generate a self-running show on it."""
-    described = description if description is not None else vibra_description()
+    source = description if description is not None else vibra_description()
+    vocabulary = description_names(source)
+    check_generator_vocabulary(vocabulary)
+    described = localize_description(source, vocabulary)
     colours = described.colours
     wheel = wheel_palette_of(colours)
     pastels = pastel_palette_of(colours)

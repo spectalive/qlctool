@@ -12,6 +12,7 @@ from qlctool.generate.beat_tempo import BeatTiming
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.generate.unison_colors import CONTRAST_PAIRS
 from qlctool.library import FixtureLibrary
+from qlctool.names.default_names import default_names
 from qlctool.pastel_palette import PASTEL_PALETTE
 from qlctool.split_pairs import SPLIT_PAIRS
 from qlctool.vibra.description import vibra_description
@@ -38,12 +39,12 @@ def _generated(description, show=VIBRA_SHOW):
 def test_vibra_is_the_default_description():
     show = vibra_description()
     assert (show.timing.bpm, show.timing.beat_ms, show.timing.peak_ms) == (120, 500, 40_000)
-    assert show.timing.beat_timings["Rueda Colores"] == BeatTiming(hold=8, fade=1)
+    assert show.timing.beat_timings["colour_wheel"] == BeatTiming(hold=8, fade=1)
     assert show.tuning.beam_focus == 127
     assert (show.tuning.strobe_fast, show.tuning.strobe_slow) == (0.97, 0.785)
     assert show.console.canvas == (1440, 900)
-    assert show.console.keys["AUTO"] == "Q"
-    assert "Escenario" in show.console.flash_functions
+    assert show.console.keys["auto"] == "Q"
+    assert "stage_aim" in show.console.flash_functions
     assert [s.algorithm for s in show.matrices["Cabezas"]] == [
         "One By One",
         "Fill Unfill",
@@ -69,19 +70,33 @@ def test_the_description_sets_the_console_canvas_and_the_clock():
 
 
 def test_the_derived_colour_tables_are_todays():
+    # 2026-09-24: vibra_description() is now identifier-keyed (ruling F3), so
+    # today's Spanish-named tables are translated to identifiers before the
+    # comparison; the values and the order are still today's.
+    names = default_names()
+
+    def identify(name):
+        return names.identify(name, ("colors",))
+
     colours = vibra_description().colours
-    assert list(wheel_palette_of(colours).items()) == list(WHEEL_PALETTE.items())
-    assert list(pastel_palette_of(colours).items()) == list(PASTEL_PALETTE.items())
-    assert split_pairs_of(colours) == SPLIT_PAIRS
-    assert contrast_pairs_of(colours) == CONTRAST_PAIRS
+    assert list(wheel_palette_of(colours).items()) == [
+        (identify(name), rgb) for name, rgb in WHEEL_PALETTE.items()
+    ]
+    assert list(pastel_palette_of(colours).items()) == [
+        (identify(name), rgb) for name, rgb in PASTEL_PALETTE.items()
+    ]
+    assert split_pairs_of(colours) == tuple((identify(a), identify(b)) for a, b in SPLIT_PAIRS)
+    assert contrast_pairs_of(colours) == tuple(
+        (identify(a), identify(b)) for a, b in CONTRAST_PAIRS
+    )
 
 
 def test_the_description_palette_colours_the_matrices():
     vibra = vibra_description()
     colours = replace(
         vibra.colours,
-        palette={**vibra.colours.palette, "Rojo": (250, 0, 0)},
-        matrix_colors=("Rojo",),
+        palette={**vibra.colours.palette, "red": (250, 0, 0)},
+        matrix_colors=("red",),
     )
     root = _generated(replace(vibra, colours=colours))
     bars = [
