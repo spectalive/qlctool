@@ -127,6 +127,7 @@ def cmd_palette(args: argparse.Namespace) -> int:
 
     ws = Workspace.load(src)
     library = library_for(args.fixtures, src)
+    warn_unresolved(ws.root, library)
     result = generate_color_palette(ws, library, make_chaser=not args.no_chaser)
     created = result.scene_ids + ([] if result.chaser_id is None else [result.chaser_id])
     _lay_out(ws, created, args.buttons)
@@ -177,9 +178,11 @@ def cmd_movement(args: argparse.Namespace) -> int:
     )
 
     ws = Workspace.load(src)
+    library = library_for(args.fixtures, src)
+    warn_unresolved(ws.root, library)
     result = generate_movement_efx(
         ws,
-        library_for(args.fixtures, src),
+        library,
         algorithms=algorithms,
         propagation_mode=args.propagation,
         make_chaser=not args.no_chaser,
@@ -226,6 +229,7 @@ def cmd_patch(args: argparse.Namespace) -> int:
         return 1
 
     library = library_for(args.fixtures, src)
+    warn_unresolved(ws.root, library)
     for spec in args.add or []:
         parts = spec.split("|")
         if len(parts) not in (5, 6):

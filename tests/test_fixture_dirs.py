@@ -7,6 +7,7 @@ in silence ("no fixture has both pan and tilt" in a scratch copy, 2026-09-24).
 
 import hashlib
 import json
+import os
 import re
 import shutil
 from pathlib import Path
@@ -55,7 +56,7 @@ def test_the_nearest_config_walking_up_is_the_last_resort(tmp_path):
 
 def test_each_source_beats_the_ones_after_it(tmp_path):
     _config(tmp_path, "from-config")
-    env = {"QLCTOOL_FIXTURES": f"{tmp_path / 'env1'}:{tmp_path / 'env2'}"}
+    env = {"QLCTOOL_FIXTURES": os.pathsep.join([str(tmp_path / "env1"), str(tmp_path / "env2")])}
     described = [tmp_path / "described"]
     assert fixture_dirs(["cli"], described, env, tmp_path) == (Path("cli"),)
     assert fixture_dirs([], described, env, tmp_path) == tuple(described)
@@ -105,10 +106,28 @@ def test_a_rig_outside_the_repo_regenerates_vibra(tmp_path, monkeypatch):
     assert hashlib.sha256(out.read_bytes()).hexdigest() == BASELINE["Vibra.qxw"]["sha256"]
 
 
-def test_a_patch_with_no_definition_says_so(tmp_path, monkeypatch, capsys):
+@pytest.mark.parametrize(
+    "command",
+    [
+        ["info"],
+        ["check"],
+        ["palette", "--out", "out.qxw"],
+        ["movement", "--out", "out.qxw"],
+        ["deskmap", "--out", "desk.json"],
+    ],
+    ids=lambda command: command[0],
+)
+def test_a_patch_with_no_definition_says_so(tmp_path, monkeypatch, capsys, command):
     # Copied out of the repo: walking up from the original would find qlctool.toml.
     shutil.copy(REPO / "QLC+ Setups" / "Vibra.qxw", tmp_path / "Vibra.qxw")
     monkeypatch.chdir(tmp_path)
     monkeypatch.delenv("QLCTOOL_FIXTURES", raising=False)
-    assert main(["info", str(tmp_path / "Vibra.qxw")]) == 0
+    argv = [command[0], str(tmp_path / "Vibra.qxw"), *command[1:]]
+    if command[0] == "movement":
+        # The 2026-09-24 failure itself: with no definition nothing has pan and
+        # tilt. The warning now comes first and says why.
+        with pytest.raises(ValueError, match="pan and tilt"):
+            main(argv)
+    else:
+        main(argv)
     assert "no fixture definition" in capsys.readouterr().err

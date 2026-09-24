@@ -13,9 +13,9 @@ from qlctool.definition_schema import SCHEMA_PATH, definition_errors
 from qlctool.fixture_dirs import fixture_dirs
 from qlctool.library import SYSTEM_FIXTURES
 
-DEFINITIONS = sorted(q for d in fixture_dirs() for q in d.glob("*.qxf")) + sorted(
-    SYSTEM_FIXTURES.glob("*.qxf")
-)
+DEFINITIONS = sorted(
+    q for d in fixture_dirs(start=Path(__file__)) for q in d.glob("*.qxf")
+) + sorted(SYSTEM_FIXTURES.glob("*.qxf"))
 
 
 def test_the_schema_is_vendored():

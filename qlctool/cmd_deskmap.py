@@ -6,14 +6,15 @@ from pathlib import Path
 
 from .deskmap import build_deskmap
 from .library_for import library_for
+from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
 
 
 def cmd_deskmap(args: argparse.Namespace) -> int:
     workspace = Workspace.load(args.workspace)
-    deskmap = build_deskmap(
-        workspace, library_for(args.fixtures, Path(args.workspace)), args.workspace
-    )
+    library = library_for(args.fixtures, Path(args.workspace))
+    warn_unresolved(workspace.root, library)
+    deskmap = build_deskmap(workspace, library, args.workspace)
     out = Path(args.out)
     out.write_text(json.dumps(deskmap, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     enabled = sum(1 for c in deskmap["controls"].values() if c["enabled"])
