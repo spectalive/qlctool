@@ -26,24 +26,34 @@ def read_matrices(
     """Group -> scripts. A stated group must be one the patch has, like a stage plot's ids.
 
     A stated [groups] replaces every default group's scripts, not only its own (R6, F7).
+    Left out, Vibra's defaults apply to the groups of the same name this patch has.
     """
-    matrices = dict(base)
-    if table is not None:
-        matrices = {}
-        patched = [group.name for group in fixture_groups(root)]
-        for group in table:
-            here = f"{where}: [groups.{group}]"
-            if group not in patched:
+    patched = [group.name for group in fixture_groups(root)]
+    if table is None:
+        matrices = {group: scripts for group, scripts in base.items() if group in patched}
+        for group, scripts in matrices.items():
+            lacking = sorted({c for m in scripts for c in m.colors} - set(palette))
+            if lacking:
                 raise ValueError(
-                    f"{here} names a fixture group the patch does not have; "
-                    f"the patch has: {', '.join(patched)}"
+                    f"{where}: Vibra's default matrices for group {group} use colours the "
+                    f"palette lacks: {', '.join(lacking)}; state [groups] to choose this "
+                    "rig's matrices (an empty [groups] means no curated matrices)"
                 )
-            settings = table_at(table, group, f"{where}: [groups]")
-            reject_unknown_keys(settings, ("matrices",), here)
-            matrices[group] = tuple(
-                read_matrix_script(entry, group, names, f"{here} matrices[{index}]")
-                for index, entry in enumerate(list_at(settings, "matrices", here))
+        return matrices
+    matrices = {}
+    for group in table:
+        here = f"{where}: [groups.{group}]"
+        if group not in patched:
+            raise ValueError(
+                f"{here} names a fixture group the patch does not have; "
+                f"the patch has: {', '.join(patched)}"
             )
+        settings = table_at(table, group, f"{where}: [groups]")
+        reject_unknown_keys(settings, ("matrices",), here)
+        matrices[group] = tuple(
+            read_matrix_script(entry, group, names, f"{here} matrices[{index}]")
+            for index, entry in enumerate(list_at(settings, "matrices", here))
+        )
     missing = sorted({c for s in matrices.values() for m in s for c in m.colors} - set(palette))
     if missing:
         raise ValueError(

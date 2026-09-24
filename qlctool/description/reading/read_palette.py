@@ -5,6 +5,7 @@ from dataclasses import replace
 from typing import Any
 
 from ...color_pair import ColorPair
+from ...generate.quad_color_scenes import QUAD_COLORS
 from ...names.names import Names
 from ..colour_settings import ColourSettings
 from .identified_keys import identified_keys
@@ -56,4 +57,13 @@ def read_palette(
     missing = sorted(set(used) - set(colours.palette))
     if missing:
         raise ValueError(f"{here} uses colours the palette does not have: {', '.join(missing)}")
+    # The "Rig 4 Colores" scenes deal four fixed colours (R8 keeps them in the
+    # generator), so a palette without one would only fail mid-build.
+    dealt = [names.identify(n, ("colors",)) for n in QUAD_COLORS]
+    lacking = [n for n in dealt if n not in colours.palette]
+    if lacking:
+        raise ValueError(
+            f"{here} colors lacks {', '.join(lacking)}, which the four-colour rig scenes "
+            f"always deal ({', '.join(dealt)})"
+        )
     return colours

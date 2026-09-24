@@ -107,7 +107,7 @@ def generate_unison_colors(
     `scene_prefix` keep the three modes' functions apart in one workspace.
     """
     caps = capabilities_of(workspace.root, library)
-    values_of = palette or PALETTE
+    values_of = PALETTE if palette is None else palette
     excluded = set(exclude_fixture_ids)
     lit_ids = [c.fixture.fixture_id for c in caps if c.fixture.fixture_id not in excluded]
 

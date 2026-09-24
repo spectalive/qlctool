@@ -7,6 +7,7 @@ from typing import Any
 from ...names.default_names import default_names
 from ...names.sections import SECTIONS
 from ...names.shipped_languages import shipped_languages
+from .reject_ambiguous_names import reject_ambiguous_names
 
 
 def read_names(table: Mapping[str, Any], where: str) -> dict[str, dict[str, str]]:
@@ -27,4 +28,5 @@ def read_names(table: Mapping[str, Any], where: str) -> dict[str, dict[str, str]
             if not isinstance(text, str) or not text:
                 raise ValueError(f"{here} {identifier} must be a non-empty string")
         overrides[language] = dict(entries)
+    reject_ambiguous_names(overrides, where)
     return overrides
