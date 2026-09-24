@@ -15,6 +15,9 @@ Two builds behave differently. The 4.x widgets build (`qlcplus`) takes
 to prefer. The 5.x QML build (`qlcplus-qml`) has no headless mode: it opens a
 window and keeps logging while it renders, so loading is considered finished once
 its end-of-load markers appear and the log settles.
+
+Versioned bundles in /Applications are found too, newest first, and a binary
+this CPU cannot run is skipped (`qlcplus_candidates`).
 """
 
 import fcntl
@@ -29,6 +32,8 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
+
+from .qlcplus_candidates import qlcplus_candidates
 
 # The QML build's -g writes the debug log here instead of stdout, which is what
 # makes a background launch readable: `open -g` does not give us its stdout.
@@ -108,9 +113,9 @@ def qlcplus_binary() -> str | None:
     override = os.environ.get("QLCTOOL_QLCPLUS")
     if override:
         return override if Path(override).exists() else None
-    for candidate in DEFAULT_BINARIES:
-        if Path(candidate).exists():
-            return candidate
+    candidates = qlcplus_candidates(DEFAULT_BINARIES)
+    if candidates:
+        return candidates[0]
     return shutil.which("qlcplus") or shutil.which("qlcplus-qml")
 
 
