@@ -17,9 +17,9 @@ A held button is a `Flash`, and QLC+ only flashes a Scene (`rule_flash_scene`),
 so a column that passes this rule is a column that stops the frame after the
 key comes up.
 
-Since 2026-09-13, the tablet can also fire a verified private desk burst: one
-timed SingleShot step with no automatic caller. It ends on the master even
-when the tablet loses its connection; every other latch is still forbidden.
+Since 2026-09-13 a controller may vouch for a latch that ends on its own - the
+tablet's verified burst (`RuleProvider.bounded_latches`). Those arrive as
+`bounded`; every other latch is still forbidden.
 """
 
 from lxml import etree
@@ -30,12 +30,13 @@ from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
-from .valid_desk_bursts import valid_desk_bursts
 
 RULE = "columna automatica"
 
 
-def check_held_column(graph: ShowGraph, groups, root: etree._Element) -> list[Finding]:
+def check_held_column(
+    graph: ShowGraph, groups, root: etree._Element, bounded: frozenset[int] = frozenset()
+) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []
@@ -47,9 +48,6 @@ def check_held_column(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
     if not columns:
         return []
 
-    # 2026-09-13: the tablet may explicitly fire an isolated, self-ending
-    # burst. A looping cue, shared scene or automatic caller never qualifies.
-    bounded = valid_desk_bursts(graph, root)
     findings: list[Finding] = []
     for button in iter_local(console, "Button"):
         function = find_local(button, "Function")

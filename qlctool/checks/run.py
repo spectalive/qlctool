@@ -99,6 +99,11 @@ def check_workspace(
     groups = group_fixtures(root)
     entries = entry_points(root)
     states = room_states(root, graph, groups)
+    context = RuleContext(root=root, graph=graph, groups=groups, entries=entries, states=states)
+    applying = [
+        p for p in (rule_providers() if providers is None else providers) if p.applies(root)
+    ]
+    bounded = frozenset().union(*(p.bounded_latches(context) for p in applying))
 
     findings: list[Finding] = []
     findings += check_intensity(graph, groups, entries, states)
@@ -151,16 +156,14 @@ def check_workspace(
     findings += check_smoke(graph, groups, entries)
     findings += check_smoke_light(graph, groups, entries)
     findings += check_smoke_restore(graph, groups, root, states)
-    findings += check_held_column(graph, groups, root)
+    findings += check_held_column(graph, groups, root, bounded)
     findings += check_group_grids(graph, root)
     findings += check_grid_order(root)
     findings += check_undeclared_heads(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))
     findings += check_audio_triggers(graph, groups, root)
-    context = RuleContext(root=root, graph=graph, groups=groups, entries=entries, states=states)
-    for provider in rule_providers() if providers is None else providers:
-        if provider.applies(root):
-            findings += provider.check(context)
+    for provider in applying:
+        findings += provider.check(context)
     return sorted(findings, key=lambda f: (f.severity != ERROR, f.rule, f.function))
 
 

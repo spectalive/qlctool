@@ -53,6 +53,7 @@ def test_the_vibra_show_uses_both_controllers():
 def test_a_provider_runs_only_where_it_applies(library):
     workspace = Workspace.load(SHOW)
     seen = []
+    desk = next(p for p in rule_providers() if p.name == "tablet_desk")
 
     def check(context):
         seen.append(context.root)
@@ -60,8 +61,8 @@ def test_a_provider_runs_only_where_it_applies(library):
 
     quiet = RuleProvider("quiet", applies=lambda root: False, check=check)
     loud = RuleProvider("loud", applies=lambda root: True, check=check)
-    assert check_workspace(workspace, library, providers=[quiet]) == []
-    assert [f.rule for f in check_workspace(workspace, library, providers=[loud])] == [
+    assert check_workspace(workspace, library, providers=[desk, quiet]) == []
+    assert [f.rule for f in check_workspace(workspace, library, providers=[desk, loud])] == [
         "regla de prueba"
     ]
     assert len(seen) == 1
