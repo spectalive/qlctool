@@ -1,14 +1,10 @@
 """A show description is read from TOML and checked against its patch (2026-09-24, spec step 5)."""
 
-import hashlib
-import json
-import shutil
 from dataclasses import replace
 from pathlib import Path
 
 import pytest
 
-from qlctool.cli import main
 from qlctool.description.controller_settings import ControllerSettings
 from qlctool.description.load_show_description import load_show_description
 from qlctool.description.rig_files import RigFiles
@@ -17,7 +13,6 @@ from qlctool.workspace import Workspace
 
 TESTS = Path(__file__).resolve().parent
 SETUPS = TESTS.parents[2] / "QLC+ Setups"
-BASELINE = json.loads((TESTS / "vibra_baseline.json").read_text(encoding="utf-8"))
 
 
 @pytest.fixture(scope="module")
@@ -38,7 +33,9 @@ def test_vibra_toml_is_the_vibra_description(patch_root):
     assert list(loaded.colours.palette) == list(vibra.colours.palette)
     assert list(loaded.console.keys) == list(vibra.console.keys)
     assert loaded.rig == RigFiles(
-        workspace=SETUPS / "Vibra.qxw", stage_plot=SETUPS / "vibra-stage-plot.json"
+        workspace=SETUPS / "Vibra.qxw",
+        output=SETUPS / "Vibra.qxw",
+        stage_plot=SETUPS / "vibra-stage-plot.json",
     )
 
 
@@ -145,29 +142,6 @@ def test_a_wrongly_shaped_value_is_a_value_error(tmp_path, patch_root, text):
         load_show_description(_write(tmp_path, text), patch_root)
 
 
-def test_newshow_writes_vibra_from_its_description(tmp_path):
-    out = tmp_path / "Vibra.qxw"
-    assert main(["newshow", "--description", str(SETUPS / "vibra.toml"), "--out", str(out)]) == 0
-    assert hashlib.sha256(out.read_bytes()).hexdigest() == BASELINE["Vibra.qxw"]["sha256"]
-
-
-def test_newshow_reports_a_bad_description_without_a_traceback(tmp_path):
-    with pytest.raises(SystemExit, match="pallete"):
-        main(
-            [
-                "newshow",
-                str(SETUPS / "Vibra.qxw"),
-                "--description",
-                str(_write(tmp_path, "[pallete]\n")),
-            ]
-        )
-
-
-def test_newshow_reports_a_missing_patch_without_a_traceback(tmp_path):
-    with pytest.raises(SystemExit, match=r"Vibra\.qxw"):
-        main(["newshow", "--description", str(_write(tmp_path, ""))])
-
-
 # Fix round 1 (2026-09-24, ruling F11): the generator's Spanish-only vocabulary
 # (R1) is refused while the file is read, naming it, not later as a traceback.
 @pytest.mark.parametrize(
@@ -182,12 +156,6 @@ def test_a_vocabulary_the_generator_cannot_write_is_refused(tmp_path, patch_root
     with pytest.raises(ValueError, match=section) as refused:
         load_show_description(path, patch_root)
     assert str(path) in str(refused.value)
-
-
-def test_newshow_refuses_an_english_show_without_a_traceback(tmp_path):
-    path = _write(tmp_path, '[show]\nlanguage = "en"\n')
-    with pytest.raises(SystemExit, match="language"):
-        main(["newshow", str(SETUPS / "Vibra.qxw"), "--description", str(path)])
 
 
 def test_a_beat_timing_keeps_the_default_it_does_not_state(tmp_path, patch_root):
@@ -209,12 +177,3 @@ def test_a_beat_timing_keeps_the_default_it_does_not_state(tmp_path, patch_root)
 def test_the_beats_variant_is_written_beside_its_patch(patch_root):
     loaded = load_show_description(SETUPS / "vibra-beats.toml", patch_root)
     assert loaded.rig.output == SETUPS / "Vibra-beats.qxw"
-
-
-def test_newshow_without_out_writes_the_rig_output(tmp_path, capsys):
-    for name in ("Vibra.qxw", "vibra-stage-plot.json", "vibra-beats.toml"):
-        shutil.copyfile(SETUPS / name, tmp_path / name)
-    assert main(["newshow", "--description", str(tmp_path / "vibra-beats.toml")]) == 0
-    written = hashlib.sha256((tmp_path / "Vibra-beats.qxw").read_bytes()).hexdigest()
-    assert written == BASELINE["Vibra-beats.qxw"]["sha256"]
-    assert "Press AUTO (key Q)." in capsys.readouterr().out

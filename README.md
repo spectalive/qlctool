@@ -153,6 +153,25 @@ that out means no MIDI pad and no tablet desk. What a stated key replaces:
 - **One name, one row.** A table naming the same thing twice, even in two
   languages (`red` and `Rojo` in `[palette.colors]`), is refused with both
   spellings, the file and the section.
+- **Vibra's matrices, only where the patch has the group.** Left out,
+  `[groups]` means Vibra's hand-tuned matrices for each fixture group of the
+  same name this patch has (`BarrasLed`, `Cabezas`, `PAR`); a group the patch
+  lacks is skipped. A rig with a group of one of those names gets Vibra's
+  scripts on it, and when the palette lacks a colour they use, the refusal
+  names the group and asks you to state `[groups]`. An empty `[groups]` means
+  no curated matrices at all.
+- **The four-colour rig scenes need their colours.** The generator always
+  deals blue, red, green and yellow in the `Rig 4 Colores` scenes, so a
+  `[palette.colors]` without one of them is refused.
+
+`[rig]` paths (`workspace`, `output`, `stage_plot`) resolve against the
+description's own folder. Absolute paths and `..` are accepted, so a
+description can read and write anywhere its user can: treat one you were sent
+like a script, and read its `[rig]` before running it. `newshow --description`
+writes to `--out` when given, else to `[rig] output`; with neither it refuses,
+because it never overwrites the patch unasked. To regenerate a workspace in
+place, state `output` equal to `workspace`, as `QLC+ Setups/vibra.toml` does.
+A workspace given on the command line as well must be the one `[rig]` names.
 
 ## Layout
 

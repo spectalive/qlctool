@@ -17,7 +17,7 @@ from .cmd_deskmap import add_deskmap_parser
 from .compose import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
-from .description.description_workspace import description_workspace
+from .description.described_files import described_files
 from .description.load_show_description import load_show_description
 from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_group import fixture_groups
@@ -330,19 +330,17 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     if args.workspace is None and args.description is None:
         raise SystemExit("newshow needs a workspace or --description")
     try:
-        src = Path(args.workspace) if args.workspace else description_workspace(args.description)
+        if args.description:
+            src, out = described_files(args.workspace, args.description, args.out)
+        else:
+            src = Path(args.workspace)
+            out = Path(args.out) if args.out else src.with_name("Vibra.qxw")
         ws = Workspace.load(src)
         description = load_show_description(args.description, ws.root) if args.description else None
     except (ValueError, OSError) as error:
         # A mistake in the file the user wrote, or a patch it names that is not
         # there: say what and where, no traceback.
         raise SystemExit(str(error)) from error
-    if args.out:
-        out = Path(args.out)
-    elif description is not None:
-        out = description.rig.output or src
-    else:
-        out = src.with_name("Vibra.qxw")
     plot = args.plot
     if plot is None and description is not None and description.rig.stage_plot is not None:
         plot = str(description.rig.stage_plot)
@@ -742,7 +740,11 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="FILE",
         help="a show description (.toml): palette, matrices, timing, console, controllers",
     )
-    p_new.add_argument("--out", help="output file (default: Vibra.qxw beside it)")
+    p_new.add_argument(
+        "--out",
+        help="output file (default: Vibra.qxw beside the workspace; with --description, "
+        "the description's [rig] output, and newshow refuses when neither is given)",
+    )
     p_new.add_argument(
         "--plot",
         metavar="FILE",
