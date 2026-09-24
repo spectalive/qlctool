@@ -49,7 +49,6 @@ from ..vc.console_font import console_font
 from ..vc.dial_function import DialFunction
 from ..vc.frame import build_frame
 from ..vc.grand_master_slider import build_grand_master_slider
-from ..vc.input_source import build_input_source
 from ..vc.label import build_label
 from ..vc.level_slider import build_level_slider
 from ..vc.matrix_control import build_matrix_control
@@ -58,9 +57,9 @@ from ..vc.widget_ids import next_widget_id
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
+from .bind_pad import bind_pad
 from .play_page import build_play_page
-from .smc_pad_bindings import SMC_PAD_BINDINGS
-from .smc_pad_colors import FUNCTION_COLORS, readable_foreground
+from .smc_pad_colors import readable_foreground
 
 CANVAS_WIDTH = 1440
 CANVAS_HEIGHT = 900
@@ -343,8 +342,12 @@ def generate_live_console(
     canvas: tuple[int, int] = (CANVAS_WIDTH, CANVAS_HEIGHT),
     tempo_beat_ms: int = TEMPO_BEAT_MS,
     palette: Mapping[str, tuple[int, int, int]] | None = None,
+    pad_bindings: Mapping[str, int] | None = None,
+    pad_colors: Mapping[str, tuple[int, int, int]] | None = None,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame."""
+    pad_bindings = dict(pad_bindings or {})
+    pad_colors = dict(pad_colors or {})
     colours = PALETTE if palette is None else palette
     root_frame = _root_frame(workspace.root)
     names = _function_names(workspace)
@@ -414,7 +417,7 @@ def generate_live_console(
             caption = f"{mark} {caption}"
         # A pad-bound function wears its palette colour, so the console button
         # and the pad LED read as the same surface.
-        colour = FUNCTION_COLORS.get(name)
+        colour = pad_colors.get(name)
         if colour is not None and "background" not in kwargs:
             kwargs["background"] = str(argb_from_rgb(colour))
             kwargs.setdefault("foreground", str(argb_from_rgb(readable_foreground(colour))))
@@ -434,8 +437,7 @@ def generate_live_console(
             flash_override=name in flash,
             **kwargs,
         )
-        if name in SMC_PAD_BINDINGS:
-            build_input_source(element, SMC_PAD_BINDINGS[name])
+        bind_pad(element, pad_bindings, name)
         return element
 
     outer = frame(
@@ -452,8 +454,8 @@ def generate_live_console(
     )
     # The SMC-PAD's arrow buttons page the console: a frame's Next Page is
     # external control 0 and Previous Page is 1 (qmlui vcframe.h).
-    build_input_source(outer, SMC_PAD_BINDINGS["Pagina Siguiente"])
-    build_input_source(outer, SMC_PAD_BINDINGS["Pagina Anterior"], source_id=1)
+    bind_pad(outer, pad_bindings, "Pagina Siguiente")
+    bind_pad(outer, pad_bindings, "Pagina Anterior", source_id=1)
 
     _page_show(
         outer,
@@ -466,6 +468,7 @@ def generate_live_console(
         tempo_functions,
         bpm_tap,
         tempo_beat_ms,
+        pad_bindings,
     )
     if play_wrappers is not None:
         build_play_page(
@@ -500,6 +503,7 @@ def generate_live_console(
         movement_functions,
         tempo_beat_ms,
         colours,
+        pad_bindings,
     )
     _page_library(
         outer,
@@ -551,6 +555,7 @@ def _page_show(
     tempo_functions,
     bpm_tap,
     tempo_beat_ms,
+    pad_bindings: Mapping[str, int],
 ) -> None:
     """Page 1: the state the room is in, the hits, and the panic button."""
     label(
@@ -647,7 +652,7 @@ def _page_show(
         stop_all_fade_ms=STOP_ALL_FADE_MS,
         font=BIG_FONT,
     )
-    build_input_source(stop_all, SMC_PAD_BINDINGS["PARAR TODO"])
+    bind_pad(stop_all, pad_bindings, "PARAR TODO")
     blackout = button(
         panic,
         None,
@@ -660,7 +665,7 @@ def _page_show(
         key=BLACKOUT_KEY,
         font=BIG_FONT,
     )
-    build_input_source(blackout, SMC_PAD_BINDINGS["APAGON"])
+    bind_pad(blackout, pad_bindings, "APAGON")
     label(
         panic,
         "PARAR TODO para las funciones con un fundido de 1 segundo — pulsa "
@@ -737,7 +742,7 @@ def _page_show(
         tap_key=TEMPO_TAP_KEY,
         control_bpm=bpm_tap,
     )
-    build_input_source(dial, SMC_PAD_BINDINGS["Tempo Show"])
+    bind_pad(dial, pad_bindings, "Tempo Show")
     _on_page(dial, PAGE_SHOW)
     console.widget_ids.append(dial_id)
     for index, line in enumerate(TEMPO_LINES):
@@ -768,6 +773,7 @@ def _page_control(
     movement_functions,
     tempo_beat_ms,
     palette: Mapping[str, tuple[int, int, int]],
+    pad_bindings: Mapping[str, int],
 ) -> None:
     """Page 3: direct controls that remain useful beside the play families."""
     label(
@@ -891,7 +897,7 @@ def _page_control(
         GRAND_MASTER_WIDTH,
         GRAND_MASTER_HEIGHT,
     )
-    build_input_source(grand_master, SMC_PAD_BINDINGS["Master General"])
+    bind_pad(grand_master, pad_bindings, "Master General")
     _on_page(grand_master, PAGE_CONTROL)
     console.widget_ids.append(grand_master_id)
     for index, line in enumerate(GRAND_MASTER_LINES):
@@ -993,7 +999,7 @@ def _page_control(
             time_ms=tempo_beat_ms,
             tap_key=TEMPO_TAP_KEY,
         )
-        build_input_source(dial, SMC_PAD_BINDINGS["Vel. Movimiento"])
+        bind_pad(dial, pad_bindings, "Vel. Movimiento")
         _on_page(dial, PAGE_CONTROL)
         console.widget_ids.append(dial_id)
         for index, line in enumerate(MOVEMENT_DIAL_LINES):

@@ -11,6 +11,10 @@ dev = ["pytest>=8", "pytest-xdist>=3"]
 [project.scripts]
 qlctool = "qlctool.cli:main"
 
+[project.entry-points."qlctool.rules"]
+smc-pad = "qlctool.controllers.smc_pad_rules:SMC_PAD_RULES"
+tablet_desk = "qlctool.controllers.tablet_desk_rules:TABLET_DESK_RULES"
+
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"

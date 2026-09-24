@@ -15,6 +15,7 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
+from ..controllers.midi_pad_named import midi_pad_named
 from ..description.contrast_pairs_of import contrast_pairs_of
 from ..description.description_names import description_names
 from ..description.localize_description import localize_description
@@ -29,7 +30,6 @@ from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..input_binding import pin_midi_input
 from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..monitor_positions import house_right_fixture_ids
@@ -151,7 +151,9 @@ def build_canonical_show(
     # ...and to the pad it is driven from, so the console's <Input> bindings
     # are live the moment the file opens rather than after somebody builds the
     # patch by hand in the Inputs/Outputs tab (input_binding.py, 2026-08-29).
-    pin_midi_input(workspace.root)
+    pad = midi_pad_named(described.controllers.midi_pad)
+    if pad is not None:
+        pad.pin_input(workspace.root)
     # The patch carries the rig, not where any of it stands: give the 2D and 3D
     # views a plot to draw, or they stack every fixture on one spot. A workspace
     # whose Monitor already places everything was positioned by hand in QLC+ -
@@ -1020,9 +1022,12 @@ def build_canonical_show(
             canvas=described.console.canvas,
             tempo_beat_ms=described.timing.beat_ms,
             palette=colours.palette,
+            pad_bindings=pad.bindings if pad is not None else None,
+            pad_colors=pad.colors if pad is not None else None,
         )
         button_ids = console.button_ids
-        button_ids.extend(generate_desk_bursts(workspace))
+        if described.controllers.tablet_desk:
+            button_ids.extend(generate_desk_bursts(workspace))
 
     functions = [f for f in workspace.engine if f.tag.endswith("}Function")]
     return CanonicalShow(

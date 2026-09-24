@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from ..desk_burst_duration import desk_burst_duration
 from ..desk_burst_sources import desk_burst_sources
+from ..desk_function_path import DESK_FUNCTION_PATH
 from ..desk_policy import BURST_FRAME, split_caption
 from ..functions.chaser import build_chaser
 from ..ids import next_function_id
@@ -60,7 +61,7 @@ def generate_desk_bursts(workspace: Workspace) -> list[int]:
         scene_id = next_function_id(workspace.root)
         scene.set("ID", str(scene_id))
         scene.set("Name", f"Desk · {caption} (ráfaga)")
-        scene.set("Path", "Desk")
+        scene.set("Path", DESK_FUNCTION_PATH)
         workspace.add_function(scene)
         chaser_id = next_function_id(workspace.root)
         chaser = build_chaser(
@@ -69,7 +70,7 @@ def generate_desk_bursts(workspace: Workspace) -> list[int]:
             [scene_id],
             hold=duration,
             run_order="SingleShot",
-            path="Desk",
+            path=DESK_FUNCTION_PATH,
         )
         find_local(chaser, "SpeedModes").set("Duration", "PerStep")
         workspace.add_function(chaser)

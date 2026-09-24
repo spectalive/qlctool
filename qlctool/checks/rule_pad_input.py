@@ -26,18 +26,17 @@ from lxml import etree
 
 from ..generate.input_profile import build_input_profile
 from ..input_binding import midi_input_patch
-from ..xmlutil import findall_local, localname
+from ..xmlutil import localname
 from .finding import ERROR, Finding
+from .pad_bindings import pad_bindings
 
 RULE = "binding a un control que el pad no manda"
 UNPATCHED_RULE = "consola con bindings y sin entrada MIDI"
 DOUBLE_RULE = "un control atado a dos widgets"
 
-BOUND_WIDGETS = ("Button", "Slider", "SpeedDial", "Frame", "XYPad", "CueList")
-
 
 def check_pad_input(root: etree._Element) -> list[Finding]:
-    bindings = _bindings(root)
+    bindings = pad_bindings(root)
     if not bindings:
         return []
 
@@ -84,20 +83,6 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
             )
         )
     return findings
-
-
-def _bindings(root: etree._Element) -> dict[int, list[str]]:
-    """Every channel a widget listens on, and the widgets listening on it."""
-    bindings: dict[int, list[str]] = {}
-    for element in root.iter():
-        if localname(element) not in BOUND_WIDGETS:
-            continue
-        caption = element.attrib.get("Caption") or localname(element)
-        for source in findall_local(element, "Input"):
-            if "Channel" not in source.attrib:
-                continue  # a key-only <Input> binds a keyboard key, not the pad
-            bindings.setdefault(int(source.attrib["Channel"]), []).append(caption)
-    return bindings
 
 
 def _profile_channels() -> set[int]:

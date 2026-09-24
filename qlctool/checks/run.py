@@ -7,8 +7,12 @@ the fixtures without RGB were not silently skipped, and that the console cannot
 be pressed into a state the show was never built for.
 
 Every rule here exists because something went wrong in a real room. Adding one
-is how a bug stops being able to happen twice.
+is how a bug stops being able to happen twice. A controller's rules come from
+the `qlctool.rules` entry points (`checks/rule_providers.py`) and run only where
+that controller is in the workspace.
 """
+
+from collections.abc import Sequence
 
 from lxml import etree
 
@@ -24,7 +28,7 @@ from .rule_collision import check_collisions
 from .rule_colour_animation_wheel import check_colour_animation_wheel
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
-from .rule_desk_bursts import check_desk_bursts
+from .rule_context import RuleContext
 from .rule_family_owner import check_family_owner
 from .rule_flash_scene import check_flash_scene
 from .rule_flash_speed import check_flash_speed
@@ -43,10 +47,11 @@ from .rule_mode_owner import check_mode_owner
 from .rule_movement_families import check_movement_families
 from .rule_movement_figure_coverage import check_movement_figure_coverage
 from .rule_movement_window import check_movement_window
-from .rule_pad_input import check_pad_input
 from .rule_parked_movers import check_parked_movers
 from .rule_pick_darkens import check_pick_darkens
 from .rule_pick_overridden import check_pick_overridden
+from .rule_provider import RuleProvider
+from .rule_providers import rule_providers
 from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_shutter_endpoint import check_shutter_endpoint
 from .rule_smoke import check_smoke
@@ -85,6 +90,7 @@ def check_workspace(
     workspace: Workspace,
     library: FixtureLibrary,
     canvas: tuple[int, int] | None = None,
+    providers: Sequence[RuleProvider] | None = None,
 ) -> list[Finding]:
     """Every finding, worst first, in the order a person would fix them."""
     root = workspace.root
@@ -95,7 +101,6 @@ def check_workspace(
     states = room_states(root, graph, groups)
 
     findings: list[Finding] = []
-    findings += check_desk_bursts(graph, root)
     findings += check_intensity(graph, groups, entries, states)
     findings += check_instant_dimmer(graph, groups, states)
     findings += check_white_emitter(graph, groups)
@@ -152,7 +157,10 @@ def check_workspace(
     findings += check_undeclared_heads(graph, root)
     findings += check_console(graph, root, canvas or _canvas(root))
     findings += check_audio_triggers(graph, groups, root)
-    findings += check_pad_input(root)
+    context = RuleContext(root=root, graph=graph, groups=groups, entries=entries, states=states)
+    for provider in rule_providers() if providers is None else providers:
+        if provider.applies(root):
+            findings += provider.check(context)
     return sorted(findings, key=lambda f: (f.severity != ERROR, f.rule, f.function))
 
 

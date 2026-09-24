@@ -7,6 +7,7 @@ from ..matrix_algorithms import CURATED_MATRICES
 from ..names.default_names import default_names
 from .colours import VIBRA_COLOURS
 from .console import VIBRA_CONSOLE
+from .controllers import VIBRA_CONTROLLERS
 from .timing import VIBRA_TIMING
 from .tuning import VIBRA_TUNING
 
@@ -19,5 +20,6 @@ def vibra_description() -> ShowDescription:
         timing=VIBRA_TIMING,
         tuning=VIBRA_TUNING,
         console=VIBRA_CONSOLE,
+        controllers=VIBRA_CONTROLLERS,
     )
     return identify_description(spoken, default_names())
