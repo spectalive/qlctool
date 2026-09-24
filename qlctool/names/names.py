@@ -34,6 +34,10 @@ class Names:
                 return entries[identifier]
         raise NameResolutionError(f"no {self.language!r} name for identifier {identifier!r}")
 
+    def render(self, identifier: str, **fields: object) -> str:
+        """The display name with its fields filled: "Golpe {colour}" -> "Golpe Rojo"."""
+        return self.display(identifier).format(**fields)
+
     def spellings(self, identifier: str) -> tuple[str, ...]:
         """Every word any catalogue or override gives an identifier, without repeats."""
         found = [

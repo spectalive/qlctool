@@ -4,6 +4,7 @@ from collections.abc import Mapping
 from difflib import get_close_matches
 from typing import Any
 
+from ...names.check_override_fields import check_override_fields
 from ...names.default_names import default_names
 from ...names.sections import SECTIONS
 from ...names.shipped_languages import shipped_languages
@@ -29,4 +30,5 @@ def read_names(table: Mapping[str, Any], where: str) -> dict[str, dict[str, str]
                 raise ValueError(f"{here} {identifier} must be a non-empty string")
         overrides[language] = dict(entries)
     reject_ambiguous_names(overrides, where)
+    check_override_fields(overrides, where)
     return overrides

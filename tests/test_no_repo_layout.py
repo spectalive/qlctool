@@ -3,26 +3,17 @@
 import ast
 from pathlib import Path
 
+from docstring_ids import docstring_ids
+
 PACKAGE = Path(__file__).resolve().parents[1] / "qlctool"
 REPO_FOLDERS = ("QLC+ Fixtures", "QLC+ Setups", "QLC+ InputProfiles")
-
-
-def _docstrings(tree: ast.AST) -> set[int]:
-    return {
-        id(node.body[0].value)
-        for node in ast.walk(tree)
-        if isinstance(node, (ast.Module, ast.FunctionDef, ast.ClassDef))
-        and node.body
-        and isinstance(node.body[0], ast.Expr)
-        and isinstance(node.body[0].value, ast.Constant)
-    }
 
 
 def test_no_source_names_a_repo_folder_or_climbs_to_the_repo():
     offenders = []
     for source in sorted(PACKAGE.rglob("*.py")):
         tree = ast.parse(source.read_text(encoding="utf-8"))
-        skip = _docstrings(tree)
+        skip = docstring_ids(tree)
         for node in ast.walk(tree):
             if (
                 isinstance(node, ast.Constant)

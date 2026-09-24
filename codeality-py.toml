@@ -39,6 +39,7 @@ data = [
   "qlctool/vibra/controllers.py",
   "qlctool/description/reading/description_sections.py",
   "qlctool/description/reading/duration_tables.py",
+  "tests/literal_strip.py",
 ]
 registry = []
 entrypoint = []
