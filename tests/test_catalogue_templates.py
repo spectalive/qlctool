@@ -44,3 +44,23 @@ def test_an_override_must_keep_the_fields():
     assert read_names({"es": {"party_moment": "Fiesta"}}, "show.toml")
     with pytest.raises(ValueError, match="fields"):
         read_names({"es": {"party_moment": "Fiesta {now}"}}, "show.toml")
+
+
+def test_affixes_of_a_field_at_either_end():
+    front = shipped_names("en", {"en": {"auto": "{name} + Pixels"}})
+    assert template_affixes(front, "auto") == ("", " + Pixels")
+    back = shipped_names("en", {"en": {"auto": "Cycle {what}"}})
+    assert template_affixes(back, "auto") == ("Cycle ", "")
+
+
+def test_escaped_braces_are_not_a_field():
+    escaped = shipped_names("es", {"es": {"auto": "Fiesta {{x}}"}})
+    with pytest.raises(ValueError, match="not a template"):
+        template_affixes(escaped, "auto")
+    mixed = shipped_names("es", {"es": {"auto": "{{Ciclo}} {what}!"}})
+    assert template_affixes(mixed, "auto") == ("{Ciclo} ", "!")
+
+
+def test_a_malformed_override_names_where_it_is():
+    with pytest.raises(ValueError, match=r"show\.toml: \[names\.es\] party_moment"):
+        read_names({"es": {"party_moment": "Fies{ta"}}, "show.toml")
