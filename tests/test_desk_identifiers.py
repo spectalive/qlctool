@@ -30,13 +30,20 @@ def generated():
 
 
 def _frames_in_english(workspace):
+    """Renamed workspace, plus how many captions actually changed.
+
+    The count guards the test above it against going vacuous if the frames
+    catalogue drifts and stops matching anything in the shipped show.
+    """
     translated = deepcopy(workspace)
     spanish, english = load_catalogue("es")["frames"], load_catalogue("en")["frames"]
+    replaced = 0
     for element in translated.root.iter():
         for identifier, text in spanish.items():
             if element.get("Caption") == text:
                 element.set("Caption", english[identifier])
-    return translated
+                replaced += 1
+    return translated, replaced
 
 
 def _sections(deskmap):
@@ -45,8 +52,10 @@ def _sections(deskmap):
 
 def test_the_desk_places_frames_named_in_any_shipped_language(generated, tmp_path):
     library = FixtureLibrary.load()
+    translated, replaced = _frames_in_english(generated)
+    assert replaced >= len(load_catalogue("es")["frames"])
     spanish = build_deskmap(generated, library, tmp_path / "show.qxw")
-    english = build_deskmap(_frames_in_english(generated), library, tmp_path / "show.qxw")
+    english = build_deskmap(translated, library, tmp_path / "show.qxw")
     assert _sections(english) == _sections(spanish)
 
 

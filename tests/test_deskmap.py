@@ -61,12 +61,37 @@ def test_the_room_states_are_the_first_thing_on_live(deskmap):
 def test_2026_09_13_held_accents_are_replaced_by_bounded_bursts(deskmap):
     from qlctool.desk_policy import BURST_MS
 
+    # Hard-coded, not derived from qlctool.desk_policy.BURST_MS: two accents
+    # trading durations must still fail this test even if production code
+    # agrees with itself.
+    expected_ms = {
+        "flash": 8000,
+        "flash-lento": 8000,
+        "flash-color": 8000,
+        "strobo": 4000,
+        "strobo-suave": 4000,
+        "humo-ya": 3000,
+        "humo-vert": 3000,
+        "rojo": 8000,
+        "verde": 8000,
+        "azul": 8000,
+        "ultravioleta": 8000,
+        "amarillo": 8000,
+        "cyan": 8000,
+        "magenta": 8000,
+        "blanco": 8000,
+        "naranja": 8000,
+        "rosa": 8000,
+    }
+
     controls = deskmap["controls"]
     bursts = {key: c for key, c in controls.items() if c["role"] == "burst"}
     assert len(bursts) == len(BURST_MS)
     assert sorted(c["burstMs"] for c in bursts.values()) == sorted(BURST_MS.values())
+    assert bursts.keys() == expected_ms.keys()
     for key, control in bursts.items():
         assert control["source"] == key
+        assert control["burstMs"] == expected_ms[key]
         assert control["functionType"] == "Chaser"
         assert control["action"] == "toggle" and control["enabled"]
         assert control["reason"] == ""
