@@ -90,7 +90,9 @@ gobos = ["QLC+ Setups/Gobos"]
 A description's `[show] language` picks the language the show is written in:
 `en` or `es` (Spanish when it does not say). Every name the generator writes -
 functions, paths, console frames, captions, the JUGAR page and the desk map -
-comes from `qlctool/locales/<lang>.toml`. `[names.<lang>]` overrides any
+comes from `qlctool/locales/<lang>.toml`; the standalone `palette`, `matrix`,
+`movement`, `probe` and `layout` commands still write Spanish (ruling B5), and
+the patch's own fixture and group names stay as they were patched. `[names.<lang>]` overrides any
 identifier; an override of a template must keep its `{fields}`. `qlctool
 check` messages are still Spanish on any show (ruling B10, open in `TODO.md`).
 
