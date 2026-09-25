@@ -191,6 +191,7 @@ path_family_heads = "Heads"
 path_levels = "Levels"
 path_haze = "Haze"
 path_strobes = "Strobes"
+path_moments = "Moments"
 
 [console]
 

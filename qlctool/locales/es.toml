@@ -193,6 +193,7 @@ path_family_heads = "Cabezas"
 path_levels = "Niveles"
 path_haze = "Humo"
 path_strobes = "Strobos"
+path_moments = "Momentos"
 
 [console]
 

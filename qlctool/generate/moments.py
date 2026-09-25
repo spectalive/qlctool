@@ -18,9 +18,9 @@ from dataclasses import dataclass
 
 from ..functions.collection import build_collection
 from ..ids import next_function_id
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
-
-PATH = "Momentos"
 
 
 @dataclass(frozen=True)
@@ -31,14 +31,21 @@ class Moment:
     members: Sequence[int]
 
 
-def generate_moments(workspace: Workspace, moments: Sequence[Moment]) -> dict[str, int]:
-    """A Collection per moment; a moment with nothing in it is not generated."""
+def generate_moments(
+    workspace: Workspace, moments: Sequence[Moment], names: Names | None = None
+) -> dict[str, int]:
+    """A Collection per moment; a moment with nothing in it is not generated.
+
+    `names` is the show's vocabulary: the moments' folder is its `path_moments`.
+    """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_moments")
     generated: dict[str, int] = {}
     for moment in moments:
         members = [member for member in moment.members if member is not None]
         if not members:
             continue
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_collection(function_id, moment.name, members, path=PATH))
+        workspace.add_function(build_collection(function_id, moment.name, members, path=path))
         generated[moment.name] = function_id
     return generated
