@@ -3,16 +3,17 @@
 from collections.abc import Mapping, Sequence
 
 from ..argb import argb_from_rgb
+from ..names.default_names import default_names
+from ..names.names import Names
+from ..names.template_affixes import template_affixes
 from ..palette import PALETTE
 from ..vc.button import FLASH, TOGGLE
 from .generated_play_wrappers import GeneratedPlayWrappers as _GeneratedPlayWrappers
 from .smc_pad_colors import readable_foreground
 
-# Names a consumer (the tablet's map) finds the page's parts by.
-FAMILY_FRAMES = ("COLOR", "PIXELES", "CABEZAS", "GOBOS", "PRISMA")
-RESET_FRAME = "VOLVER AL SHOW"
-COLOR_HITS_FRAME = "GOLPES DE COLOR — mantén pulsado"
-PICK_PREFIX = "Jugar · "
+# Catalogue identifiers of the frames a consumer (the tablet's map) finds the
+# page's parts by.
+FAMILY_FRAMES = ("family_colour", "family_pixels", "family_heads", "family_gobos", "family_prism")
 _HEADER = 26
 _GAP = 6
 _LEFT = 8
@@ -22,25 +23,32 @@ _HOOK_BACKGROUND = str(argb_from_rgb((20, 105, 82)))
 _HOOK_FOREGROUND = str(argb_from_rgb(readable_foreground((20, 105, 82))))
 
 _RESET_NAMES = (
-    "AUTO",
-    "Momento Charla",
-    "Momento Tranquilo",
-    "Momento Fiesta",
-    "Momento Locura",
-    "Blanco Total",
-    "Todo Negro",
-    "Flash 100%",
-    "Flash Color",
-    "Humo ON",
-    "Strobo Rapido",
+    "auto",
+    "talk_moment",
+    "calm_moment",
+    "party_moment",
+    "frenzy_moment",
+    "full_white",
+    "all_black",
+    "flash_full",
+    "flash_colour",
+    "smoke_on",
+    "strobe_fast",
 )
-_COLOR_GUIDANCE = (
-    "Pick fijo; repetirlo lo para y deja la familia quieta. AUTO colores o "
-    "Q/F1-F4 devuelve la rueda; pararla corta su fundido de 800 ms."
-)
-_CYCLE_GUIDANCE = (
-    "Bajo AUTO, el ciclo de energia lo recupera en su siguiente paso "
-    "(8 min como mucho); para jugar largo pon antes un Momento."
+# The reset strip's short captions, keyed by function identifier; AUTO keeps
+# its own name. Flash, colour flash, haze and strobe reuse the hit captions,
+# whose words are the same (ruling B9).
+_RESET_CAPTIONS = (
+    ("talk_moment", "reset_talk"),
+    ("calm_moment", "reset_calm"),
+    ("party_moment", "reset_party"),
+    ("frenzy_moment", "reset_frenzy"),
+    ("full_white", "reset_white"),
+    ("all_black", "reset_black"),
+    ("flash_full", "hit_flash"),
+    ("flash_colour", "hit_flash_colour"),
+    ("smoke_on", "haze_word"),
+    ("strobe_fast", "hit_strobe"),
 )
 
 
@@ -60,14 +68,20 @@ def build_play_page(
     big_font: str,
     small_font: str,
     palette: Mapping[str, tuple[int, int, int]] | None = None,
+    vocabulary: Names | None = None,
 ) -> None:
-    """Append page two; only its picks and reset-strip duplicates stay keyless."""
+    """Append page two; only its picks and reset-strip duplicates stay keyless.
+
+    `names` maps function id to function name; the page's own words come from
+    `vocabulary`, None meaning `default_names()`.
+    """
+    vocabulary = default_names() if vocabulary is None else vocabulary
     ids_by_name = {name: function_id for function_id, name in names.items()}
     flashes = set(flash_functions)
 
     label(
         outer,
-        "2 · JUGAR — toma una familia; AUTO dentro de ella la devuelve.",
+        vocabulary.display("page_play"),
         _LEFT,
         30,
         _WIDTH,
@@ -85,6 +99,7 @@ def build_play_page(
         page,
         title_font,
         small_font,
+        vocabulary,
     )
     _build_colour_hits(
         outer,
@@ -95,6 +110,7 @@ def build_play_page(
         title_font,
         small_font,
         PALETTE if palette is None else palette,
+        vocabulary,
     )
     _build_color_family(
         outer,
@@ -109,6 +125,7 @@ def build_play_page(
         title_font,
         big_font,
         small_font,
+        vocabulary,
     )
     _build_pixel_family(
         outer,
@@ -123,6 +140,7 @@ def build_play_page(
         title_font,
         big_font,
         small_font,
+        vocabulary,
     )
     _build_movement_family(
         outer,
@@ -137,6 +155,7 @@ def build_play_page(
         title_font,
         big_font,
         small_font,
+        vocabulary,
     )
     _build_gobo_family(
         outer,
@@ -151,6 +170,7 @@ def build_play_page(
         title_font,
         big_font,
         small_font,
+        vocabulary,
     )
     _build_prism_family(
         outer,
@@ -165,6 +185,7 @@ def build_play_page(
         title_font,
         big_font,
         small_font,
+        vocabulary,
     )
 
 
@@ -178,10 +199,11 @@ def _build_reset_strip(
     page,
     title_font,
     small_font,
+    vocabulary: Names,
 ) -> None:
     strip = frame(
         outer,
-        RESET_FRAME,
+        vocabulary.display("reset_frame"),
         _LEFT,
         56,
         _WIDTH,
@@ -191,7 +213,7 @@ def _build_reset_strip(
     )
     label(
         strip,
-        "Volver del todo: AUTO dos veces si ya esta verde, o Backspace y Q.",
+        vocabulary.display("reset_guidance"),
         _GAP,
         _HEADER,
         420,
@@ -199,7 +221,12 @@ def _build_reset_strip(
         font=small_font,
     )
     pitch = (_WIDTH - 426 - 2 * _GAP) // len(_RESET_NAMES)
-    for index, name in enumerate(_RESET_NAMES):
+    captions = {
+        vocabulary.display(function): vocabulary.display(caption)
+        for function, caption in _RESET_CAPTIONS
+    }
+    for index, identifier in enumerate(_RESET_NAMES):
+        name = vocabulary.display(identifier)
         function_id = master.get(name)
         if function_id is None:
             continue
@@ -207,7 +234,7 @@ def _build_reset_strip(
         button(
             strip,
             function_id,
-            _reset_caption(name),
+            captions.get(name, name),
             426 + _GAP + index * pitch,
             44,
             pitch - 4,
@@ -227,10 +254,11 @@ def _build_colour_hits(
     title_font,
     small_font,
     palette: Mapping[str, tuple[int, int, int]],
+    vocabulary: Names,
 ) -> None:
     hits = frame(
         outer,
-        COLOR_HITS_FRAME,
+        vocabulary.display("colour_hits"),
         _LEFT,
         152,
         _WIDTH,
@@ -271,10 +299,11 @@ def _build_color_family(
     title_font,
     big_font,
     small_font,
+    vocabulary: Names,
 ) -> None:
     family = frame(
         outer,
-        "COLOR",
+        vocabulary.display("family_colour"),
         _LEFT,
         228,
         _WIDTH,
@@ -284,7 +313,15 @@ def _build_color_family(
         exclude_monitored=False,
         font=title_font,
     )
-    label(family, _COLOR_GUIDANCE, _GAP, _HEADER, _WIDTH - 2 * _GAP, 18, font=small_font)
+    label(
+        family,
+        vocabulary.display("colour_guidance"),
+        _GAP,
+        _HEADER,
+        _WIDTH - 2 * _GAP,
+        18,
+        font=small_font,
+    )
     columns = 13
     pitch = (_WIDTH - 2 * _GAP) // columns
     # The three automatic colour modes sit first, in this frame, which is solo:
@@ -292,21 +329,21 @@ def _build_color_family(
     # colour clock ("colores simples, colores completos, colores pastel
     # tenues", owner, 2026-09-22).
     hooks = (
-        ("Rueda Colores", "Colores completos · W", True),
-        ("Rueda Simples", "Colores simples · C", True),
-        ("Rueda Pastel", "Pastel tenue · L", True),
-        ("Rueda Multicolor", "Multicolor · R", True),
-        ("Rueda Mezcla", "Mezcla · E", True),
-        ("Luz Charla", "Luz Charla", False),
+        ("colour_wheel", "hook_colours", True),
+        ("simple_wheel", "hook_simple", True),
+        ("pastel_wheel", "hook_pastel", True),
+        ("multicolour_wheel", "hook_multicolour", True),
+        ("mix_wheel", "hook_mix", True),
+        ("talk_light", "talk_light", False),
     )
     index = 0
-    for name, caption, include_key in hooks:
+    for function, caption, include_key in hooks:
         _hook(
             master_button,
             family,
             ids_by_name,
-            name,
-            caption,
+            vocabulary.display(function),
+            vocabulary.display(caption),
             index,
             columns,
             pitch,
@@ -317,11 +354,25 @@ def _build_color_family(
         index += 1
     for function_id in wrappers.color_ids:
         _pick(
-            button, family, names, function_id, index, columns, pitch, small_font, top=46, mark="🎨"
+            button,
+            family,
+            names,
+            function_id,
+            index,
+            columns,
+            pitch,
+            small_font,
+            vocabulary,
+            top=46,
+            mark="🎨",
         )
         index += 1
+    rainbow_captions = {
+        vocabulary.display("rainbow_together"): vocabulary.display("hook_rainbow_together"),
+        vocabulary.display("rainbow_steps"): vocabulary.display("hook_rainbow_steps"),
+    }
     for function_id in wrappers.rainbow_ids:
-        name = _source_name(names.get(function_id, ""))
+        name = _source_name(names.get(function_id, ""), vocabulary)
         _bound_pick(
             master_button,
             family,
@@ -331,11 +382,9 @@ def _build_color_family(
             columns,
             pitch,
             small_font,
+            vocabulary,
             top=46,
-            caption={
-                "Arcoiris Simultaneo": "Arcoiris junto · '",
-                "Arcoiris Pasos": "Arcoiris fases · ¡",
-            }[name],
+            caption=rainbow_captions[name],
             include_key=True,
         )
         index += 1
@@ -354,10 +403,11 @@ def _build_pixel_family(
     title_font,
     big_font,
     small_font,
+    vocabulary: Names,
 ) -> None:
     family = frame(
         outer,
-        "PIXELES",
+        vocabulary.display("family_pixels"),
         _LEFT,
         376,
         _WIDTH,
@@ -369,7 +419,7 @@ def _build_pixel_family(
     )
     label(
         family,
-        "Pulsa un efecto y se queda. AUTO paneles devuelve su ciclo.",
+        vocabulary.display("pixels_guidance"),
         _GAP,
         _HEADER,
         _WIDTH - 2 * _GAP,
@@ -382,8 +432,8 @@ def _build_pixel_family(
         master_button,
         family,
         ids_by_name,
-        "Ciclo Paneles Mixto",
-        "AUTO paneles",
+        vocabulary.display("panel_cycle"),
+        vocabulary.display("hook_panels_auto"),
         0,
         columns,
         pitch,
@@ -394,8 +444,8 @@ def _build_pixel_family(
         master_button,
         family,
         ids_by_name,
-        "Paneles Charla",
-        "Paneles Charla",
+        vocabulary.display("talk_panels"),
+        vocabulary.display("talk_panels"),
         1,
         columns,
         pitch,
@@ -404,7 +454,17 @@ def _build_pixel_family(
     )
     for index, function_id in enumerate(wrappers.panel_ids, start=2):
         _pick(
-            button, family, names, function_id, index, columns, pitch, small_font, top=46, mark="▦"
+            button,
+            family,
+            names,
+            function_id,
+            index,
+            columns,
+            pitch,
+            small_font,
+            vocabulary,
+            top=46,
+            mark="▦",
         )
 
 
@@ -421,10 +481,11 @@ def _build_movement_family(
     title_font,
     big_font,
     small_font,
+    vocabulary: Names,
 ) -> None:
     family = frame(
         outer,
-        "CABEZAS",
+        vocabulary.display("family_heads"),
         _LEFT,
         478,
         _WIDTH,
@@ -434,7 +495,15 @@ def _build_movement_family(
         exclude_monitored=False,
         font=title_font,
     )
-    label(family, _CYCLE_GUIDANCE, _GAP, _HEADER, _WIDTH - 2 * _GAP, 18, font=small_font)
+    label(
+        family,
+        vocabulary.display("cycle_guidance"),
+        _GAP,
+        _HEADER,
+        _WIDTH - 2 * _GAP,
+        18,
+        font=small_font,
+    )
     # Fifteen across since 2026-09-22: the shape picks tripled when every
     # figure got its simultaneous and its alternating twin, and this frame has
     # no room to grow - GOBOS starts 148 px below it. Four hooks and twenty-six
@@ -442,19 +511,19 @@ def _build_movement_family(
     columns = 15
     pitch = (_WIDTH - 2 * _GAP) // columns
     hooks = (
-        ("Movimientos Suaves", "AUTO lento", False),
-        ("Movimientos Cabezas", "AUTO normal · A", True),
-        ("Movimientos Rapidos", "AUTO rapido", False),
-        ("Cabezas Centro", "Centro", False),
+        ("soft_movements", "hook_heads_slow", False),
+        ("head_movements", "hook_heads_normal", True),
+        ("fast_movements", "hook_heads_fast", False),
+        ("heads_centre", "centre_caption", False),
     )
     index = 0
-    for name, caption, include_key in hooks:
+    for function, caption, include_key in hooks:
         _hook(
             master_button,
             family,
             ids_by_name,
-            name,
-            caption,
+            vocabulary.display(function),
+            vocabulary.display(caption),
             index,
             columns,
             pitch,
@@ -465,7 +534,17 @@ def _build_movement_family(
         index += 1
     for function_id in wrappers.movement_ids:
         _pick(
-            button, family, names, function_id, index, columns, pitch, small_font, top=46, mark="↔"
+            button,
+            family,
+            names,
+            function_id,
+            index,
+            columns,
+            pitch,
+            small_font,
+            vocabulary,
+            top=46,
+            mark="↔",
         )
         index += 1
 
@@ -483,10 +562,11 @@ def _build_gobo_family(
     title_font,
     big_font,
     small_font,
+    vocabulary: Names,
 ) -> None:
     family = frame(
         outer,
-        "GOBOS",
+        vocabulary.display("family_gobos"),
         _LEFT,
         626,
         _WIDTH,
@@ -500,8 +580,8 @@ def _build_gobo_family(
         master_button,
         family,
         ids_by_name,
-        "Gobo Animacion",
-        "AUTO gobos · G",
+        vocabulary.display("gobo_animation"),
+        vocabulary.display("hook_gobos"),
         0,
         7,
         190,
@@ -513,18 +593,26 @@ def _build_gobo_family(
         master_button,
         family,
         ids_by_name,
-        "Gobo Reposo",
-        "Reposo",
+        vocabulary.display("gobo_rest"),
+        vocabulary.display("rest_caption"),
         1,
         7,
         190,
         big_font,
         top=_HEADER,
     )
-    label(family, _CYCLE_GUIDANCE, 392, _HEADER, _WIDTH - 398, 44, font=small_font)
+    label(
+        family,
+        vocabulary.display("cycle_guidance"),
+        392,
+        _HEADER,
+        _WIDTH - 398,
+        44,
+        font=small_font,
+    )
     picks = frame(
         family,
-        "Gobos para elegir — 2 paginas",
+        vocabulary.display("gobo_pages"),
         _GAP,
         74,
         _WIDTH - 2 * _GAP,
@@ -539,7 +627,7 @@ def _build_gobo_family(
         button(
             picks,
             function_id,
-            f"❋ {_pick_caption(names.get(function_id, ''))}",
+            f"❋ {_pick_caption(names.get(function_id, ''), vocabulary)}",
             _GAP + (index % per_page) * pitch,
             _HEADER,
             pitch - 4,
@@ -562,10 +650,11 @@ def _build_prism_family(
     title_font,
     big_font,
     small_font,
+    vocabulary: Names,
 ) -> None:
     family = frame(
         outer,
-        "PRISMA",
+        vocabulary.display("family_prism"),
         _LEFT,
         784,
         _WIDTH,
@@ -575,21 +664,29 @@ def _build_prism_family(
         exclude_monitored=False,
         font=title_font,
     )
-    label(family, _CYCLE_GUIDANCE, _GAP, _HEADER, _WIDTH - 2 * _GAP, 18, font=small_font)
+    label(
+        family,
+        vocabulary.display("cycle_guidance"),
+        _GAP,
+        _HEADER,
+        _WIDTH - 2 * _GAP,
+        18,
+        font=small_font,
+    )
     columns = 11
     pitch = (_WIDTH - 2 * _GAP) // columns
     hooks = (
-        ("Prisma Animacion", "AUTO prisma · P", True),
-        ("Prisma Reposo", "Reposo", False),
+        ("prism_animation", "hook_prism", True),
+        ("prism_rest", "rest_caption", False),
     )
     index = 0
-    for name, caption, include_key in hooks:
+    for function, caption, include_key in hooks:
         _hook(
             master_button,
             family,
             ids_by_name,
-            name,
-            caption,
+            vocabulary.display(function),
+            vocabulary.display(caption),
             index,
             columns,
             pitch,
@@ -600,7 +697,17 @@ def _build_prism_family(
         index += 1
     for function_id in wrappers.prism_ids:
         _pick(
-            button, family, names, function_id, index, columns, pitch, small_font, top=46, mark="✧"
+            button,
+            family,
+            names,
+            function_id,
+            index,
+            columns,
+            pitch,
+            small_font,
+            vocabulary,
+            top=46,
+            mark="✧",
         )
         index += 1
 
@@ -644,6 +751,7 @@ def _bound_pick(
     columns,
     pitch,
     font,
+    vocabulary,
     top,
     caption=None,
     include_key=False,
@@ -652,7 +760,7 @@ def _bound_pick(
     master_button(
         parent,
         name,
-        _pick_caption(name) if caption is None else caption,
+        _pick_caption(name, vocabulary) if caption is None else caption,
         x,
         y,
         pitch - 4,
@@ -663,12 +771,14 @@ def _bound_pick(
     )
 
 
-def _pick(button, parent, names, function_id, index, columns, pitch, font, top, mark="") -> None:
+def _pick(
+    button, parent, names, function_id, index, columns, pitch, font, vocabulary, top, mark=""
+) -> None:
     """One manual pick. `mark` is the family's glyph, so a full page of picks
     still says which family each tile belongs to (owner, 2026-09-22).
     """
     x, y = _grid_position(index, columns, pitch, top)
-    caption = _pick_caption(names.get(function_id, ""))
+    caption = _pick_caption(names.get(function_id, ""), vocabulary)
     button(
         parent,
         function_id,
@@ -685,27 +795,19 @@ def _grid_position(index: int, columns: int, pitch: int, top: int) -> tuple[int,
     return _GAP + (index % columns) * pitch, top + (index // columns) * 46
 
 
-def _source_name(name: str) -> str:
-    return name.removeprefix(PICK_PREFIX)
+def _source_name(name: str, vocabulary: Names) -> str:
+    return name.removeprefix(vocabulary.display("pick_prefix"))
 
 
-def _pick_caption(name: str) -> str:
-    caption = _source_name(name)
-    for prefix in ("Movimiento ", "Paneles - ", "Gobo - ", "Prisma - "):
+def _pick_caption(name: str, vocabulary: Names) -> str:
+    """The pick's function name without the markers its family's template adds (B8)."""
+    caption = _source_name(name, vocabulary)
+    prefixes = (
+        template_affixes(vocabulary, "movement_shape")[0],
+        vocabulary.display("panels_label") + " - ",
+        "Gobo - ",
+        vocabulary.display("prism_label") + " - ",
+    )
+    for prefix in prefixes:
         caption = caption.removeprefix(prefix)
-    return caption.removesuffix(" + Pixeles")
-
-
-def _reset_caption(name: str) -> str:
-    return {
-        "Momento Charla": "CHARLA",
-        "Momento Tranquilo": "TRANQUILO",
-        "Momento Fiesta": "FIESTA",
-        "Momento Locura": "LOCURA",
-        "Blanco Total": "BLANCO",
-        "Todo Negro": "NEGRO",
-        "Flash 100%": "FLASH",
-        "Flash Color": "FLASH COLOR",
-        "Humo ON": "HUMO",
-        "Strobo Rapido": "STROBO",
-    }.get(name, name)
+    return caption.removesuffix(template_affixes(vocabulary, "with_pixels")[1])

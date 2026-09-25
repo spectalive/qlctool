@@ -119,6 +119,14 @@ def test_a_movement_pick_starts_with_the_movement_prefix(language):
     assert circle.attrib["Path"] == names.display("path_movement")
 
 
+@pytest.mark.parametrize("language", ["es", "en"])
+def test_a_pixel_pick_ends_with_the_pixels_suffix(language):
+    names = shipped_names(language)
+    _, suffix = template_affixes(names, "with_pixels")
+    assert names.render("with_pixels", name="X").endswith(suffix)
+    assert suffix.strip()
+
+
 WHEEL_FOLDERS = {"es": "Gobo (generado)", "en": "Gobo (generated)"}
 
 

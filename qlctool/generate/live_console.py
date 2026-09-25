@@ -475,6 +475,7 @@ def generate_live_console(
             BIG_FONT,
             SMALL_FONT,
             palette=colours,
+            vocabulary=vocabulary,
         )
     _page_control(
         outer,
