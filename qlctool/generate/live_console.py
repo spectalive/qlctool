@@ -38,6 +38,7 @@ from ..argb import argb_from_rgb
 from ..control_glyph import GLYPHS
 from ..names.default_names import default_names
 from ..names.localised_keys import localised_keys
+from ..names.names import Names
 from ..palette import PALETTE
 from ..vc.appearance import DEFAULT
 from ..vc.audio_triggers import build_audio_triggers
@@ -113,99 +114,60 @@ MATRIX_BUTTON_HEIGHT = 36
 # that colour on all three banks.
 BANK_KEYS = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
 
-# A colour bank button is 44px wide: the name has to survive that.
-SHORT_COLOR = {
-    "UltraVioleta": "UV",
-    "Amarillo": "Amar",
-    "Magenta": "Mage",
-    "Blanco": "Blan",
-    "Naranja": "Nara",
-}
-# ...and a two-colour mix carries two of them, so those go to two letters. One
-# letter is what made "R/A" mean both Rojo/Azul and Rojo/Amarillo.
+# A colour bank button is 44px wide: the name has to survive that. Each
+# colour's short form is the catalogue's `<colour>_short`.
+SHORT_COLOURS = ("ultraviolet", "yellow", "magenta", "white", "orange")
+# ...and a two-colour mix carries two of them, so those go to two letters
+# (`<colour>_code`). One letter is what made "R/A" mean both Rojo/Azul and
+# Rojo/Amarillo; Ambar joined the mixes on 2026-09-22 and shares Amarillo's
+# first two letters, the same trap as Azul.
+MIX_COLOURS = (
+    "red",
+    "green",
+    "blue",
+    "yellow",
+    "amber",
+    "cyan",
+    "magenta",
+    "white",
+    "orange",
+    "pink",
+    "ultraviolet",
+)
 # Two wheel positions carry a sentence for a name and no button is that wide.
+# The keys are fixture-definition data; the values are catalogue identifiers.
 LONG_WHEEL_NAME = {
-    "Rainbow effect fast to slow": "Arcoiris +",
-    "Rainbow effect reverse slow to fast": "Arcoiris -",
-}
-MIX_CODE = {
-    "Rojo": "Ro",
-    "Verde": "Ve",
-    "Azul": "Az",
-    "Amarillo": "Am",
-    # Ambar joined the mixes on 2026-09-22 and shares Amarillo's first two
-    # letters, the same trap as Azul.
-    "Ambar": "Ab",
-    "Cyan": "Cy",
-    "Magenta": "Ma",
-    "Blanco": "Bl",
-    "Naranja": "Na",
-    "Rosa": "Rs",
-    "UltraVioleta": "UV",
+    "Rainbow effect fast to slow": "rainbow_plus",
+    "Rainbow effect reverse slow to fast": "rainbow_minus",
 }
 
-# The room's state: one at a time, biggest first. Caption, function, and the
-# geometry inside the solo frame.
+# The room's state: one at a time, biggest first. Function identifier,
+# caption identifier, and the geometry inside the solo frame.
 ROOM_STATES: tuple[tuple[str, str, tuple[int, int, int, int], str], ...] = (
-    ("AUTO", "AUTO — el show se lleva solo · Q", (8, 26, 690, 190), HUGE_FONT),
-    ("Momento Charla", "CHARLA — alguien habla · F1", (704, 26, 352, 92), BIG_FONT),
-    ("Momento Tranquilo", "TRANQUILO — bajón · F2", (1062, 26, 352, 92), BIG_FONT),
-    ("Momento Fiesta", "FIESTA — marcha normal · F3", (704, 124, 352, 92), BIG_FONT),
-    ("Momento Locura", "LOCURA — todo a la vez · F4", (1062, 124, 352, 92), BIG_FONT),
-    ("Blanco Total", "BLANCO TOTAL — luz de trabajo · X", (8, 222, 690, 92), BIG_FONT),
-    ("Todo Negro", "TODO NEGRO — apaga las luces · º", (704, 222, 710, 92), BIG_FONT),
+    ("auto", "room_auto", (8, 26, 690, 190), HUGE_FONT),
+    ("talk_moment", "room_talk", (704, 26, 352, 92), BIG_FONT),
+    ("calm_moment", "room_calm", (1062, 26, 352, 92), BIG_FONT),
+    ("party_moment", "room_party", (704, 124, 352, 92), BIG_FONT),
+    ("frenzy_moment", "room_frenzy", (1062, 124, 352, 92), BIG_FONT),
+    ("full_white", "room_white", (8, 222, 690, 92), BIG_FONT),
+    ("all_black", "room_black", (704, 222, 710, 92), BIG_FONT),
 )
 
 # The hits: they add to whatever state is running instead of replacing it, so
-# they live in a plain frame. Six across one row.
+# they live in a plain frame. Six across one row. (function, caption) identifiers.
 HITS: tuple[tuple[str, str], ...] = (
-    ("Flash 100%", "FLASH · Espacio"),
-    ("Flash 50%", "FLASH LENTO · -"),
-    ("Flash Color", "FLASH COLOR · ."),
-    ("Humo ON", "HUMO YA · H"),
-    ("Humo Vertical YA", "HUMO VERT · U"),
-    ("Strobo Rapido", "STROBO · F"),
-    ("Strobo Medio", "STROBO SUAVE · T"),
+    ("flash_full", "hit_button_flash"),
+    ("flash_half", "hit_button_flash_slow"),
+    ("flash_colour", "hit_button_flash_colour"),
+    ("smoke_on", "hit_button_smoke_now"),
+    ("vertical_smoke_now", "hit_button_vertical_smoke_now"),
+    ("strobe_fast", "hit_button_strobe"),
+    ("strobe_medium", "hit_button_strobe_soft"),
 )
 
 # What page 1 says about itself, because nobody reads a manual at a venue.
-HELP_LINES = (
-    (
-        "Arriba: en qué estado está la sala. Solo puede haber UNO — pulsar "
-        "otro cambia el estado, no se suman. AUTO es el normal: colores, humo "
-        "y la noche subiendo y bajando sola."
-    ),
-    (
-        "Los MOMENTOS son para cuando pasa algo: alguien sube a hablar "
-        "(CHARLA), la sala baja (TRANQUILO), va bien (FIESTA), el último tema "
-        "(LOCURA). Cuando pase el momento, vuelve a pulsar AUTO."
-    ),
-    (
-        "Abajo: los GOLPES. Esos SÍ se suman a lo que esté sonando. FLASH, "
-        "STROBO y HUMO YA funcionan mientras los mantienes pulsados y se "
-        "apagan al soltar."
-    ),
-    (
-        "PARAR TODO apaga todas las funciones a la vez: es el botón de cuando "
-        "algo se ha quedado encendido y no sabes cuál."
-    ),
-    (
-        "PgDn / PgUp cambian de página: 2 = JUGAR, 3 = CONTROL, "
-        "4 = LIBRERÍA. Las teclas funcionan desde cualquier página."
-    ),
-)
+HELP_LINES = ("help_show_1", "help_show_2", "help_show_3", "help_show_4", "help_show_5")
 
-# The haze rhythms, under the help text on page 1. The captions say minutes
-# because that is the question being asked - "cada cuanto" - and the first one
-# carries the key the hand-built console had on the haze.
-
-# The page-1 frames by caption, so a consumer (the tablet's map) can find them
-# without a second copy of the words.
-ROOM_FRAME = "LA SALA ESTÁ ASÍ — solo una a la vez"
-HITS_FRAME = "GOLPES — se suman a lo que ya está sonando"
-SMOKE_FRAME = "HUMO AMBIENTE — cada cuánto dispara solo"
-CHASES_FRAME = "Intensidad y strobo de fixture"
-SMOKE_LIGHT_CAPTION = "HUMO VERTICAL — su luz · N"
 HELP_ROW_Y = 630
 # The haze row was 28px tall under SMALL_FONT while every other button on the
 # page was 92 or 118 under BIG_FONT: "botones de humo pequeños comparados con el
@@ -214,11 +176,15 @@ HELP_ROW_Y = 630
 SMOKE_ROW_Y = 770
 SMOKE_ROW_HEIGHT = 110
 SMOKE_BUTTON_HEIGHT = 74
-SMOKE_RHYTHMS = (
-    ("Humo Auto", "HUMO cada 1 min · J"),
-    ("Humo Auto 2 min", "cada 2 min"),
-    ("Humo Auto 4 min", "cada 4 min"),
-    ("Humo Auto 8 min", "cada 8 min"),
+# The haze rhythms, under the help text on page 1. The captions say minutes
+# because that is the question being asked - "cada cuanto" - and the first one
+# carries the key the hand-built console had on the haze.
+# (function, caption) identifiers.
+SMOKE_RHYTHMS: tuple[tuple[str, str], ...] = (
+    ("smoke_auto", "haze_every_1"),
+    ("smoke_auto_2_min", "haze_every_2"),
+    ("smoke_auto_4_min", "haze_every_4"),
+    ("smoke_auto_8_min", "haze_every_8"),
 )
 
 # The tempo dial lives on page 1 since 2026-08-29: the owner taps the room's
@@ -236,16 +202,8 @@ SMOKE_RHYTHMS = (
 # chaser or the figure stops being a proportion of the step.
 TEMPO_TAP_KEY = "M"
 TEMPO_BEAT_MS = 500  # the dial's starting beat: 120 BPM
-TEMPO_LINES = (
-    "TEMPO — pulsa M al ritmo: colores,",
-    "gobos, prisma y dimmer siguen tu",
-    "compás. Las cabezas también (pág. 3).",
-)
-MOVEMENT_DIAL_LINES = (
-    "Velocidad de las cabezas. La misma",
-    "tecla M que el tempo de la página 1:",
-    "una figura son 16 taps.",
-)
+TEMPO_LINES = ("tempo_1", "tempo_2", "tempo_3")
+MOVEMENT_DIAL_LINES = ("movement_dial_1", "movement_dial_2", "movement_dial_3")
 
 # The workspace's own GrandMaster - it scales every output - had no widget
 # bound to it at all. It wants to sit below "Intensidad y strobo de
@@ -256,28 +214,30 @@ MOVEMENT_DIAL_LINES = (
 GRAND_MASTER_WIDTH = 90
 GRAND_MASTER_HEIGHT = 140
 GRAND_MASTER_LINES = (
-    "MASTER GENERAL — corta la",
-    "intensidad de toda la sala",
-    "sobre lo que ya esté",
-    "encendido. Arriba = normal",
-    "(255), abajo = todo apagado.",
+    "grand_master_1",
+    "grand_master_2",
+    "grand_master_3",
+    "grand_master_4",
+    "grand_master_5",
 )
 
 # Page 4 says what it is for, because a page of 180 buttons otherwise reads as
 # something somebody is supposed to be using.
+# The "· · ·" separators are not words (ruling B6) and stay literal.
+LIBRARY_SEPARATOR = "· · ·"
 LIBRARY_LINES = (
-    "Esta página es el almacén: las mezclas de dos colores, las matrices y",
-    "los 42 efectos propios de los paneles. Están aquí para mirarlos y para",
-    "construir AUTO con ellos, no para pulsarlos con la sala llena.",
-    "· · ·",
-    "Las flechas de la cabecera de cada marco cambian de grupo: cada grupo",
-    "de luces tiene sus propias mezclas y sus propias matrices.",
-    "· · ·",
-    "Los 42 efectos de los paneles no los ha visto nadie todavía: el aparato",
-    "solo los llama «Effect N». Pulsa, mira, y apunta cuáles valen la pena.",
-    "· · ·",
-    "Las ruedas por grupo pintan los mismos fixtures que la rueda general.",
-    "Encender las dos a la vez suma los dos colores: sale blanco.",
+    "library_1",
+    "library_2",
+    "library_3",
+    LIBRARY_SEPARATOR,
+    "library_4",
+    "library_5",
+    LIBRARY_SEPARATOR,
+    "library_6",
+    "library_7",
+    LIBRARY_SEPARATOR,
+    "library_8",
+    "library_9",
 )
 
 # The five spectrum bands. The strobe was wired to the upper mids until
@@ -294,11 +254,11 @@ LIBRARY_LINES = (
 # AUTO), then `Flash 100%` - until that scene got its hardware strobe back,
 # and a strobe fired by whatever the PA does is a strobe nobody chose.
 AUDIO_BANDS: tuple[tuple[str, str | None], ...] = (
-    ("Graves", "Golpe Graves"),
-    ("Medios-graves", None),
-    ("Medios", None),
-    ("Medios-agudos", None),
-    ("Agudos", None),
+    ("band_bass", "bass_hit"),
+    ("band_low_mid", None),
+    ("band_mid", None),
+    ("band_high_mid", None),
+    ("band_high", None),
 )
 
 
@@ -347,15 +307,21 @@ def generate_live_console(
     pad_bindings: Mapping[str, int] | None = None,
     pad_colors: Mapping[str, tuple[int, int, int]] | None = None,
     glyphs: Mapping[str, str] | None = None,
+    vocabulary: Names | None = None,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame.
 
     `pad_bindings`, `pad_colors` and `glyphs` are keyed by display name;
-    `glyphs=None` means the shipped glyphs in the default vocabulary.
+    `glyphs=None` means the shipped glyphs in the vocabulary. The console's
+    words come from `vocabulary`; None means `default_names()`.
     """
+    vocabulary = default_names() if vocabulary is None else vocabulary
     pad_bindings = dict(pad_bindings or {})
     pad_colors = dict(pad_colors or {})
-    glyphs = localised_keys(GLYPHS, default_names()) if glyphs is None else dict(glyphs)
+    glyphs = localised_keys(GLYPHS, vocabulary) if glyphs is None else dict(glyphs)
+    # The short forms the bank and mix buttons wear, keyed by colour name.
+    short_colour = {vocabulary.display(c): vocabulary.display(f"{c}_short") for c in SHORT_COLOURS}
+    mix_code = {vocabulary.display(c): vocabulary.display(f"{c}_code") for c in MIX_COLOURS}
     colours = PALETTE if palette is None else palette
     root_frame = _root_frame(workspace.root)
     names = _function_names(workspace)
@@ -463,8 +429,8 @@ def generate_live_console(
     # When a pad profile is given, its arrow buttons page the console: a
     # frame's Next Page is external control 0 and Previous Page is 1 (qmlui
     # vcframe.h). Without a pad, nothing is bound.
-    bind_pad(outer, pad_bindings, "Pagina Siguiente")
-    bind_pad(outer, pad_bindings, "Pagina Anterior", source_id=1)
+    bind_pad(outer, pad_bindings, vocabulary.display("page_next"))
+    bind_pad(outer, pad_bindings, vocabulary.display("page_previous"), source_id=1)
 
     _page_show(
         outer,
@@ -478,6 +444,7 @@ def generate_live_console(
         bpm_tap,
         tempo_beat_ms,
         pad_bindings,
+        vocabulary,
     )
     if play_wrappers is not None:
         build_play_page(
@@ -513,6 +480,9 @@ def generate_live_console(
         tempo_beat_ms,
         colours,
         pad_bindings,
+        vocabulary,
+        short_colour,
+        mix_code,
     )
     _page_library(
         outer,
@@ -529,6 +499,8 @@ def generate_live_console(
         matrix_algorithms,
         beam_subsets,
         colours,
+        vocabulary,
+        mix_code,
     )
 
     # Last, because a band presses a button and needs its widget ID.
@@ -536,14 +508,17 @@ def generate_live_console(
     triggers = build_audio_triggers(
         outer,
         triggers_id,
-        "Audio (hay que elegir entrada en Configuración)",
+        vocabulary.display("audio_triggers"),
         RIGHT_X,
         330,
         RIGHT_WIDTH,
         110,
         bars=[
-            (name, widget_of.get(master.get(target)) if target else None)
-            for name, target in AUDIO_BANDS
+            (
+                vocabulary.display(band),
+                widget_of.get(master.get(vocabulary.display(target))) if target else None,
+            )
+            for band, target in AUDIO_BANDS
         ],
     )
     _on_page(triggers, PAGE_CONTROL)
@@ -565,11 +540,12 @@ def _page_show(
     bpm_tap,
     tempo_beat_ms,
     pad_bindings: Mapping[str, int],
+    vocabulary: Names,
 ) -> None:
     """Page 1: the state the room is in, the hits, and the panic button."""
     label(
         outer,
-        "1 · SHOW — pulsa AUTO y ya está. PgDn para el resto.",
+        vocabulary.display("page_show"),
         LEFT_X,
         30,
         OUTER_WIDTH - 16,
@@ -584,7 +560,7 @@ def _page_show(
     # another page, in a plain frame.
     room = frame(
         outer,
-        ROOM_FRAME,
+        vocabulary.display("room_states"),
         LEFT_X,
         68,
         OUTER_WIDTH - 16,
@@ -596,12 +572,21 @@ def _page_show(
         exclude_monitored=False,
         font=TITLE_FONT,
     )
-    for name, caption, (x, y, w, h), font in ROOM_STATES:
-        master_button(room, name, caption, x, y, w, h, font=font)
+    for function, caption, (x, y, w, h), font in ROOM_STATES:
+        master_button(
+            room,
+            vocabulary.display(function),
+            vocabulary.display(caption),
+            x,
+            y,
+            w,
+            h,
+            font=font,
+        )
 
     hits = frame(
         outer,
-        HITS_FRAME,
+        vocabulary.display("hits"),
         LEFT_X,
         330,
         OUTER_WIDTH - 16,
@@ -612,11 +597,11 @@ def _page_show(
     # Seven across the row: pitch derived from the frame so adding a hit
     # narrows the buttons instead of pushing the last one off the screen.
     pitch = (OUTER_WIDTH - 16 - 2 * GAP - 4) // len(HITS)
-    for index, (name, caption) in enumerate(HITS):
+    for index, (function, caption) in enumerate(HITS):
         master_button(
             hits,
-            name,
-            caption,
+            vocabulary.display(function),
+            vocabulary.display(caption),
             GAP + 2 + index * pitch,
             HEADER + 4,
             pitch - 6,
@@ -626,7 +611,7 @@ def _page_show(
 
     panic = frame(
         outer,
-        "SI ALGO VA MAL",
+        vocabulary.display("panic_frame"),
         LEFT_X,
         500,
         OUTER_WIDTH - 16,
@@ -651,7 +636,7 @@ def _page_show(
     stop_all = button(
         panic,
         None,
-        "PARAR TODO · Retroceso",
+        vocabulary.display("stop_all_button"),
         GAP + 2,
         HEADER + 4,
         460,
@@ -661,11 +646,11 @@ def _page_show(
         stop_all_fade_ms=STOP_ALL_FADE_MS,
         font=BIG_FONT,
     )
-    bind_pad(stop_all, pad_bindings, "PARAR TODO")
+    bind_pad(stop_all, pad_bindings, vocabulary.display("stop_all"))
     blackout = button(
         panic,
         None,
-        "APAGON · Esc",
+        vocabulary.display("blackout_button"),
         474,
         HEADER + 4,
         200,
@@ -674,12 +659,10 @@ def _page_show(
         key=BLACKOUT_KEY,
         font=BIG_FONT,
     )
-    bind_pad(blackout, pad_bindings, "APAGON")
+    bind_pad(blackout, pad_bindings, vocabulary.display("blackout"))
     label(
         panic,
-        "PARAR TODO para las funciones con un fundido de 1 segundo — pulsa "
-        "AUTO para retomar. APAGON deja la sala a oscuras — vuelve a pulsar "
-        "APAGON para devolverla, y luego AUTO.",
+        vocabulary.display("panic_help"),
         680,
         HEADER + 4,
         726,
@@ -690,7 +673,7 @@ def _page_show(
     for index, line in enumerate(HELP_LINES):
         label(
             outer,
-            line,
+            vocabulary.display(line),
             LEFT_X,
             HELP_ROW_Y + index * 26,
             RIGHT_X - LEFT_X - GAP,
@@ -706,7 +689,7 @@ def _page_show(
     # only fire while HUMO VERT is held down (`rule_held_column`).
     smoke = frame(
         outer,
-        SMOKE_FRAME,
+        vocabulary.display("haze"),
         LEFT_X,
         SMOKE_ROW_Y,
         RIGHT_X - LEFT_X - GAP,
@@ -719,11 +702,11 @@ def _page_show(
         font=TITLE_FONT,
     )
     pitch = (RIGHT_X - LEFT_X - GAP - 2 * GAP) // len(SMOKE_RHYTHMS)
-    for index, (name, caption) in enumerate(SMOKE_RHYTHMS):
+    for index, (function, caption) in enumerate(SMOKE_RHYTHMS):
         master_button(
             smoke,
-            name,
-            caption,
+            vocabulary.display(function),
+            vocabulary.display(caption),
             GAP + index * pitch,
             HEADER + 4,
             pitch - 6,
@@ -741,7 +724,7 @@ def _page_show(
     dial = build_speed_dial(
         outer,
         dial_id,
-        "Tempo Show",
+        vocabulary.display("tempo_dial"),
         RIGHT_X,
         700,
         RIGHT_WIDTH,
@@ -751,13 +734,13 @@ def _page_show(
         tap_key=TEMPO_TAP_KEY,
         control_bpm=bpm_tap,
     )
-    bind_pad(dial, pad_bindings, "Tempo Show")
+    bind_pad(dial, pad_bindings, vocabulary.display("tempo_dial"))
     _on_page(dial, PAGE_SHOW)
     console.widget_ids.append(dial_id)
     for index, line in enumerate(TEMPO_LINES):
         label(
             outer,
-            line,
+            vocabulary.display(line),
             RIGHT_X,
             824 + index * 20,
             RIGHT_WIDTH,
@@ -783,6 +766,9 @@ def _page_control(
     tempo_beat_ms,
     palette: Mapping[str, tuple[int, int, int]],
     pad_bindings: Mapping[str, int],
+    vocabulary: Names,
+    short_colour: Mapping[str, str],
+    mix_code: Mapping[str, str],
 ) -> None:
     """Page 3: direct controls that remain useful beside the play families."""
     label(
@@ -834,7 +820,7 @@ def _page_control(
             button(
                 element,
                 function_id,
-                _mix_caption(name) if split else _bank_caption(name),
+                _mix_caption(name, mix_code) if split else _bank_caption(name, short_colour),
                 x=GAP + index * pitch,
                 y=HEADER,
                 w=pitch - 3,
@@ -851,7 +837,7 @@ def _page_control(
 
     dimmers = frame(
         outer,
-        CHASES_FRAME,
+        vocabulary.display("intensity_chases"),
         LEFT_X,
         y,
         LEFT_WIDTH,
@@ -906,13 +892,13 @@ def _page_control(
         GRAND_MASTER_WIDTH,
         GRAND_MASTER_HEIGHT,
     )
-    bind_pad(grand_master, pad_bindings, "Master General")
+    bind_pad(grand_master, pad_bindings, vocabulary.display("grand_master"))
     _on_page(grand_master, PAGE_CONTROL)
     console.widget_ids.append(grand_master_id)
     for index, line in enumerate(GRAND_MASTER_LINES):
         label(
             outer,
-            line,
+            vocabulary.display(line),
             RIGHT_X,
             grand_master_y + GRAND_MASTER_HEIGHT + GAP + index * 22,
             RIGHT_WIDTH,
@@ -926,7 +912,7 @@ def _page_control(
     master_button(
         outer,
         "Humo Vertical",
-        SMOKE_LIGHT_CAPTION,
+        vocabulary.display("vertical_smoke_light"),
         RIGHT_X,
         716,
         RIGHT_WIDTH,
@@ -952,6 +938,7 @@ def _page_control(
         button,
         frame,
         names,
+        vocabulary,
         beam_colors.scene_ids,
         "Color de los BEAM — su rueda, no RGB",
         "Color Beam - ",
@@ -1008,13 +995,13 @@ def _page_control(
             time_ms=tempo_beat_ms,
             tap_key=TEMPO_TAP_KEY,
         )
-        bind_pad(dial, pad_bindings, "Vel. Movimiento")
+        bind_pad(dial, pad_bindings, vocabulary.display("movement_speed"))
         _on_page(dial, PAGE_CONTROL)
         console.widget_ids.append(dial_id)
         for index, line in enumerate(MOVEMENT_DIAL_LINES):
             label(
                 outer,
-                line,
+                vocabulary.display(line),
                 RIGHT_X,
                 228 + index * 22,
                 RIGHT_WIDTH,
@@ -1039,6 +1026,8 @@ def _page_library(
     matrix_algorithms,
     beam_subsets,
     palette: Mapping[str, tuple[int, int, int]],
+    vocabulary: Names,
+    mix_code: Mapping[str, str],
 ) -> None:
     """Page 4: the material the show is built from, not buttons for a set."""
     label(
@@ -1086,7 +1075,7 @@ def _page_library(
                 button(
                     mixes,
                     function_id,
-                    _mix_caption(name),
+                    _mix_caption(name, mix_code),
                     x=GAP + column * 51,
                     y=HEADER + 24 + row * 51,
                     w=48,
@@ -1106,6 +1095,7 @@ def _page_library(
         button,
         frame,
         names,
+        vocabulary,
         beam_subsets.multicolor_scene_ids if beam_subsets is not None else [],
         "MultiColor BEAM — dos colores a la vez en el haz",
         "MultiColor - ",
@@ -1292,7 +1282,7 @@ def _page_library(
     for index, line in enumerate(LIBRARY_LINES):
         label(
             outer,
-            line,
+            line if line == LIBRARY_SEPARATOR else vocabulary.display(line),
             LEFT_X,
             410 + index * 26,
             LEFT_WIDTH,
@@ -1307,6 +1297,7 @@ def _wheel_frame(
     button,
     frame,
     names,
+    vocabulary: Names,
     scene_ids,
     caption,
     marker,
@@ -1343,10 +1334,11 @@ def _wheel_frame(
     for index, function_id in enumerate(scene_ids):
         column, row = index % columns, index // columns
         caption = _after(names.get(function_id, ""), marker)
+        long_name = LONG_WHEEL_NAME.get(caption)
         button(
             element,
             function_id,
-            LONG_WHEEL_NAME.get(caption, caption),
+            caption if long_name is None else vocabulary.display(long_name),
             x=GAP + column * step,
             y=HEADER + row * 52,
             w=step - 4,
@@ -1395,10 +1387,10 @@ def _swatch(name: str, palette: Mapping[str, tuple[int, int, int]], second: bool
     return DEFAULT
 
 
-def _bank_caption(name: str) -> str:
+def _bank_caption(name: str, short_colour: Mapping[str, str]) -> str:
     """ "Rojo BarrasLed" is a red button in the bars' bank: it says "Rojo"."""
     first = name.split(" ", maxsplit=1)[0] if name else ""
-    return SHORT_COLOR.get(first, first)
+    return short_colour.get(first, first)
 
 
 def _wheel_caption(name: str) -> str:
@@ -1406,7 +1398,7 @@ def _wheel_caption(name: str) -> str:
     return _after(name, "Rueda ")
 
 
-def _mix_caption(name: str) -> str:
+def _mix_caption(name: str, mix_code: Mapping[str, str]) -> str:
     """ "Rojo / Azul PAR" reads as "Ro/Az" on a 44px button.
 
     Two letters, not one: Azul and Amarillo both start with an A, so a
@@ -1417,7 +1409,7 @@ def _mix_caption(name: str) -> str:
         return ""
     first = parts[0].split(" ")[0]
     second = parts[1].split(" ")[0]
-    return f"{MIX_CODE.get(first, first[:2])}/{MIX_CODE.get(second, second[:2])}"
+    return f"{mix_code.get(first, first[:2])}/{mix_code.get(second, second[:2])}"
 
 
 def _after(name: str, marker: str) -> str:

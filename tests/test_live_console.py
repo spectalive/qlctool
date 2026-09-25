@@ -270,11 +270,12 @@ def test_the_room_is_in_exactly_one_state(console):
     assert localname(room) == "SoloFrame"
     # Each state wears its glyph since 2026-09-22 ("ni un solo icono en los
     # botones", owner): the caption after it is still the show's own.
+    names = default_names()
     assert [leading_glyph(c)[1] for c in _captions(room)] == [
-        caption for _, caption, _, _ in ROOM_STATES
+        names.display(caption) for _, caption, _, _ in ROOM_STATES
     ]
     assert [leading_glyph(c)[0] for c in _captions(room)] == [
-        glyph(default_names().identify(name, ("functions",))) for name, _, _, _ in ROOM_STATES
+        glyph(identifier) for identifier, _, _, _ in ROOM_STATES
     ]
 
 
@@ -337,7 +338,9 @@ def test_every_button_on_the_show_page_says_its_own_key(console):
     ):
         assert " · " in caption, caption
     actual = [leading_glyph(c)[1] for c in _captions(_frame_named(frame, "GOLPES"))]
-    expected = [caption for name, caption in HITS if name not in OPTIONAL_KEYS or caption in actual]
+    names = default_names()
+    hits = [(names.display(name), names.display(caption)) for name, caption in HITS]
+    expected = [caption for name, caption in hits if name not in OPTIONAL_KEYS or caption in actual]
     assert expected == actual
 
 
@@ -551,8 +554,8 @@ def test_no_play_pick_is_reachable_from_a_room_state(console):
     }
     reachable = set()
     members = _members(root)
-    for state_name, _, _, _ in ROOM_STATES:
-        state_id = ids_by_name[state_name]
+    for state, _, _, _ in ROOM_STATES:
+        state_id = ids_by_name[default_names().display(state)]
         reachable.add(state_id)
         reachable.update(members.get(state_id, set()))
 
@@ -793,7 +796,7 @@ def test_control_retains_every_direct_operator_contract(console):
         for widget in widgets
         if localname(widget) == "Label" and _console_page(widget, console_frame) == PAGE_CONTROL
     }
-    assert set(GRAND_MASTER_LINES) <= control_labels
+    assert {default_names().display(line) for line in GRAND_MASTER_LINES} <= control_labels
 
     bass = retained[("Button", "GOLPE GRAVES")]
     assert functions[_function_id(bass)].attrib["Name"] == "Golpe Graves"

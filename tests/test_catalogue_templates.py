@@ -138,3 +138,22 @@ def test_wheel_animations_are_the_functions_keys_bind(language):
     assert gobo_chaser.attrib["Name"] == names.display("gobo_animation")
     assert gobo_chaser.attrib["Path"] == WHEEL_FOLDERS[language]
     assert by_id[str(prism.chaser_id)].attrib["Name"] == names.display("prism_animation")
+
+
+HIT_BUTTONS = {
+    "hit_button_flash": "hit_flash",
+    "hit_button_flash_slow": "hit_flash_slow",
+    "hit_button_flash_colour": "hit_flash_colour",
+    "hit_button_smoke_now": "hit_smoke_now",
+    "hit_button_vertical_smoke_now": "hit_vertical_smoke_now",
+    "hit_button_strobe": "hit_strobe",
+    "hit_button_strobe_soft": "hit_strobe_soft",
+}
+
+
+@pytest.mark.parametrize("language", ["es", "en"])
+def test_a_hit_button_starts_with_the_caption_the_desk_knows(language):
+    """Ruling B7: the key hint rides in the caption; the head is the desk's word."""
+    names = shipped_names(language)
+    for button, caption in HIT_BUTTONS.items():
+        assert names.display(button).split(" · ")[0] == names.display(caption)
