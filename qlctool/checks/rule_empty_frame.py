@@ -8,10 +8,12 @@ with no gobo wheel and no prism. `qlctool check` said "ningun problema": every
 rule asks about the buttons that exist, and none about a frame that has none.
 
 A frame on a console is a promise that something is there to press. One that
-holds only labels, or nothing, or only frames that are themselves empty, says
-the rig can do a thing it cannot. The rule reads the widget tree and nothing
-else: the frame's caption only names it in the finding. The console's own root
-frame is the canvas, not a widget, and is not asked.
+holds only labels, or nothing, or only frames that are themselves empty, has
+nothing to press. A frame built on purpose as a legend is reported too: the
+finding says only that, and `docs/checks.md` records the limit. The rule reads
+the widget tree and nothing else: the frame's caption only names it in the
+finding. The console's own root frame is the canvas, not a widget, and is not
+asked.
 """
 
 from lxml import etree
@@ -41,7 +43,7 @@ def check_empty_frames(root: etree._Element) -> list[Finding]:
                 function=frame.get("Caption") or f"marco {frame.get('ID')}",
                 message=(
                     "este marco no tiene ningun control dentro, solo textos o nada: "
-                    "promete en la consola algo que el rig no tiene"
+                    "en la consola no hay nada que pulsar en el"
                 ),
             )
         )
