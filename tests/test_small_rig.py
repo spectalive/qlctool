@@ -8,6 +8,7 @@ assumed Vibra's beams and fog.
 from pathlib import Path
 
 import pytest
+from console_captions import console_captions
 from gobo_spot_rig import build_gobo_spot_patch
 from small_rig import build_small_rig_patch
 
@@ -53,13 +54,6 @@ def test_no_member_names_a_function_that_was_never_built(club):
     assert not check_dangling_references(build_show_graph(root, []), root)
 
 
-def _captions(club: Path) -> list[str]:
-    root = Workspace.load(club).root
-    return [
-        e.get("Caption") or "" for e in root.iter() if isinstance(e.tag, str) and e.get("Caption")
-    ]
-
-
 def test_no_frame_is_left_with_nothing_to_press(club):
     """Plan C preflight (D9): the haze row, and the gobo, prism and pixel families."""
     assert not check_empty_frames(Workspace.load(club).root)
@@ -68,7 +62,7 @@ def test_no_frame_is_left_with_nothing_to_press(club):
 def test_the_console_does_not_speak_of_haze(club):
     """Plan C preflight (D9): no haze machine, so no haze row, hit or help line."""
     haze = default_names().display("haze_word").casefold()
-    assert not [c for c in _captions(club) if haze in c.casefold()]
+    assert not [c for c in console_captions(club) if haze in c.casefold()]
 
 
 def test_the_aim_label_names_no_count(club):
@@ -77,7 +71,7 @@ def test_the_aim_label_names_no_count(club):
     Owner decision, 2026-09-25: the label carries no number on any rig.
     """
     aim = default_names().display("aim_frame")
-    assert aim in _captions(club)
+    assert aim in console_captions(club)
     assert not any(ch.isdigit() for ch in aim)
 
 
@@ -88,7 +82,7 @@ def test_the_control_page_does_not_promise_beam_wheels(club):
     built; the title names only what the page holds.
     """
     names = default_names()
-    captions = _captions(club)
+    captions = console_captions(club)
     assert names.display("page_control_no_haze_no_beam_wheel") in captions
     wheel_titles = [names.display(k) for k in ("page_control", "page_control_no_haze")]
     assert not [c for c in captions if c in wheel_titles]
@@ -101,7 +95,7 @@ def test_2026_09_25_the_tempo_help_names_no_gobo_or_prism(club):
     built and the dial re-times neither.
     """
     names = default_names()
-    captions = _captions(club)
+    captions = console_captions(club)
     assert names.display("tempo_2") not in captions
     assert not [c for c in captions if "gobo" in c.casefold() or "prism" in c.casefold()]
 
@@ -112,7 +106,7 @@ def test_2026_09_25_the_matrices_frame_names_no_bars_or_panels(club):
     The club's matrices run on its pars and its heads: no fixture is made of
     pixels and none has built-in effects.
     """
-    assert default_names().display("matrices_frame") not in _captions(club)
+    assert default_names().display("matrices_frame") not in console_captions(club)
 
 
 def test_2026_09_25_the_library_help_names_no_built_in_effects(club):
@@ -122,8 +116,9 @@ def test_2026_09_25_the_library_help_names_no_built_in_effects(club):
     the help lines about it have nothing to point at.
     """
     names = default_names()
-    captions = _captions(club)
-    for key in ("library_1", "library_2", "library_6", "library_7"):
+    captions = console_captions(club)
+    # library_2 and library_6 carry a {count} field, so are asserted by the panel/42 line.
+    for key in ("library_1", "library_7"):
         assert names.display(key) not in captions, key
     assert not [c for c in captions if "panel" in c.casefold() or "42" in c]
 
