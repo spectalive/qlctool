@@ -133,6 +133,54 @@ def test_no_spanish_word_reaches_a_finding_from_code():
     assert leaks == []
 
 
+# Literals in `qlctool/checks/` that spell a Spanish-only word and never reach
+# a finding: the family key `family_frames` reads roles by.
+NEVER_SAID = {("family_frames.py", "color")}
+
+
+def _docstrings(tree: ast.Module) -> set[int]:
+    """The ids of the module's, classes' and functions' docstring constants."""
+    kinds = (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)
+    return {
+        id(node.body[0].value)
+        for node in ast.walk(tree)
+        if isinstance(node, kinds)
+        and node.body
+        and isinstance(node.body[0], ast.Expr)
+        and isinstance(node.body[0].value, ast.Constant)
+    }
+
+
+def test_no_spanish_word_is_spelled_anywhere_in_the_checks():
+    """Review of B10 round 2 (2026-09-26): the call-site scan missed a helper.
+
+    `rule_grid_order._where` returning "sin colgar" builds the literal outside
+    the `Joined(...)` that carries it, so only a scan of every string in the
+    module sees it; "colgar" is a word only the Spanish catalogue uses.
+    """
+    words = _spanish_only_words()
+    identifiers = {i for section in load_catalogue("es").values() for i in section}
+    leaks = []
+    for module in sorted(CHECKS.glob("*.py")):
+        tree = ast.parse(module.read_text(encoding="utf-8"))
+        docstrings = _docstrings(tree)
+        for node in ast.walk(tree):
+            if not (isinstance(node, ast.Constant) and isinstance(node.value, str)):
+                continue
+            if id(node) in docstrings or node.value in identifiers:
+                continue
+            if (module.name, node.value) in NEVER_SAID:
+                continue
+            hits = sorted(w for w in re.findall(WORD, node.value) if w in words)
+            if hits:
+                leaks.append(f"{module.name}:{node.lineno} {node.value!r}: {hits}")
+    assert leaks == []
+
+
+def test_the_wide_scan_would_see_sin_colgar():
+    assert "colgar" in _spanish_only_words()
+
+
 def test_every_spanish_entry_has_an_english_twin_with_the_same_fields():
     spanish, english = load_catalogue("es")["findings"], load_catalogue("en")["findings"]
     assert list(spanish) == list(english)

@@ -18,9 +18,13 @@ asked.
 
 from lxml import etree
 
+from ..names.shipped_names import shipped_names
+from ..names.workspace_language import workspace_language
 from ..xmlutil import find_local, localname
 from .finding import WARNING, Finding
 from .frame_holds_a_control import frame_holds_a_control
+from .rendered_value import rendered_value
+from .untitled_frame import untitled_frame
 
 RULE_ID = "empty_frame"
 
@@ -30,6 +34,10 @@ def check_empty_frames(root: etree._Element) -> list[Finding]:
     canvas = find_local(console, "Frame") if console is not None else None
     if canvas is None:
         return []
+    # A frame with no caption is named in the workspace's words: `marco 12` on a
+    # Spanish show, as before ruling B10, and never the engine tag (review of
+    # B10 round 2, 2026-09-26).
+    names = shipped_names(workspace_language(root))
     findings: list[Finding] = []
     for frame in canvas.iter():
         if not isinstance(frame.tag, str) or frame is canvas:
@@ -40,7 +48,7 @@ def check_empty_frames(root: etree._Element) -> list[Finding]:
             Finding(
                 rule_id=RULE_ID,
                 severity=WARNING,
-                function=frame.get("Caption") or f"{localname(frame)} {frame.get('ID')}",
+                function=frame.get("Caption") or str(rendered_value(names, untitled_frame(frame))),
                 message_id="empty_frame_nothing_to_press",
             )
         )

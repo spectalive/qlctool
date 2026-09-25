@@ -3193,7 +3193,7 @@ def test_2026_09_25_a_patched_fixture_with_no_definition(tmp_path, monkeypatch, 
     assert f"  {display_name_of_rule(RULE_ID, 'en')} (3):" in printed
     assert "Chauvet MiN Wash" in printed
     # Since round 2 of ruling B10 its finding messages are English too.
-    assert "searched no folder" in printed
+    assert "searched: no folder" in printed
     assert "buscado" not in printed
 
     assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 0

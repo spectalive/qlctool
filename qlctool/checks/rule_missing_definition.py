@@ -20,14 +20,14 @@ from ..fixture import patched_fixtures
 from ..library import FixtureLibrary
 from .finding import ERROR, Finding
 from .phrase import Phrase
+from .searched_folders_said import searched_folders_said
 
 RULE_ID = "missing_fixture_definition"
 
 
 def check_missing_definitions(root: etree._Element, library: FixtureLibrary) -> list[Finding]:
     # The folders, or the catalogue's word for none, said in the workspace's language.
-    folders = ", ".join(str(folder) for folder in library.sources)
-    searched = folders or Phrase("searched_no_folder")
+    searched = searched_folders_said(library)
     unresolved: dict[str, list[str]] = {}
     said: dict[str, Phrase] = {}
     for fixture in patched_fixtures(root):
