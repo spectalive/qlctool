@@ -9,6 +9,7 @@ language every such workspace in this repository was built in.
 from lxml import etree
 
 from ..desk_widgets import FRAME_TAGS, desk_widgets
+from .frame_caption_head import frame_caption_head
 from .load_catalogue import load_catalogue
 from .shipped_languages import shipped_languages
 
@@ -21,12 +22,12 @@ def workspace_language(root: etree._Element) -> str:
     """
     # The desk reads frames and solo frames alike; the room states are a solo frame.
     heads = {
-        widget.caption.split(" — ", maxsplit=1)[0].strip().casefold()
+        frame_caption_head(widget.caption)
         for widget in desk_widgets(root)
         if widget.kind in FRAME_TAGS
     }
     for language in shipped_languages():
         title = load_catalogue(language)["frames"]["room_states"]
-        if title.split(" — ", maxsplit=1)[0].strip().casefold() in heads:
+        if frame_caption_head(title) in heads:
             return language
     return "es"

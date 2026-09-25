@@ -14,6 +14,7 @@ from pathlib import Path
 
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
+from qlctool.names.frame_caption_head import frame_caption_head
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 
@@ -21,11 +22,10 @@ REPO = Path(__file__).resolve().parents[3]
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 # The frames whose Toggles a room state can start as children.
-HEARING_FRAMES = ("COLOR", "PIXELES", "CABEZAS", "GOBOS", "PRISMA", "LA SALA", "HUMO AMBIENTE")
-
-
-def _head(caption: str) -> str:
-    return caption.split(" — ")[0].strip()
+HEARING_FRAMES = tuple(
+    head.casefold()
+    for head in ("COLOR", "PIXELES", "CABEZAS", "GOBOS", "PRISMA", "LA SALA", "HUMO AMBIENTE")
+)
 
 
 def _excludes(frame) -> str:
@@ -38,7 +38,11 @@ def test_the_family_and_room_frames_hear_monitored_hooks():
     build_canonical_show(workspace, FixtureLibrary.load())
     frames = list(iter_local(workspace.root, "SoloFrame"))
     assert frames
-    hearing = [f for f in frames if _head(f.attrib.get("Caption", "")).startswith(HEARING_FRAMES)]
+    hearing = [
+        f
+        for f in frames
+        if frame_caption_head(f.attrib.get("Caption", "")).startswith(HEARING_FRAMES)
+    ]
     deaf = [f for f in frames if f not in hearing]
     assert len(hearing) == 7, [f.attrib.get("Caption") for f in hearing]
     for frame in hearing:

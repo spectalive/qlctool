@@ -35,7 +35,8 @@ def swatches(graph: ShowGraph, groups, function_id: int) -> list[str]:
             triple.append(value)
         if len(triple) != 3:
             continue
-        colour = "#%02x%02x%02x" % tuple(triple)
+        red, green, blue = triple
+        colour = f"#{red:02x}{green:02x}{blue:02x}"
         if colour not in found:
             found.append(colour)
         if len(found) == MAX_SWATCHES:

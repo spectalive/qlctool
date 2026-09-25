@@ -40,11 +40,11 @@ def _build(language: str, names: dict | None = None):
 
 
 def _buttons_by_frame(workspace: Workspace, page: int) -> dict[str, list[str]]:
-    """Each top-level frame of `page`, by caption, with its buttons' captions."""
+    """Each top-level frame of `page`, by caption in document order, with its buttons' captions."""
     widgets = desk_widgets(workspace.root)
     frames = {w.id: w for w in widgets if w.kind in ("Frame", "SoloFrame")}
     tops = {i for i, f in frames.items() if len(f.frames) == 2 and f.page == page}
-    found: dict[str, list[str]] = {frames[i].caption: [] for i in tops}
+    found: dict[str, list[str]] = {w.caption: [] for w in widgets if w.id in tops}
     for widget in widgets:
         top = next((f for f in widget.frames if f in tops), None)
         if widget.kind == "Button" and top is not None:
@@ -128,8 +128,8 @@ def test_the_play_page_keeps_every_button(english, spanish):
         language: [len(b) for b in _buttons_by_frame(show[0], PLAY_PAGE).values()]
         for language, show in (("en", english), ("es", spanish))
     }
-    assert counts["en"] == counts["es"]
-    assert sorted(counts["en"]) == [10, 11, 11, 15, 25, 30, 30]
+    assert counts["es"] == [11, 10, 25, 15, 30, 30, 11]
+    assert counts["en"] == [11, 10, 25, 15, 30, 30, 11]
 
 
 def test_the_library_page_writes_english_group_captions(english):

@@ -98,6 +98,8 @@ def test_converted_modules_spell_no_catalogue_word():
 def test_every_generator_module_is_converted_or_excluded():
     modules = {str(path.relative_to(PACKAGE)) for path in (PACKAGE / "generate").glob("*.py")}
     assert modules - set(CONVERTED) - EXCLUDED == set()
+    # A stale exclusion names a module that no longer exists.
+    assert EXCLUDED.issubset(modules)
 
 
 def test_the_scanner_sees_a_spanish_name(tmp_path):
