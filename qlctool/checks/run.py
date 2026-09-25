@@ -45,6 +45,7 @@ from .rule_latched_strobe import check_latched_strobe
 from .rule_layer_adds import check_layer_adds
 from .rule_layer_trace import check_layer_trace
 from .rule_masked_dimmer_efx import check_masked_dimmer_efx
+from .rule_missing_definition import check_missing_definitions
 from .rule_mode_owner import check_mode_owner
 from .rule_movement_families import check_movement_families
 from .rule_movement_figure_coverage import check_movement_figure_coverage
@@ -108,6 +109,7 @@ def check_workspace(
     bounded = frozenset().union(*(p.bounded_latches(context) for p in applying))
 
     findings: list[Finding] = []
+    findings += check_missing_definitions(root, library)
     findings += check_dangling_references(graph, root)
     findings += check_intensity(graph, groups, entries, states)
     findings += check_instant_dimmer(graph, groups, states)

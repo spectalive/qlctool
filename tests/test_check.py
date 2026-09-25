@@ -3162,3 +3162,31 @@ def test_2026_09_25_a_single_family_energy_cycle_is_not_a_family_owner(tmp_path)
     assert [
         f for f in findings if f.rule in ("familia con dueño", "capa pisada por el ciclo")
     ] == []
+
+
+def test_2026_09_25_a_patched_fixture_with_no_definition(tmp_path, monkeypatch, capsys):
+    """2026-09-25, Plan C final review: `qlctool check examples/small-club/club.qxw`
+    from the toolkit root warned "no fixture definition ... searched no folder"
+    and printed `199 botones revisados, ningun problema`: a false pass, since
+    every rule reasons about channels a fixture with no definition does not
+    have. The club is copied where no walk-up finds a folder; the missing
+    definitions are findings now, and the run exits non-zero.
+    """
+    import shutil
+    from pathlib import Path
+
+    from qlctool.checks.rule_missing_definition import RULE
+
+    example = Path(__file__).resolve().parents[1] / "examples" / "small-club"
+    club = tmp_path / "club.qxw"
+    shutil.copy(example / "club.qxw", club)
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("QLCTOOL_FIXTURES", raising=False)
+    assert main(["check", str(club)]) == 1
+    printed = capsys.readouterr().out
+    assert f"  {RULE} (3):" in printed
+    assert "Chauvet MiN Wash" in printed
+    assert "buscado en ninguna carpeta" in printed
+
+    assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 0
+    assert "199 botones revisados, ningun problema" in capsys.readouterr().out
