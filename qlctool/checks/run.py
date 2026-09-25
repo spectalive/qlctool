@@ -14,11 +14,11 @@ that controller is in the workspace.
 
 from collections.abc import Sequence
 
-from lxml import etree
-
 from ..capabilities_of import capabilities_of
 from ..library import FixtureLibrary
 from ..workspace import Workspace
+from .applying_providers import applying_providers
+from .canvas_of import canvas_of
 from .console_states import room_states
 from .entry_points import entry_points
 from .finding import ERROR, Finding
@@ -54,7 +54,6 @@ from .rule_parked_movers import check_parked_movers
 from .rule_pick_darkens import check_pick_darkens
 from .rule_pick_overridden import check_pick_overridden
 from .rule_provider import RuleProvider
-from .rule_providers import rule_providers
 from .rule_shadowed_intensity import check_shadowed_intensity
 from .rule_shutter_endpoint import check_shutter_endpoint
 from .rule_smoke import check_smoke
@@ -86,8 +85,6 @@ from .rule_white_twice import check_white_twice
 from .rule_zoom_narrow import check_zoom_narrow
 from .show_graph import build_show_graph, group_fixtures
 
-DEFAULT_CANVAS = (1440, 900)
-
 
 def check_workspace(
     workspace: Workspace,
@@ -103,9 +100,7 @@ def check_workspace(
     entries = entry_points(root)
     states = room_states(root, graph, groups)
     context = RuleContext(root=root, graph=graph, groups=groups, entries=entries, states=states)
-    applying = [
-        p for p in (rule_providers() if providers is None else providers) if p.applies(root)
-    ]
+    applying = applying_providers(root, providers)
     bounded = frozenset().union(*(p.bounded_latches(context) for p in applying))
 
     findings: list[Finding] = []
@@ -165,22 +160,9 @@ def check_workspace(
     findings += check_group_grids(graph, root)
     findings += check_grid_order(root)
     findings += check_undeclared_heads(graph, root)
-    findings += check_console(graph, root, canvas or _canvas(root))
+    findings += check_console(graph, root, canvas or canvas_of(root))
     findings += check_empty_frames(root)
     findings += check_audio_triggers(graph, groups, root)
     for provider in applying:
         findings += provider.check(context)
     return sorted(findings, key=lambda f: (f.severity != ERROR, f.rule, f.function))
-
-
-def _canvas(root: etree._Element) -> tuple[int, int]:
-    from ..xmlutil import find_local
-
-    console = find_local(root, "VirtualConsole")
-    properties = find_local(console, "Properties") if console is not None else None
-    size = find_local(properties, "Size") if properties is not None else None
-    if size is None:
-        return DEFAULT_CANVAS
-    return int(size.attrib.get("Width", DEFAULT_CANVAS[0])), int(
-        size.attrib.get("Height", DEFAULT_CANVAS[1])
-    )
