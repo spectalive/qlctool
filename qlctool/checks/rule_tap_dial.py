@@ -53,12 +53,7 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
                     rule_id=EMPTY_RULE_ID,
                     severity=ERROR,
                     function=caption,
-                    message=(
-                        "tiene tecla de tap y no lista ninguna funcion: en QLC+ "
-                        "5.2.2 el tap solo escribe en las funciones del dial "
-                        "(«Unknown speed dial tag: ControlBPM» al cargar), asi "
-                        "que asi no re-tempa nada"
-                    ),
+                    message_id="tap_dial_no_functions",
                 )
             )
             continue
@@ -68,13 +63,8 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=caption,
-                    message=(
-                        f"re-tempa {len(multipliers)} funciones con el mismo "
-                        f"multiplicador: un tap las deja a todas de la misma "
-                        f"duracion (VCSpeedDial::applyFunctionsTime escribe "
-                        f"tiempo x multiplicador) - cada capa tiene que decir "
-                        f"cuantos taps dura"
-                    ),
+                    message_id="tap_dial_same_multiplier",
+                    fields={"count": len(multipliers)},
                 )
             )
     return findings

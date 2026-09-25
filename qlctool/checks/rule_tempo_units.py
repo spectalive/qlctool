@@ -55,12 +55,7 @@ def check_tempo_units(graph: ShowGraph) -> list[Finding]:
                     rule_id=COLLECTION_RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        "es una coleccion y lleva <Tempo>: una coleccion no tiene "
-                        "tempo propio, arranca a sus miembros y ya - QLC+ lo dice "
-                        "al cargar («Unknown collection tag: Tempo») y lo ignora, "
-                        "asi que esa capa se queda en el reloj sin avisar"
-                    ),
+                    message_id="tempo_units_collection_tempo",
                 )
             )
             continue
@@ -77,13 +72,8 @@ def check_tempo_units(graph: ShowGraph) -> list[Finding]:
                 severity=ERROR,
                 function=graph.name(function_id),
                 fixtures=tuple(hurt),
-                message=(
-                    f"va en Beats con un fundido de {fade} y arranca "
-                    f"{len(hurt)} funciones que se cronometran en milisegundos: "
-                    f"el chaser les pasa ese numero tal cual y un EFX se lo resta "
-                    f"a su duracion (EFX::loopDuration), asi que dibujan su "
-                    f"figura mucho mas rapido y no la cierran"
-                ),
+                message_id="tempo_units_beats_fade",
+                fields={"fade": fade, "count": len(hurt)},
             )
         )
     return findings

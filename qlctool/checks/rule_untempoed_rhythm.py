@@ -93,11 +93,8 @@ def check_untempoed_rhythm(
                     severity=ERROR,
                     function=caption,
                     fixtures=tuple(sorted(pulsed)),
-                    message=(
-                        f"«{graph.name(member)}» mueve la intensidad de "
-                        f"{len(pulsed)} aparatos y no esta bajo ningun dial de "
-                        f"tempo: su paso no cambia cuando cambia el de la sala"
-                    ),
+                    message_id="untempoed_rhythm_no_dial",
+                    fields={"member": graph.name(member), "count": len(pulsed)},
                 )
             )
     return findings

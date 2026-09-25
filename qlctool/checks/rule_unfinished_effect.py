@@ -40,11 +40,13 @@ def check_unfinished_effects(graph: ShowGraph, groups, entries) -> list[Finding]
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
-                message=(
-                    f"corta {len(cut)} de sus efectos antes de que terminen: "
-                    f"«{worst[0]}» necesita {worst[2]} ms para una pasada completa "
-                    f"y solo tiene {worst[1]} ms"
-                ),
+                message_id="unfinished_effect_cut",
+                fields={
+                    "count": len(cut),
+                    "effect": worst[0],
+                    "needed": worst[2],
+                    "given": worst[1],
+                },
             )
         )
     return findings

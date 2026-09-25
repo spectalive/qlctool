@@ -65,11 +65,8 @@ def check_white_twice(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> l
                 severity=ERROR,
                 function=graph.name(function_id),
                 fixtures=tuple(sorted(set(washed))),
-                message=(
-                    f"manda el emisor White y deja el blanco tambien dentro del RGB "
-                    f"en {len(set(washed))} aparatos: la parte acromatica del color "
-                    f"sale por cuatro LED en vez de uno y el tinte se lava"
-                ),
+                message_id="white_twice_washed",
+                fields={"count": len(set(washed))},
             )
         )
     return findings

@@ -57,11 +57,8 @@ def check_wheel_fade(
                 severity=ERROR,
                 function=graph.name(scene_id),
                 fixtures=tuple(crossed),
-                message=(
-                    f"se funde en {fade} ms y escribe una rueda que su fixture no "
-                    f"excluye del fundido (<ExcludeFade>): la rueda mecanica "
-                    f"recorre todos los colores o gobos intermedios en cada paso"
-                ),
+                message_id="wheel_fade_crossed",
+                fields={"fade": fade},
             )
         )
     return findings

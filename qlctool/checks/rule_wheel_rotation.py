@@ -41,12 +41,7 @@ def check_wheel_rotation(graph: ShowGraph, groups) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        "da color a todo el rig pero deja la rueda de color de "
-                        "estos fixtures en un rango de giro, que no es un color: "
-                        "la rueda queda entre dos posiciones y el haz sale a medias "
-                        "(media luna)"
-                    ),
+                    message_id="wheel_rotation_spinning",
                     fixtures=tuple(spinning),
                 )
             )

@@ -41,11 +41,7 @@ def check_zoom_narrow(graph: ShowGraph, groups) -> list[Finding]:
                 rule_id=RULE_ID,
                 severity=WARNING,
                 function=graph.name(function_id),
-                message=(
-                    "enciende la cabeza pero no escribe su zoom: se queda con el "
-                    "que dejo el ultimo look, y sin nadie que lo escriba eso es 0, "
-                    "sea el extremo que sea en ese modelo"
-                ),
+                message_id="zoom_narrow_unwritten",
                 fixtures=tuple(sorted(silent)),
             )
         )

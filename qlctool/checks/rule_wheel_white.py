@@ -21,6 +21,7 @@ matrix paints its group pure white.
 
 from .colour_clocks_below import colour_clocks_below
 from .finding import ERROR, Finding
+from .phrase import Phrase
 from .show_graph import ShowGraph
 from .white_fixtures import white_fixtures
 
@@ -46,12 +47,13 @@ def check_wheel_white(
                     severity=ERROR,
                     function=graph.name(chaser_id),
                     fixtures=tuple(sorted(white)),
-                    message=(
-                        f"el paso «{graph.name(step_id)}» pone luz blanca en "
-                        f"{len(white)} aparatos por su cuenta, en el reloj de la "
-                        "rueda: en directo es la sala encendida; el blanco es de "
-                        f"Blanco Total y de nada que gire solo (boton: {caption})"
-                    ),
+                    message_id="wheel_white_on_clock",
+                    fields={
+                        "step": graph.name(step_id),
+                        "count": len(white),
+                        "full_white": Phrase("full_white"),
+                        "button": caption,
+                    },
                 )
             )
     return findings

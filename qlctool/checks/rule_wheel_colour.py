@@ -45,11 +45,8 @@ def check_wheel_colour(graph: ShowGraph, groups, entries: dict[int, str]) -> lis
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        "da color a un grupo pero no escribe nada en los fixtures "
-                        "de ese grupo cuyo color es una rueda: se quedan con el "
-                        f"color anterior (boton: {caption})"
-                    ),
+                    message_id="wheel_colour_missed",
+                    fields={"button": caption},
                     fixtures=tuple(sorted(missed)),
                 )
             )

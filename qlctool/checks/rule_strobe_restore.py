@@ -117,11 +117,8 @@ def _latched(
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
-                message=(
-                    f"el flash «{caption}» estroba un canal que "
-                    f"{', '.join(orphan_states)} no escribe: al soltar, el canal "
-                    f"LTP se queda estrobando hasta que alguien lo apague a mano"
-                ),
+                message_id="strobe_restore_left_strobing",
+                fields={"caption": caption, "states": ", ".join(orphan_states)},
                 fixtures=(capability.fixture.name,),
             )
         )

@@ -59,14 +59,8 @@ def check_undeclared_heads(graph: ShowGraph, root: etree._Element) -> list[Findi
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=group_name,
-                message=(
-                    f"la definicion le da {sets} juegos de RGB y solo {declared} "
-                    f"<Head> con rojo, verde y azul dentro: QLC+ fabrica una sola "
-                    f"cabeza y se queda "
-                    f"con el ultimo rojo, verde y azul, asi que una matriz sobre "
-                    f"«{group_name}» solo pinta uno de los juegos y los demas se "
-                    f"quedan con lo ultimo que alguien escribio"
-                ),
+                message_id="undeclared_heads_one_head",
+                fields={"sets": sets, "declared": declared, "group": group_name},
                 fixtures=(capability.fixture.name,),
             )
         )

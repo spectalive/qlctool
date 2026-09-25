@@ -44,12 +44,8 @@ def check_unaimed_movement(graph: ShowGraph) -> list[Finding]:
                 rule_id=RULE_ID,
                 severity=WARNING,
                 function=graph.name(function_id),
-                message=(
-                    f"dibuja la figura centrada en el tilt {MID_TRAVEL}, que es el "
-                    "centro del recorrido y no un sitio: es donde queda una figura "
-                    "que nadie ha apuntado - el suelo en las 7R, la pared del fondo "
-                    "en los washes"
-                ),
+                message_id="unaimed_movement_mid_tilt",
+                fields={"tilt": MID_TRAVEL},
                 fixtures=tuple(sorted(heads)),
             )
         )

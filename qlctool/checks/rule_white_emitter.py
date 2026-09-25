@@ -48,12 +48,8 @@ def check_white_emitter(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) ->
                 severity=ERROR,
                 function=graph.name(function_id),
                 fixtures=tuple(sorted(set(skipped))),
-                message=(
-                    f"escribe rojo, verde y azul en {len(set(skipped))} aparatos "
-                    f"con emisor White y no escribe ese canal: el blanco sale "
-                    f"mezclado de tres LED y el cuarto, el mas brillante, se queda "
-                    f"a cero"
-                ),
+                message_id="white_emitter_unused",
+                fields={"count": len(set(skipped))},
             )
         )
     return findings
