@@ -1,8 +1,8 @@
 # `qlctool`
 
-A Python library and CLI that edits QLC+ workspaces programmatically, in
-`tools/qlctool/`. Setup and full command reference are in its own
-[README](../tools/qlctool/README.md); this page is what it is *for* and what it
+A Python library and CLI that edits QLC+ workspaces programmatically. Setup
+and full command reference are in its
+[README](../README.md); this page is what it is *for* and what it
 rests on.
 
 ## Why
@@ -49,7 +49,7 @@ Commands never overwrite their input; they write a new file.
 | `patch` | Check the patch for address overlaps, or edit it: add, re-address, rename, unpatch, and put fixtures in a group or resize its grid |
 | `layout` | Virtual Console buttons for every function, grouped by its UI folder |
 | `stage` | A position for every fixture in the 2D/3D view - `--plot` applies the real montage, without it the layout is generated from what each fixture can do |
-| `mvr` | The placed rig as an MVR package for BlenderDMX, with a GDTF generated from each fixture definition inside it - geometry, wheels with the gobo images, one DMX mode per QLC+ mode ([blenderdmx.md](blenderdmx.md)) |
+| `mvr` | The placed rig as an MVR package for BlenderDMX, with a GDTF generated from each fixture definition inside it - geometry, wheels with the gobo images, one DMX mode per QLC+ mode ([blenderdmx.md](https://github.com/Vibra-Lab/vibra-lighting/blob/main/docs/blenderdmx.md)) |
 | `newshow` | A whole self-running show built on an existing patch, plus the four-page live console (show / JUGAR / control / library) on one screen |
 | `check` | What the room will actually do: fixtures coloured but never lit, colour a fixture can only take on a wheel, two programmes writing one channel, and the console's own traps ([checks.md](checks.md)) |
 | | (rig-wide colour wheel, colour banks and mixes, matrices, movement mirrored side to side, gobos, beam colour, prism, smoke, dimmer chase and ping-pong, shutter and flash strobes, and the energy levels `AUTO` walks through - `--beats` puts the lot on the music's beat) |
@@ -111,7 +111,7 @@ description is read. `qlctool check` messages are still Spanish on any show
 
 ## Examples
 
-`tools/qlctool/examples/small-club/` is a second rig, described in English:
+`examples/small-club/` is a second rig, described in English:
 six RGB pars, two beam moving heads with no gobo, prism or colour wheel, and
 two washes. It is a different patch from the Vibra show's: three of Vibra's
 models in other numbers, addresses and groups, with no haze machine and no
@@ -119,7 +119,7 @@ controllers. It holds the three fixture definitions it uses (`fixtures/`),
 the patch (`club-patch.qxw`), the description (`show.toml`, which states
 `language = "en"` and names no `[controllers]`) and the show generated from
 them (`club.qxw`, never edited by hand). Regenerate it from
-`tools/qlctool`:
+the repository root:
 
 ```bash
 qlctool newshow --description examples/small-club/show.toml --validate

@@ -2,7 +2,7 @@
 
 Reverse-engineered from the production workspaces and confirmed against the
 QLC+ source (`engine/src/function.cpp`). Everything here is verified by tests in
-`tools/qlctool/tests`, most of them by rebuilding the real show's own functions
+`tests/`, most of them by rebuilding the real show's own functions
 node for node.
 
 ## Shape

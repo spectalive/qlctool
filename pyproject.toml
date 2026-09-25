@@ -1,9 +1,14 @@
 [project]
 name = "qlctool"
 version = "0.1.0"
-description = "Programmatic editing of QLC+ workspaces (.qxw) for the Vibra lighting show"
+description = "Generate, check and validate QLC+ lighting shows from a patched workspace and a TOML description"
+readme = "README.md"
+license = "Apache-2.0"
 requires-python = ">=3.11"
 dependencies = ["lxml>=5", "pygdtf>=1.4.5", "pymvr>=1.0.7"]
+
+[project.urls]
+Homepage = "https://github.com/spectalive/qlctool"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-xdist>=3"]
@@ -16,7 +21,7 @@ smc-pad = "qlctool.controllers.smc_pad_rules:SMC_PAD_RULES"
 tablet_desk = "qlctool.controllers.tablet_desk_rules:TABLET_DESK_RULES"
 
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]

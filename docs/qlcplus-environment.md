@@ -41,7 +41,6 @@ All three copies - definitions, input profile, gobos - are one command since
 2026-09-01, and `--check` says whether QLC+ has the repo's current files:
 
 ```bash
-cd tools/qlctool
 .venv/bin/qlctool install --check   # lists stale or missing copies, exit 1 on any
 .venv/bin/qlctool install           # copies them (gobos into the bundle)
 ```

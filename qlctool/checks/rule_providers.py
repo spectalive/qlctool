@@ -31,6 +31,6 @@ def rule_providers() -> tuple[RuleProvider, ...]:
     if missing:
         raise RuntimeError(
             f"qlctool's own rule providers are not installed ({', '.join(missing)}): "
-            "run `.venv/bin/pip install -e '.[dev]'` in tools/qlctool so its entry points are written"
+            "run `.venv/bin/pip install -e '.[dev]'` in the qlctool checkout so its entry points are written"
         )
     return tuple(providers)

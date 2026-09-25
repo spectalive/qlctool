@@ -1,11 +1,13 @@
 # qlctool
 
-Programmatic editing of QLC+ workspaces (`.qxw`) for the Vibra Eventos lighting
-show. Generates scenes, chasers, RGBMatrix effects, movement EFX and the Virtual
-Console buttons for them, in bulk instead of clicking them one by one in QLC+.
+Programmatic editing of QLC+ workspaces (`.qxw`) for any rig. Generates
+scenes, chasers, RGBMatrix effects, movement EFX and the Virtual Console buttons
+for them, in bulk instead of clicking them one by one in QLC+, then checks and
+validates the result. The Vibra show it was built for is at
+[github.com/Vibra-Lab/vibra-lighting](https://github.com/Vibra-Lab/vibra-lighting).
 
-Background, the file format and the rig are documented in
-[`docs/`](../../docs/README.md).
+What the toolkit is for, the checks and the file format are documented in
+[`docs/toolkit.md`](docs/toolkit.md).
 
 ## Why
 
@@ -36,91 +38,107 @@ folder or every fixture in this rig reports "No fixture definition found" -
 QLC+ 4 reads `~/Library/Application Support/QLC+/Fixtures` and QLC+ 5 reads
 `~/Library/Application Support/QLC+ 5/Fixtures`.
 
-## Setup
+## Install
 
 ```bash
-cd tools/qlctool
-python3 -m venv --system-site-packages .venv   # lxml comes from the system
-.venv/bin/pip install -e '.[dev]'
-.venv/bin/pytest -q
+pip install "qlctool @ git+https://github.com/spectalive/qlctool.git@v0.1.0"
+```
+
+Or, in a clone, for development:
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
+.venv/bin/python -m pytest tests/ -q
+```
+
+The suite reads a frozen copy of the Vibra rig in `tests/data/rig/`.
+
+## Example
+
+`examples/small-club/` is a small rig described in English: the fixture
+definitions it uses, the patch, the description (`show.toml`) and the show
+generated from them (`club.qxw`). From the repository root:
+
+```bash
+.venv/bin/qlctool newshow --description examples/small-club/show.toml --validate
 ```
 
 ## Use
 
 ```bash
-# hand the installed QLC+ the repo's definitions, input profile and gobos
+# hand the installed QLC+ the rig's definitions, input profile and gobos
+# (the folders its qlctool.toml names)
 # (--check only reports what is stale or missing, exit 1 on any)
 .venv/bin/qlctool install --check
 .venv/bin/qlctool install
 
 # list patched fixtures and the roles resolved for each
-.venv/bin/qlctool info "../../QLC+ Setups/DeluxeEventos2.qxw"
+.venv/bin/qlctool info "path/to/DeluxeEventos2.qxw"
 
 # generate 12 colour scenes + a cycle chaser into a new file
-.venv/bin/qlctool palette "../../QLC+ Setups/DeluxeEventos2.qxw"
+.venv/bin/qlctool palette "path/to/DeluxeEventos2.qxw"
 
 # generate RGBMatrix effects: every algorithm x every palette colour, one group
-.venv/bin/qlctool matrix "../../QLC+ Setups/DeluxeEventos2.qxw" --group 0
+.venv/bin/qlctool matrix "path/to/DeluxeEventos2.qxw" --group 0
 
 # ...or a chosen subset ('solid' = plain colour matrix, no script)
-.venv/bin/qlctool matrix "../../QLC+ Setups/DeluxeEventos2.qxw" \
+.venv/bin/qlctool matrix "path/to/DeluxeEventos2.qxw" \
   --group 0 --algorithms "Strobe,Waves,solid"
 
 # generate one movement EFX per shape across every moving head
-.venv/bin/qlctool movement "../../QLC+ Setups/DeluxeEventos2.qxw"
+.venv/bin/qlctool movement "path/to/DeluxeEventos2.qxw"
 
 # check the patch for DMX address overlaps (exit 1 when it finds any)
-.venv/bin/qlctool patch "../../QLC+ Setups/DeluxeEventos2.qxw"
+.venv/bin/qlctool patch "path/to/DeluxeEventos2.qxw"
 
 # edit the patch: add / re-address / rename / unpatch (addresses 1-based)
-.venv/bin/qlctool patch "../../QLC+ Setups/DeluxeEventos2.qxw" \
+.venv/bin/qlctool patch "path/to/DeluxeEventos2.qxw" \
   --add "Vortex|PC-64 LED S|Default|0|301|PAR Extra" \
   --set-address "25=1:1" --rename "0=Wash Frontal 1" --remove 26
 
 # place the rig the way it is really built (the plot is versioned in the repo)
-.venv/bin/qlctool stage "../../QLC+ Setups/Vibra.qxw" \
-  --plot "../../QLC+ Setups/vibra-stage-plot.json"
+.venv/bin/qlctool stage "path/to/Vibra.qxw" \
+  --plot "path/to/vibra-stage-plot.json"
 
 # ...or let it arrange the fixtures by what they can do, when there is no plot
-.venv/bin/qlctool stage "../../QLC+ Setups/Vibra.qxw" --stage 12x6x8 --pov front
+.venv/bin/qlctool stage "path/to/Vibra.qxw" --stage 12x6x8 --pov front
 
 # build a fresh show on the same rig: patch kept, content regenerated.
-# The source is Vibra.qxw itself, not DeluxeEventos2.qxw - the plot describes
-# the patch the show actually has, and the old workspace is two fixtures behind
-# it ("the plot places fixtures that are not patched: [27, 28]").
-.venv/bin/qlctool newshow "../../QLC+ Setups/Vibra.qxw" \
-  --plot "../../QLC+ Setups/vibra-stage-plot.json" \
-  --out "../../QLC+ Setups/Vibra.qxw" --validate
+# The plot must describe the patch the workspace actually has, or newshow
+# refuses ("the plot places fixtures that are not patched: [27, 28]").
+.venv/bin/qlctool newshow "path/to/Vibra.qxw" \
+  --plot "path/to/vibra-stage-plot.json" \
+  --out "path/to/Vibra.qxw" --validate
 
 # ...the same show with the chases on the music's beat (needs an audio input
 # picked in QLC+'s Configuration, or nothing advances)
-.venv/bin/qlctool newshow "../../QLC+ Setups/Vibra.qxw" --beats \
-  --plot "../../QLC+ Setups/vibra-stage-plot.json" \
-  --out "../../QLC+ Setups/Vibra-beats.qxw" --validate
+.venv/bin/qlctool newshow "path/to/Vibra.qxw" --beats \
+  --plot "path/to/vibra-stage-plot.json" \
+  --out "path/to/Vibra-beats.qxw" --validate
 
 # ...or from a show description: the patch stays in QLC+, the .toml says the
 # rest (palette, matrices, timing, console, controllers). Names may be written
 # in any shipped language: red, Red and rojo are the same colour.
 # `[show] language = "en"` writes every generated name in English (patch names stay).
-.venv/bin/qlctool newshow --description "../../QLC+ Setups/vibra.toml" --validate
+.venv/bin/qlctool newshow --description examples/small-club/show.toml --validate
 
 # find out what each DMX channel of an undocumented fixture does, on site
-.venv/bin/qlctool probe "../../QLC+ Setups/DeluxeEventos2.qxw" 25 --base "1=255" --buttons
+.venv/bin/qlctool probe "path/to/DeluxeEventos2.qxw" 25 --base "1=255" --buttons
 
 # add Virtual Console buttons for everything that has a UI folder
-.venv/bin/qlctool layout "../../QLC+ Setups/DeluxeEventos2.qxw"
+.venv/bin/qlctool layout "path/to/DeluxeEventos2.qxw"
 
 # or generate and lay out in one run, then have QLC+ check the result
-.venv/bin/qlctool palette "../../QLC+ Setups/DeluxeEventos2.qxw" --buttons --validate
+.venv/bin/qlctool palette "path/to/DeluxeEventos2.qxw" --buttons --validate
 
 # load a workspace in headless QLC+ and report what it complains about
-.venv/bin/qlctool validate "../../QLC+ Setups/DeluxeEventos2.qxw"
+.venv/bin/qlctool validate "path/to/DeluxeEventos2.qxw"
 
 # any command that writes a file can validate it in the same run
-.venv/bin/qlctool movement "../../QLC+ Setups/DeluxeEventos2.qxw" --validate
+.venv/bin/qlctool movement "path/to/DeluxeEventos2.qxw" --validate
 
 # split a show into a git-diffable fragment tree (one file per function)
-.venv/bin/qlctool decompose "../../QLC+ Setups/DeluxeEventos2.qxw" tree/
+.venv/bin/qlctool decompose "path/to/DeluxeEventos2.qxw" tree/
 
 # rebuild a show from a fragment tree (semantically identical to the original)
 .venv/bin/qlctool compose tree/ rebuilt.qxw
@@ -131,7 +149,8 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
 Engine's child order. Edit or add fragment files, then `compose` to rebuild.
 `decompose -> compose` is a verified lossless round trip.
 
-A show description (`QLC+ Setups/vibra.toml` is the worked example) falls back
+A show description (`examples/small-club/show.toml` is a worked example; the
+Vibra show's `QLC+ Setups/vibra.toml` in vibra-lighting is the full one) falls back
 to Vibra's values for anything it leaves out, except `[controllers]`: leaving
 that out means no MIDI pad and no tablet desk. What a stated key replaces:
 
@@ -171,7 +190,7 @@ description can read and write anywhere its user can: treat one you were sent
 like a script, and read its `[rig]` before running it. `newshow --description`
 writes to `--out` when given, else to `[rig] output`; with neither it refuses,
 because it never overwrites the patch unasked. To regenerate a workspace in
-place, state `output` equal to `workspace`, as `QLC+ Setups/vibra.toml` does.
+place, state `output` equal to `workspace`, as Vibra's `vibra.toml` does.
 A workspace given on the command line as well must be the one `[rig]` names.
 
 ## Layout
@@ -199,5 +218,15 @@ A workspace given on the command line as well must be the one `[rig]` names.
 `library/system/` holds the two QLC+ built-in definitions the patch uses
 (Stairville LED Bar 240, CLB2.4), copied from the show Mac's QLC+ install so the
 capability layer resolves the whole patch without a QLC+ installation present.
-Custom fixtures live in the repo's `QLC+ Fixtures/` and override system ones on a
-name clash.
+A rig's own fixture definitions (the folders its `qlctool.toml` names, or
+`--fixtures`, or `QLCTOOL_FIXTURES`) override system ones on a name clash.
+
+## Licence
+
+The code is under the Apache License 2.0 ([LICENSE](LICENSE)). The five
+documents that came from the Vibra show's repository - `docs/toolkit.md`,
+`docs/checks.md`, `docs/qxw-format.md`, `docs/qlcplus-environment.md` and
+`docs/qlc5-verification.md` - are under CC BY 4.0
+([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)); everything else is Apache-2.0. The
+QLC+ fixture schema and system fixture definitions vendored in
+`qlctool/library/` are QLC+'s, under QLC+'s Apache License 2.0 ([NOTICE](NOTICE)).

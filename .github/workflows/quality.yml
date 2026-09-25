@@ -2,7 +2,7 @@ name: Quality
 
 on:
   push:
-    branches: [qlctool]
+    branches: [main]
   pull_request:
 
 permissions:
@@ -11,12 +11,6 @@ permissions:
 jobs:
   gate:
     runs-on: ubuntu-latest
-    # The project lives inside a repository about something else; GitHub
-    # only reads workflows at the repository root, so every step runs
-    # from the project directory.
-    defaults:
-      run:
-        working-directory: tools/qlctool
     strategy:
       fail-fast: false
       matrix:
@@ -53,5 +47,5 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: pyrefly-shadow-${{ matrix.python-version }}
-          path: tools/qlctool/pyrefly.json
+          path: pyrefly.json
           retention-days: 90

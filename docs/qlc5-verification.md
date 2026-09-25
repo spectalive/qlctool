@@ -23,7 +23,7 @@ is tied to this exact binary, not to the source clone.
 Each XML-shape claim got the smallest valid 4.13-format `.qxw` that exercises
 it: the `Creator`/`InputOutputMap`/one-`Fixture` header copied from
 `QLC+ Setups/Vibra-split.qxw`, plus the one construct under test. Probes live
-in `tools/qlctool/tests/probes/`.
+in `tests/probes/`.
 
 Each probe was run through `qlctool.validate.validate_workspace()` - the same
 loader `qlctool validate` uses - which launches the installed
