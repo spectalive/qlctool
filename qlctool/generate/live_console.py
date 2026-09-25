@@ -316,8 +316,9 @@ def generate_live_console(
     pad_colors: Mapping[str, tuple[int, int, int]] | None = None,
     glyphs: Mapping[str, str] | None = None,
     vocabulary: Names | None = None,
+    *,
     has_pixel_groups: bool = False,
-    has_smoke_machine: bool = True,
+    has_smoke_machine: bool,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame.
 

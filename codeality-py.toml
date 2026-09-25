@@ -28,6 +28,7 @@ data = [
   "qlctool/pastel_palette.py",
   "qlctool/pick_marks.py",
   "qlctool/simple_colors.py",
+  "qlctool/smoke_types.py",
   "qlctool/split_pairs.py",
   "qlctool/wheel_palette.py",
   "qlctool/vibra/timing.py",

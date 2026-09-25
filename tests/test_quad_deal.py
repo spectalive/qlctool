@@ -83,11 +83,35 @@ def test_2026_09_25_a_fixture_in_two_groups_is_seated_by_the_higher_id():
     """Same review: a fixture in two clashing groups moved depending on the
     order the groups were visited in. They are visited in ascending id, so
     fixture 103 ends where group 2 puts it, whatever order they are given in.
+    Since the re-deal repeats until no group is split (re-review, same day),
+    group 1 is dealt again around 103's final seat, so 104 sits at 4.
     """
     from qlctool.generate.quad_seats import quad_seats
 
     colours = _quad_colours()
     dealt = [100, 101, 102, 103, 104]
-    expected = {100: 0, 101: 1, 102: 2, 103: 2, 104: 5}
+    expected = {100: 0, 101: 1, 102: 2, 103: 2, 104: 4}
     assert quad_seats(dealt, {2: (100, 103), 1: (103, 104)}, colours) == expected
     assert quad_seats(dealt, {1: (103, 104), 2: (100, 103)}, colours) == expected
+
+
+def test_2026_09_25_no_group_is_left_split_after_the_re_deal():
+    """2026-09-25, re-review of b4eb0c6: a fixture in two clashing groups could
+    be moved back onto a split by the higher group, and nothing re-checked the
+    final seats. The pass now repeats until no group is split.
+    """
+    from qlctool.generate.opposite_split import opposite_split
+    from qlctool.generate.quad_seats import quad_seats
+
+    colours = _quad_colours()
+    dealt = list(range(100, 112))
+    layouts = [
+        {1: (100, 103), 2: (103, 104, 107)},
+        {1: (100, 103, 104, 107), 2: (107, 110), 3: (103, 110)},
+        {1: (101, 104), 2: (104, 105, 108), 3: (108, 111)},
+        {5: (100, 111), 4: (103, 108), 3: (100, 103), 2: (108, 111)},
+    ]
+    for groups in layouts:
+        seats = quad_seats(dealt, groups, colours)
+        for members in groups.values():
+            assert not opposite_split([seats[m] for m in members], colours), groups

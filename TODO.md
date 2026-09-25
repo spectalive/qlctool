@@ -115,14 +115,18 @@
   such a wheel (review of ecc61b5). Smallest next step: build a definition
   with such a wheel, show `modo sin dueño` on it, then ask `color_wheel_pairs`
   over the colours the looks request instead of `WHEEL_NAMES`.
-- [ ] **`Humo Vertical` is built on a rig with no smoke machine
-  (2026-09-25).** The column's light is built from the panels' programmes
-  alone, so Vibra without its smoke machines (fixtures 17, 29-32) still gets
-  the `Humo Vertical` button, though page 3's title no longer promises haze
-  (723bc1a). Owner question: should the light cue exist with no smoke to
-  light? Smallest next step: ask the owner; if no, gate
-  `generate_vertical_smoke_light` on `is_smoke_machine` (Vibra has smoke, so
-  its bytes stay).
+- [ ] **The vertical-smoke light chaser is built where nothing starts it
+  (2026-09-25).** Since 723bc1a page 3 promises haze, and builds the
+  `Humo Vertical` button and its help, only where a smoke machine is patched
+  (`has_haze_light` in `live_console.py`). The column's light chaser itself
+  is still built from the panels' programmes alone, so Vibra without its
+  smoke machines (fixtures 17, 29-32) carries chaser 201 with no button, and
+  `check` does not flag a function nothing starts. Owner question: should the
+  light cue exist with no smoke to light? Smallest next step: ask the owner;
+  if no, build the light only where the vertical columns are (a smoke fixture
+  with a red channel, `vertical_smoke_burst.py`), which keeps Vibra's bytes;
+  if yes, put the button back without the haze promise. Either way a rule
+  for a built function no button or chaser reaches would have seen this.
 - [ ] **Page 4's matrices caption says "bars and panels" by proxy
   (2026-09-25).** `matrices_frame_caption` picks `matrices_frame` ("patterns
   on the bars and panels") for any rig with pixel groups and built-in effects,

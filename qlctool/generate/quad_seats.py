@@ -31,11 +31,19 @@ def quad_seats(
     step = next(
         (step for step in range(1, len(colours)) if not opposite_split((0, step), colours)), None
     )
-    for _group_id, members in sorted(groups.items()):
-        dealt = [fixture_id for fixture_id in members if fixture_id in seats]
-        if step is None or not opposite_split([seats[m] for m in dealt], colours):
-            continue
-        first = seats[dealt[0]]
-        for index, fixture_id in enumerate(dealt):
-            seats[fixture_id] = first + (index % 2) * step
+    # A fixture in two groups can be moved back onto a split by the later
+    # group, so the pass repeats until no group is split; each pass moves at
+    # least one group off a split, so it ends within one pass per group.
+    for _ in range(len(groups) + 1):
+        moved = False
+        for _group_id, members in sorted(groups.items()):
+            dealt = [fixture_id for fixture_id in members if fixture_id in seats]
+            if step is None or not opposite_split([seats[m] for m in dealt], colours):
+                continue
+            first = seats[dealt[0]]
+            for index, fixture_id in enumerate(dealt):
+                seats[fixture_id] = first + (index % 2) * step
+            moved = True
+        if not moved:
+            break
     return seats

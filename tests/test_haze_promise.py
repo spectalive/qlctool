@@ -44,4 +44,8 @@ def test_2026_09_25_a_hazer_typed_fixture_is_a_smoke_machine():
     caps = capabilities_of(Workspace.load(VIBRA).root, FixtureLibrary.load())
     par = next(c for c in caps if c.has_role(roles.RED) and not c.is_smoke)
     assert not is_smoke_machine(par)
-    assert is_smoke_machine(dataclasses.replace(par, fixture_type="Hazer"))
+    hazer = dataclasses.replace(par, fixture_type="Hazer")
+    assert is_smoke_machine(hazer)
+    # 2026-09-25, re-review: the smoke property every generator and rule
+    # reads (pump parked, no dimmer, no light) sees the hazer too.
+    assert hazer.is_smoke

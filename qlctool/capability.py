@@ -12,6 +12,7 @@ from functools import cached_property
 from . import roles
 from .definition import Capability, Dimensions, FixtureDefinition
 from .fixture import PatchedFixture
+from .smoke_types import SMOKE_TYPES
 
 
 @dataclass(frozen=True)
@@ -53,7 +54,7 @@ class FixtureCapabilities:
 
     @property
     def is_smoke(self) -> bool:
-        return self.fixture_type.lower() == "smoke"
+        return self.fixture_type.lower() in SMOKE_TYPES
 
     @property
     def is_lit_smoke(self) -> bool:
