@@ -53,11 +53,15 @@
   RGB and no colour wheel (`outside_color_looks`), so Vibra's bytes do not
   move. The rig keeps the channel now; test
   `tests/test_colourless_head_park.py` (bites without the fix: two findings).
-- [ ] **Four-colour deal on a two-fixture group is a split (2026-09-25).**
+- [x] **Four-colour deal on a two-fixture group is a split (2026-09-25).**
   Same session: two Vortex pars as the only colour group -> `Rig 4 Colores 4`
   puts two complementary colours in one group (`complementarios en un mismo
-  lavado`). Smallest next step: a dated small-rig test with a two-par group,
-  then deal the four colours so no group gets exactly two opposite hues.
+  lavado`). Closed: `tests/test_quad_deal.py` builds two pars in a group of
+  their own beside the club's heads and failed on `Rig 4 Colores 4` (180
+  degrees, Par 1 / Par 2); `generate/quad_seats.py` moves the second member of
+  a two-member group to the nearest seat that stays under the rule's own
+  `COMPLEMENTARY_FROM` in every rotation (blue/green, red/yellow). Vibra
+  identical x3 and QLC+ loaded; the club example regenerates byte for byte.
 - [x] **Three long modules sit in the codeality baseline (2026-09-25).**
   The gate was red on them beside mypy, and the fix that turned it green was
   told not to restructure modules, so they were recorded as debt instead:

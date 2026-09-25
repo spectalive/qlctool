@@ -7,7 +7,8 @@ colours. The generated show replaced them with the two wild multicolor steps
 and lost the deterministic rotation (old-vs-new audit, 2026-08-28). This
 rebuilds the four looks over the whole colour-capable rig: RGB fixtures take
 their dealt colour, the beams take the nearest wheel position for theirs, and
-the deal follows patch order the way `Rig Multicolor` does.
+the deal follows patch order the way `Rig Multicolor` does - except that a
+group of two never takes two opposite hues (`quad_seats`).
 
 Colour only, no intensity: like every wheel step since 2026-08-27, the energy
 levels own the dimmers.
@@ -18,6 +19,7 @@ from collections.abc import Mapping, Sequence
 from .. import roles
 from ..argb import RGB
 from ..capabilities_of import capabilities_of
+from ..fixture_group import fixture_groups
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
@@ -26,6 +28,7 @@ from ..names.names import Names
 from ..palette import PALETTE
 from ..workspace import Workspace
 from .color_scene import color_scene_values
+from .quad_seats import quad_seats
 from .wheel_color_values import wheel_color_values
 
 # The old scenes' own deal, in their own order - with the white seat given to
@@ -73,13 +76,18 @@ def generate_quad_color_scenes(
     ]
     if not rgb_caps and not wheel_caps:
         return []
+    seats = quad_seats(
+        [c.fixture.fixture_id for c in (*rgb_caps, *wheel_caps)],
+        [group.fixture_ids for group in fixture_groups(workspace.root)],
+        [values_of[name] for name in dealt],
+    )
 
     scene_ids: list[int] = []
     for offset in range(len(dealt)):
         values: dict[int, list[tuple[int, int]]] = {}
-        for index, capability in enumerate(rgb_caps):
+        for capability in rgb_caps:
             fixture_id = capability.fixture.fixture_id
-            name = dealt[(index + offset) % len(dealt)]
+            name = dealt[(seats[fixture_id] + offset) % len(dealt)]
             values.update(
                 color_scene_values(
                     caps,
@@ -89,8 +97,8 @@ def generate_quad_color_scenes(
                     internal_program_off=fixture_id not in gated,
                 )
             )
-        for index, capability in enumerate(wheel_caps, start=len(rgb_caps)):
-            name = dealt[(index + offset) % len(dealt)]
+        for capability in wheel_caps:
+            name = dealt[(seats[capability.fixture.fixture_id] + offset) % len(dealt)]
             values.update(
                 wheel_color_values(
                     caps,
