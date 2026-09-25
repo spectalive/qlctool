@@ -41,8 +41,26 @@ data = [
   "qlctool/description/reading/description_sections.py",
   "qlctool/description/reading/duration_tables.py",
   "tests/literal_strip.py",
+  # One constant each, imported where it is needed: a tag list, a folder name,
+  # a language, a pattern, the catalogue's sections and where the catalogues
+  # live.
+  "qlctool/checks/bound_widgets.py",
+  "qlctool/checks/rule_group.py",
+  "qlctool/desk_function_path.py",
+  "qlctool/names/catalogue_dir.py",
+  "qlctool/names/default_language.py",
+  "qlctool/names/identifier_pattern.py",
+  "qlctool/names/sections.py",
 ]
-registry = []
+# Instances other code finds by name: the MIDI pads a description can ask for,
+# the SMC-PAD's profile, and the two rule providers the `qlctool.rules` entry
+# points in pyproject.toml load.
+registry = [
+  "qlctool/controllers/midi_pads.py",
+  "qlctool/controllers/smc_pad_profile.py",
+  "qlctool/controllers/smc_pad_rules.py",
+  "qlctool/controllers/tablet_desk_rules.py",
+]
 entrypoint = []
 generated = []
 namespace-init = []
@@ -51,3 +69,8 @@ namespace-init = []
 paths = ["qlctool/checks/rule_*.py"]
 disable = ["BPY002"]
 reason = "CLAUDE.md defines the check-rule convention: a rule lives in checks/rule_<name>.py and exposes check_<name>. The pairing is the repository's own naming rule, not a mismatch"
+
+[[overrides]]
+paths = ["qlctool/checks/frame_holds_a_control.py", "qlctool/mach_o_architectures.py"]
+disable = ["BPY002"]
+reason = "The file names the function word for word. BPY002 merges a one-letter word into the next (frame_holds_acontrol, mach_oarchitectures), which is its rule for acronyms such as IPv6, not for the English article or the o of Mach-O"

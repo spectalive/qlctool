@@ -26,3 +26,13 @@
   puts two complementary colours in one group (`complementarios en un mismo
   lavado`). Smallest next step: a dated small-rig test with a two-par group,
   then deal the four colours so no group gets exactly two opposite hues.
+- [ ] **Five structural findings entered the codeality baseline (2026-09-25).**
+  The gate was red on them beside mypy, and the fix that turned it green was
+  told not to restructure modules, so they were recorded as debt instead:
+  `checks/run.py` 160 code lines, `generate/color_banks.py` 167 and
+  `generate/matrix_effects.py` 155 (cap 150, BPY004);
+  `checks/function_references.py` holds four declarations (BPY001);
+  `vibra/description.py` holds `vibra_description` (BPY002). Smallest next
+  step: split each over-long module and move the three reference helpers
+  into files of their own, then `codeality-py baseline update` so the
+  entries drop out.
