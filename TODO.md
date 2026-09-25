@@ -48,3 +48,11 @@
   `codeality-py.toml` says never to raise the budget, so this waits on the
   owner: a budget per environment, a larger runner, or cheaper show builds
   in `test_check.py`.
+- [ ] **Page 4 counts the panels' effects as 42 on every rig (2026-09-25).**
+  Seen fixing the club's captions: `library_2`, `library_6` and
+  `panels_frame` say "42" in the catalogue, the number Vibra's panels have,
+  while `generate_builtin_effects` builds `min(program.count)` scenes. A rig
+  whose built-in effects number otherwise gets the lines with the wrong
+  count. Smallest next step: render the count from `len(builtins.scene_ids)`
+  through a `{count}` template, with a dated test on a rig with another
+  count; Vibra's bytes stay as they are.
