@@ -1,6 +1,6 @@
 [project]
 name = "qlctool"
-version = "0.1.0"
+version = "0.1.1"
 description = "Generate, check and validate QLC+ lighting shows from a patched workspace and a TOML description"
 readme = "README.md"
 license = "Apache-2.0"
