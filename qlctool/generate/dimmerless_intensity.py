@@ -32,8 +32,10 @@ from ..capability import FixtureCapabilities
 from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..mode_park import mode_park_pairs
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..outside_color_looks import outside_color_looks
 from ..shutter_open import shutter_open_pairs
 from ..stepped_dimmer import stepped_dimmer_offsets
 from ..strobe_off import strobe_off_pairs
@@ -79,6 +81,10 @@ def generate_dimmerless_intensity(
         pairs += shutter_open_pairs(capability)
         pairs += zoom_wide_pairs(capability)
         pairs += strobe_off_pairs(capability)
+        # A head no colour look reaches is parked by nothing else: this level
+        # lights it, so this level states its self-running channel (2026-09-25).
+        if outside_color_looks(capability):
+            pairs += mode_park_pairs(capability)
         if pairs:
             fixture_id = capability.fixture.fixture_id
             values[fixture_id] = sorted(set(pairs) | set(values.get(fixture_id, [])))

@@ -38,13 +38,17 @@
   building a show for a pars-only or washes-only rig. Smallest next step: make
   the movement and dimmer generators optional when the rig lacks them, one
   shape at a time, each with a dated test in `tests/test_small_rig.py`.
-- [ ] **A head with no colour keeps its Effect channel unowned (2026-09-25).**
+- [x] **A head with no colour keeps its Effect channel unowned (2026-09-25).**
   Seen building the gobo-spot regression rig: a BEAM 230W 7R with only its
   colour wheel channels stripped keeps `Atomization` (Effect group), and
-  `check` reports `modo sin dueño` - `mode_park_pairs` is only called from
-  colour looks, which never touch a fixture that mixes no colour. The test rig
-  strips that channel too. Smallest next step: park Effect channels on a look
-  that lights such a head (dimmer or gobo scene), with a dated test.
+  `check` reported `modo sin dueño` - `mode_park_pairs` was only called from
+  colour looks, which never touch a fixture that mixes no colour. Closed by
+  `fix(generate): the intensity levels park the Effect channel of a head no
+  colour look reaches`: `energy_intensity` (ambient and full) and
+  `dimmerless_intensity` (peak) add `mode_park_pairs` for a fixture with no
+  RGB and no colour wheel (`outside_color_looks`), so Vibra's bytes do not
+  move. The rig keeps the channel now; test
+  `tests/test_colourless_head_park.py` (bites without the fix: two findings).
 - [ ] **Four-colour deal on a two-fixture group is a split (2026-09-25).**
   Same session: two Vortex pars as the only colour group -> `Rig 4 Colores 4`
   puts two complementary colours in one group (`complementarios en un mismo

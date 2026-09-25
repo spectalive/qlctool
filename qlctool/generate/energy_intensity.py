@@ -24,8 +24,10 @@ from ..capability import FixtureCapabilities
 from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..mode_park import mode_park_pairs
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..outside_color_looks import outside_color_looks
 from ..shutter_open import shutter_open_pairs
 from ..stepped_dimmer import stepped_dimmer_offsets
 from ..strobe_off import strobe_off_pairs
@@ -111,6 +113,10 @@ def _scene(
         # the intensity owner writes the strobe off.
         pairs += strobe_off_pairs(capability)
         pairs += fog_off_pairs(capability)
+        # A head no colour look reaches is parked by nothing else: its
+        # self-running channel is stated here, where it is lit (2026-09-25).
+        if outside_color_looks(capability):
+            pairs += mode_park_pairs(capability)
         if pairs:
             values[capability.fixture.fixture_id] = sorted(set(pairs))
     if not values:

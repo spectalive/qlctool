@@ -1,10 +1,12 @@
 """The small club with two gobo spots that have no colour wheel.
 
-The spot is the BEAM 230W 7R with its colour channels taken out - the wheel,
-the half-colour index and the multicolour "atomization" effect - which is what
-an LED gobo spot looks like to qlctool: pan, tilt, a dimmer, a gobo wheel, a
-prism, and no Color Macro. Found by the Plan C final review on 2026-09-25:
-`newshow` stopped at "no fixture in this workspace has a color_macro channel".
+The spot is the BEAM 230W 7R with its colour channels taken out - the wheel
+and the half-colour index - which is what an LED gobo spot looks like to
+qlctool: pan, tilt, a dimmer, a gobo wheel, a prism, and no Color Macro. It
+keeps the "Atomization" channel (Effect group): a head no colour look reaches
+still has a self-running channel somebody must park (2026-09-25). Found by
+the Plan C final review on 2026-09-25: `newshow` stopped at "no fixture in this
+workspace has a color_macro channel".
 The rest is the small club's patch (see small_rig.py), so the colour looks
 have the pars and the RGB heads to fall on. `without` takes more channels
 out, for a spot that also lacks a prism.
@@ -20,7 +22,7 @@ from qlctool.cli import main
 
 EMPTY = Path(__file__).resolve().parent / "data" / "empty-workspace.qxw"
 DEFINITIONS = RIG_ROOT / "QLC+ Fixtures"
-COLOUR_CHANNELS = ("Color Wheel", "Color Effect", "Atomization")
+COLOUR_CHANNELS = ("Color Wheel", "Color Effect")
 
 
 def build_gobo_spot_patch(folder: Path, without: tuple[str, ...] = ()) -> Path:
@@ -39,7 +41,7 @@ def build_gobo_spot_patch(folder: Path, without: tuple[str, ...] = ()) -> Path:
     numbers = iter(range(64))
     text = re.sub(r'<Channel Number="\d+">', lambda _: f'<Channel Number="{next(numbers)}">', text)
     text = text.replace('<Mode Name="16 channel">', f'<Mode Name="{width} channel">')
-    assert "ColorMacro" not in text and "Multicolor" not in text
+    assert "ColorMacro" not in text and "ColorWheelIndex" not in text
     (fixtures / "Generic-Gobo-Spot-No-Wheel.qxf").write_text(text, encoding="utf-8")
 
     empty = folder / "empty.qxw"
