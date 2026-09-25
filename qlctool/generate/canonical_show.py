@@ -32,6 +32,7 @@ from ..functions.collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..internal_program import internal_program_off_pairs
+from ..is_smoke_machine import is_smoke_machine
 from ..library import FixtureLibrary
 from ..monitor_positions import house_right_fixture_ids
 from ..names.localised_keys import localised_keys
@@ -1138,6 +1139,7 @@ def build_canonical_show(
             glyphs=localised_keys(GLYPHS, vocabulary),
             vocabulary=vocabulary,
             has_pixel_groups=bool(pixel_group_ids),
+            has_smoke_machine=any(is_smoke_machine(c) for c in caps),
         )
         button_ids = console.button_ids
         if described.controllers.tablet_desk:

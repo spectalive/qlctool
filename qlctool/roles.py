@@ -48,6 +48,10 @@ SPEED = "speed"
 # generator that says "dimmer" must never reach the pump.
 SMOKE = "smoke"
 
+# The words a pump channel's name carries. "haze" also reads "hazer": a hazer's
+# pump is a pump (2026-09-25, review of `rotulo que promete lo que no hay`).
+_PUMP_WORDS = ("fog", "smoke", "humo", "haze")
+
 _INTENSITY_PRESETS = {
     "IntensityRed": RED,
     "IntensityGreen": GREEN,
@@ -103,7 +107,7 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
         return PRISM_ROTATION
     if g == "effect" and ("jitter" in n or "shake" in n):
         return GOBO_SHAKE
-    if g == "effect" and ("fog" in n or "smoke" in n or "humo" in n):
+    if g == "effect" and any(word in n for word in _PUMP_WORDS):
         return SMOKE
     if g == "effect":
         return EFFECT
@@ -116,7 +120,7 @@ def role_of(preset: str | None, group: str | None, name: str | None) -> str | No
     # A pump lives in the Intensity group so QLC+ resets it every cycle (see
     # the LED Spray Fog definition), and it is still a pump: a generator that
     # says "dimmer" must never reach it.
-    if g == "intensity" and ("fog" in n or "smoke" in n or "humo" in n):
+    if g == "intensity" and any(word in n for word in _PUMP_WORDS):
         return SMOKE
     if g == "intensity" and ("dimmer" in n or "master" in n):
         return DIMMER

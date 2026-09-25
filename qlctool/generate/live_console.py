@@ -317,6 +317,7 @@ def generate_live_console(
     glyphs: Mapping[str, str] | None = None,
     vocabulary: Names | None = None,
     has_pixel_groups: bool = False,
+    has_smoke_machine: bool = True,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame.
 
@@ -324,7 +325,8 @@ def generate_live_console(
     `glyphs=None` means the shipped glyphs in the vocabulary. The console's
     words come from `vocabulary`; None means `default_names()`.
     `has_pixel_groups` says some fixture group is made of pixels, which is
-    what page 4's matrices caption is chosen from.
+    what page 4's matrices caption is chosen from. `has_smoke_machine` says a
+    smoke or haze machine is patched: page 3's title promises haze only then.
     """
     vocabulary = default_names() if vocabulary is None else vocabulary
     pad_bindings = dict(pad_bindings or {})
@@ -497,6 +499,7 @@ def generate_live_console(
         vocabulary,
         short_colour,
         mix_code,
+        has_smoke_machine,
     )
     _page_library(
         outer,
@@ -807,12 +810,17 @@ def _page_control(
     vocabulary: Names,
     short_colour: Mapping[str, str],
     mix_code: Mapping[str, str],
+    has_smoke_machine: bool,
 ) -> None:
     """Page 3: direct controls that remain useful beside the play families."""
     # Page 3's one haze control is the vertical column's light, and its beam
     # wheel frame is built only from beam colour scenes; without either the
-    # page title does not promise it.
-    has_haze_light = master.get(vocabulary.display("vertical_smoke")) is not None
+    # page title does not promise it. The column's light is built from the
+    # panels alone, so haze is promised only where a smoke machine is patched
+    # too (2026-09-25: "y humo" on a rig with panels and no smoke machine).
+    has_haze_light = (
+        has_smoke_machine and master.get(vocabulary.display("vertical_smoke")) is not None
+    )
     label(
         outer,
         vocabulary.display(page_control_title(has_haze_light, bool(beam_colors.scene_ids))),
