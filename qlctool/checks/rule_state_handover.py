@@ -68,12 +68,8 @@ def check_state_handover(
                 severity=ERROR,
                 function=graph.name(state_id),
                 fixtures=tuple(fixtures),
-                message=(
-                    f"enciende {len(fixtures)} aparatos sin escribir {roles_named}: "
-                    f"esos canales son LTP y se quedan como los dejo el estado "
-                    f"anterior - la luz de trabajo sale con el gobo y el prisma "
-                    f"del ultimo nivel"
-                ),
+                message_id="state_handover_inherits",
+                fields={"count": len(fixtures), "roles": roles_named},
             )
         )
     return findings

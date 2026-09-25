@@ -67,10 +67,7 @@ def check_layer_trace(
                 function=graph.name(button.function_id),
                 fixtures=tuple(sorted(set(stranded))),
                 message_id="layer_trace_ltp_left",
-                fields={
-                    "caption": button.caption,
-                    "count": len(stranded),
-                },
+                fields={"caption": button.caption, "count": len(stranded)},
             )
         )
     return findings

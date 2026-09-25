@@ -46,11 +46,8 @@ def check_pick_darkens(
                         severity=ERROR,
                         function=graph.name(state_id),
                         fixtures=tuple(sorted(dark)),
-                        message=(
-                            f"el pick «{graph.name(pick_id)}» para sus hooks y deja "
-                            f"{len(dark)} aparatos coloreados sin dimmer o con el "
-                            "obturador cerrado"
-                        ),
+                        message_id="pick_darkens_dark",
+                        fields={"pick": graph.name(pick_id), "count": len(dark)},
                     )
                 )
     return findings

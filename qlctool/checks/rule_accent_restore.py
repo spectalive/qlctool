@@ -103,10 +103,7 @@ def _orphaned(
                 severity=WARNING,
                 function=graph.name(function_id),
                 message_id="accent_restore_wheel_left",
-                fields={
-                    "caption": caption,
-                    "states": ", ".join(orphan_states),
-                },
+                fields={"caption": caption, "states": ", ".join(orphan_states)},
                 fixtures=(capability.fixture.name,),
             )
         )

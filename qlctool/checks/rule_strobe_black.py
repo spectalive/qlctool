@@ -56,14 +56,8 @@ def check_strobe_black(
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        f"cuelga de «{button.caption}» y su paso negro "
-                        f"({graph.name(dark_steps[0])}) solo escribe canales "
-                        f"Intensity, que mezclan HTP: con un estado encendido "
-                        f"debajo el 0 pierde y el estrobo nunca llega a negro - "
-                        f"un estrobo sobre la sala es una escena mantenida en "
-                        f"los shutters"
-                    ),
+                    message_id="strobe_black_intensity_only",
+                    fields={"caption": button.caption, "step": graph.name(dark_steps[0])},
                 )
             )
     return findings

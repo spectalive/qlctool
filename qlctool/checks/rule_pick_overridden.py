@@ -81,13 +81,8 @@ def check_pick_overridden(
                 severity=ERROR,
                 function=graph.name(button.function_id),
                 fixtures=tuple(fixtures),
-                message=(
-                    f"es un Toggle («{button.caption}») sobre una rueda o una "
-                    f"posicion que un chaser de {', '.join(sorted(overridden))} "
-                    f"vuelve a escribir en su siguiente paso: el fader nuevo "
-                    f"entra detras y gana - la eleccion dura un paso; un Flash "
-                    f"con Override dura lo que dure la mano"
-                ),
+                message_id="pick_overridden_one_step",
+                fields={"caption": button.caption, "overridden": ", ".join(sorted(overridden))},
             )
         )
     return findings

@@ -37,14 +37,8 @@ def check_state_proxy(graph: ShowGraph, states: set[int]) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        f"arranca «{graph.name(state_id)}», que es un boton del "
-                        f"marco de estados de la sala: el boton se entera aunque "
-                        f"lo arranque un chaser (qmlui "
-                        f"VCButton::slotFunctionRunning) y el solo frame para el "
-                        f"estado que estuviera sonando - el show se muere a "
-                        f"mitad de rafaga"
-                    ),
+                    message_id="state_proxy_starts_state",
+                    fields={"state": graph.name(state_id)},
                 )
             )
     return findings

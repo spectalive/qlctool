@@ -121,9 +121,7 @@ def _keys(frame: etree._Element) -> list[Finding]:
                 severity=ERROR,
                 function=", ".join(captions),
                 message_id="console_same_key",
-                fields={
-                    "key": key,
-                },
+                fields={"key": key},
             )
         )
     return findings
@@ -143,12 +141,7 @@ def _off_canvas(frame: etree._Element, canvas: tuple[int, int]) -> list[Finding]
                     severity=ERROR,
                     function=widget.attrib.get("Caption", "") or localname(widget),
                     message_id="console_off_screen",
-                    fields={
-                        "right": right,
-                        "bottom": bottom,
-                        "width": width,
-                        "height": height,
-                    },
+                    fields={"right": right, "bottom": bottom, "width": width, "height": height},
                 )
             )
     return findings
@@ -239,10 +232,7 @@ def _double_buttons(graph: ShowGraph, frame: etree._Element) -> list[Finding]:
                     severity=ERROR,
                     function=caption,
                     message_id="console_two_blackouts",
-                    fields={
-                        "seen": seen,
-                        "caption": caption,
-                    },
+                    fields={"seen": seen, "caption": caption},
                 )
             )
         else:

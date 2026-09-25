@@ -67,12 +67,8 @@ def check_split_complementary(
                             if fixture_id in graph.capabilities and fixture_id in written
                         )
                     ),
-                    message=(
-                        f"alterna dos colores opuestos ({apart:.0f} grados) dentro de un "
-                        "mismo grupo: donde se solapan se desaturan hacia blanco. Los "
-                        "complementarios van entre roles (cabezas contra resto); en un "
-                        f"mismo lavado, colores vecinos (boton: {caption})"
-                    ),
+                    message_id="split_complementary_one_wash",
+                    fields={"degrees": apart, "button": caption},
                 )
             )
     return findings

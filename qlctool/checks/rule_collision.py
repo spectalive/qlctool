@@ -63,10 +63,7 @@ def _collection(graph: ShowGraph, groups, collection_id: int, reported) -> list[
                 severity=ERROR,
                 function=graph.name(collection_id),
                 message_id="collision_same_channels",
-                fields={
-                    "first": graph.name(first),
-                    "second": graph.name(second),
-                },
+                fields={"first": graph.name(first), "second": graph.name(second)},
                 fixtures=tuple(fixtures),
             )
         )

@@ -50,11 +50,7 @@ def check_group_grids(graph: ShowGraph, root: etree._Element) -> list[Finding]:
                     severity=ERROR,
                     function=name,
                     message_id="group_grid_heads_outside",
-                    fields={
-                        "width": width,
-                        "height": height,
-                        "outside": len(outside),
-                    },
+                    fields={"width": width, "height": height, "outside": len(outside)},
                 )
             )
 

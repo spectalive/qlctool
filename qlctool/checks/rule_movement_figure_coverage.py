@@ -60,10 +60,7 @@ def check_movement_figure_coverage(
                 function=caption,
                 fixtures=tuple(still),
                 message_id="movement_figure_still_heads",
-                fields={
-                    "moved": len(moved),
-                    "still": len(still),
-                },
+                fields={"moved": len(moved), "still": len(still)},
             )
         )
     return findings

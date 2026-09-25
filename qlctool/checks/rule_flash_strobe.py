@@ -78,9 +78,7 @@ def check_flash_strobe(graph: ShowGraph, groups, root: etree._Element) -> list[F
                     function=graph.name(function_id),
                     fixtures=tuple(sorted(dark)),
                     message_id="flash_strobe_not_strobing",
-                    fields={
-                        "count": len(dark),
-                    },
+                    fields={"count": len(dark)},
                 )
             )
     return findings

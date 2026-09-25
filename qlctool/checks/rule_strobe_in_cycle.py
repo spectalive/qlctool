@@ -41,11 +41,8 @@ def check_strobe_in_cycle(graph: ShowGraph, groups, entries) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        f"lleva {len(strobes)} efecto(s) de estrobo entre sus "
-                        f"pasos, asi que el rig parpadea sin que nadie lo haya "
-                        f"pedido; un estrobo va en su propio boton"
-                    ),
+                    message_id="strobe_in_cycle_steps",
+                    fields={"count": len(strobes)},
                 )
             )
     return findings

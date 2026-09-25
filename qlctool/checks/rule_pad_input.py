@@ -50,9 +50,7 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
                     severity=ERROR,
                     function=captions[0],
                     message_id="pad_input_unknown_channel",
-                    fields={
-                        "channel": channel,
-                    },
+                    fields={"channel": channel},
                 )
             )
         if len(captions) > 1:
@@ -62,10 +60,7 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
                     severity=ERROR,
                     function=captions[0],
                     message_id="pad_input_shared_channel",
-                    fields={
-                        "channel": channel,
-                        "others": ", ".join(captions[1:]),
-                    },
+                    fields={"channel": channel, "others": ", ".join(captions[1:])},
                 )
             )
 
@@ -76,9 +71,7 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
                 severity=ERROR,
                 function="InputOutputMap",
                 message_id="pad_input_no_input",
-                fields={
-                    "count": len(bindings),
-                },
+                fields={"count": len(bindings)},
             )
         )
     return findings

@@ -54,10 +54,7 @@ def check_movement_families(graph: ShowGraph) -> list[Finding]:
                 severity=WARNING,
                 function=graph.name(function_id),
                 message_id="movement_families_mixed",
-                fields={
-                    "washes": len(washes),
-                    "beams": len(beams),
-                },
+                fields={"washes": len(washes), "beams": len(beams)},
                 fixtures=tuple(sorted(washes + beams)),
             )
         )

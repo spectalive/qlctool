@@ -34,11 +34,8 @@ def check_strobe_rate(graph: ShowGraph, groups, entries) -> list[Finding]:
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
-                message=(
-                    f"parpadea a {rate:.1f} Hz; por encima de {MAX_FLASH_HZ:.0f} Hz "
-                    f"entra en la banda de riesgo de epilepsia fotosensible - la "
-                    f"guia britanica de espectaculos corta en 4 por segundo"
-                ),
+                message_id="strobe_rate_too_fast",
+                fields={"rate": rate, "limit": MAX_FLASH_HZ},
             )
         )
     return findings

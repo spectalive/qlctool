@@ -112,10 +112,7 @@ def _check_widget(
                 severity=ERROR,
                 function=graph.name(reached),
                 message_id="audio_trigger_starts_function",
-                fields={
-                    "band": bar.attrib.get("Name", ""),
-                    "caption": caption,
-                },
+                fields={"band": bar.attrib.get("Name", ""), "caption": caption},
             )
         )
     return findings

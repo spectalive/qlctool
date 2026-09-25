@@ -64,10 +64,7 @@ def check_layer_adds(
                     function=graph.name(button.function_id),
                     fixtures=tuple(sorted(clashing)),
                     message_id="layer_adds_htp_colour",
-                    fields={
-                        "caption": button.caption,
-                        "count": len(clashing),
-                    },
+                    fields={"caption": button.caption, "count": len(clashing)},
                 )
             )
     return findings

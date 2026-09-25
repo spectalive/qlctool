@@ -48,12 +48,8 @@ def check_state_palette(
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(chaser_id),
-                    message=(
-                        f"el paso «{graph.name(step_id)}» pone {len(colours)} colores "
-                        "a la vez en la sala y el estado la deja rotar sola: como "
-                        "mucho dos (un fondo y las cabezas); lo multicolor es un "
-                        f"boton aparte (boton: {caption})"
-                    ),
+                    message_id="state_palette_too_many",
+                    fields={"step": graph.name(step_id), "count": len(colours), "button": caption},
                 )
             )
     return findings

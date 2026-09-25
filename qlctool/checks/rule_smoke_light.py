@@ -51,12 +51,7 @@ def check_smoke_light(graph: ShowGraph, groups, entries) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function="",
-                    message=(
-                        "la maquina de humo con luz dispara la columna pero "
-                        "ninguna funcion enciende su LED (dimmer + color a la "
-                        "vez): con DMX conectado su programa interno queda "
-                        "anulado y la columna sale a oscuras"
-                    ),
+                    message_id="smoke_light_dark_column",
                     fixtures=(capability.fixture.name,),
                 )
             )

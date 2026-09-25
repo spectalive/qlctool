@@ -42,9 +42,7 @@ def check_instant_dimmer(
                 function=graph.name(state_id),
                 fixtures=tuple(sorted(dark)),
                 message_id="instant_dimmer_dark",
-                fields={
-                    "count": len(dark),
-                },
+                fields={"count": len(dark)},
             )
         )
     return findings

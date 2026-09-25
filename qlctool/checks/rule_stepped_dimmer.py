@@ -51,12 +51,7 @@ def check_stepped_dimmer(graph: ShowGraph, groups) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        "escribe un valor intermedio en un dimmer que no es un "
-                        "fader sino una pala mecanica: a medio recorrido tapa "
-                        "media lente y el haz sale como una media luna - o abierto "
-                        "del todo o cerrado"
-                    ),
+                    message_id="stepped_dimmer_half",
                     fixtures=tuple(sorted(caught)),
                 )
             )

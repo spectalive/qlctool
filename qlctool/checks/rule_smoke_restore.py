@@ -59,12 +59,8 @@ def check_smoke_restore(
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        f"el boton «{caption}» abre la bomba de humo en un canal "
-                        "que QLC+ no reinicia solo - no esta en el grupo Intensity "
-                        "- y la funcion no lo cierra: al soltar, la maquina sigue "
-                        "tirando hasta vaciar el deposito"
-                    ),
+                    message_id="smoke_restore_pump_left",
+                    fields={"caption": caption},
                     fixtures=(graph.capabilities[fixture_id].fixture.name,),
                 )
             )

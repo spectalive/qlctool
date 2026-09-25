@@ -36,9 +36,7 @@ def check_dangling_references(graph: ShowGraph, root: etree._Element) -> list[Fi
                 severity=ERROR,
                 function=holder,
                 message_id="dangling_reference_missing",
-                fields={
-                    "function": raw or Phrase("dangling_reference_empty"),
-                },
+                fields={"function": raw or Phrase("dangling_reference_empty")},
             )
         )
     return findings

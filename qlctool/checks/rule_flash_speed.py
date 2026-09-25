@@ -95,11 +95,7 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
                 function=scene_name,
                 fixtures=tuple(names),
                 message_id="flash_speed_slow",
-                fields={
-                    "count": len(slow),
-                    "slowest": slowest,
-                    "fast": FAST_FLASH_FRACTION,
-                },
+                fields={"count": len(slow), "slowest": slowest, "fast": FAST_FLASH_FRACTION},
             )
         )
     for scene_name, crawling in sorted(crawl_by_scene.items()):
@@ -117,11 +113,7 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
                 function=scene_name,
                 fixtures=tuple(names),
                 message_id="flash_speed_crawl",
-                fields={
-                    "count": len(crawling),
-                    "crawl": CRAWL_FLASH_FRACTION,
-                    "slowest": slowest,
-                },
+                fields={"count": len(crawling), "crawl": CRAWL_FLASH_FRACTION, "slowest": slowest},
             )
         )
     return findings

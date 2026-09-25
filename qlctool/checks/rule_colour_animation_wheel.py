@@ -66,10 +66,7 @@ def check_colour_animation_wheel(
                 function=caption,
                 fixtures=tuple(stuck),
                 message_id="colour_animation_wheel_stuck",
-                fields={
-                    "animated": len(animated),
-                    "stuck": len(stuck),
-                },
+                fields={"animated": len(animated), "stuck": len(stuck)},
             )
         )
     return findings

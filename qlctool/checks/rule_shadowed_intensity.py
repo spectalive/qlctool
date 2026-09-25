@@ -63,12 +63,13 @@ def _collection(graph: ShowGraph, collection_id: int, reported) -> list[Finding]
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(collection_id),
-                    message=(
-                        f"«{graph.name(member)}» deja un dimmer a {low} mientras "
-                        f"«{graph.name(top_member)}» tiene el mismo canal a "
-                        f"{top_value} a la vez: la intensidad mezcla HTP, gana el "
-                        f"alto y la bajada no se ve nunca"
-                    ),
+                    message_id="shadowed_intensity_hidden",
+                    fields={
+                        "member": graph.name(member),
+                        "low": low,
+                        "top": graph.name(top_member),
+                        "top_value": top_value,
+                    },
                     fixtures=(fixture.fixture.name,) if fixture is not None else (),
                 )
             )

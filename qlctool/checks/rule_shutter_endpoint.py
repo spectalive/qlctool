@@ -41,11 +41,8 @@ def check_shutter_endpoint(graph: ShowGraph, groups) -> list[Finding]:
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
-                message=(
-                    f"abre el obturador a {value} en vez de {endpoint}: dentro del "
-                    f"rango 'abierto', pero sin llegar al extremo - la 7R se queda "
-                    f"a oscuras en mitad de ese rango"
-                ),
+                message_id="shutter_endpoint_half_open",
+                fields={"value": value, "endpoint": endpoint},
                 fixtures=names,
             )
         )

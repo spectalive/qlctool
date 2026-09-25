@@ -53,11 +53,8 @@ def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
                     severity=ERROR,
                     function=graph.name(function_id),
                     fixtures=tuple(missing),
-                    message=(
-                        f"es una escena de estrobo que deja fuera {len(missing)} "
-                        f"aparatos con canal de estrobo: media sala parpadea y la "
-                        f"otra media se queda mirando"
-                    ),
+                    message_id="strobe_coverage_left_out",
+                    fields={"count": len(missing)},
                 )
             )
     return findings

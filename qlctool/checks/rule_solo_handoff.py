@@ -56,12 +56,12 @@ def check_solo_handoff(graph: ShowGraph, root: etree._Element, states: set[int])
         names = ", ".join(f"«{graph.name(function_id)}»" for function_id in needing[:3])
         findings.append(
             Finding(
-                RULE_ID,
-                ERROR,
-                frame.attrib.get("Caption", "") or f"SoloFrame {frame.attrib.get('ID', '?')}",
-                "ignora a los botones que solo vigilan: otro estado o boton arranca "
-                f"{names} y una eleccion del marco no lo apagara "
-                "(ExcludeMonitored debe ser False)",
+                rule_id=RULE_ID,
+                severity=ERROR,
+                function=frame.attrib.get("Caption", "")
+                or f"SoloFrame {frame.attrib.get('ID', '?')}",
+                message_id="solo_handoff_excludes_monitored",
+                fields={"names": names},
             )
         )
     return findings

@@ -45,9 +45,7 @@ def check_latched_strobe(graph: ShowGraph, groups, entries) -> list[Finding]:
                     severity=ERROR,
                     function=graph.name(function_id),
                     message_id="latched_strobe_loops",
-                    fields={
-                        "caption": caption,
-                    },
+                    fields={"caption": caption},
                 )
             )
     return findings

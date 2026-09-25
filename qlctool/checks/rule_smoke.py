@@ -38,11 +38,7 @@ def check_smoke(graph: ShowGraph, groups, entries) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        "enciende la maquina de humo dentro de una escena que "
-                        "toca otros fixtures: el humo se queda abierto mientras "
-                        "esa escena corra"
-                    ),
+                    message_id="smoke_in_scene",
                     fixtures=tuple(
                         graph.capabilities[fixture_id].fixture.name
                         for fixture_id in smoke
