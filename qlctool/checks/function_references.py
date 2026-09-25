@@ -21,18 +21,10 @@ from collections.abc import Iterator
 from lxml import etree
 
 from ..xmlutil import find_local, localname
-
-# The engine's "no function" (`Function::invalidId()`): a blackout button, an
-# unbound slider or a track without a scene. It refers to nothing on purpose.
-INVALID_ID = "4294967295"
-
-STEP_TYPES = ("Chaser", "Collection")
-# Console tags whose text is a function id.
-CONSOLE_TEXT_TAGS = ("Chaser", "FuncID")
-# Console tags whose attribute is a function id.
-CONSOLE_ATTRIBUTES = {"Schedule": "Function", "Adjust": "Function"}
-# The audio bars' attribute: a function id on whichever element carries it.
-AUDIO_BAR_ATTRIBUTE = "FunctionID"
+from .console_reference import console_reference
+from .engine_reference import engine_reference
+from .invalid_function_id import INVALID_ID
+from .nearest_caption import nearest_caption
 
 
 def function_references(root: etree._Element) -> Iterator[tuple[str, str]]:
@@ -43,46 +35,9 @@ def function_references(root: etree._Element) -> Iterator[tuple[str, str]]:
             continue
         holder = function.get("Name", function.get("ID", ""))
         for element in function.iter():
-            yield from _engine_reference(function, element, holder)
+            yield from engine_reference(function, element, holder)
     console = find_local(root, "VirtualConsole")
     for element in console.iter() if console is not None else ():
-        raw = _console_reference(element)
+        raw = console_reference(element)
         if raw is not None and raw != INVALID_ID:
-            yield _caption(element), raw
-
-
-def _engine_reference(
-    function: etree._Element, element: etree._Element, holder: str
-) -> Iterator[tuple[str, str]]:
-    tag = localname(element)
-    if element is function:
-        if function.get("Type") == "Sequence" and "BoundScene" in function.attrib:
-            yield holder, function.get("BoundScene", "")
-    elif tag == "Step" and function.get("Type") in STEP_TYPES:
-        yield holder, (element.text or "").strip()
-    elif tag == "ShowFunction":
-        yield holder, element.get("ID", "")
-    elif tag == "Track" and element.get("SceneID", INVALID_ID) != INVALID_ID:
-        yield holder, element.get("SceneID", "")
-
-
-def _console_reference(element: etree._Element) -> str | None:
-    tag = localname(element)
-    if tag == "Function":
-        return element.get("ID", (element.text or "").strip())
-    if tag in CONSOLE_TEXT_TAGS:
-        return (element.text or "").strip()
-    if AUDIO_BAR_ATTRIBUTE in element.attrib:
-        return element.get(AUDIO_BAR_ATTRIBUTE)
-    attribute = CONSOLE_ATTRIBUTES.get(tag)
-    if attribute is not None and attribute in element.attrib:
-        return element.get(attribute)
-    return None
-
-
-def _caption(element: etree._Element) -> str:
-    """The nearest widget with a caption: what somebody would look for on the console."""
-    for ancestor in element.iterancestors():
-        if ancestor.get("Caption"):
-            return ancestor.get("Caption", "")
-    return localname(element)
+            yield nearest_caption(element), raw

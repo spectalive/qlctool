@@ -45,6 +45,7 @@ data = [
   # a language, a pattern, the catalogue's sections and where the catalogues
   # live.
   "qlctool/checks/bound_widgets.py",
+  "qlctool/checks/invalid_function_id.py",
   "qlctool/checks/rule_group.py",
   "qlctool/desk_function_path.py",
   "qlctool/names/catalogue_dir.py",
