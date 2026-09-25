@@ -45,7 +45,7 @@ def _module_imports(tree: ast.Module) -> tuple[set[str], set[str]]:
 def test_no_core_rule_reaches_a_controller_module():
     seen: set[str] = set()
     forbidden_by_module: dict[str, set[str]] = {}
-    pending = ["run"]
+    pending = ["check_workspace"]
     while pending:
         module = pending.pop()
         if module in seen or not (CHECKS / f"{module}.py").exists():

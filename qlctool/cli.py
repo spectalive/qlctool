@@ -12,7 +12,7 @@ from pathlib import Path
 from .apply_install import apply_install
 from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
-from .checks.run import check_workspace
+from .checks.check_workspace import check_workspace
 from .cmd_deskmap import add_deskmap_parser
 from .compose import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
@@ -26,8 +26,8 @@ from .fixture_group import fixture_groups
 from .generate.canonical_show import build_canonical_show
 from .generate.channel_probe import generate_channel_probe
 from .generate.color_palette import generate_color_palette
+from .generate.generate_matrix_effects import generate_matrix_effects
 from .generate.input_profile import build_input_profile
-from .generate.matrix_effects import generate_matrix_effects
 from .generate.movement_efx import generate_movement_efx
 from .generate.stage_layout import DEFAULT_STAGE, generate_stage_layout
 from .generate.stage_plot_layout import apply_stage_plot

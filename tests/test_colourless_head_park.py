@@ -12,8 +12,8 @@ from gobo_spot_rig import build_gobo_spot_patch
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.rule_mode_owner import RULE_ID
-from qlctool.checks.run import check_workspace
 from qlctool.cli import main
 from qlctool.library import FixtureLibrary
 from qlctool.outside_color_looks import outside_color_looks

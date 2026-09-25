@@ -14,7 +14,7 @@ from qlctool.color_format import INDEXED, LEGACY, color_format_of
 from qlctool.constants import ALL_FIXTURES_GROUP
 from qlctool.fixture_group import fixture_groups
 from qlctool.functions.rgbmatrix import build_rgbmatrix
-from qlctool.generate.matrix_effects import generate_matrix_effects
+from qlctool.generate.generate_matrix_effects import generate_matrix_effects
 from qlctool.ids import existing_function_ids
 from qlctool.matrix_algorithms import CuratedScript
 from qlctool.matrix_step_count import matrix_step_count

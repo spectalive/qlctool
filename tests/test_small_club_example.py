@@ -10,9 +10,9 @@ from pathlib import Path
 
 import pytest
 
+from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.pad_bindings import pad_bindings
 from qlctool.checks.rule_providers import rule_providers
-from qlctool.checks.run import check_workspace
 from qlctool.cli import main
 from qlctool.desk_function_path import DESK_FUNCTION_PATH
 from qlctool.library import FixtureLibrary

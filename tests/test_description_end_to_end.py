@@ -9,7 +9,7 @@ import shutil
 
 from rig_root import RIG_ROOT
 
-from qlctool.checks.run import check_workspace
+from qlctool.checks.check_workspace import check_workspace
 from qlctool.cli import main
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace

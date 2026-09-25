@@ -1,8 +1,8 @@
 """The two rules that read the console's frames and captions, not the functions behind them.
 
 Split out of `check_workspace` when the second one came (2026-09-25) so that
-`run.py` stays under the module cap: an empty frame promises something to
-press, and a caption promises something on the rig.
+`check_workspace.py` stays under the module cap: an empty frame promises
+something to press, and a caption promises something on the rig.
 """
 
 from lxml import etree

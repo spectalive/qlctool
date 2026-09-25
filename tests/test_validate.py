@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.generate.matrix_effects import generate_matrix_effects
+from qlctool.generate.generate_matrix_effects import generate_matrix_effects
 from qlctool.generate.movement_efx import generate_movement_efx
 from qlctool.library import FixtureLibrary
 from qlctool.validate import (

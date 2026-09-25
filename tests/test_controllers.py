@@ -11,11 +11,11 @@ from dataclasses import replace
 import pytest
 from rig_root import RIG_ROOT
 
+from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.finding import ERROR, Finding
 from qlctool.checks.pad_bindings import pad_bindings
 from qlctool.checks.rule_provider import RuleProvider
 from qlctool.checks.rule_providers import rule_providers
-from qlctool.checks.run import check_workspace
 from qlctool.description.controller_settings import ControllerSettings
 from qlctool.desk_function_path import DESK_FUNCTION_PATH
 from qlctool.generate.canonical_show import build_canonical_show

@@ -12,7 +12,7 @@ axes as their wash counterparts.
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.checks.run import check_workspace
+from qlctool.checks.check_workspace import check_workspace
 from qlctool.generate.movement_families import generate_movement_families
 from qlctool.library import FixtureLibrary
 from qlctool.monitor_positions import house_right_fixture_ids

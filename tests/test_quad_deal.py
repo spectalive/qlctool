@@ -10,8 +10,8 @@ two neighbours of that cycle, and yellow's neighbour is blue.
 import shutil
 from pathlib import Path
 
+from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.rule_split_complementary import RULE_ID
-from qlctool.checks.run import check_workspace
 from qlctool.cli import main
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace

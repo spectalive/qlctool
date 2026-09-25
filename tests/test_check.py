@@ -22,11 +22,11 @@ from small_rig import build_small_rig_patch
 from qlctool import roles
 from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
+from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.console_states import room_states
 from qlctool.checks.display_name_of_rule import display_name_of_rule
 from qlctool.checks.rule_pick_darkens import check_pick_darkens
 from qlctool.checks.rule_undeclared_heads import check_undeclared_heads
-from qlctool.checks.run import check_workspace
 from qlctool.checks.show_graph import (
     build_show_graph,
     group_fixtures,

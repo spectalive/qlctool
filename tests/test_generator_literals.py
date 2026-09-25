@@ -14,7 +14,7 @@ PACKAGE = Path(__file__).resolve().parents[1] / "qlctool"
 
 CONVERTED: tuple[str, ...] = (
     "generate/builtin_effects.py",
-    "generate/color_banks.py",
+    "generate/generate_color_banks.py",
     "generate/color_flashes.py",
     "generate/flash_color.py",
     "generate/multicolor_scene.py",
@@ -26,7 +26,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/panel_manual.py",
     "generate/panel_speed_auto.py",
     "generate/vertical_smoke_light.py",
-    "generate/matrix_effects.py",
+    "generate/generate_matrix_effects.py",
     "generate/beam_rainbow_spin.py",
     "color_wheel_match.py",
     "checks/detent_white.py",
@@ -90,11 +90,11 @@ CONVERTED: tuple[str, ...] = (
     "generate/is_pixel_group.py",
     "generate/all_self_animating.py",
     "generate/fader_dimmed.py",
-    # 2026-09-25: split out of color_banks.py, which was converted.
+    # 2026-09-25: split out of color_banks.py (now generate_color_banks.py), which was converted.
     "generate/bank_for_group.py",
     "generate/bank_wheel.py",
     "generate/generated_bank.py",
-    # 2026-09-25: split out of matrix_effects.py, which was converted.
+    # 2026-09-25: split out of matrix_effects.py (now generate_matrix_effects.py), which was converted.
     "generate/add_matrix.py",
     "generate/generated_matrices.py",
     "generate/matrix_grid.py",

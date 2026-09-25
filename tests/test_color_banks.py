@@ -3,7 +3,7 @@
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.generate.color_banks import generate_color_banks
+from qlctool.generate.generate_color_banks import generate_color_banks
 from qlctool.library import FixtureLibrary
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.split_pairs import SPLIT_PAIRS

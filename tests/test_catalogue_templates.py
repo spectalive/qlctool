@@ -6,7 +6,7 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.description.reading.read_names import read_names
 from qlctool.fixture_group import fixture_groups
-from qlctool.generate.matrix_effects import generate_matrix_effects
+from qlctool.generate.generate_matrix_effects import generate_matrix_effects
 from qlctool.generate.movement_families import generate_movement_families
 from qlctool.generate.wheel_scenes import generate_wheel_scenes
 from qlctool.library import FixtureLibrary

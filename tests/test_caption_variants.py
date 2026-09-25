@@ -12,7 +12,7 @@ from rig_root import RIG_ROOT
 from small_rig import build_small_rig_patch
 
 from qlctool.capabilities_of import capabilities_of
-from qlctool.checks.run import check_workspace
+from qlctool.checks.check_workspace import check_workspace
 from qlctool.cli import main
 from qlctool.generate.library_help_lines import library_help_lines
 from qlctool.generate.matrices_frame_caption import matrices_frame_caption
