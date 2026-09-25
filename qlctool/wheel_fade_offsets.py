@@ -22,6 +22,4 @@ WHEEL_ROLES = (roles.COLOR_MACRO, roles.GOBO, roles.PRISM)
 
 def wheel_fade_offsets(capabilities: FixtureCapabilities) -> list[int]:
     """Offsets QLC+ must snap rather than fade on this fixture, in order."""
-    return sorted(
-        offset for role in WHEEL_ROLES for offset in capabilities.offsets_for_role(role)
-    )
+    return sorted(offset for role in WHEEL_ROLES for offset in capabilities.offsets_for_role(role))

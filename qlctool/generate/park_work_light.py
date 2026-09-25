@@ -32,9 +32,7 @@ def park_work_light(workspace: Workspace, scene_id: int, source_ids: Sequence[in
         if localname(f) == "Function" and f.attrib.get("ID")
     }
     target = by_id[scene_id]
-    values = {
-        int(v.attrib["ID"]): _pairs(v) for v in findall_local(target, "FixtureVal")
-    }
+    values = {int(v.attrib["ID"]): _pairs(v) for v in findall_local(target, "FixtureVal")}
     added = 0
     for source_id in source_ids:
         source = by_id.get(source_id) if source_id is not None else None

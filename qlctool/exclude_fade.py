@@ -24,8 +24,7 @@ TAG = "ExcludeFade"
 def pin_wheel_fades(root: etree._Element, capabilities: list[FixtureCapabilities]) -> int:
     """Write the exclusion list on every fixture that has a wheel; return how many."""
     offsets_by_id = {
-        capability.fixture.fixture_id: wheel_fade_offsets(capability)
-        for capability in capabilities
+        capability.fixture.fixture_id: wheel_fade_offsets(capability) for capability in capabilities
     }
     engine = find_local(root, "Engine")
     if engine is None:

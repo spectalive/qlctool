@@ -20,16 +20,16 @@ WIDGET_TAGS = ("Button", "Slider", "SpeedDial", "XYPad", "Label")
 @dataclass(frozen=True)
 class DeskWidget:
     id: int
-    kind: str                  # Frame, SoloFrame, Button, Slider, SpeedDial, XYPad, Label
+    kind: str  # Frame, SoloFrame, Button, Slider, SpeedDial, XYPad, Label
     caption: str
     page: int
-    function: int | None       # a button's function; None for the rest or when unbound
-    action: str                # Toggle, Flash, Blackout, StopAll; "" for non-buttons
+    function: int | None  # a button's function; None for the rest or when unbound
+    action: str  # Toggle, Flash, Blackout, StopAll; "" for non-buttons
     key: str | None
-    frames: tuple[int, ...]    # ancestor frame ids, outermost first
-    solo: int | None           # nearest SoloFrame id
-    fade_out_ms: int           # StopAll only
-    slider_mode: str           # Slider only: Level, Playback, GrandMaster, ...
+    frames: tuple[int, ...]  # ancestor frame ids, outermost first
+    solo: int | None  # nearest SoloFrame id
+    fade_out_ms: int  # StopAll only
+    slider_mode: str  # Slider only: Level, Playback, GrandMaster, ...
 
 
 def desk_widgets(root: etree._Element) -> list[DeskWidget]:
