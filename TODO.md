@@ -71,8 +71,18 @@
   (`bank_for_group`, `bank_wheel`, `GeneratedBank`) and 557a0d3
   (`add_matrix`, `matrix_pace`, `matrix_grid`,
   `matrix_group_name`, `GeneratedMatrices`), bodies moved verbatim; `baseline
-  update` dropped the three BPY004 entries (209 -> 206; the three modules'
-  BPY002 entries were re-recorded at their new lines). Vibra identical x3.
+  update` dropped the three BPY004 entries and the three modules' BPY001
+  entries (more than one unit per module), and recorded three new BPY002
+  entries, one per module, whose file name no longer matches its only unit
+  (209 -> 206). Vibra identical x3.
+- [ ] **Three modules are not named after their unit (2026-09-25).** BPY002
+  since the split above: `checks/run.py` holds `check_workspace`,
+  `generate/color_banks.py` holds `generate_color_banks` and
+  `generate/matrix_effects.py` holds `generate_matrix_effects`. Smallest next
+  step: rename each module after its unit (or the unit after the file) and
+  let `baseline update` drop the three entries. `checks/run.py` is imported
+  across `qlctool/` and `tests/` (and by the rule-provider contract test), so
+  its rename is a coordinated one.
 - [x] **CI's suite cannot meet the 120 s test budget (2026-09-25).** The
   gate on GitHub failed its pytest stage as `over-budget` on the four-core
   runners, where branch coverage falls back to the C tracer below 3.14: 286 s
@@ -91,8 +101,9 @@
   `tests/test_check.py` single-process went from 162.1 s to 155.9 s, and a
   canonical build costs 0.4-0.6 s while `check_workspace` costs about 1.6 s
   and runs 98 times, nearly all on a workspace the test has edited, so those
-  cannot be shared (a few, and the gate test, run on unedited builds). Half of one `check_workspace`
-  is `check_pick_darkens` (`instant_dark_fixtures` -> `instant_evaluator`).
+  cannot be shared (a few, and the gate test, run on unedited builds). Half
+  of one `check_workspace` is `check_pick_darkens` (`instant_dark_fixtures`
+  -> `instant_evaluator`).
   Smallest next step: profile `check_pick_darkens` and cache the instant
   states it recomputes per pick, measured with `--durations` before and after.
 - [ ] **Page 4's matrices caption says "bars and panels" by proxy

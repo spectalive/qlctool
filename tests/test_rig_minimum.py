@@ -18,9 +18,13 @@ from pathlib import Path
 import pytest
 
 from qlctool.cli import main
+from qlctool.description.description_names import description_names
 from qlctool.generate.rig_below_minimum import rig_below_minimum
 from qlctool.library import FixtureLibrary
+from qlctool.library_for import library_for
 from qlctool.names.default_names import default_names
+from qlctool.searched_folders import searched_folders
+from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 
@@ -128,5 +132,34 @@ def test_2026_09_25_every_fixture_in_a_missing_mode_is_told_to_repatch(tmp_path,
         find_local(fixture, "Mode").text = "No Such Mode"
     workspace.save(patch)
     refusal = _refusal(patch, capsys)
-    assert refusal == default_names().display("rig_without_modes")
+    # The vocabulary `newshow` refuses in: the show's, which with no description
+    # is the Vibra description's.
+    assert refusal == description_names(vibra_description()).display("rig_without_modes")
     assert "--fixtures" not in refusal
+
+
+def test_2026_09_25_unknown_models_beside_missing_modes_are_told_to_repatch(tmp_path, capsys):
+    """2026-09-25, review of `newshow_refusal`: the mixed case. The pars name a
+    model no folder has and the beams a mode their definition lacks, so nothing
+    resolves; one model is known, so the refusal asks for the repatch, under
+    the warning that names the unknown model and the folders searched.
+    """
+    patch = _patch(tmp_path, [(PAR, 6, 5), (BEAM, 2, 16)], grouped=True)
+    workspace = Workspace.load(patch)
+    for fixture in iter_local(workspace.root, "Fixture"):
+        if find_local(fixture, "Model").text == "PC-64 LED S":
+            find_local(fixture, "Model").text = "No Such Par"
+        else:
+            find_local(fixture, "Mode").text = "No Such Mode"
+    workspace.save(patch)
+    names = description_names(vibra_description())
+    out = patch.with_name("show.qxw")
+    with pytest.raises(SystemExit) as refused:
+        main(["newshow", str(patch), "--out", str(out)])
+    assert refused.value.code == names.display("rig_without_modes")
+    assert not out.exists()
+    searched = searched_folders(library_for(None, patch, ()), names)
+    warning = names.render("unresolved_models", models="Vortex No Such Par", searched=searched)
+    lines = capsys.readouterr().err.splitlines()
+    assert lines[0] == f"qlctool: {warning}"
+    assert len(lines) == 2 and "No Such Mode" in lines[1]
