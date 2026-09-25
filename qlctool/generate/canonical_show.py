@@ -52,7 +52,7 @@ from .beam_rainbow_spin import generate_beam_rainbow_spin
 from .beam_subsets import generate_beam_subsets
 from .beat_tempo import apply_beat_tempo
 from .builtin_effects import generate_builtin_effects
-from .color_banks import GeneratedBank, generate_color_banks
+from .color_banks import generate_color_banks
 from .color_flashes import generate_color_flashes
 from .color_scene import color_scene_values
 from .dealt_gobo_scenes import generate_dealt_gobo_scenes
@@ -63,6 +63,7 @@ from .dimmerless_intensity import generate_dimmerless_intensity
 from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
 from .flash_color import generate_flash_color
+from .generated_bank import GeneratedBank
 from .generated_play_wrappers import GeneratedPlayWrappers
 from .gobo_shake import generate_gobo_shake
 from .haze_machines import haze_machines

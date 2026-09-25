@@ -89,6 +89,10 @@ CONVERTED: tuple[str, ...] = (
     "generate/is_pixel_group.py",
     "generate/all_self_animating.py",
     "generate/fader_dimmed.py",
+    # 2026-09-25: split out of color_banks.py, which was converted.
+    "generate/bank_for_group.py",
+    "generate/bank_wheel.py",
+    "generate/generated_bank.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
