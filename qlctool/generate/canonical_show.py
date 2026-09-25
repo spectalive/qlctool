@@ -15,6 +15,7 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..beat_generator import set_beat_generator
 from ..capabilities_of import capabilities_of
+from ..control_glyph import GLYPHS
 from ..controllers.midi_pad_named import midi_pad_named
 from ..description.contrast_pairs_of import contrast_pairs_of
 from ..description.description_names import description_names
@@ -34,6 +35,7 @@ from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..monitor_positions import house_right_fixture_ids
 from ..names.check_generator_vocabulary import check_generator_vocabulary
+from ..names.localised_keys import localised_keys
 from ..names.names import Names
 from ..output_binding import pin_generic_output
 from ..shutter_open import shutter_open_pairs
@@ -1098,8 +1100,9 @@ def build_canonical_show(
             canvas=described.console.canvas,
             tempo_beat_ms=described.timing.beat_ms,
             palette=colours.palette,
-            pad_bindings=pad.bindings if pad is not None else None,
-            pad_colors=pad.colors if pad is not None else None,
+            pad_bindings=localised_keys(pad.bindings, vocabulary) if pad is not None else None,
+            pad_colors=localised_keys(pad.colors, vocabulary) if pad is not None else None,
+            glyphs=localised_keys(GLYPHS, vocabulary),
         )
         button_ids = console.button_ids
         if described.controllers.tablet_desk:

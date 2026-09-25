@@ -53,6 +53,9 @@ CONVERTED: tuple[str, ...] = (
     "generate/gobo_shake.py",
     "generate/canonical_show.py",
     "generate/moments.py",
+    "control_glyph.py",
+    "generate/smc_pad_bindings.py",
+    "generate/smc_pad_colors.py",
 )
 
 

@@ -194,6 +194,13 @@ path_strobes = "Strobes"
 path_moments = "Moments"
 
 [console]
+grand_master = "Grand Master"
+tempo_dial = "Show Tempo"
+movement_speed = "Movement Speed"
+page_previous = "Previous Page"
+page_next = "Next Page"
+stop_all = "STOP ALL"
+blackout = "BLACKOUT"
 
 [help]
 

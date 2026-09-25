@@ -35,7 +35,9 @@ from dataclasses import dataclass, field
 from lxml import etree
 
 from ..argb import argb_from_rgb
-from ..control_glyph import glyph
+from ..control_glyph import GLYPHS
+from ..names.default_names import default_names
+from ..names.localised_keys import localised_keys
 from ..palette import PALETTE
 from ..vc.appearance import DEFAULT
 from ..vc.audio_triggers import build_audio_triggers
@@ -344,10 +346,16 @@ def generate_live_console(
     palette: Mapping[str, tuple[int, int, int]] | None = None,
     pad_bindings: Mapping[str, int] | None = None,
     pad_colors: Mapping[str, tuple[int, int, int]] | None = None,
+    glyphs: Mapping[str, str] | None = None,
 ) -> GeneratedConsole:
-    """Build the whole console on the workspace's (emptied) root frame."""
+    """Build the whole console on the workspace's (emptied) root frame.
+
+    `pad_bindings`, `pad_colors` and `glyphs` are keyed by display name;
+    `glyphs=None` means the shipped glyphs in the default vocabulary.
+    """
     pad_bindings = dict(pad_bindings or {})
     pad_colors = dict(pad_colors or {})
+    glyphs = localised_keys(GLYPHS, default_names()) if glyphs is None else dict(glyphs)
     colours = PALETTE if palette is None else palette
     root_frame = _root_frame(workspace.root)
     names = _function_names(workspace)
@@ -412,7 +420,7 @@ def generate_live_console(
         # The glyph travels in the caption: QLC+'s own <Icon> is a path into the
         # show Mac's disk, and a missing file is a blank button there and
         # nowhere else (`control_glyph`, 2026-09-22).
-        mark = glyph(name)
+        mark = glyphs.get(name, "")
         if mark and not caption.startswith(mark):
             caption = f"{mark} {caption}"
         # A pad-bound function wears its palette colour, so the console button

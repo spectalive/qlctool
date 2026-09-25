@@ -628,7 +628,9 @@ def test_the_console_is_bound_to_the_smc_pad(built):
     control, everywhere but the multipage frame, whose Previous Page is 1.
     """
     from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
+    from qlctool.names.default_names import default_names
 
+    names = default_names()
     show, out = built
     root = Workspace.load(out).root
 
@@ -662,24 +664,24 @@ def test_the_console_is_bound_to_the_smc_pad(built):
     # vertical smoke machines, so pad 9 has nothing to press there.
     assert len(channels) == len(set(channels))
     assert set(channels) <= set(SMC_PAD_BINDINGS.values())
-    inverse = {ch: name for name, ch in SMC_PAD_BINDINGS.items()}
+    inverse = {ch: names.display(name) for name, ch in SMC_PAD_BINDINGS.items()}
     for channel in set(SMC_PAD_BINDINGS.values()) - set(channels):
         assert inverse[channel] not in show.master_ids, inverse[channel]
 
     # The pads land on the functions the owner put under those fingers...
-    for name in ("AUTO", "Flash 100%", "Humo ON", "Blanco Total", "Rueda Colores"):
-        assert button_channel[show.master_ids[name]] == SMC_PAD_BINDINGS[name]
+    for name in ("auto", "flash_full", "smoke_on", "full_white", "colour_wheel"):
+        assert button_channel[show.master_ids[names.display(name)]] == SMC_PAD_BINDINGS[name]
     # ...and the encoders on the widgets that scale, not fire.
-    for caption in ("Master General", "Tempo Show"):
-        assert caption_channel[caption] == SMC_PAD_BINDINGS[caption]
+    for name in ("grand_master", "tempo_dial"):
+        assert caption_channel[names.display(name)] == SMC_PAD_BINDINGS[name]
     # The transport buttons: arrows page the console, pause and record are
     # the panic pair - off the pads, where a missed hit cannot reach them.
     assert frame_pages == {
-        "0": SMC_PAD_BINDINGS["Pagina Siguiente"],
-        "1": SMC_PAD_BINDINGS["Pagina Anterior"],
+        "0": SMC_PAD_BINDINGS["page_next"],
+        "1": SMC_PAD_BINDINGS["page_previous"],
     }
-    assert caption_channel["PARAR TODO · Retroceso"] == SMC_PAD_BINDINGS["PARAR TODO"]
-    assert caption_channel["APAGON · Esc"] == SMC_PAD_BINDINGS["APAGON"]
+    assert caption_channel["PARAR TODO · Retroceso"] == SMC_PAD_BINDINGS["stop_all"]
+    assert caption_channel["APAGON · Esc"] == SMC_PAD_BINDINGS["blackout"]
 
 
 def test_tranquilo_rests_the_heads_instead_of_parking_them(built):

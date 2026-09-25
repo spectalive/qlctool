@@ -25,6 +25,7 @@ from qlctool.generate.live_console import (
 )
 from qlctool.leading_glyph import leading_glyph
 from qlctool.library import FixtureLibrary
+from qlctool.names.default_names import default_names
 from qlctool.palette import PRIMARY_COLORS
 from qlctool.vibra.keys import KEYS
 from qlctool.workspace import Workspace
@@ -273,7 +274,7 @@ def test_the_room_is_in_exactly_one_state(console):
         caption for _, caption, _, _ in ROOM_STATES
     ]
     assert [leading_glyph(c)[0] for c in _captions(room)] == [
-        glyph(name) for name, _, _, _ in ROOM_STATES
+        glyph(default_names().identify(name, ("functions",))) for name, _, _, _ in ROOM_STATES
     ]
 
 
@@ -705,13 +706,13 @@ def test_the_smc_pad_bindings_follow_the_play_hooks(console):
 
     _, outer = console
     captions = {
-        "Colores completos · W": "Rueda Colores",
-        "Mezcla · E": "Rueda Mezcla",
-        "AUTO normal · A": "Movimientos Cabezas",
-        "AUTO gobos · G": "Gobo Animacion",
-        "AUTO prisma · P": "Prisma Animacion",
-        "Arcoiris junto · '": "Arcoiris Simultaneo",
-        "Arcoiris fases · ¡": "Arcoiris Pasos",
+        "Colores completos · W": "colour_wheel",
+        "Mezcla · E": "mix_wheel",
+        "AUTO normal · A": "head_movements",
+        "AUTO gobos · G": "gobo_animation",
+        "AUTO prisma · P": "prism_animation",
+        "Arcoiris junto · '": "rainbow_together",
+        "Arcoiris fases · ¡": "rainbow_steps",
     }
     play_widgets = [child for child in _console_frame(outer) if child.attrib.get("Page") == "1"]
     buttons = [button for widget in play_widgets for button in _buttons(widget)]
@@ -778,7 +779,7 @@ def test_control_retains_every_direct_operator_contract(console):
     assert {source.attrib.get("Key") for source in dial_inputs} >= {"M"}
     assert {
         int(source.attrib["Channel"]) for source in dial_inputs if "Channel" in source.attrib
-    } == {SMC_PAD_BINDINGS["Vel. Movimiento"]}
+    } == {SMC_PAD_BINDINGS["movement_speed"]}
 
     grand_master = retained[("Slider", "Master General")]
     assert find_local(grand_master, "SliderMode").text == "GrandMaster"
@@ -786,7 +787,7 @@ def test_control_retains_every_direct_operator_contract(console):
         int(source.attrib["Channel"])
         for source in findall_local(grand_master, "Input")
         if "Channel" in source.attrib
-    ] == [SMC_PAD_BINDINGS["Master General"]]
+    ] == [SMC_PAD_BINDINGS["grand_master"]]
     control_labels = {
         widget.attrib.get("Caption", "")
         for widget in widgets
