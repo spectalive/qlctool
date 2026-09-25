@@ -18,6 +18,8 @@ from ..functions.rgbmatrix import build_rgbmatrix
 from ..ids import next_function_id
 from ..matrix_algorithms import SCRIPT_ALGORITHMS, CuratedScript
 from ..matrix_step_count import matrix_step_count
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..palette import PALETTE
 from ..workspace import Workspace
 
@@ -33,7 +35,7 @@ def generate_matrix_effects(
     group_id: int = ALL_FIXTURES_GROUP,
     algorithms: Sequence[str | None] = SCRIPT_ALGORITHMS,
     palette: dict[str, RGB] | None = None,
-    path: str = "Matrices (generado)",
+    path: str | None = None,
     make_chaser: bool = True,
     duration: int = 478,
     direction: str = "Forward",
@@ -42,6 +44,7 @@ def generate_matrix_effects(
     chaser_algorithms: Sequence[str | None] | None = None,
     curated: Sequence[CuratedScript] = (),
     curated_palette: Mapping[str, RGB] | None = None,
+    names: Names | None = None,
 ) -> GeneratedMatrices:
     """Create one RGBMatrix per (algorithm, colour) for one fixture group.
 
@@ -64,9 +67,14 @@ def generate_matrix_effects(
     CuratedScript`), rather than a cross-product over `colors`. Every entry is
     always stepped into the chaser - there is no separate restriction for
     these, they were chosen one at a time already.
+
+    `names` is the show's vocabulary: the cycle's name, the whole-rig group's
+    name and the default `path` come from it.
     """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_matrices_generated") if path is None else path
     colors = palette if palette is not None else PALETTE
-    group_name = _group_name(workspace, group_id)
+    group_name = _group_name(workspace, group_id, vocabulary)
     # Write the colour shape this show already uses (4.13 vs 4.14+).
     color_format = color_format_of(workspace.root)
 
@@ -125,7 +133,7 @@ def generate_matrix_effects(
         workspace.add_function(
             build_chaser(
                 chaser_id,
-                f"Ciclo Matrices {group_name}",
+                vocabulary.render("cycle", what=vocabulary.render("matrices_of", group=group_name)),
                 [fid for fid, _ in steps],
                 hold=[hold for _, hold in steps],
                 # Random like the old 121-step bar cycle (and every other
@@ -205,9 +213,9 @@ def _grid(workspace: Workspace, group_id: int) -> tuple[int, int]:
     return 1, 1
 
 
-def _group_name(workspace: Workspace, group_id: int) -> str:
+def _group_name(workspace: Workspace, group_id: int, vocabulary: Names) -> str:
     if group_id == ALL_FIXTURES_GROUP:
-        return "Todos"
+        return vocabulary.display("all_fixtures_group")
     for group in fixture_groups(workspace.root):
         if group.group_id == group_id:
             return group.name

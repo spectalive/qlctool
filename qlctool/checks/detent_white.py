@@ -4,7 +4,7 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..color_wheel_match import WHEEL_NAMES
 
-WHITE_DETENTS = tuple(name.lower() for name in WHEEL_NAMES["Blanco"])
+WHITE_DETENTS = tuple(name.lower() for name in WHEEL_NAMES["white"])
 
 
 def detent_white(capability: FixtureCapabilities, written: dict[int, int | None]) -> bool:

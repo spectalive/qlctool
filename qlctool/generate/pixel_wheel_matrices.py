@@ -22,6 +22,8 @@ from ..fixture_group import fixture_groups
 from ..functions.rgbmatrix import build_rgbmatrix
 from ..ids import next_function_id
 from ..matrix_step_count import matrix_step_count
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
 # The wheel's own pace: `generate_unison_colors` holds each colour this long,
@@ -36,8 +38,9 @@ def generate_pixel_wheel_matrices(
     colors: dict[str, RGB],
     algorithms: Sequence[str | None],
     fit_ms: int = WHEEL_HOLD,
-    path: str = "Colores Rig",
-    tag: str = "Rueda",
+    path: str | None = None,
+    tag: str | None = None,
+    names: Names | None = None,
 ) -> dict[str, list[int]]:
     """Colour name -> the matrices a wheel step of that colour also starts.
 
@@ -46,8 +49,12 @@ def generate_pixel_wheel_matrices(
 
     `tag` names which wheel these belong to, since a show now carries more than
     one - the full colours and the pastel ones ride separate wheels over the
-    same groups and the same names.
+    same groups and the same names. `names` is the show's vocabulary; `path`
+    and `tag` default to its rig-colours folder and its wheel tag.
     """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_rig_colours") if path is None else path
+    tag = vocabulary.display("wheel_tag") if tag is None else tag
     color_format = color_format_of(workspace.root)
     groups = [g for g in fixture_groups(workspace.root) if g.group_id in set(group_ids)]
 

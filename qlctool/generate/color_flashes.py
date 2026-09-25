@@ -6,6 +6,8 @@ from ..capability import FixtureCapabilities
 from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
 from .color_scene import color_scene_values
@@ -18,13 +20,17 @@ def generate_color_flashes(
     capabilities: Sequence[FixtureCapabilities],
     colors: Mapping[str, tuple[int, int, int]],
     strobe_fraction: float,
-    path: str = "Golpes",
+    path: str | None = None,
+    names: Names | None = None,
 ) -> _GeneratedColorFlashes:
     """Generate one full-output held flash per palette solid.
 
     The fixture footprint exactly follows `Flash 100%`: illuminated smoke
     fixtures join the colour hit, while every smoke pump stays explicitly off.
+    `names` is the show's vocabulary; `path` defaults to its hits folder.
     """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_hits") if path is None else path
     generated: dict[str, int] = {}
     for color_name, rgb in colors.items():
         values = color_scene_values(list(capabilities), rgb)
@@ -36,7 +42,9 @@ def generate_color_flashes(
             merged = dict(values.get(fixture_id, []))
             merged.update(off)
             values[fixture_id] = sorted(merged.items())
-        for fixture_id, pairs in wheel_color_values(list(capabilities), color_name).items():
+        for fixture_id, pairs in wheel_color_values(
+            list(capabilities), color_name, names=vocabulary
+        ).items():
             merged = dict(values.get(fixture_id, []))
             merged.update(pairs)
             values[fixture_id] = sorted(merged.items())
@@ -51,6 +59,7 @@ def generate_color_flashes(
             merged.update(strobe)
             values[fixture_id] = sorted(merged.items())
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_scene(function_id, f"Golpe {color_name}", values, path=path))
+        name = vocabulary.render("colour_hit", colour=color_name)
+        workspace.add_function(build_scene(function_id, name, values, path=path))
         generated[color_name] = function_id
     return _GeneratedColorFlashes(ids=generated)

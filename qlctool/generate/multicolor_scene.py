@@ -26,6 +26,8 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 from .color_scene import color_scene_values
 from .dealt_wheel_color import dealt_wheel_color
@@ -39,7 +41,8 @@ def generate_multicolor_scenes(
     exclude_fixture_ids: Sequence[int] = (),
     program_gated_ids: Sequence[int] = (),
     variants: Sequence[int] = (0, 3),
-    path: str = "Colores Rig",
+    path: str | None = None,
+    names: Names | None = None,
 ) -> list[int]:
     """One scene per variant, each fixture on its own palette colour.
 
@@ -47,8 +50,11 @@ def generate_multicolor_scenes(
     palette differently. `exclude_fixture_ids` keeps the scenes off the
     matrix-painted fixtures (their multicolour is a matrix the step starts
     beside these); `program_gated_ids` get RGB without the mode channel, the
-    same contract the wheel's other steps follow.
+    same contract the wheel's other steps follow. `names` is the show's
+    vocabulary; `path` defaults to its rig-colours folder.
     """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_rig_colours") if path is None else path
     caps = capabilities_of(workspace.root, library)
     excluded = set(exclude_fixture_ids)
     gated = set(program_gated_ids)
@@ -85,9 +91,9 @@ def generate_multicolor_scenes(
                     internal_program_off=fixture_id not in gated,
                 )
             )
-        names = [name for name, _ in colors]
+        palette_names = [name for name, _ in colors]
         for index, capability in enumerate(wheel_caps, start=len(rgb_caps)):
-            name = dealt_wheel_color(capability, names, index + offset)
+            name = dealt_wheel_color(capability, palette_names, index + offset, vocabulary)
             if name is None:
                 continue
             values.update(
@@ -96,13 +102,19 @@ def generate_multicolor_scenes(
                     name,
                     fixture_ids=[capability.fixture.fixture_id],
                     dimmer=None,
+                    names=vocabulary,
                 )
             )
         if not values:
             continue
         function_id = next_function_id(workspace.root)
         workspace.add_function(
-            build_scene(function_id, f"Rig Multicolor {number}", values, path=path)
+            build_scene(
+                function_id,
+                vocabulary.render("rig_multicolour", number=number),
+                values,
+                path=path,
+            )
         )
         scene_ids.append(function_id)
     return scene_ids

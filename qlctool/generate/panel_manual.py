@@ -15,6 +15,8 @@ from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..internal_program import internal_program_off_pairs
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
@@ -24,11 +26,19 @@ def generate_panel_manual(
     workspace: Workspace,
     capabilities: Sequence[FixtureCapabilities],
     fixture_ids: Sequence[int],
-    name: str = "Paneles Manual",
-    path: str = "Efectos Propios",
+    name: str | None = None,
+    path: str | None = None,
     include_intensity: bool = True,
+    names: Names | None = None,
 ) -> int | None:
-    """Manual mode plus optional intensity support on `fixture_ids`. None when empty."""
+    """Manual mode plus optional intensity support on `fixture_ids`. None when empty.
+
+    `name` and `path` default to the manual-panels scene and the built-in effects
+    folder of `names`, the show's vocabulary.
+    """
+    vocabulary = default_names() if names is None else names
+    name = vocabulary.display("panel_manual") if name is None else name
+    path = vocabulary.display("path_builtin_effects") if path is None else path
     wanted = set(fixture_ids)
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:

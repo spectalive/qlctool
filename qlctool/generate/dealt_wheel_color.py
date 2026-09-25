@@ -16,16 +16,23 @@ from collections.abc import Sequence
 
 from ..capability import FixtureCapabilities
 from ..color_wheel_match import color_wheel_pairs
+from ..names.names import Names
 
 
 def dealt_wheel_color(
-    capability: FixtureCapabilities, names: Sequence[str], start: int
+    capability: FixtureCapabilities,
+    colors: Sequence[str],
+    start: int,
+    names: Names | None = None,
 ) -> str | None:
-    """The palette name this wheel carries, from `start` forward; None if none."""
-    if not names:
+    """The palette name this wheel carries, from `start` forward; None if none.
+
+    `names` is the show's vocabulary the colour names are spelled in.
+    """
+    if not colors:
         return None
-    for step in range(len(names)):
-        name = names[(start + step) % len(names)]
-        if color_wheel_pairs(capability, name):
+    for step in range(len(colors)):
+        name = colors[(start + step) % len(colors)]
+        if color_wheel_pairs(capability, name, names):
             return name
     return None

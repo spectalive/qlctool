@@ -12,7 +12,25 @@ from spanish_literals import spanish_literals
 
 PACKAGE = Path(__file__).resolve().parents[1] / "qlctool"
 
-CONVERTED: tuple[str, ...] = ()
+CONVERTED: tuple[str, ...] = (
+    "generate/builtin_effects.py",
+    "generate/color_banks.py",
+    "generate/color_flashes.py",
+    "generate/flash_color.py",
+    "generate/multicolor_scene.py",
+    "generate/pixel_base.py",
+    "generate/pixel_wheel_matrices.py",
+    "generate/quad_color_scenes.py",
+    "generate/rainbow_efx.py",
+    "generate/unison_colors.py",
+    "generate/panel_manual.py",
+    "generate/panel_speed_auto.py",
+    "generate/vertical_smoke_light.py",
+    "generate/matrix_effects.py",
+    "generate/beam_rainbow_spin.py",
+    "color_wheel_match.py",
+    "checks/detent_white.py",
+)
 
 
 def test_converted_modules_spell_no_catalogue_word():

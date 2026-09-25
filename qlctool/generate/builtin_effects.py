@@ -22,12 +22,13 @@ from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..internal_program import internal_program
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
 
-PATH = "Efectos Propios"
 # Where the hand-built show ran these: its speed sequence stepped the panels'
 # channel between 160 and 255, so 128 - the blind mid-scale first guess - was
 # slower than the show had ever actually looked. 200 sits in the middle of the
@@ -62,13 +63,17 @@ def generate_builtin_effects(
     speed: int = DEFAULT_SPEED,
     hold: int = 12000,
     run_order: str = "Random",
-    path: str = PATH,
+    path: str | None = None,
+    names: Names | None = None,
 ) -> GeneratedBuiltins:
     """A scene per built-in programme, plus a chaser walking them.
 
     Every fixture that has programmes runs the *same* one in each scene, so the
-    four panels animate together rather than each doing its own thing.
+    four panels animate together rather than each doing its own thing. `names`
+    is the show's vocabulary; `path` defaults to its built-in effects folder.
     """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_builtin_effects") if path is None else path
     programmed = [
         (capability, program)
         for capability in capabilities
@@ -100,7 +105,9 @@ def generate_builtin_effects(
             values[capability.fixture.fixture_id] = pairs
 
         function_id = next_function_id(workspace.root)
-        name = programmed[0][1].effects[index].name.strip() or f"Efecto {index + 1}"
+        name = programmed[0][1].effects[index].name.strip() or vocabulary.render(
+            "panel_effect", number=index + 1
+        )
         workspace.add_function(build_scene(function_id, f"{label} - {name}", values, path=path))
         scene_ids.append(function_id)
 
@@ -113,7 +120,7 @@ def generate_builtin_effects(
     workspace.add_function(
         build_chaser(
             chaser_id,
-            f"Ciclo {label}",
+            vocabulary.render("cycle", what=label),
             cycled,
             hold=hold,
             run_order=run_order,

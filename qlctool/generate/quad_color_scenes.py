@@ -21,6 +21,8 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..palette import PALETTE
 from ..workspace import Workspace
 from .color_scene import color_scene_values
@@ -29,7 +31,8 @@ from .wheel_color_values import wheel_color_values
 # The old scenes' own deal, in their own order - with the white seat given to
 # yellow (2026-09-22): a rotation puts no white on the room, however few the
 # fixtures ("luz blanca solo para blanco total", owner; `rule_wheel_white`).
-QUAD_COLORS: tuple[str, ...] = ("Azul", "Rojo", "Verde", "Amarillo")
+# Colour identifiers: the show's vocabulary spells them.
+QUAD_COLORS: tuple[str, ...] = ("blue", "red", "green", "yellow")
 
 
 def generate_quad_color_scenes(
@@ -37,10 +40,18 @@ def generate_quad_color_scenes(
     library: FixtureLibrary,
     exclude_fixture_ids: Sequence[int] = (),
     program_gated_ids: Sequence[int] = (),
-    path: str = "Colores Rig",
+    path: str | None = None,
     palette: Mapping[str, RGB] | None = None,
+    names: Names | None = None,
 ) -> list[int]:
-    """One scene per rotation of the four-colour deal; [] when nothing colours."""
+    """One scene per rotation of the four-colour deal; [] when nothing colours.
+
+    `palette` is keyed by display name in `names`, the show's vocabulary;
+    `path` defaults to its rig-colours folder.
+    """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_rig_colours") if path is None else path
+    dealt = tuple(vocabulary.display(identifier) for identifier in QUAD_COLORS)
     values_of = PALETTE if palette is None else palette
     caps = capabilities_of(workspace.root, library)
     excluded = set(exclude_fixture_ids)
@@ -64,11 +75,11 @@ def generate_quad_color_scenes(
         return []
 
     scene_ids: list[int] = []
-    for offset in range(len(QUAD_COLORS)):
+    for offset in range(len(dealt)):
         values: dict[int, list[tuple[int, int]]] = {}
         for index, capability in enumerate(rgb_caps):
             fixture_id = capability.fixture.fixture_id
-            name = QUAD_COLORS[(index + offset) % len(QUAD_COLORS)]
+            name = dealt[(index + offset) % len(dealt)]
             values.update(
                 color_scene_values(
                     caps,
@@ -79,20 +90,26 @@ def generate_quad_color_scenes(
                 )
             )
         for index, capability in enumerate(wheel_caps, start=len(rgb_caps)):
-            name = QUAD_COLORS[(index + offset) % len(QUAD_COLORS)]
+            name = dealt[(index + offset) % len(dealt)]
             values.update(
                 wheel_color_values(
                     caps,
                     name,
                     fixture_ids=[capability.fixture.fixture_id],
                     dimmer=None,
+                    names=vocabulary,
                 )
             )
         if not values:
             continue
         function_id = next_function_id(workspace.root)
         workspace.add_function(
-            build_scene(function_id, f"Rig 4 Colores {offset + 1}", values, path=path)
+            build_scene(
+                function_id,
+                vocabulary.render("rig_four_colours", number=offset + 1),
+                values,
+                path=path,
+            )
         )
         scene_ids.append(function_id)
     return scene_ids

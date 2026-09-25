@@ -12,6 +12,7 @@ from collections.abc import Sequence
 from .. import roles
 from ..capability import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
+from ..names.names import Names
 from ..rgbw_split import rgbw_split
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off import strobe_off_pairs
@@ -29,6 +30,7 @@ def split_color_scene_values(
     dimmer_full: bool = True,
     color_names: tuple[str, str] | None = None,
     exclude_effect_mode_fixture_ids: Sequence[int] = (),
+    names: Names | None = None,
 ) -> dict[int, list[tuple[int, int]]]:
     """Alternate two colours across the colour-capable fixtures, in patch order.
 
@@ -38,7 +40,8 @@ def split_color_scene_values(
     color_names are the palette names of the same two colours. Given them, the
     split also reaches the fixtures whose colour is a wheel and not three
     channels: without it, a group holding a BEAM 230W 7R walks thirty pairs of
-    colours with the beams stuck on whatever they had.
+    colours with the beams stuck on whatever they had. `names` is the show's
+    vocabulary they are spelled in.
     """
     wanted = None if fixture_ids is None else list(fixture_ids)
     excluded_effect_modes = set(exclude_effect_mode_fixture_ids)
@@ -80,7 +83,7 @@ def split_color_scene_values(
 
     if color_names is not None:
         result.update(
-            _wheel_halves(capabilities, wanted, color_names, 255 if dimmer_full else None)
+            _wheel_halves(capabilities, wanted, color_names, 255 if dimmer_full else None, names)
         )
     return result
 
@@ -90,6 +93,7 @@ def _wheel_halves(
     fixture_ids: Sequence[int] | None,
     color_names: tuple[str, str],
     dimmer: int | None,
+    names: Names | None = None,
 ) -> dict[int, list[tuple[int, int]]]:
     """The same alternation over the wheel-coloured fixtures of the group.
 
@@ -114,6 +118,7 @@ def _wheel_halves(
                 color_names[index % 2],
                 fixture_ids=[caps.fixture.fixture_id],
                 dimmer=dimmer,
+                names=names,
             )
         )
     return values

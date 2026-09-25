@@ -1,14 +1,22 @@
 """Catalogue templates: a name with a hole in it, the hole the same in every language."""
 
+from pathlib import Path
+
 import pytest
 
 from qlctool.description.reading.read_names import read_names
+from qlctool.fixture_group import fixture_groups
+from qlctool.generate.matrix_effects import generate_matrix_effects
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.sections import SECTIONS
 from qlctool.names.shipped_languages import shipped_languages
 from qlctool.names.shipped_names import shipped_names
 from qlctool.names.template_affixes import template_affixes
 from qlctool.names.template_fields import template_fields
+from qlctool.workspace import Workspace
+from qlctool.xmlutil import find_local, findall_local
+
+SHOW = Path(__file__).resolve().parents[3] / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 
 def test_fields_are_read_in_order():
@@ -64,3 +72,27 @@ def test_escaped_braces_are_not_a_field():
 def test_a_malformed_override_names_where_it_is():
     with pytest.raises(ValueError, match=r"show\.toml: \[names\.es\] party_moment"):
         read_names({"es": {"party_moment": "Fies{ta"}}, "show.toml")
+
+
+@pytest.mark.parametrize("language", ["es", "en"])
+def test_the_matrix_cycle_starts_with_the_cycle_prefix(language):
+    """The console strips the cycle prefix from "Ciclo Matrices <group>" (B8, P12)."""
+    names = shipped_names(language)
+    workspace = Workspace.load(SHOW)
+    group = fixture_groups(workspace.root)[0]
+    generated = generate_matrix_effects(
+        workspace,
+        group_id=group.group_id,
+        algorithms=["Fill"],
+        palette={"Rojo": (255, 0, 0)},
+        names=names,
+    )
+    engine = find_local(workspace.root, "Engine")
+    chaser = next(
+        f for f in findall_local(engine, "Function") if f.attrib["ID"] == str(generated.chaser_id)
+    )
+    prefix, _ = template_affixes(names, "cycle")
+    cycle = chaser.attrib["Name"]
+    assert cycle.startswith(prefix)
+    assert cycle.removeprefix(prefix) == names.render("matrices_of", group=group.name)
+    assert chaser.attrib["Path"] == names.display("path_matrices_generated")

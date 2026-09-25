@@ -16,34 +16,40 @@ rather than parked on a position that means something else.
 
 from . import roles
 from .capability import FixtureCapabilities
+from .names.default_names import default_names
+from .names.names import Names
 
-# Palette colour -> wheel position names to try, best first. Names are the ones
-# the real definitions use (BEAM 230W 7R and MiN Wash), lowercased on lookup.
+# Colour identifier -> wheel position names to try, best first. Names are the
+# ones the real definitions use (BEAM 230W 7R and MiN Wash), lowercased on lookup.
 WHEEL_NAMES: dict[str, tuple[str, ...]] = {
-    "Rojo": ("red", "crimson"),
-    "Rojo Fuego": ("red", "crimson"),
-    "Naranja": ("orange", "gold"),
-    "Ambar": ("gold", "orange", "calid white"),
-    "Amarillo": ("yellow", "light yellow"),
-    "Verde": ("green",),
-    "Verde Menta": ("green", "chartreuse"),
-    "Cyan": ("cyan", "ice", "light blue"),
-    "Celeste": ("light blue", "ice", "cyan"),
-    "Azul Cielo": ("light blue", "blue"),
-    "Azul": ("blue",),
-    "Azul Profundo": ("blue",),
-    "Morado": ("purple", "violet", "uv"),
-    "UltraVioleta": ("uv", "violet", "purple"),
-    "Magenta": ("magenta", "pink"),
-    "Fucsia": ("pink", "magenta"),
-    "Rosa": ("pink", "light pink"),
-    "Blanco": ("white", "light white"),
+    "red": ("red", "crimson"),
+    "fire_red": ("red", "crimson"),
+    "orange": ("orange", "gold"),
+    "amber": ("gold", "orange", "calid white"),
+    "yellow": ("yellow", "light yellow"),
+    "green": ("green",),
+    "mint_green": ("green", "chartreuse"),
+    "cyan": ("cyan", "ice", "light blue"),
+    "light_blue": ("light blue", "ice", "cyan"),
+    "sky_blue": ("light blue", "blue"),
+    "blue": ("blue",),
+    "deep_blue": ("blue",),
+    "purple": ("purple", "violet", "uv"),
+    "ultraviolet": ("uv", "violet", "purple"),
+    "magenta": ("magenta", "pink"),
+    "fuchsia": ("pink", "magenta"),
+    "pink": ("pink", "light pink"),
+    "white": ("white", "light white"),
 }
 
 
-def color_wheel_pairs(capabilities: FixtureCapabilities, color_name: str) -> list[tuple[int, int]]:
+def color_wheel_pairs(
+    capabilities: FixtureCapabilities, color_name: str, names: Names | None = None
+) -> list[tuple[int, int]]:
     """(offset, value) putting this fixture's colour wheel on that colour.
 
+    `color_name` is a colour identifier or any spelling of one in `names` (the
+    show's vocabulary, overrides included; every shipped catalogue by default).
     Empty when the fixture has RGB - three channels are a better way to say a
     colour than a wheel, and a macro channel on a wash overrides them - when it
     has no colour wheel, or when the wheel carries nothing near the colour.
@@ -56,7 +62,10 @@ def color_wheel_pairs(capabilities: FixtureCapabilities, color_name: str) -> lis
 
     offset, positions = wheel
     by_name = {(position.name or "").strip().lower(): position for position in positions}
-    for wanted in WHEEL_NAMES.get(color_name, ()):
+    vocabulary = default_names() if names is None else names
+    matches = vocabulary.lookup(color_name, ("colors",))
+    identifier = matches[0] if matches else color_name
+    for wanted in WHEEL_NAMES.get(identifier, ()):
         position = by_name.get(wanted)
         if position is not None:
             return [(offset, position.middle)]

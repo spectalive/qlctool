@@ -21,6 +21,8 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
 ROTATION = "Rotation"
@@ -29,10 +31,15 @@ ROTATION = "Rotation"
 def generate_beam_rainbow_spin(
     workspace: Workspace,
     capabilities: Sequence[FixtureCapabilities],
-    name: str = "Color Beam - Arcoiris (capa)",
+    name: str | None = None,
     path: str = "Color Beam",
+    names: Names | None = None,
 ) -> int | None:
-    """One Scene spinning every wheel-only colour wheel; None when there is none."""
+    """One Scene spinning every wheel-only colour wheel; None when there is none.
+
+    `name` defaults to the rainbow layer of the "Color Beam" wheel, spelled in
+    `names`, the show's vocabulary.
+    """
     values: dict[int, list[tuple[int, int]]] = {}
     for caps in capabilities:
         if caps.has_role(roles.RED) or not caps.has_role(roles.COLOR_MACRO):
@@ -46,6 +53,9 @@ def generate_beam_rainbow_spin(
             values[caps.fixture.fixture_id] = pairs
     if not values:
         return None
+    if name is None:
+        vocabulary = default_names() if names is None else names
+        name = f"Color Beam - {vocabulary.display('rainbow_layer')}"
     function_id = next_function_id(workspace.root)
     workspace.add_function(build_scene(function_id, name, values, path=path))
     return function_id

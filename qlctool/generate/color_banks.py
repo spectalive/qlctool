@@ -18,6 +18,8 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..key_split_pairs import KEY_SPLIT_PAIRS
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..palette import PALETTE, PRIMARY_COLORS
 from ..split_pairs import SPLIT_PAIRS
 from ..wheel_palette import WHEEL_PALETTE
@@ -51,8 +53,14 @@ def generate_color_banks(
     palette: Mapping[str, RGB] | None = None,
     wheel_palette: Mapping[str, RGB] | None = None,
     key_split_pairs: Sequence[tuple[str, str]] = KEY_SPLIT_PAIRS,
+    names: Names | None = None,
 ) -> list[GeneratedBank]:
-    """One colour bank plus wheels per fixture group that can do colour."""
+    """One colour bank plus wheels per fixture group that can do colour.
+
+    `names` is the show's vocabulary: the colour names are spelled in it, and
+    the banks' folders and wheels are named from it.
+    """
+    vocabulary = default_names() if names is None else names
     caps = capabilities_of(workspace.root, library)
     banks: list[GeneratedBank] = []
     values_of = PALETTE if palette is None else palette
@@ -71,6 +79,7 @@ def generate_color_banks(
             values_of,
             wheel_of,
             key_split_pairs,
+            vocabulary,
         )
         if bank is not None:
             banks.append(bank)
@@ -89,8 +98,9 @@ def _bank_for_group(
     values_of: Mapping[str, RGB],
     wheel_of: Mapping[str, RGB],
     key_split_pairs: Sequence[tuple[str, str]],
+    vocabulary: Names,
 ) -> GeneratedBank | None:
-    path = f"Colores {group.name}"
+    path = vocabulary.render("path_group_colours", group=group.name)
     scene_ids: list[int] = []
     # The bank keeps white - key 8 is a hand pick, and a hand may ask for it -
     # but the group's wheel never steps it (`wheel_palette`, 2026-09-22).
@@ -110,7 +120,11 @@ def _bank_for_group(
         # A group holding a BEAM 230W 7R holds a fixture with no red channel at
         # all. Colouring the group and skipping it is how the beams sat on last
         # night's colour while everything around them changed.
-        values.update(wheel_color_values(caps, name, fixture_ids=group.fixture_ids, dimmer=None))
+        values.update(
+            wheel_color_values(
+                caps, name, fixture_ids=group.fixture_ids, dimmer=None, names=vocabulary
+            )
+        )
         if not values:
             return None  # no colour-capable fixture in this group
         function_id = next_function_id(workspace.root)
@@ -130,6 +144,7 @@ def _bank_for_group(
             color_names=(first, second),
             dimmer_full=False,
             exclude_effect_mode_fixture_ids=exclude_effect_mode_fixture_ids,
+            names=vocabulary,
         )
         if len(values) < 2:
             break  # a single fixture cannot show a split
@@ -153,8 +168,10 @@ def _bank_for_group(
     else:
         key_ids = list(scene_ids)
 
-    wheel_id = _wheel(workspace, f"Rueda Colores {group.name}", wheel_scene_ids, hold, fade, path)
-    mix_wheel_id = _wheel(workspace, f"Rueda Mezcla {group.name}", split_ids, hold, fade, path)
+    wheel_name = vocabulary.render("group_colour_wheel", group=group.name)
+    mix_name = vocabulary.render("group_mix_wheel", group=group.name)
+    wheel_id = _wheel(workspace, wheel_name, wheel_scene_ids, hold, fade, path)
+    mix_wheel_id = _wheel(workspace, mix_name, split_ids, hold, fade, path)
     return GeneratedBank(
         group_name=group.name,
         scene_ids=scene_ids,

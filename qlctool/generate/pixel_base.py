@@ -22,12 +22,13 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..internal_program import internal_program_off_pairs
 from ..mode_park import mode_park_pairs
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
 
-NAME = "Pixeles ON"
 PATH = "Show"
 
 
@@ -35,10 +36,11 @@ def generate_pixel_base(
     workspace: Workspace,
     capabilities: list[FixtureCapabilities],
     fixture_ids: Sequence[int],
-    name: str = NAME,
+    name: str | None = None,
     path: str = PATH,
     include_effect_mode: bool = True,
     exclude_effect_mode_fixture_ids: Sequence[int] = (),
+    names: Names | None = None,
 ) -> int | None:
     """A Scene opening dimmer and shutter on the matrix-lit fixtures.
 
@@ -48,7 +50,8 @@ def generate_pixel_base(
     `include_effect_mode=False` leaves programme and mode channels to the
     caller's colour owner, for a scene that is strictly an intensity base.
     `exclude_effect_mode_fixture_ids` makes that exception only for fixtures
-    with a concurrent functional mode owner.
+    with a concurrent functional mode owner. `name` defaults to `pixels_on`
+    in `names`, the show's vocabulary.
     Returns None when no fixture in the group needs opening.
     """
     wanted = set(fixture_ids)
@@ -84,6 +87,8 @@ def generate_pixel_base(
 
     if not values:
         return None
+    if name is None:
+        name = (default_names() if names is None else names).display("pixels_on")
     function_id = next_function_id(workspace.root)
     workspace.add_function(build_scene(function_id, name, values, path=path))
     return function_id

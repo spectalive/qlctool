@@ -17,6 +17,7 @@ from ..capability import FixtureCapabilities
 from ..color_wheel_match import color_wheel_pairs
 from ..mode_park import mode_park_pairs
 from ..multicolor_off import multicolor_off_pairs
+from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..zoom_wide import zoom_wide_pairs
 
@@ -26,6 +27,7 @@ def wheel_color_values(
     color_name: str,
     fixture_ids: Sequence[int] | None = None,
     dimmer: int | None = 255,
+    names: Names | None = None,
 ) -> dict[int, list[tuple[int, int]]]:
     """fixture_values putting the wheel-coloured fixtures on `color_name`.
 
@@ -35,6 +37,7 @@ def wheel_color_values(
     `dimmer=None` writes the wheel position alone - no dimmer, no shutter -
     for callers that only *state a colour* and leave intensity to whatever
     state owns it (2026-08-27: colour and intensity are separate owners).
+    `names` is the show's vocabulary `color_name` is spelled in.
     """
     wanted = None if fixture_ids is None else set(fixture_ids)
     values: dict[int, list[tuple[int, int]]] = {}
@@ -43,7 +46,7 @@ def wheel_color_values(
             continue
         if capability.is_smoke:
             continue
-        pairs = color_wheel_pairs(capability, color_name)
+        pairs = color_wheel_pairs(capability, color_name, names)
         if not pairs:
             continue
         # The beams have no RGB, so `color_scene_values` never reaches them:

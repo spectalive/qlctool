@@ -11,11 +11,11 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
-
-NAME = "Flash Color"
 
 
 def generate_flash_color(
@@ -23,7 +23,10 @@ def generate_flash_color(
     capabilities: list[FixtureCapabilities],
     fraction: float,
     path: str = "Show",
+    names: Names | None = None,
 ) -> int:
+    """The strobe over the running colour, named in `names`, the show's vocabulary."""
+    vocabulary = default_names() if names is None else names
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:
         if capability.is_smoke:
@@ -42,5 +45,7 @@ def generate_flash_color(
         if pairs:
             values[capability.fixture.fixture_id] = sorted(pairs.items())
     function_id = next_function_id(workspace.root)
-    workspace.add_function(build_scene(function_id, NAME, values, path=path))
+    workspace.add_function(
+        build_scene(function_id, vocabulary.display("flash_colour"), values, path=path)
+    )
     return function_id

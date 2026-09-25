@@ -19,6 +19,8 @@ from collections.abc import Sequence
 from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
 # The old sequence's own values and pacing.
@@ -30,9 +32,15 @@ STEP_FADE_MS = 45000
 def generate_panel_speed_auto(
     workspace: Workspace,
     speed_channels: Sequence[tuple[int, int]],
-    path: str = "Efectos Propios",
+    path: str | None = None,
+    names: Names | None = None,
 ) -> int | None:
-    """The speed-ride chaser, or None when no fixture has a speed channel."""
+    """The speed-ride chaser, or None when no fixture has a speed channel.
+
+    `names` is the show's vocabulary; `path` defaults to its built-in effects folder.
+    """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_builtin_effects") if path is None else path
     if not speed_channels:
         return None
 
@@ -42,14 +50,15 @@ def generate_panel_speed_auto(
         for fixture_id, offset in speed_channels:
             values.setdefault(fixture_id, []).append((offset, value))
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_scene(function_id, f"Vel. Paneles {value}", values, path=path))
+        name = vocabulary.render("panel_speed_step", value=value)
+        workspace.add_function(build_scene(function_id, name, values, path=path))
         scene_ids.append(function_id)
 
     chaser_id = next_function_id(workspace.root)
     workspace.add_function(
         build_chaser(
             chaser_id,
-            "Vel. Paneles Auto",
+            vocabulary.display("panel_speed_auto"),
             scene_ids,
             fade_in=STEP_FADE_MS,
             hold=STEP_HOLD_MS,

@@ -21,18 +21,20 @@ from ..functions.efx import EFXAxis, EFXFixture, build_efx
 from ..ids import next_function_id
 from ..internal_program import internal_program
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 from .movement_efx import spread_offsets
 
 MODE_RGB = 2  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 
 # The hand-built EFX 25/26, verbatim: shared duration and axes, each variant's
-# own width/height.
+# own width/height, named by catalogue identifier.
 DURATION_MS = 13696
 X_AXIS = EFXAxis(offset=127, frequency=2, phase=90)
 Y_AXIS = EFXAxis(offset=127, frequency=3, phase=0)
-SIMULTANEO = ("Arcoiris Simultaneo", 123, 24)
-PASOS = ("Arcoiris Pasos", 127, 10)
+SIMULTANEO = ("rainbow_together", 123, 24)
+PASOS = ("rainbow_steps", 127, 10)
 
 
 @dataclass(frozen=True)
@@ -44,9 +46,15 @@ class GeneratedRainbows:
 def generate_rainbow_efx(
     workspace: Workspace,
     library: FixtureLibrary,
-    path: str = "Colores Rig",
+    path: str | None = None,
+    names: Names | None = None,
 ) -> GeneratedRainbows:
-    """Both rainbows over every RGB head; empty result when nothing has RGB."""
+    """Both rainbows over every RGB head; empty result when nothing has RGB.
+
+    `names` is the show's vocabulary; `path` defaults to its rig-colours folder.
+    """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_rig_colours") if path is None else path
     heads: list[tuple[int, int]] = []  # (fixture id, head index)
     for caps in capabilities_of(workspace.root, library):
         if caps.is_smoke or internal_program(caps) is not None:
@@ -83,8 +91,9 @@ def generate_rainbow_efx(
         )
         return function_id
 
-    name, width, height = SIMULTANEO
-    simultaneo_id = _rainbow(name, width, height, [0] * len(heads))
-    name, width, height = PASOS
-    pasos_id = _rainbow(name, width, height, spread_offsets(len(heads)))
+    identifier, width, height = SIMULTANEO
+    simultaneo_id = _rainbow(vocabulary.display(identifier), width, height, [0] * len(heads))
+    identifier, width, height = PASOS
+    offsets = spread_offsets(len(heads))
+    pasos_id = _rainbow(vocabulary.display(identifier), width, height, offsets)
     return GeneratedRainbows(simultaneo_id=simultaneo_id, pasos_id=pasos_id)

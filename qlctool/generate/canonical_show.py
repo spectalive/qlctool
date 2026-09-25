@@ -85,9 +85,6 @@ from .stage_layout import generate_stage_layout, unplaced_fixtures
 from .stage_plot_layout import apply_stage_plot
 from .strobe_effects import generate_strobe_effects
 from .unison_colors import (
-    PATH as UNISON_PATH,
-)
-from .unison_colors import (
     WHEEL_FADE,
     WHEEL_HOLD,
     generate_unison_colors,
@@ -209,13 +206,14 @@ def build_canonical_show(
     # And the third flash the old console had on `.`: the strobe over whatever
     # colour is already running - dimmer and shutter only, RGB untouched.
     master["Flash Color"] = generate_flash_color(
-        workspace, caps, fraction=described.tuning.strobe_fast
+        workspace, caps, fraction=described.tuning.strobe_fast, names=vocabulary
     )
     color_flashes = generate_color_flashes(
         workspace,
         caps,
         {name: colours.palette[name] for name in colours.primary},
         described.tuning.strobe_fast,
+        names=vocabulary,
     )
     master.update({f"Golpe {name}": function_id for name, function_id in color_flashes.ids.items()})
     # The bass bar's hit. It was `Flash 100%` - but that scene now strobes,
@@ -227,7 +225,7 @@ def build_canonical_show(
 
     # The panels' own forty-two programmes. Nobody has watched them yet, so
     # every one is generated and the cycle is slow enough to see them.
-    builtins = generate_builtin_effects(workspace, caps, label="Paneles")
+    builtins = generate_builtin_effects(workspace, caps, label="Paneles", names=vocabulary)
     banks = generate_color_banks(
         workspace,
         library,
@@ -237,13 +235,14 @@ def build_canonical_show(
         palette=colours.palette,
         wheel_palette=wheel,
         key_split_pairs=colours.key_split_pairs,
+        names=vocabulary,
     )
     if builtins.chaser_id is not None:
         master["Efectos Paneles"] = builtins.chaser_id
     # The two phases in one chaser: steps are alternatives, so the mode
     # channel always has exactly one owner, and Loop - never Random - because
     # the alternation is the point.
-    panel_manual_id = generate_panel_manual(workspace, caps, builtins.fixture_ids)
+    panel_manual_id = generate_panel_manual(workspace, caps, builtins.fixture_ids, names=vocabulary)
     panel_cycle_id = builtins.chaser_id
     if builtins.chaser_id is not None and panel_manual_id is not None:
         panel_cycle_id = _chaser(
@@ -256,12 +255,12 @@ def build_canonical_show(
         master["Ciclo Paneles Mixto"] = panel_cycle_id
     # The vertical smoke's companion light: the panels on the two colour
     # cycles the hand-built show held up while the column fired.
-    vertical_id = generate_vertical_smoke_light(workspace, builtins.scene_ids)
+    vertical_id = generate_vertical_smoke_light(workspace, builtins.scene_ids, names=vocabulary)
     if vertical_id is not None:
         master["Humo Vertical"] = vertical_id
     # The old "Strobo LED - Speed Auto": the panels' pace riding up and down
     # on its own, beside the manual fader (HTP - whichever is higher wins).
-    speed_auto_id = generate_panel_speed_auto(workspace, builtins.speed_channels)
+    speed_auto_id = generate_panel_speed_auto(workspace, builtins.speed_channels, names=vocabulary)
     if speed_auto_id is not None:
         master["Vel. Paneles Auto"] = speed_auto_id
 
@@ -284,7 +283,7 @@ def build_canonical_show(
     # before the looks that need it: a matrix cycle and both rainbows run it
     # beside themselves so the beams sweep colour with the room instead of
     # holding one detent (`rule_colour_animation_wheel`, 2026-09-22).
-    beam_spin_id = generate_beam_rainbow_spin(workspace, caps)
+    beam_spin_id = generate_beam_rainbow_spin(workspace, caps, names=vocabulary)
     subset = {
         name: colours.palette[name]
         for name in (colours.matrix_colors if matrix_colors is None else matrix_colors)
@@ -304,6 +303,7 @@ def build_canonical_show(
             path=f"Matrices {group.name}",
             curated=list(described.matrices.get(group.name, ())),
             curated_palette=colours.palette,
+            names=vocabulary,
         )
         matrices.append(generated)
         if generated.chaser_id is not None and _is_pixel_group(caps, group.fixture_ids):
@@ -319,6 +319,7 @@ def build_canonical_show(
         caps,
         sorted(matrix_lit_ids),
         exclude_effect_mode_fixture_ids=builtins.fixture_ids,
+        names=vocabulary,
     )
     if pixel_base_id is not None:
         master["Pixeles ON"] = pixel_base_id
@@ -329,6 +330,7 @@ def build_canonical_show(
         name="Intensidad Charla Pixeles",
         path="Momentos",
         include_effect_mode=False,
+        names=vocabulary,
     )
     paneles_charla_id = generate_panel_manual(
         workspace,
@@ -337,6 +339,7 @@ def build_canonical_show(
         name="Paneles Charla",
         path="Momentos",
         include_intensity=False,
+        names=vocabulary,
     )
     # Everything the pixel groups need beside the wheel: their intensity, and
     # the panels' own programmes. Their colour is not here - the wheel's steps
@@ -352,6 +355,7 @@ def build_canonical_show(
             pixel_group_ids,
             _wheel_colors(wheel, contrasts),
             CYCLE_ALGORITHMS,
+            names=vocabulary,
         )
         if pixel_group_ids
         else {}
@@ -365,6 +369,7 @@ def build_canonical_show(
             {name: pastels[name] for name in _wheel_colors(wheel, contrasts)},
             CYCLE_ALGORITHMS,
             tag="Rueda Pastel",
+            names=vocabulary,
         )
         if pixel_group_ids
         else {}
@@ -551,6 +556,7 @@ def build_canonical_show(
         colors=list(_wheel_colors(wheel, contrasts).items()),
         exclude_fixture_ids=sorted(matrix_lit_ids),
         program_gated_ids=program_gated,
+        names=vocabulary,
     )
     # The hand-built "4 Colores" rotations, back beside the wild steps: the
     # same deal of blue/red/green/white walked one seat per scene.
@@ -560,6 +566,7 @@ def build_canonical_show(
         exclude_fixture_ids=sorted(matrix_lit_ids),
         program_gated_ids=program_gated,
         palette=colours.palette,
+        names=vocabulary,
     )
     # The wild steps: every fixture its own colour. The Plasma Rainbow matrices
     # that used to slide a whole gradient across the bars beside them are gone -
@@ -600,6 +607,7 @@ def build_canonical_show(
         program_gated_ids=program_gated,
         contrasts=contrasts,
         palette=dict(colours.palette),
+        names=vocabulary,
     )
     if unison.wheel_id is not None:
         master["Rueda Colores"] = unison.wheel_id
@@ -614,7 +622,7 @@ def build_canonical_show(
                 hold=WHEEL_HOLD,
                 fade_out=WHEEL_FADE,
                 run_order="Random",
-                path=UNISON_PATH,
+                path=vocabulary.display("path_rig_colours"),
             )
         )
         master["Rueda Multicolor"] = multicolor_wheel_id
@@ -631,6 +639,7 @@ def build_canonical_show(
         wheel_name="Rueda Simples",
         scene_prefix="Rig Simple",
         palette=dict(colours.palette),
+        names=vocabulary,
     )
     if simples.wheel_id is not None:
         master["Rueda Simples"] = simples.wheel_id
@@ -645,6 +654,7 @@ def build_canonical_show(
         palette=pastels,
         wheel_name="Rueda Pastel",
         scene_prefix="Rig Pastel",
+        names=vocabulary,
     )
     if pasteles.wheel_id is not None:
         master["Rueda Pastel"] = pasteles.wheel_id
@@ -656,7 +666,7 @@ def build_canonical_show(
     # The two whole-rig rainbows the hand-built console kept on keys of their
     # own: console layers, like the group wheels - somebody starts them over
     # (instead of) the wheel, and stops them. AUTO never does.
-    rainbows = generate_rainbow_efx(workspace, library)
+    rainbows = generate_rainbow_efx(workspace, library, names=vocabulary)
     rainbow_ids: list[int] = []
     for name, function_id in (
         ("Arcoiris Simultaneo", rainbows.simultaneo_id),
