@@ -61,3 +61,22 @@ def test_2026_09_25_the_library_help_speaks_of_built_in_effects_only_where_they_
         assert ("17" in text) == has_builtin_effects
         assert "42" not in text
         assert ("panel" in text) == has_builtin_effects
+
+
+def test_2026_09_25_every_selectable_caption_has_a_promise_entry():
+    """2026-09-25, review of `rotulo que promete lo que no hay`: five of the
+    library lines were missing from `CAPTION_PROMISES`, and nothing tied the
+    table to the selectors, so a new variant would go unjudged in silence.
+    """
+    from itertools import product
+
+    from qlctool.checks.caption_promises import CAPTION_PROMISES
+    from qlctool.generate.page_control_title import page_control_title
+
+    chosen: set[str] = set()
+    for first, second in product((False, True), repeat=2):
+        chosen.add(tempo_help_line(first, second))
+        chosen.add(matrices_frame_caption(first, second))
+        chosen.add(page_control_title(first, second))
+        chosen.update(line for line in library_help_lines(first) if line is not None)
+    assert chosen - set(CAPTION_PROMISES) == set()

@@ -12,7 +12,10 @@ otherwise a fact about the patch: a haze machine, a beam with a colour wheel
 (the fixtures the beam wheel frame is built from), a fixture group made of
 pixels, a fixture with built-in effects. `promise_kept` says how each is seen.
 The library's first two lines and its sixth and seventh are one sentence each
-about the built-in effects, so each line of it carries the promise.
+about the built-in effects, so each line of it carries the promise; the
+other lines (AUTO, the group arrows, the wheels adding up to white) promise
+nothing the rig could lack. `tests/test_caption_variants.py` holds this table
+to every identifier the selectors can return.
 """
 
 from .. import roles
@@ -37,6 +40,11 @@ CAPTION_PROMISES: dict[str, tuple[str, ...]] = {
     "library_7": (BUILTIN_EFFECTS,),
     "library_1_no_builtins": (),
     "library_2_no_builtins": (),
+    "library_3": (),
+    "library_4": (),
+    "library_5": (),
+    "library_8": (),
+    "library_9": (),
     "page_control": (HAZE, BEAM_WHEEL),
     "page_control_no_haze": (BEAM_WHEEL,),
     "page_control_no_beam_wheel": (HAZE,),
