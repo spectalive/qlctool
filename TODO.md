@@ -201,6 +201,12 @@
   moved out verbatim (`desk_unique_key`, `desk_dial`, `desk_pages`), so it is
   under the cap (baseline 203 -> 201). Test
   `tests/test_english_desk_burst_refusal.py`.
+- [ ] **The deskmap refusal's frame stays English on a Spanish show (review
+  of round C, 2026-09-26).** Each finding renders in the show's language, but
+  the prefix "invalid desk bursts: " (`build_deskmap.py:113`) and the
+  "names no single accent" refusal (`desk_burst_refusal.py:19`) are fixed
+  English. Next step: two `[messages]` identifiers in both locales, rendered
+  with the vocabulary `build_deskmap` already holds.
 - [ ] **Show `[names]` overrides do not reach the finding text (review of B10
   round 2, 2026-09-26).** `named_findings` renders with
   `shipped_names(language)`, so a show that renamed `full_white` still reads

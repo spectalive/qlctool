@@ -11,7 +11,10 @@ def desk_pages(
     section_solo: dict[tuple[str, str], int | None],
     vocabulary: Names,
 ) -> list[dict[str, Any]]:
-    """Moved out of `build_deskmap` verbatim (2026-09-25), to keep it under the cap."""
+    """Each page of `PAGES` with its titled sections in `SECTION_ORDER`.
+
+    Moved out of `build_deskmap` verbatim (2026-09-25), to keep it under the cap.
+    """
     pages = []
     for page_key, title in PAGES:
         page_sections = sorted(

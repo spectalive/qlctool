@@ -4,7 +4,7 @@
 ask for the show's palette. A BEAM 230W 7R whose wheel names only "UV", on a
 show whose palette has neither purple nor ultraviolet, counted as inside the
 looks: no wheel look writes it and no intensity level parked its
-`Atomization` channel, so `check` said `modo sin dueño`. The predicate now asks
+`Atomization` channel, so `check` said `modo sin dueno`. The predicate now asks
 over the palette the looks request (review of ecc61b5).
 """
 

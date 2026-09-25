@@ -13,7 +13,9 @@ def has_panel_face(dimensions: Dimensions | None) -> bool:
     own (2026-09-25), this keeps two light bars (Eurolite KLS-180-6, beamZ
     PartyBar2) and leaves out every PAR, among them the LED PAR 64 AT3
     (274 x 268 x 433) and the SlimPAR T6 (84 x 226 x 181). A definition with no
-    dimensions cannot tell a panel from a PAR, so it is not called a panel.
+    dimensions cannot tell a panel from a PAR, so it is not called a panel;
+    neither is a one-cell panel with a square face. Both lose the "panels"
+    wording on page 4, the price of never calling a PAR a panel.
     """
     if dimensions is None:
         return False
