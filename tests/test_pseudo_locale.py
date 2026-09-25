@@ -20,7 +20,7 @@ from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.template_fields import template_fields
 from qlctool.vibra.description import vibra_description
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, iter_local
+from qlctool.xmlutil import find_local, iter_local, localname
 
 SETUPS = Path(__file__).resolve().parents[3] / "QLC+ Setups"
 WORD = r"[^\W\d_]{4,}"
@@ -28,6 +28,20 @@ WORD = r"[^\W\d_]{4,}"
 B6_WORDS = {"Color"}
 # The wheel channels whose slot names are fixture-definition data.
 WHEEL_GROUPS = ("Colour", "Gobo")
+# Elements whose `Name` the build copies from its input rather than writes:
+# ChannelsGroup is patch data kept by the skeleton (its names are the rig's own
+# "Rojo Cabezas"); the IO lines and the web server come from the input
+# workspace; MeshItem is the stage plot's scenery; Property is an engine key.
+COPIED_NAMES = {
+    "ChannelsGroup",
+    "Universe",
+    "Input",
+    "Output",
+    "Feedback",
+    "NetworkServer",
+    "MeshItem",
+    "Property",
+}
 
 
 def _pseudo() -> dict[str, str]:
@@ -45,9 +59,8 @@ def _spanish_words() -> set[str]:
     for section, entries in spanish.items():
         for identifier, text in entries.items():
             if english[section][identifier] != text:
-                words |= {
-                    w for w in re.findall(WORD, text) if w not in english[section][identifier]
-                }
+                same = set(re.findall(WORD, english[section][identifier]))
+                words |= {w for w in re.findall(WORD, text) if w not in same}
     return words
 
 
@@ -78,14 +91,22 @@ def _patch_names(workspace: Workspace, library: FixtureLibrary) -> dict[str, set
 
 
 def _written(workspace: Workspace) -> list[str]:
-    written = [
-        value
-        for element in iter_local(workspace.root, "Function")
-        for value in (element.get("Name", ""), element.get("Path", ""))
-    ]
-    written += [e.get("Caption", "") for e in workspace.root.iter() if e.get("Caption")]
-    written += [label.text or "" for label in iter_local(workspace.root, "Label")]
-    return written
+    """Every name, path and caption the build writes; a console label's text is its Caption."""
+    written: list[str] = []
+    for element in workspace.root.iter():
+        if not isinstance(element.tag, str):
+            continue
+        if localname(element) not in COPIED_NAMES:
+            written.append(element.get("Name", ""))
+        written += [element.get("Path", ""), element.get("Caption", "")]
+    return [text for text in written if text]
+
+
+def _without(text: str, names: list[str]) -> str:
+    """`text` with each whole patch name blanked out, longest first."""
+    for name in names:
+        text = re.sub(rf"(?<!\w){re.escape(name)}(?!\w)", " ", text)
+    return text
 
 
 def test_the_patch_exemptions_are_read_from_the_workspace():
@@ -98,11 +119,12 @@ def test_no_spanish_catalogue_word_is_written():
     workspace = Workspace.load(SETUPS / "Vibra.qxw")
     library = FixtureLibrary.load()
     patch = _patch_names(workspace, library)
-    exempt = B6_WORDS | {w for names in patch.values() for n in names for w in re.findall(WORD, n)}
+    # Whole patch names are exempt, not their words: a fixture called "Humo
+    # Vertical 1" must not hide a generator literal "Humo" (ruling P17).
+    exempt = sorted({n for names in patch.values() for n in names if n}, key=len, reverse=True)
     description = replace(vibra_description(), language="en", names={"en": _pseudo()})
     build_canonical_show(workspace, library, description=description)
-    words = _spanish_words() - exempt
-    leaks = sorted(
-        {w for text in _written(workspace) for w in words if re.search(rf"\b{w}\b", text)}
-    )
+    words = _spanish_words() - B6_WORDS
+    texts = [_without(text, exempt) for text in _written(workspace)]
+    leaks = sorted({w for text in texts for w in words if re.search(rf"\b{w}\b", text)})
     assert leaks == []
