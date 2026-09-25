@@ -11,7 +11,7 @@ import json
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.deskmap import build_deskmap
+from qlctool.build_deskmap import build_deskmap
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 

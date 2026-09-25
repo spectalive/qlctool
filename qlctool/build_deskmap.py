@@ -9,11 +9,8 @@ desk's own repository, where it would drift from the show.
 """
 
 import hashlib
-from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
-
-from lxml import etree
 
 from .capabilities_of import capabilities_of
 from .checks.rule_desk_bursts import check_desk_bursts
@@ -21,28 +18,27 @@ from .checks.show_graph import build_show_graph, group_fixtures
 from .desk_burst_buttons import desk_burst_buttons
 from .desk_burst_identifier import desk_burst_identifier
 from .desk_burst_note import desk_burst_note
+from .desk_burst_refusal import desk_burst_refusal
+from .desk_dial import desk_dial
+from .desk_pages import desk_pages
 from .desk_policy import (
     BURST_MS,
-    PAGES,
     SAFETY_CAPTION_BY_FUNCTION,
     SAFETY_DETAIL_BY_FUNCTION,
     SAFETY_DETAIL_BY_ROLE,
-    SECTION_ORDER,
-    SECTION_TITLES,
     place,
     split_caption,
 )
 from .desk_swatch import swatches
-from .desk_widgets import DeskWidget, desk_widgets
+from .desk_unique_key import desk_unique_key
+from .desk_widgets import desk_widgets
 from .leading_glyph import leading_glyph
 from .library import FixtureLibrary
 from .names.names import Names
 from .names.shipped_names import shipped_names
 from .names.workspace_language import workspace_language
 from .slug import slugify
-from .speed_multiplier import multiplier
 from .workspace import Workspace
-from .xmlutil import find_local, findall_local
 
 SCHEMA = 2
 GENERATOR = "qlctool deskmap"
@@ -62,7 +58,7 @@ def build_deskmap(
     frames = {w.id: w for w in widgets if w.kind in ("Frame", "SoloFrame")}
     burst_findings = check_desk_bursts(graph, root, vocabulary)
     if burst_findings:
-        raise ValueError("invalid desk bursts: " + "; ".join(f.message for f in burst_findings))
+        raise ValueError(desk_burst_refusal(burst_findings, vocabulary))
     bursts = desk_burst_buttons(root, vocabulary)
 
     controls: dict[str, dict[str, Any]] = {}
@@ -82,7 +78,7 @@ def build_deskmap(
             # The section heading says HUMO; the tile says only the rhythm.
             for word in vocabulary.spellings("haze_word"):
                 caption = caption.removeprefix(word + " ")
-        key = _unique_key(controls, caption, widget.id)
+        key = desk_unique_key(controls, caption, widget.id)
         function = next(iter(vocabulary.lookup(function_name or "", ("functions",))), None)
         if function in SAFETY_DETAIL_BY_FUNCTION:
             # An empty detail is written as "", never null (ruling P8).
@@ -137,25 +133,7 @@ def build_deskmap(
         sections.setdefault(where, []).append(key)
         section_solo.setdefault(where, widget.solo)
 
-    pages = []
-    for page_key, title in PAGES:
-        page_sections = sorted(
-            (
-                {
-                    "key": section,
-                    "title": vocabulary.display(SECTION_TITLES[section]),
-                    "solo": section_solo[(page_key, section)],
-                    "controls": keys,
-                }
-                for (page, section), keys in sections.items()
-                if page == page_key
-            ),
-            key=lambda s: SECTION_ORDER.index(s["key"]),
-        )
-        if page_sections:
-            pages.append(
-                {"key": page_key, "title": vocabulary.display(title), "sections": page_sections}
-            )
+    pages = desk_pages(sections, section_solo, vocabulary)
 
     stop_all = next((w for w in widgets if w.kind == "Button" and w.action == "StopAll"), None)
     grand_master = next(
@@ -165,7 +143,7 @@ def build_deskmap(
     for widget in widgets:
         if widget.kind != "SpeedDial":
             continue
-        dials[_unique_key(dials, widget.caption, widget.id)] = _dial(root, widget)
+        dials[desk_unique_key(dials, widget.caption, widget.id)] = desk_dial(root, widget)
 
     path = Path(path)
     return {
@@ -182,43 +160,4 @@ def build_deskmap(
         "pages": pages,
         "controls": controls,
         "dials": dials,
-    }
-
-
-def _unique_key(existing: Mapping[str, object], caption: str, widget_id: int) -> str:
-    key = slugify(caption)
-    if key in existing:
-        key = f"{key}-{widget_id}"
-    return key
-
-
-def _dial(root: etree._Element, widget: DeskWidget) -> dict[str, Any]:
-    element = next(
-        (
-            e
-            for e in root.iter()
-            if e.attrib.get("ID") == str(widget.id) and e.tag.endswith("SpeedDial")
-        ),
-        None,
-    )
-    members = []
-    time_ms = 0
-    if element is not None:
-        time_element = find_local(element, "Time")
-        time_ms = int((time_element.text or "0").strip()) if time_element is not None else 0
-        for function in findall_local(element, "Function"):
-            members.append(
-                {
-                    "function": int((function.text or "-1").strip()),
-                    "fadeIn": multiplier(int(function.attrib.get("FadeIn", 0))),
-                    "fadeOut": multiplier(int(function.attrib.get("FadeOut", 0))),
-                    "duration": multiplier(int(function.attrib.get("Duration", 0))),
-                }
-            )
-    return {
-        "widget": widget.id,
-        "caption": split_caption(widget.caption)[0],
-        "key": widget.key,
-        "timeMs": time_ms,
-        "members": members,
     }

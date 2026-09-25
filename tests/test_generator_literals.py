@@ -65,7 +65,12 @@ CONVERTED: tuple[str, ...] = (
     "generate/play_page.py",
     "generate/desk_bursts.py",
     "desk_policy.py",
-    "deskmap.py",
+    "build_deskmap.py",
+    # 2026-09-25: split out of deskmap.py (now build_deskmap.py), which was converted.
+    "desk_burst_refusal.py",
+    "desk_dial.py",
+    "desk_pages.py",
+    "desk_unique_key.py",
     "desk_burst_note.py",
     # Task 12a (2026-09-25): no catalogue word in them; the scanner holds them clean.
     "generate/beat_tempo.py",

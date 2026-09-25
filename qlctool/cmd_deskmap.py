@@ -4,9 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
+from .build_deskmap import build_deskmap
 from .description.description_names import description_names
 from .description.load_show_description import load_show_description
-from .deskmap import build_deskmap
 from .library_for import library_for
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace

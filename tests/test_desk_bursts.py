@@ -6,6 +6,7 @@ import pytest
 from lxml import etree
 from rig_root import RIG_ROOT
 
+from qlctool.build_deskmap import build_deskmap
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.rule_context import RuleContext
 from qlctool.checks.rule_desk_bursts import check_desk_bursts
@@ -16,7 +17,6 @@ from qlctool.desk_burst_buttons import desk_burst_buttons
 from qlctool.desk_burst_identifier import desk_burst_identifier
 from qlctool.desk_burst_sources import desk_burst_sources
 from qlctool.desk_policy import BURST_MS
-from qlctool.deskmap import build_deskmap
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
