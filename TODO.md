@@ -36,18 +36,13 @@
   step: split each over-long module and move the three reference helpers
   into files of their own, then `codeality-py baseline update` so the
   entries drop out.
-- [!] **CI's suite cannot meet the 120 s test budget (2026-09-25).** With
-  mypy and the baseline green, the gate on GitHub still fails its pytest
-  stage as `over-budget`: 640 passed in 446 s on 3.11 and 397 s on 3.13
-  (run 36127233331; 286 s on run 36122117743). The budget was set on the
-  local venv, Python 3.14, where coverage uses `sys.monitoring` and the
-  suite takes 75 s on eight workers; the runner has four, and on 3.11 and
-  3.13 branch coverage falls back to the C tracer. Measured locally with
-  `COVERAGE_CORE=ctrace -n 4`: 300 s. The heaviest tests are the
-  `test_check.py` show builds (up to 26 s each on the runner).
-  `codeality-py.toml` says never to raise the budget, so this waits on the
-  owner: a budget per environment, a larger runner, or cheaper show builds
-  in `test_check.py`.
+- [x] **CI's suite cannot meet the 120 s test budget (2026-09-25).** The
+  gate on GitHub failed its pytest stage as `over-budget`: the suite took
+  286-462 s across 3.11 and 3.13 (runs 36122117743, 36127233331) on the
+  four-core runners, where branch coverage falls back to the C tracer below
+  3.14. Solved by codeality-py 0.2.4's `CODEALITY_PY_TEST_BUDGET_SECONDS`,
+  set to 600 on the workflow's gate step; the local budget in
+  `codeality-py.toml` stays 120 s.
 - [ ] **Page 4 counts the panels' effects as 42 on every rig (2026-09-25).**
   Seen fixing the club's captions: `library_2`, `library_6` and
   `panels_frame` say "42" in the catalogue, the number Vibra's panels have,

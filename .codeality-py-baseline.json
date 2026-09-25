@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "tool_version": "0.2.3",
+  "tool_version": "0.2.4",
   "entries": [
     "00eecd4e1650becc",
     "013c7fdf9bcfbf5d",
@@ -39,7 +39,6 @@
     "2e8532450f3d0870",
     "2fef9e640088126a",
     "306005547b9fd6fb",
-    "38c565faea288096",
     "39bc0e4d8eb50b70",
     "3afa88455a5ae667",
     "407153dfe69c0312",
@@ -182,7 +181,6 @@
     "e28df54f3e49917e",
     "e38e71ba894e9072",
     "e6332cdc060ee94b",
-    "e67c9544da16633d",
     "e6cffd1f5aee9ced",
     "e743732b6e06739a",
     "e8469ed5395ca430",
