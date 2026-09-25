@@ -115,18 +115,32 @@
   such a wheel (review of ecc61b5). Smallest next step: build a definition
   with such a wheel, show `modo sin dueño` on it, then ask `color_wheel_pairs`
   over the colours the looks request instead of `WHEEL_NAMES`.
-- [ ] **The vertical-smoke light chaser is built where nothing starts it
-  (2026-09-25).** Since 723bc1a page 3 promises haze, and builds the
-  `Humo Vertical` button and its help, only where a smoke machine is patched
-  (`has_haze_light` in `live_console.py`). The column's light chaser itself
-  is still built from the panels' programmes alone, so Vibra without its
-  smoke machines (fixtures 17, 29-32) carries chaser 201 with no button, and
-  `check` does not flag a function nothing starts. Owner question: should the
-  light cue exist with no smoke to light? Smallest next step: ask the owner;
-  if no, build the light only where the vertical columns are (a smoke fixture
-  with a red channel, `vertical_smoke_burst.py`), which keeps Vibra's bytes;
-  if yes, put the button back without the haze promise. Either way a rule
-  for a built function no button or chaser reaches would have seen this.
+- [x] **The vertical-smoke light chaser is built where nothing starts it
+  (2026-09-25).** Vibra without its smoke machines (fixtures 17, 29-32)
+  carried the panels' `Humo Vertical` chaser with no button to start it.
+  Decision (the owner delegated it, 2026-09-25): the light is built only where
+  a vertical column is. Closed by `fix(generate): the vertical-smoke light is
+  built only where a column is patched`: `vertical_smoke_columns` (a smoke
+  machine with a red channel, `is_lit_smoke`) is the one answer both
+  `vertical_smoke_burst` and `vertical_smoke_light` ask, so they cannot drift.
+  Tests `tests/test_vertical_smoke_columns.py` (the no-smoke build has one
+  function fewer than the same build with the light forced; fails without the
+  fix) and `tests/test_lit_smoke_wash.py` (the columns' LEDs stay a wash in
+  every room colour, their LED master at full in the levels and their pump at
+  zero, on Vibra and on Vibra without its fog-only machine). Vibra identical x3.
+  - [ ] A `check` rule for a built function that no button, chaser,
+    collection or input binding reaches would have seen this. Caveat: some
+    functions are reached only through the input profile (the pad's
+    bindings), so the rule must read the profile too, or it flags them.
+- [ ] **`Flash Color` leaves the lit smoke machines out of the strobe
+  (2026-09-25).** Found pinning the owner's rule that a smoke machine with RGB
+  is a wash even with no smoke (`tests/test_lit_smoke_wash.py`):
+  `generate_flash_color` skips every `is_smoke` fixture, the lit ones too, so
+  while `Flash Color` (and its desk burst) is held the four vertical columns
+  keep their colour and level but do not strobe with the room. No look skips
+  their RGB. Smallest next step: ask the owner whether the columns should
+  strobe with the room; if yes, skip only `is_smoke and not is_lit_smoke`
+  there, as `color_scene_values` does, and re-record Vibra's three hashes.
 - [ ] **Page 4's matrices caption says "bars and panels" by proxy
   (2026-09-25).** `matrices_frame_caption` picks `matrices_frame` ("patterns
   on the bars and panels") for any rig with pixel groups and built-in effects,

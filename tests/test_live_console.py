@@ -35,8 +35,9 @@ SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 # Buttons that exist only when the rig has the fixture behind them. The test
 # rig is the hand-built DeluxeEventos2, which has no lit fog machine, so its
-# console builds without the vertical burst.
-OPTIONAL_KEYS = {"Humo Vertical YA"}
+# console builds without the vertical burst - and, since 2026-09-25, without
+# the column's light (`vertical_smoke_columns`).
+OPTIONAL_KEYS = {"Humo Vertical YA", "Humo Vertical"}
 
 WIDGET_TAGS = {
     "Frame",
@@ -770,11 +771,18 @@ def test_control_retains_every_direct_operator_contract(console):
         ("Slider", "Master General"),
         ("Button", "GOLPE GRAVES"),
         ("Frame", "Intensidad y strobo de fixture"),
-        ("Button", "HUMO VERTICAL"),
         ("Frame", "Color de los BEAM"),
         ("AudioTriggers", "Audio"),
     )
     retained = {(tag, caption): named(tag, caption) for tag, caption in contracts}
+    # 2026-09-25: no vertical column is patched here, so no column light and
+    # no button for it (`tests/test_vertical_smoke_columns.py`).
+    assert not [
+        w
+        for w in widgets
+        if localname(w) == "Button"
+        and leading_glyph(w.attrib.get("Caption", ""))[1].startswith("HUMO VERTICAL")
+    ]
 
     movement_dial = retained[("SpeedDial", "Vel. Movimiento")]
     dial_inputs = list(findall_local(movement_dial, "Input"))
@@ -801,11 +809,6 @@ def test_control_retains_every_direct_operator_contract(console):
     assert functions[_function_id(bass)].attrib["Name"] == "Golpe Graves"
     assert find_local(bass, "Action").text == "Flash"
     assert not (find_local(bass, "Key").text or "")
-
-    vertical = retained[("Button", "HUMO VERTICAL")]
-    assert functions[_function_id(vertical)].attrib["Name"] == "Humo Vertical"
-    assert find_local(vertical, "Action").text == "Toggle"
-    assert find_local(vertical, "Key").text == KEYS["Humo Vertical"]
 
     dimmer_names = (
         "Dimmer Chase",

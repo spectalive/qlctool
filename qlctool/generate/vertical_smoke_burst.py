@@ -35,6 +35,7 @@ from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..vertical_smoke_columns import vertical_smoke_columns
 from ..workspace import Workspace
 
 
@@ -51,9 +52,7 @@ def generate_vertical_smoke_burst(
     """
     vocabulary = default_names() if names is None else names
     path = vocabulary.display("path_haze") if path is None else path
-    machines = [
-        c for c in capabilities_of(workspace.root, library) if c.is_smoke and c.has_role(roles.RED)
-    ]
+    machines = vertical_smoke_columns(capabilities_of(workspace.root, library))
     if not machines:
         return None
     values: dict[int, list[tuple[int, int]]] = {}

@@ -93,12 +93,9 @@ def test_the_vertical_smoke_light_is_the_old_chaser_verbatim():
     from qlctool.xmlutil import find_local, findall_local, localname
 
     workspace = Workspace.load(SHOW)
-    builtins = generate_builtin_effects(
-        workspace,
-        capabilities_of(workspace.root, FixtureLibrary.load()),
-        label="Paneles",
-    )
-    chaser_id = generate_vertical_smoke_light(workspace, builtins.scene_ids)
+    caps = capabilities_of(workspace.root, FixtureLibrary.load())
+    builtins = generate_builtin_effects(workspace, caps, label="Paneles")
+    chaser_id = generate_vertical_smoke_light(workspace, builtins.scene_ids, caps)
     assert chaser_id is not None
 
     functions = {

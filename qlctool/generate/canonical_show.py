@@ -284,7 +284,9 @@ def build_canonical_show(
         master[vocabulary.display("panel_cycle")] = panel_cycle_id
     # The vertical smoke's companion light: the panels on the two colour
     # cycles the hand-built show held up while the column fired.
-    vertical_id = generate_vertical_smoke_light(workspace, builtins.scene_ids, names=vocabulary)
+    vertical_id = generate_vertical_smoke_light(
+        workspace, builtins.scene_ids, caps, names=vocabulary
+    )
     if vertical_id is not None:
         master[vocabulary.display("vertical_smoke")] = vertical_id
     # The old "Strobo LED - Speed Auto": the panels' pace riding up and down
