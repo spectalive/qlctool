@@ -1,9 +1,18 @@
 name: Quality
 
+# Minutes are free on a public repository, but every run still ties up
+# runners for twenty minutes, so a push to main gets one leg, a docs-only
+# push none, and the full matrix runs on a tag, a pull request or by hand.
 on:
   push:
     branches: [main]
+    tags: ['v*']
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'TODO.md'
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,7 +23,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.11', '3.13']
+        # One leg on an ordinary push; both on a tag, a pull request or a
+        # manual run.
+        python-version: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name != 'push') && fromJSON('["3.11", "3.13"]') || fromJSON('["3.13"]') }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
