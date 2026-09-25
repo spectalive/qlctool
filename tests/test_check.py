@@ -3279,6 +3279,9 @@ def test_2026_09_25_a_caption_that_promises_bars_panels_and_their_effects(librar
         f.function: f.message for f in check_workspace(club_show, library) if f.rule == RULE
     }
     assert set(findings) == {matrices, effects}
-    assert "grupo de pixeles" in findings[matrices]
-    assert "aparato con efectos propios" in findings[matrices]
-    assert "grupo de pixeles" not in findings[effects]
+    # Since the owner's delegated decision (2026-09-25) the nouns are the
+    # promises: a bar (`is_bar`) and a panel (`is_panel`).
+    assert "barra de pixeles" in findings[matrices]
+    assert "panel con efectos propios" in findings[matrices]
+    assert "panel con efectos propios" in findings[effects]
+    assert "barra de pixeles" not in findings[effects]

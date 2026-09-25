@@ -161,7 +161,7 @@ def check_workspace(
     findings += check_grid_order(root)
     findings += check_undeclared_heads(graph, root)
     findings += check_console(graph, root, canvas or canvas_of(root))
-    findings += console_caption_findings(graph, groups, root)
+    findings += console_caption_findings(graph, root)
     findings += check_audio_triggers(graph, groups, root)
     for provider in applying:
         findings += provider.check(context)

@@ -141,17 +141,22 @@
   their RGB. Smallest next step: ask the owner whether the columns should
   strobe with the room; if yes, skip only `is_smoke and not is_lit_smoke`
   there, as `color_scene_values` does, and re-record Vibra's three hashes.
-- [ ] **Page 4's matrices caption says "bars and panels" by proxy
-  (2026-09-25).** `matrices_frame_caption` picks `matrices_frame` ("patterns
-  on the bars and panels") for any rig with pixel groups and built-in effects,
-  without checking that the pixel fixtures are bars or that the fixtures with
-  programmes are panels. The library help and the panels frame likewise still
-  say "panels" and "Effect N" on every rig with built-in effects (the count is
-  the rig's since this round). A wording that names what the rig has ("pixel
-  fixtures") changes Vibra's text, so it needs the owner's consent to
-  re-record the three Vibra hashes. Smallest next step: ask the owner, then
-  choose the noun from the capabilities of the fixtures the matrices and the
-  built-in effects actually use.
+- [x] **Page 4's matrices caption says "bars and panels" by proxy
+  (2026-09-25).** `matrices_frame` was chosen for any rig with pixel groups
+  and built-in effects, and the panels frame and library help said "panels"
+  on any rig with built-in effects. Decision (the owner delegated it,
+  2026-09-25): the nouns come from the fixtures' definitions, and Vibra's rig
+  yields its current words. Closed by `fix(console): page 4 names bars and
+  panels only where the rig has them`: `is_bar` (more than one pixel head,
+  the `<Layout>` one row or one column holding exactly those heads) and
+  `is_panel` (an internal programme, no pan or tilt, one cell or a grid of
+  heads); `matrices_frame_caption`, `panels_frame_caption` and
+  `library_help_lines` choose "bars and panels", the bars, the panels or the
+  generic words; `caption_promises` promises a bar and a panel instead of a
+  pixel group. Tests in `tests/test_caption_variants.py` (Vibra cut to both,
+  bars only, panels only, neither; a club with CLB2.4 bars built end to end
+  and checked clean; the club keeps its words) and
+  `tests/test_mixed_rig_captions.py` (panels and no bars). Vibra identical x3.
 - [x] **No `check` rule sees a caption that promises a missing function
   (2026-09-25).** The club's console named gobos, prism and panels it lacks;
   tests now cover the captions, but `qlctool check` had no rule for "a caption

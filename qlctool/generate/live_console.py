@@ -65,6 +65,7 @@ from .bind_pad import bind_pad
 from .library_help_lines import library_help_lines
 from .matrices_frame_caption import matrices_frame_caption
 from .page_control_title import page_control_title
+from .panels_frame_caption import panels_frame_caption
 from .play_page import build_play_page
 from .smc_pad_colors import readable_foreground
 from .tempo_help_line import tempo_help_line
@@ -317,7 +318,8 @@ def generate_live_console(
     glyphs: Mapping[str, str] | None = None,
     vocabulary: Names | None = None,
     *,
-    has_pixel_groups: bool = False,
+    has_bars: bool = False,
+    has_panels: bool = False,
     has_smoke_machine: bool,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame.
@@ -325,8 +327,8 @@ def generate_live_console(
     `pad_bindings`, `pad_colors` and `glyphs` are keyed by display name;
     `glyphs=None` means the shipped glyphs in the vocabulary. The console's
     words come from `vocabulary`; None means `default_names()`.
-    `has_pixel_groups` says some fixture group is made of pixels, which is
-    what page 4's matrices caption is chosen from. `has_smoke_machine` says a
+    `has_bars` and `has_panels` say some patched fixture is a bar
+    (`is_bar`) or a panel (`is_panel`): page 4's captions name only those. `has_smoke_machine` says a
     smoke or haze machine is patched: page 3's title promises haze only then.
     """
     vocabulary = default_names() if vocabulary is None else vocabulary
@@ -519,7 +521,8 @@ def generate_live_console(
         colours,
         vocabulary,
         mix_code,
-        has_pixel_groups,
+        has_bars,
+        has_panels,
     )
 
     # Last, because a band presses a button and needs its widget ID.
@@ -1071,7 +1074,8 @@ def _page_library(
     palette: Mapping[str, tuple[int, int, int]],
     vocabulary: Names,
     mix_code: Mapping[str, str],
-    has_pixel_groups: bool,
+    has_bars: bool,
+    has_panels: bool,
 ) -> None:
     """Page 4: the material the show is built from, not buttons for a set."""
     label(
@@ -1153,7 +1157,7 @@ def _page_library(
 
     matrix_frame = frame(
         outer,
-        vocabulary.display(matrices_frame_caption(has_pixel_groups, bool(builtins.scene_ids))),
+        vocabulary.display(matrices_frame_caption(has_bars, has_panels)),
         MIDDLE_X,
         68,
         MIDDLE_WIDTH,
@@ -1247,7 +1251,7 @@ def _page_library(
     if builtins.scene_ids:
         panels = frame(
             outer,
-            vocabulary.render("panels_frame", count=len(builtins.scene_ids)),
+            vocabulary.render(panels_frame_caption(has_panels), count=len(builtins.scene_ids)),
             MIDDLE_X,
             580,
             MIDDLE_WIDTH,
@@ -1332,7 +1336,7 @@ def _page_library(
         _on_page(control, PAGE_LIBRARY)
         console.widget_ids.append(matrix_widget_id)
 
-    for index, line in enumerate(library_help_lines(bool(builtins.scene_ids))):
+    for index, line in enumerate(library_help_lines(bool(builtins.scene_ids), has_panels)):
         label(
             outer,
             LIBRARY_SEPARATOR

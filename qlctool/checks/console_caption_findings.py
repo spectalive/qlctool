@@ -13,8 +13,6 @@ from .rule_empty_frame import check_empty_frames
 from .show_graph import ShowGraph
 
 
-def console_caption_findings(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element
-) -> list[Finding]:
+def console_caption_findings(graph: ShowGraph, root: etree._Element) -> list[Finding]:
     """What `marco vacio` and `rotulo que promete lo que no hay` report, in that order."""
-    return check_empty_frames(root) + check_caption_promise(graph, groups, root)
+    return check_empty_frames(root) + check_caption_promise(graph, root)

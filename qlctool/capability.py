@@ -31,6 +31,9 @@ class FixtureCapabilities:
     declared_heads: tuple[tuple[int, ...], ...] = ()
     fixture_type: str = ""
     dimensions: Dimensions | None = None
+    # `<Layout>`: how the definition arranges those heads, columns x rows.
+    # (1, 1) when it does not say, which is not a line of heads.
+    layout: tuple[int, int] = (1, 1)
 
     @classmethod
     def resolve(
@@ -50,6 +53,7 @@ class FixtureCapabilities:
             declared_heads=definition.mode_heads(fixture.mode),
             fixture_type=definition.fixture_type,
             dimensions=definition.dimensions,
+            layout=definition.optics.layout if definition.optics else (1, 1),
         )
 
     @property

@@ -48,3 +48,7 @@ def test_2026_09_25_page_4_counts_the_built_in_effects_the_rig_has(tmp_path, mon
     for key in ("panels_frame", "library_2", "library_6"):
         assert names.render(key, count=PANEL_EFFECTS) in captions, key
     assert not [c for c in captions if "42" in c]
+    # 2026-09-25, the owner's delegated decision: panels and no bars, so the
+    # matrices frame names the panels alone.
+    assert names.display("matrices_frame_panels") in captions
+    assert not [c for c in captions if "bars" in c.casefold()]

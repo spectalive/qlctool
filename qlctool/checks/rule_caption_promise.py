@@ -31,9 +31,7 @@ from .show_graph import ShowGraph
 RULE = "rotulo que promete lo que no hay"
 
 
-def check_caption_promise(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element
-) -> list[Finding]:
+def check_caption_promise(graph: ShowGraph, root: etree._Element) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []
@@ -47,7 +45,7 @@ def check_caption_promise(
         )
         if identifier is None:
             continue
-        missing = [p for p in CAPTION_PROMISES[identifier] if not promise_kept(p, graph, groups)]
+        missing = [p for p in CAPTION_PROMISES[identifier] if not promise_kept(p, graph)]
         if not missing:
             continue
         findings.append(
