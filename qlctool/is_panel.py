@@ -2,6 +2,7 @@
 
 from . import roles
 from .capability import FixtureCapabilities
+from .has_panel_face import has_panel_face
 from .internal_program import internal_program
 
 
@@ -16,6 +17,11 @@ def is_panel(capabilities: FixtureCapabilities) -> bool:
     A fixture that pans or tilts is a moving head, and a smoke machine is left
     out as `generate_builtin_effects` leaves it out. Vibra's WX-60WPS panels
     declare one head, layout 1 x 1, and a Function / Effect Modes pair.
+
+    One cell is also every PAR with a programme of its own, so a one-cell
+    fixture must have a panel's body as well (`has_panel_face`): 26 one-cell
+    modes of the upstream library, every PAR among them, were panels before
+    (review of 4b50144, 2026-09-25).
     """
     if capabilities.is_smoke or internal_program(capabilities) is None:
         return False
@@ -23,4 +29,8 @@ def is_panel(capabilities: FixtureCapabilities) -> bool:
         return False
     heads = max(1, len(capabilities.declared_heads))
     width, height = capabilities.layout
-    return width * height == heads and (heads == 1 or min(width, height) > 1)
+    if width * height != heads:
+        return False
+    if heads == 1:
+        return has_panel_face(capabilities.dimensions)
+    return min(width, height) > 1
