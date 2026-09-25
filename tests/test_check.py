@@ -3067,3 +3067,32 @@ def test_2026_09_22_a_figure_that_leaves_the_beams_standing(library):
     ]
     assert findings, "a figure that moves one optics family only went unnoticed"
     assert all(name.startswith("BEAM") for f in findings for name in f.fixtures)
+
+
+def test_2026_09_25_a_collection_step_that_names_no_function(library):
+    """2026-09-25, Plan C preflight: the first show built for a rig with no gobo
+    wheel wrote `Talk Light` as the talk scene plus the beams' white, and there
+    was no beams' white - `<Step Number="1">None</Step>`. QLC+ loaded it and
+    every rule passed it, because the graph only follows steps that are
+    numbers. Reproduced by putting that step back into the talk light, and a
+    console button pointed at an id nothing carries beside it.
+    """
+    from qlctool.checks.rule_dangling_reference import RULE
+    from qlctool.constants import QLC_NS
+    from qlctool.names.default_names import default_names
+
+    workspace = _show()
+    talk = _functions(workspace)[default_names().display("talk_light")]
+    step = etree.SubElement(talk, f"{{{QLC_NS}}}Step")
+    step.set("Number", str(len(findall_local(talk, "Step"))))
+    step.text = "None"
+    console = find_local(workspace.root, "VirtualConsole")
+    button = next(b for b in iter_local(console, "Button") if find_local(b, "Function") is not None)
+    find_local(button, "Function").set("ID", "999999")
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule == RULE]
+    assert {f.function for f in findings} == {
+        default_names().display("talk_light"),
+        button.get("Caption"),
+    }
+    assert any("None" in f.message for f in findings)

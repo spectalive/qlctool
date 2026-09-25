@@ -29,6 +29,7 @@ from .rule_colour_animation_wheel import check_colour_animation_wheel
 from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
 from .rule_context import RuleContext
+from .rule_dangling_reference import check_dangling_references
 from .rule_family_owner import check_family_owner
 from .rule_flash_scene import check_flash_scene
 from .rule_flash_speed import check_flash_speed
@@ -106,6 +107,7 @@ def check_workspace(
     bounded = frozenset().union(*(p.bounded_latches(context) for p in applying))
 
     findings: list[Finding] = []
+    findings += check_dangling_references(graph, root)
     findings += check_intensity(graph, groups, entries, states)
     findings += check_instant_dimmer(graph, groups, states)
     findings += check_white_emitter(graph, groups)
