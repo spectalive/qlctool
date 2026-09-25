@@ -1,0 +1,3386 @@
+{
+ "schema": 2,
+ "generator": "qlctool deskmap",
+ "qlcVersion": "5.2.2",
+ "show": {
+  "key": "vibra",
+  "workspace": "Vibra.qxw",
+  "sha256": "f1c9b1bff0f16143e56352ca75c755d8fdb3d769e871d74cffef7cea7bd70511"
+ },
+ "grandMaster": {
+  "widget": 258
+ },
+ "stopAll": {
+  "widget": 20,
+  "fadeOutMs": 1000
+ },
+ "pages": [
+  {
+   "key": "live",
+   "title": "LIVE",
+   "sections": [
+    {
+     "key": "state",
+     "title": "LA SALA ESTÁ ASÍ",
+     "solo": 3,
+     "controls": [
+      "auto",
+      "charla",
+      "tranquilo",
+      "fiesta",
+      "locura",
+      "blanco-total",
+      "todo-negro"
+     ]
+    },
+    {
+     "key": "haze",
+     "title": "HUMO AMBIENTE",
+     "solo": 28,
+     "controls": [
+      "cada-1-min",
+      "cada-2-min",
+      "cada-4-min",
+      "cada-8-min"
+     ]
+    },
+    {
+     "key": "accents",
+     "title": "GOLPES",
+     "solo": null,
+     "controls": [
+      "flash",
+      "flash-lento",
+      "flash-color",
+      "humo-ya",
+      "humo-vert",
+      "strobo",
+      "strobo-suave"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "color",
+   "title": "COLOR",
+   "sections": [
+    {
+     "key": "hooks",
+     "title": "AUTO",
+     "solo": 62,
+     "controls": [
+      "colores-completos",
+      "colores-simples",
+      "pastel-tenue",
+      "multicolor",
+      "mezcla",
+      "luz-charla"
+     ]
+    },
+    {
+     "key": "picks",
+     "title": "ELEGIR",
+     "solo": 62,
+     "controls": [
+      "rig-rojo",
+      "rig-rojo-fuego",
+      "rig-naranja",
+      "rig-ambar",
+      "rig-amarillo",
+      "rig-verde",
+      "rig-verde-menta",
+      "rig-cyan",
+      "rig-celeste",
+      "rig-azul-cielo",
+      "rig-azul",
+      "rig-azul-profundo",
+      "rig-morado",
+      "rig-ultravioleta",
+      "rig-magenta",
+      "rig-fucsia",
+      "rig-rosa",
+      "arcoiris-junto",
+      "arcoiris-fases"
+     ]
+    },
+    {
+     "key": "accents",
+     "title": "GOLPES",
+     "solo": null,
+     "controls": [
+      "rojo",
+      "verde",
+      "azul",
+      "ultravioleta",
+      "amarillo",
+      "cyan",
+      "magenta",
+      "blanco",
+      "naranja",
+      "rosa"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "pixels",
+   "title": "PIXELES",
+   "sections": [
+    {
+     "key": "hooks",
+     "title": "AUTO",
+     "solo": 89,
+     "controls": [
+      "auto-paneles",
+      "paneles-charla"
+     ]
+    },
+    {
+     "key": "picks",
+     "title": "ELEGIR",
+     "solo": 89,
+     "controls": [
+      "effect-1",
+      "effect-5",
+      "effect-8",
+      "effect-12",
+      "effect-16",
+      "effect-20",
+      "effect-23",
+      "effect-27",
+      "effect-31",
+      "effect-35",
+      "effect-38",
+      "effect-42",
+      "paneles-manual"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "heads",
+   "title": "CABEZAS",
+   "sections": [
+    {
+     "key": "hooks",
+     "title": "AUTO",
+     "solo": 106,
+     "controls": [
+      "auto-lento",
+      "auto-normal",
+      "auto-rapido",
+      "centro"
+     ]
+    },
+    {
+     "key": "picks",
+     "title": "ELEGIR",
+     "solo": 106,
+     "controls": [
+      "circulo",
+      "ocho",
+      "linea",
+      "diamante",
+      "cuadrado",
+      "hoja",
+      "lissajous",
+      "circulo-simultaneo",
+      "ocho-simultaneo",
+      "linea-simultaneo",
+      "diamante-simultaneo",
+      "cuadrado-simultaneo",
+      "hoja-simultaneo",
+      "lissajous-simultaneo",
+      "circulo-alternado",
+      "ocho-alternado",
+      "linea-alternado",
+      "diamante-alternado",
+      "cuadrado-alternado",
+      "hoja-alternado",
+      "lissajous-alternado",
+      "ola-vertical",
+      "barrido-unison",
+      "beams-abanico",
+      "beams-cruce",
+      "escenario"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "gobos",
+   "title": "GOBOS",
+   "sections": [
+    {
+     "key": "hooks",
+     "title": "AUTO",
+     "solo": 138,
+     "controls": [
+      "auto-gobos",
+      "reposo"
+     ]
+    },
+    {
+     "key": "picks",
+     "title": "ELEGIR",
+     "solo": 138,
+     "controls": [
+      "gobo-1",
+      "gobo-2",
+      "gobo-3",
+      "gobo-4",
+      "gobo-5",
+      "gobo-6",
+      "gobo-7",
+      "gobo-8",
+      "gobo-9",
+      "gobo-10",
+      "gobo-11",
+      "gobo-12",
+      "gobo-13",
+      "gobo-14",
+      "gobo-15",
+      "gobo-16",
+      "gobo-17",
+      "gobo-repartido-1",
+      "gobo-repartido-2",
+      "gobo-repartido-3",
+      "gobo-repartido-4",
+      "gobo-repartido-5",
+      "gobo-repartido-6",
+      "gobo-repartido-7",
+      "gobo-repartido-8",
+      "gobo-shake-gobo-1",
+      "gobo-shake-gobo-9",
+      "gobo-shake-gobo-17"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "prism",
+   "title": "PRISMA",
+   "sections": [
+    {
+     "key": "hooks",
+     "title": "AUTO",
+     "solo": 171,
+     "controls": [
+      "auto-prisma",
+      "reposo-174"
+     ]
+    },
+    {
+     "key": "picks",
+     "title": "ELEGIR",
+     "solo": 171,
+     "controls": [
+      "insert-prism",
+      "1",
+      "2",
+      "3",
+      "4",
+      "1-y-3",
+      "2-y-4",
+      "prisma-giro-rapido",
+      "prisma-giro-inverso"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "control",
+   "title": "CONTROL",
+   "sections": [
+    {
+     "key": "chases",
+     "title": "BARRIDOS DE INTENSIDAD",
+     "solo": null,
+     "controls": [
+      "barrido-de-intensidad",
+      "barrido-inverso",
+      "pares",
+      "rotacion-de-barridos"
+     ]
+    },
+    {
+     "key": "haze-light",
+     "title": "LUZ DEL HUMO VERTICAL",
+     "solo": null,
+     "controls": [
+      "humo-vertical"
+     ]
+    }
+   ]
+  }
+ ],
+ "controls": {
+  "auto": {
+   "widget": 4,
+   "function": 807,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "AUTO",
+   "icon": "▶",
+   "detail": "el show se lleva solo",
+   "role": "state",
+   "solo": 3,
+   "key": "Q",
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "charla": {
+   "widget": 5,
+   "function": 810,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "CHARLA",
+   "icon": "🎤",
+   "detail": "alguien habla",
+   "role": "state",
+   "solo": 3,
+   "key": "F1",
+   "swatches": [
+    "#552c00"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "tranquilo": {
+   "widget": 6,
+   "function": 811,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "TRANQUILO",
+   "icon": "🌙",
+   "detail": "bajón",
+   "role": "state",
+   "solo": 3,
+   "key": "F2",
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "fiesta": {
+   "widget": 7,
+   "function": 812,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "FIESTA",
+   "icon": "🎉",
+   "detail": "marcha normal",
+   "role": "state",
+   "solo": 3,
+   "key": "F3",
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "locura": {
+   "widget": 8,
+   "function": 813,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "LOCURA",
+   "icon": "🔥",
+   "detail": "todo a la vez",
+   "role": "state",
+   "solo": 3,
+   "key": "F4",
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "blanco-total": {
+   "widget": 9,
+   "function": 0,
+   "functionType": "Scene",
+   "action": "toggle",
+   "caption": "BLANCO TOTAL",
+   "icon": "💡",
+   "detail": "luz de trabajo",
+   "role": "state",
+   "solo": 3,
+   "key": "X",
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "todo-negro": {
+   "widget": 10,
+   "function": 1,
+   "functionType": "Scene",
+   "action": "toggle",
+   "caption": "TODO NEGRO",
+   "icon": "⏹",
+   "detail": "no es parar",
+   "role": "state",
+   "solo": 3,
+   "key": "º",
+   "swatches": [
+    "#000000"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "flash": {
+   "widget": 604,
+   "function": 910,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "FLASH",
+   "icon": "⚡",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "flash",
+   "burstNote": "Luz a máxima intensidad; rueda de color y estrobo pueden ser pisados por el show."
+  },
+  "flash-lento": {
+   "widget": 605,
+   "function": 912,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "FLASH LENTO",
+   "icon": "⚡",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "flash-lento",
+   "burstNote": "Luz a máxima intensidad; rueda de color y estrobo pueden ser pisados por el show."
+  },
+  "flash-color": {
+   "widget": 606,
+   "function": 914,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "FLASH COLOR",
+   "icon": "🎨",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "flash-color",
+   "burstNote": "Conserva el color del show; otro barrido de shutter puede pisar el estrobo."
+  },
+  "humo-ya": {
+   "widget": 607,
+   "function": 916,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "HUMO YA",
+   "icon": "☁",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 3000,
+   "source": "humo-ya"
+  },
+  "humo-vert": {
+   "widget": 608,
+   "function": 918,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "HUMO VERT",
+   "icon": "⇧",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 3000,
+   "source": "humo-vert"
+  },
+  "strobo": {
+   "widget": 609,
+   "function": 920,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "STROBO",
+   "icon": "✳",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 4000,
+   "source": "strobo",
+   "burstNote": "Sin prioridad Override: otro barrido de shutter puede pisar el estrobo."
+  },
+  "strobo-suave": {
+   "widget": 610,
+   "function": 922,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "STROBO SUAVE",
+   "icon": "✳",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 4000,
+   "source": "strobo-suave",
+   "burstNote": "Sin prioridad Override: otro barrido de shutter puede pisar el estrobo."
+  },
+  "cada-1-min": {
+   "widget": 29,
+   "function": 664,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "cada 1 min",
+   "icon": "☁",
+   "detail": "dispara ya",
+   "role": "haze",
+   "solo": 28,
+   "key": "J",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "cada-2-min": {
+   "widget": 30,
+   "function": 665,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "cada 2 min",
+   "icon": "☁",
+   "detail": "dispara ya",
+   "role": "haze",
+   "solo": 28,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "cada-4-min": {
+   "widget": 31,
+   "function": 666,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "cada 4 min",
+   "icon": "☁",
+   "detail": "dispara ya",
+   "role": "haze",
+   "solo": 28,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "cada-8-min": {
+   "widget": 32,
+   "function": 667,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "cada 8 min",
+   "icon": "☁",
+   "detail": "dispara ya",
+   "role": "haze",
+   "solo": 28,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "rojo": {
+   "widget": 611,
+   "function": 924,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "ROJO",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#ff0000"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "rojo",
+   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+  },
+  "verde": {
+   "widget": 612,
+   "function": 926,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "VERDE",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#00ff00"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "verde",
+   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+  },
+  "azul": {
+   "widget": 613,
+   "function": 928,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "AZUL",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#0000ff"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "azul",
+   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+  },
+  "ultravioleta": {
+   "widget": 614,
+   "function": 930,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "ULTRAVIOLETA",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#a000ff"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "ultravioleta",
+   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+  },
+  "amarillo": {
+   "widget": 615,
+   "function": 932,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "AMARILLO",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#ffff00"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "amarillo",
+   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+  },
+  "cyan": {
+   "widget": 616,
+   "function": 934,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "CYAN",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#00ffff"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "cyan",
+   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+  },
+  "magenta": {
+   "widget": 617,
+   "function": 936,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "MAGENTA",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#ff00ff"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "magenta",
+   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+  },
+  "blanco": {
+   "widget": 618,
+   "function": 938,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "BLANCO",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "blanco",
+   "burstNote": "Luz a máxima intensidad; rueda de color y estrobo pueden ser pisados por el show."
+  },
+  "naranja": {
+   "widget": 619,
+   "function": 940,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "NARANJA",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#ff7f00"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "naranja",
+   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+  },
+  "rosa": {
+   "widget": 620,
+   "function": 942,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "ROSA",
+   "icon": "",
+   "detail": "",
+   "role": "burst",
+   "solo": null,
+   "key": null,
+   "swatches": [
+    "#ff0064"
+   ],
+   "enabled": true,
+   "reason": "",
+   "burstMs": 8000,
+   "source": "rosa",
+   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+  },
+  "colores-completos": {
+   "widget": 64,
+   "function": 742,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "Colores completos",
+   "icon": "🎨",
+   "detail": "",
+   "role": "hook",
+   "solo": 62,
+   "key": "W",
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "colores-simples": {
+   "widget": 65,
+   "function": 756,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "Colores simples",
+   "icon": "🎨",
+   "detail": "",
+   "role": "hook",
+   "solo": 62,
+   "key": "C",
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "pastel-tenue": {
+   "widget": 66,
+   "function": 791,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "Pastel tenue",
+   "icon": "🎨",
+   "detail": "",
+   "role": "hook",
+   "solo": 62,
+   "key": "L",
+   "swatches": [
+    "#737373"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "multicolor": {
+   "widget": 67,
+   "function": 743,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "Multicolor",
+   "icon": "🎨",
+   "detail": "",
+   "role": "hook",
+   "solo": 62,
+   "key": "R",
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "mezcla": {
+   "widget": 68,
+   "function": 792,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Mezcla",
+   "icon": "🎨",
+   "detail": "",
+   "role": "hook",
+   "solo": 62,
+   "key": "E",
+   "swatches": [
+    "#ffffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "luz-charla": {
+   "widget": 69,
+   "function": 809,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Luz Charla",
+   "icon": "🎤",
+   "detail": "",
+   "role": "hook",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#552c00"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-rojo": {
+   "widget": 70,
+   "function": 814,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Rojo",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#ff0000"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-rojo-fuego": {
+   "widget": 71,
+   "function": 815,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Rojo Fuego",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#ff1400"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-naranja": {
+   "widget": 72,
+   "function": 816,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Naranja",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#ff7f00"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-ambar": {
+   "widget": 73,
+   "function": 817,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Ambar",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#ffb700"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-amarillo": {
+   "widget": 74,
+   "function": 818,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Amarillo",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#ffff00"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-verde": {
+   "widget": 75,
+   "function": 819,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Verde",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#00ff00"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-verde-menta": {
+   "widget": 76,
+   "function": 820,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Verde Menta",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#00ff80"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-cyan": {
+   "widget": 77,
+   "function": 821,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Cyan",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#00ffff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-celeste": {
+   "widget": 78,
+   "function": 822,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Celeste",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#00c8ff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-azul-cielo": {
+   "widget": 79,
+   "function": 823,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Azul Cielo",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#007fff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-azul": {
+   "widget": 80,
+   "function": 824,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Azul",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#0000ff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-azul-profundo": {
+   "widget": 81,
+   "function": 825,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Azul Profundo",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#0023ff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-morado": {
+   "widget": 82,
+   "function": 826,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Morado",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#5500ff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-ultravioleta": {
+   "widget": 83,
+   "function": 827,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig UltraVioleta",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#a000ff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-magenta": {
+   "widget": 84,
+   "function": 828,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Magenta",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#ff00ff"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-fucsia": {
+   "widget": 85,
+   "function": 829,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Fucsia",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#ff00b0"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "rig-rosa": {
+   "widget": 86,
+   "function": 830,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Rig Rosa",
+   "icon": "🎨",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": null,
+   "swatches": [
+    "#ff0064"
+   ],
+   "enabled": true,
+   "reason": ""
+  },
+  "arcoiris-junto": {
+   "widget": 87,
+   "function": 831,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Arcoiris junto",
+   "icon": "🌈",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": "'",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "arcoiris-fases": {
+   "widget": 88,
+   "function": 832,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Arcoiris fases",
+   "icon": "🌈",
+   "detail": "",
+   "role": "pick",
+   "solo": 62,
+   "key": "¡",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "auto-paneles": {
+   "widget": 91,
+   "function": 200,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "AUTO paneles",
+   "icon": "",
+   "detail": "",
+   "role": "hook",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "paneles-charla": {
+   "widget": 92,
+   "function": 359,
+   "functionType": "Scene",
+   "action": "toggle",
+   "caption": "Paneles Charla",
+   "icon": "",
+   "detail": "",
+   "role": "hook",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-1": {
+   "widget": 93,
+   "function": 833,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 1",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-5": {
+   "widget": 94,
+   "function": 834,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 5",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-8": {
+   "widget": 95,
+   "function": 835,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 8",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-12": {
+   "widget": 96,
+   "function": 836,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 12",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-16": {
+   "widget": 97,
+   "function": 837,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 16",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-20": {
+   "widget": 98,
+   "function": 838,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 20",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-23": {
+   "widget": 99,
+   "function": 839,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 23",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-27": {
+   "widget": 100,
+   "function": 840,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 27",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-31": {
+   "widget": 101,
+   "function": 841,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 31",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-35": {
+   "widget": 102,
+   "function": 842,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 35",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-38": {
+   "widget": 103,
+   "function": 843,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 38",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "effect-42": {
+   "widget": 104,
+   "function": 844,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Effect 42",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "paneles-manual": {
+   "widget": 105,
+   "function": 845,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Paneles Manual",
+   "icon": "▦",
+   "detail": "",
+   "role": "pick",
+   "solo": 89,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "auto-lento": {
+   "widget": 108,
+   "function": 562,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "AUTO lento",
+   "icon": "↔",
+   "detail": "",
+   "role": "hook",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "auto-normal": {
+   "widget": 109,
+   "function": 588,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "AUTO normal",
+   "icon": "↔",
+   "detail": "",
+   "role": "hook",
+   "solo": 106,
+   "key": "A",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "auto-rapido": {
+   "widget": 110,
+   "function": 589,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "AUTO rapido",
+   "icon": "↔",
+   "detail": "",
+   "role": "hook",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "centro": {
+   "widget": 111,
+   "function": 590,
+   "functionType": "Scene",
+   "action": "toggle",
+   "caption": "Centro",
+   "icon": "◎",
+   "detail": "",
+   "role": "hook",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "circulo": {
+   "widget": 112,
+   "function": 846,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Circulo",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "ocho": {
+   "widget": 113,
+   "function": 847,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Ocho",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "linea": {
+   "widget": 114,
+   "function": 848,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Linea",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "diamante": {
+   "widget": 115,
+   "function": 849,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Diamante",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "cuadrado": {
+   "widget": 116,
+   "function": 850,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Cuadrado",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "hoja": {
+   "widget": 117,
+   "function": 851,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Hoja",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "lissajous": {
+   "widget": 118,
+   "function": 852,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Lissajous",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "circulo-simultaneo": {
+   "widget": 119,
+   "function": 853,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Circulo Simultaneo",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "ocho-simultaneo": {
+   "widget": 120,
+   "function": 854,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Ocho Simultaneo",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "linea-simultaneo": {
+   "widget": 121,
+   "function": 855,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Linea Simultaneo",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "diamante-simultaneo": {
+   "widget": 122,
+   "function": 856,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Diamante Simultaneo",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "cuadrado-simultaneo": {
+   "widget": 123,
+   "function": 857,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Cuadrado Simultaneo",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "hoja-simultaneo": {
+   "widget": 124,
+   "function": 858,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Hoja Simultaneo",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "lissajous-simultaneo": {
+   "widget": 125,
+   "function": 859,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Lissajous Simultaneo",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "circulo-alternado": {
+   "widget": 126,
+   "function": 860,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Circulo Alternado",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "ocho-alternado": {
+   "widget": 127,
+   "function": 861,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Ocho Alternado",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "linea-alternado": {
+   "widget": 128,
+   "function": 862,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Linea Alternado",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "diamante-alternado": {
+   "widget": 129,
+   "function": 863,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Diamante Alternado",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "cuadrado-alternado": {
+   "widget": 130,
+   "function": 864,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Cuadrado Alternado",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "hoja-alternado": {
+   "widget": 131,
+   "function": 865,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Hoja Alternado",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "lissajous-alternado": {
+   "widget": 132,
+   "function": 866,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Lissajous Alternado",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "ola-vertical": {
+   "widget": 133,
+   "function": 867,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Ola Vertical",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "barrido-unison": {
+   "widget": 134,
+   "function": 868,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Barrido Unison",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "beams-abanico": {
+   "widget": 135,
+   "function": 869,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Beams Abanico",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "beams-cruce": {
+   "widget": 136,
+   "function": 870,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Beams Cruce",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "escenario": {
+   "widget": 137,
+   "function": 871,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Escenario",
+   "icon": "↔",
+   "detail": "",
+   "role": "pick",
+   "solo": 106,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "auto-gobos": {
+   "widget": 139,
+   "function": 623,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "AUTO gobos",
+   "icon": "❋",
+   "detail": "",
+   "role": "hook",
+   "solo": 138,
+   "key": "G",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "reposo": {
+   "widget": 140,
+   "function": 660,
+   "functionType": "Scene",
+   "action": "toggle",
+   "caption": "Reposo",
+   "icon": "",
+   "detail": "",
+   "role": "hook",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-1": {
+   "widget": 143,
+   "function": 872,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 1",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-2": {
+   "widget": 144,
+   "function": 873,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 2",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-3": {
+   "widget": 145,
+   "function": 874,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 3",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-4": {
+   "widget": 146,
+   "function": 875,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 4",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-5": {
+   "widget": 147,
+   "function": 876,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 5",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-6": {
+   "widget": 148,
+   "function": 877,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 6",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-7": {
+   "widget": 149,
+   "function": 878,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 7",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-8": {
+   "widget": 150,
+   "function": 879,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 8",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-9": {
+   "widget": 151,
+   "function": 880,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 9",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-10": {
+   "widget": 152,
+   "function": 881,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 10",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-11": {
+   "widget": 153,
+   "function": 882,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 11",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-12": {
+   "widget": 154,
+   "function": 883,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 12",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-13": {
+   "widget": 155,
+   "function": 884,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 13",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-14": {
+   "widget": 156,
+   "function": 885,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 14",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-15": {
+   "widget": 157,
+   "function": 886,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 15",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-16": {
+   "widget": 158,
+   "function": 887,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 16",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-17": {
+   "widget": 159,
+   "function": 888,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo 17",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-repartido-1": {
+   "widget": 160,
+   "function": 889,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Repartido 1",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-repartido-2": {
+   "widget": 161,
+   "function": 890,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Repartido 2",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-repartido-3": {
+   "widget": 162,
+   "function": 891,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Repartido 3",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-repartido-4": {
+   "widget": 163,
+   "function": 892,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Repartido 4",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-repartido-5": {
+   "widget": 164,
+   "function": 893,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Repartido 5",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-repartido-6": {
+   "widget": 165,
+   "function": 894,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Repartido 6",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-repartido-7": {
+   "widget": 166,
+   "function": 895,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Repartido 7",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-repartido-8": {
+   "widget": 167,
+   "function": 896,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Repartido 8",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-shake-gobo-1": {
+   "widget": 168,
+   "function": 897,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Shake - Gobo 1",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-shake-gobo-9": {
+   "widget": 169,
+   "function": 898,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Shake - Gobo 9",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "gobo-shake-gobo-17": {
+   "widget": 170,
+   "function": 899,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Gobo Shake - Gobo 17",
+   "icon": "❋",
+   "detail": "",
+   "role": "pick",
+   "solo": 138,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "auto-prisma": {
+   "widget": 173,
+   "function": 659,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "AUTO prisma",
+   "icon": "✧",
+   "detail": "",
+   "role": "hook",
+   "solo": 171,
+   "key": "P",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "reposo-174": {
+   "widget": 174,
+   "function": 661,
+   "functionType": "Scene",
+   "action": "toggle",
+   "caption": "Reposo",
+   "icon": "",
+   "detail": "",
+   "role": "hook",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "insert-prism": {
+   "widget": 175,
+   "function": 900,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Insert Prism",
+   "icon": "✧",
+   "detail": "",
+   "role": "pick",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "1": {
+   "widget": 176,
+   "function": 901,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "1",
+   "icon": "✧",
+   "detail": "",
+   "role": "pick",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "2": {
+   "widget": 177,
+   "function": 902,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "2",
+   "icon": "✧",
+   "detail": "",
+   "role": "pick",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "3": {
+   "widget": 178,
+   "function": 903,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "3",
+   "icon": "✧",
+   "detail": "",
+   "role": "pick",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "4": {
+   "widget": 179,
+   "function": 904,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "4",
+   "icon": "✧",
+   "detail": "",
+   "role": "pick",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "1-y-3": {
+   "widget": 180,
+   "function": 905,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "1 y 3",
+   "icon": "✧",
+   "detail": "",
+   "role": "pick",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "2-y-4": {
+   "widget": 181,
+   "function": 906,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "2 y 4",
+   "icon": "✧",
+   "detail": "",
+   "role": "pick",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "prisma-giro-rapido": {
+   "widget": 182,
+   "function": 907,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Prisma Giro Rapido",
+   "icon": "✧",
+   "detail": "",
+   "role": "pick",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "prisma-giro-inverso": {
+   "widget": 183,
+   "function": 908,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Prisma Giro Inverso",
+   "icon": "✧",
+   "detail": "",
+   "role": "pick",
+   "solo": 171,
+   "key": null,
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "barrido-de-intensidad": {
+   "widget": 251,
+   "function": 673,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Barrido de intensidad",
+   "icon": "◐",
+   "detail": "",
+   "role": "chase",
+   "solo": null,
+   "key": "V",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "barrido-inverso": {
+   "widget": 252,
+   "function": 678,
+   "functionType": "Collection",
+   "action": "toggle",
+   "caption": "Barrido inverso",
+   "icon": "◑",
+   "detail": "",
+   "role": "chase",
+   "solo": null,
+   "key": "B",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "pares": {
+   "widget": 253,
+   "function": 681,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "Pares / impares",
+   "icon": "◓",
+   "detail": "",
+   "role": "chase",
+   "solo": null,
+   "key": "Z",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "rotacion-de-barridos": {
+   "widget": 254,
+   "function": 799,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "Rotación de barridos",
+   "icon": "◒",
+   "detail": "",
+   "role": "chase",
+   "solo": null,
+   "key": "K",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  },
+  "humo-vertical": {
+   "widget": 264,
+   "function": 201,
+   "functionType": "Chaser",
+   "action": "toggle",
+   "caption": "Luz del humo vertical",
+   "icon": "⇧",
+   "detail": "",
+   "role": "toggle",
+   "solo": null,
+   "key": "N",
+   "swatches": [],
+   "enabled": true,
+   "reason": ""
+  }
+ },
+ "dials": {
+  "tempo-show": {
+   "widget": 33,
+   "caption": "Tempo Show",
+   "key": null,
+   "timeMs": 500,
+   "members": [
+    {
+     "function": 742,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 756,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 791,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 743,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 86,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 8,
+      "name": "4",
+      "factor": 4.0
+     }
+    },
+    {
+     "function": 114,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 8,
+      "name": "4",
+      "factor": 4.0
+     }
+    },
+    {
+     "function": 142,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 8,
+      "name": "4",
+      "factor": 4.0
+     }
+    },
+    {
+     "function": 170,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 8,
+      "name": "4",
+      "factor": 4.0
+     }
+    },
+    {
+     "function": 198,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 8,
+      "name": "4",
+      "factor": 4.0
+     }
+    },
+    {
+     "function": 623,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 659,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 681,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 6,
+      "name": "1",
+      "factor": 1.0
+     }
+    },
+    {
+     "function": 669,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 670,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 671,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 672,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 674,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 675,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 676,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 677,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    }
+   ]
+  },
+  "vel-movimiento": {
+   "widget": 286,
+   "caption": "Vel. Movimiento",
+   "key": null,
+   "timeMs": 500,
+   "members": [
+    {
+     "function": 461,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 462,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 463,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 485,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 486,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 487,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 488,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 489,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 490,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 491,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 492,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 493,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 524,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 528,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 532,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 554,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 555,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 556,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 557,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 558,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 563,
+     "fadeIn": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     },
+     "fadeOut": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 564,
+     "fadeIn": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     },
+     "fadeOut": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    }
+   ]
+  }
+ }
+}

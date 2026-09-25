@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FixtureDefinition>
+<!--
+  One PAR head of a Stairville CLB2.4, so the four heads of a bar can be patched
+  as four fixtures and aimed one by one in the 3D view - QLC+ draws one item per
+  fixture and a meshed item ignores the head index, so four heads on one fixture
+  are one light. This is NOT a manufacturer mode: the bar itself has six, all of
+  them in Stairville-CLB2.4-CompactLED.qxf. The three modes here are slices of
+  its 14-channel one, which is why two of them carry a channel that belongs to
+  the whole bar - the master dimmer sits next to head 1 and the strobe next to
+  head 4. See docs/rig.md, "The split, as a copy to look at".
+
+  Physical is per head and derived from the manual's two dimension rows (7.8 and
+  8): the bar is 1007 x 305 x 63 mm with the spots and 982 x 55 x 55 without, so
+  a can hangs about 250 mm below the bar and is about 63 mm deep. Its width is
+  not in the manual - 230 is read off the product photo against the 252 mm
+  spacing. Weight and power are the bar's divided by four, so a rig total still
+  adds up. Lumens is left at 0 because the manual gives lux at 2 m, not lumens.
+-->
+<FixtureDefinition xmlns="http://www.qlcplus.org/FixtureDefinition">
+ <Creator>
+  <Name>qlctool (DMX-Fixtures)</Name>
+  <Version>1</Version>
+  <Author>Vibra Eventos - repo-local split, not a manufacturer mode</Author>
+ </Creator>
+ <Manufacturer>Stairville</Manufacturer>
+ <Model>CLB2.4 PAR head (split)</Model>
+ <Type>Color Changer</Type>
+ <Channel Name="Dimmer" Preset="IntensityDimmer"/>
+ <Channel Name="Red" Preset="IntensityRed"/>
+ <Channel Name="Green" Preset="IntensityGreen"/>
+ <Channel Name="Blue" Preset="IntensityBlue"/>
+ <Channel Name="Strobe">
+  <Group Byte="0">Shutter</Group>
+  <Capability Min="0" Max="0" Preset="ShutterOpen">No strobe</Capability>
+  <Capability Min="1" Max="255" Preset="StrobeSlowToFast">Strobe, slow to fast</Capability>
+ </Channel>
+ <Mode Name="PAR">
+  <Channel Number="0">Red</Channel>
+  <Channel Number="1">Green</Channel>
+  <Channel Number="2">Blue</Channel>
+  <Head>
+   <Channel>0</Channel>
+   <Channel>1</Channel>
+   <Channel>2</Channel>
+  </Head>
+ </Mode>
+ <Mode Name="Master + PAR">
+  <Channel Number="0">Dimmer</Channel>
+  <Channel Number="1">Red</Channel>
+  <Channel Number="2">Green</Channel>
+  <Channel Number="3">Blue</Channel>
+  <Head>
+   <Channel>1</Channel>
+   <Channel>2</Channel>
+   <Channel>3</Channel>
+  </Head>
+ </Mode>
+ <Mode Name="PAR + Strobe">
+  <Channel Number="0">Red</Channel>
+  <Channel Number="1">Green</Channel>
+  <Channel Number="2">Blue</Channel>
+  <Channel Number="3">Strobe</Channel>
+  <Head>
+   <Channel>0</Channel>
+   <Channel>1</Channel>
+   <Channel>2</Channel>
+  </Head>
+ </Mode>
+ <Physical>
+  <Bulb Type="LED" Lumens="0" ColourTemperature="0"/>
+  <Dimensions Weight="1.4" Width="230" Height="250" Depth="63"/>
+  <Lens Name="Other" DegreesMin="30" DegreesMax="30"/>
+  <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
+  <Layout Width="1" Height="1"/>
+  <Technical PowerConsumption="13" DmxConnector="3-pin"/>
+ </Physical>
+</FixtureDefinition>

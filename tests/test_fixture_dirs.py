@@ -1,6 +1,6 @@
 """Spec step 6 (2026-09-25): the toolkit finds a rig's fixtures without this repo.
 
-`library.REPO_ROOT` was `parents[3]` of the package; a copy of the package
+`library.REPO_ROOT` was three folders above the package; a copy of the package
 anywhere else found no definition, and `capabilities_of` skipped every fixture
 in silence ("no fixture has both pan and tilt" in a scratch copy, 2026-09-24).
 """

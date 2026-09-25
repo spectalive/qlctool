@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FixtureDefinition>
+<FixtureDefinition xmlns="http://www.qlcplus.org/FixtureDefinition">
+ <Creator>
+  <Name>Q Light Controller Plus</Name>
+  <Version>4.12.6</Version>
+  <Author>Deluxe Producciones</Author>
+ </Creator>
+ <Manufacturer>Mac Mah</Manufacturer>
+ <Model>MAC WASH 1915Z</Model>
+ <Type>Moving Head</Type>
+ <Channel Name="Pan" Preset="PositionPan"/>
+ <Channel Name="Pan fine" Preset="PositionPanFine"/>
+ <Channel Name="Tilt" Preset="PositionTilt"/>
+ <Channel Name="Tilt fine" Preset="PositionTiltFine"/>
+ <Channel Name="Pan/Tilt speed" Preset="SpeedPanTiltFastSlow"/>
+ <!-- Which end is wide is not in the Mac Mah manual (it prints "Zoom 000-255"
+      and nothing else) and the first definition guessed narrow-to-wide, so
+      every look sent 255 and ran the wash at its narrowest. Mac Mah is an
+      Algam brand and Algam's own MW19x15Z - same body, 325 x 188 x 395 mm,
+      8,5 kg, 300 W - prints "Zoom 000-255: Zoom from wide to narrow"
+      (manualslib 3158887, p. 16-17), as does ChamSys MagicQ's personality
+      for this unit. 0 is the 50-degree end. -->
+ <Channel Name="Zoom">
+  <Group Byte="0">Beam</Group>
+  <Capability Min="0" Max="255" Preset="BigToSmall">Zoom 50-6 degrees, wide to narrow</Capability>
+ </Channel>
+ <Channel Name="Dimmer" Preset="IntensityMasterDimmer"/>
+ <!-- Ranges from the Algam MW19x15Z manual (the twin). ChamSys's personality
+      splits 1-255 into strobe, sudden, pulse and random bands instead; the
+      manufacturer's table is the one adopted. -->
+ <Channel Name="Strobe">
+  <Group Byte="0">Shutter</Group>
+  <Capability Min="0" Max="9" Preset="ShutterOpen">No strobe</Capability>
+  <Capability Min="10" Max="255" Preset="StrobeSlowToFast">Strobe slow to fast</Capability>
+ </Channel>
+ <Channel Name="Red" Preset="IntensityRed"/>
+ <Channel Name="Green" Preset="IntensityGreen"/>
+ <Channel Name="Blue" Preset="IntensityBlue"/>
+ <Channel Name="White" Preset="IntensityWhite"/>
+ <Channel Name="Red ring 1" Preset="IntensityRed"/>
+ <Channel Name="Green ring 1" Preset="IntensityGreen"/>
+ <Channel Name="Blue ring 1" Preset="IntensityBlue"/>
+ <Channel Name="White ring 1" Preset="IntensityWhite"/>
+ <Channel Name="Red ring 2" Preset="IntensityRed"/>
+ <Channel Name="Green ring 2" Preset="IntensityGreen"/>
+ <Channel Name="Blue ring 2" Preset="IntensityBlue"/>
+ <Channel Name="White ring 2" Preset="IntensityWhite"/>
+ <Channel Name="Red ring 3" Preset="IntensityRed"/>
+ <Channel Name="Green ring 3" Preset="IntensityGreen"/>
+ <Channel Name="Blue ring 3" Preset="IntensityBlue"/>
+ <Channel Name="White ring 3" Preset="IntensityWhite"/>
+ <!-- The Algam MW19x15Z manual's Macro table (p. 18). 0-29 is DMX control,
+      which is what every look that lights the head writes (mode_park). -->
+ <Channel Name="Function mode">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="0" Max="29">No function - colour from the DMX channels</Capability>
+  <Capability Min="30" Max="39">Red</Capability>
+  <Capability Min="40" Max="49">Green</Capability>
+  <Capability Min="50" Max="59">Blue</Capability>
+  <Capability Min="60" Max="69">Red + Green</Capability>
+  <Capability Min="70" Max="79">Red + Blue</Capability>
+  <Capability Min="80" Max="89">Green + Blue</Capability>
+  <Capability Min="90" Max="139">RGBW</Capability>
+  <Capability Min="140" Max="169">Colour pulse change</Capability>
+  <Capability Min="170" Max="199">Colour gradual change</Capability>
+  <Capability Min="200" Max="208">Colour jump change</Capability>
+  <Capability Min="209" Max="218">Auto running effect 1</Capability>
+  <Capability Min="219" Max="228">Auto running effect 2</Capability>
+  <Capability Min="229" Max="238">Auto running effect 3</Capability>
+  <Capability Min="239" Max="255">Auto running effect 4</Capability>
+ </Channel>
+ <Channel Name="Function mode speed">
+  <Group Byte="0">Speed</Group>
+  <Capability Min="0" Max="249" Preset="SlowToFast">Function mode speed</Capability>
+  <Capability Min="250" Max="255">No function</Capability>
+ </Channel>
+ <Channel Name="Reset">
+  <Group Byte="0">Maintenance</Group>
+  <Capability Min="0" Max="249">No function</Capability>
+  <Capability Min="250" Max="255" Preset="ResetAll">Reset after 3 seconds</Capability>
+ </Channel>
+ <Mode Name="15 Channel">
+  <Channel Number="0">Pan</Channel>
+  <Channel Number="1">Pan fine</Channel>
+  <Channel Number="2">Tilt</Channel>
+  <Channel Number="3">Tilt fine</Channel>
+  <Channel Number="4">Pan/Tilt speed</Channel>
+  <Channel Number="5">Zoom</Channel>
+  <Channel Number="6">Dimmer</Channel>
+  <Channel Number="7">Strobe</Channel>
+  <Channel Number="8">Red</Channel>
+  <Channel Number="9">Green</Channel>
+  <Channel Number="10">Blue</Channel>
+  <Channel Number="11">White</Channel>
+  <Channel Number="12">Function mode</Channel>
+  <Channel Number="13">Function mode speed</Channel>
+  <Channel Number="14">Reset</Channel>
+ </Mode>
+ <Mode Name="23 Channel">
+  <Channel Number="0">Pan</Channel>
+  <Channel Number="1">Pan fine</Channel>
+  <Channel Number="2">Tilt</Channel>
+  <Channel Number="3">Tilt fine</Channel>
+  <Channel Number="4">Pan/Tilt speed</Channel>
+  <Channel Number="5">Zoom</Channel>
+  <Channel Number="6">Dimmer</Channel>
+  <Channel Number="7">Strobe</Channel>
+  <Channel Number="8">Red ring 1</Channel>
+  <Channel Number="9">Green ring 1</Channel>
+  <Channel Number="10">Blue ring 1</Channel>
+  <Channel Number="11">White ring 1</Channel>
+  <Channel Number="12">Red ring 2</Channel>
+  <Channel Number="13">Green ring 2</Channel>
+  <Channel Number="14">Blue ring 2</Channel>
+  <Channel Number="15">White ring 2</Channel>
+  <Channel Number="16">Red ring 3</Channel>
+  <Channel Number="17">Green ring 3</Channel>
+  <Channel Number="18">Blue ring 3</Channel>
+  <Channel Number="19">White ring 3</Channel>
+  <Channel Number="20">Function mode</Channel>
+  <Channel Number="21">Function mode speed</Channel>
+  <Channel Number="22">Reset</Channel>
+  <Head>
+   <Channel>8</Channel>
+   <Channel>9</Channel>
+   <Channel>10</Channel>
+   <Channel>11</Channel>
+  </Head>
+  <Head>
+   <Channel>12</Channel>
+   <Channel>13</Channel>
+   <Channel>14</Channel>
+   <Channel>15</Channel>
+  </Head>
+  <Head>
+   <Channel>16</Channel>
+   <Channel>17</Channel>
+   <Channel>18</Channel>
+   <Channel>19</Channel>
+  </Head>
+ </Mode>
+ <Physical>
+  <Bulb Type="19 x 15W RGBW LED" Lumens="0" ColourTemperature="0"/>
+  <Dimensions Weight="8.5" Width="325" Height="395" Depth="188"/>
+  <Lens Name="Other" DegreesMin="6" DegreesMax="50"/>
+  <Focus Type="Head" PanMax="540" TiltMax="270"/>
+  <Technical PowerConsumption="250" DmxConnector="3-pin"/>
+ </Physical>
+</FixtureDefinition>

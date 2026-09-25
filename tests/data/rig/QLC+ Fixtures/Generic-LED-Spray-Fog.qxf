@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FixtureDefinition>
+<!--
+  The four vertical LED fog machines mounted 2026-08-29 - unbranded AliExpress
+  units whose stained one-sheet manual is scanned in `Manual/Humo Vertical LED
+  (generica) - manual escaneado *.pdf`. The channel map is verified against
+  that scan and against the Audibax Geyser 2000 RGB manual (same OEM firmware,
+  identical 7-channel table; also in `Manual/`). The machine has DMX priority:
+  with a controller plugged in, its own timer, colour and remote are dead, so
+  every one of these channels is the only way that function happens.
+
+  The strobe's 0 = "no strobe" and the colour cycle's 0 = "no change" follow
+  the OEM family convention; the leaflet only says "slow to fast". Physical
+  figures are approximate - the spec block of the scan is illegible - sized
+  from the same-class Ibiza Eruption-1500.
+-->
+<FixtureDefinition xmlns="http://www.qlcplus.org/FixtureDefinition">
+ <Creator>
+  <Name>Q Light Controller Plus</Name>
+  <Version>4.14.3</Version>
+  <Author>Cristian Deluxe</Author>
+ </Creator>
+ <Manufacturer>Generic</Manufacturer>
+ <Model>LED Spray Fog</Model>
+ <Type>Smoke</Type>
+ <!-- Intensity, not Effect, and that is not cosmetic. QLC+ rebuilds its
+      universe from the running faders every cycle but only *resets* the
+      channels in the Intensity group first (`Universe::processFaders` ->
+      `zeroIntensityChannels`, engine/src/universe.cpp); every other group
+      keeps the last value written. With this channel in Effect, a held Flash
+      raised the pump and releasing it removed only the flash's own fader, so
+      the machine went on fogging with nothing writing it: "le doy y no para de
+      echar todo el rato" (owner, live, 2026-08-29). In Intensity the release
+      is instant and needs nobody's help, which is also what the pump is - an
+      output level from 0 to 100%, mixed HTP like any other. QLC+'s own generic
+      smoke definition types its pump the same way. -->
+ <Channel Name="Fog">
+  <Group Byte="0">Intensity</Group>
+  <Capability Min="0" Max="0">No fog</Capability>
+  <Capability Min="1" Max="255">Fog output, 0-100%</Capability>
+ </Channel>
+ <Channel Name="Dimmer" Preset="IntensityMasterDimmer"/>
+ <Channel Name="Red" Preset="IntensityRed"/>
+ <Channel Name="Green" Preset="IntensityGreen"/>
+ <Channel Name="Blue" Preset="IntensityBlue"/>
+ <Channel Name="Strobe">
+  <Group Byte="0">Shutter</Group>
+  <Capability Min="0" Max="0" Preset="ShutterOpen">No strobe</Capability>
+  <Capability Min="1" Max="255" Preset="StrobeSlowToFast">Strobe, slow to fast (needs dimmer and a colour up)</Capability>
+ </Channel>
+ <Channel Name="Colour Change">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="0" Max="0">No change</Capability>
+  <Capability Min="1" Max="255">Colour cycle, slow to fast (overrides the RGB channels)</Capability>
+ </Channel>
+ <Mode Name="7 Channel">
+  <Channel Number="0">Fog</Channel>
+  <Channel Number="1">Dimmer</Channel>
+  <Channel Number="2">Red</Channel>
+  <Channel Number="3">Green</Channel>
+  <Channel Number="4">Blue</Channel>
+  <Channel Number="5">Strobe</Channel>
+  <Channel Number="6">Colour Change</Channel>
+ </Mode>
+ <Physical>
+  <Bulb Type="LED" Lumens="0" ColourTemperature="0"/>
+  <Dimensions Weight="6.7" Width="410" Height="205" Depth="350"/>
+  <Lens Name="Other" DegreesMin="0" DegreesMax="0"/>
+  <Focus Type="Fixed" PanMax="0" TiltMax="0"/>
+  <Technical PowerConsumption="1500" DmxConnector="3-pin"/>
+ </Physical>
+</FixtureDefinition>

@@ -1,0 +1,229 @@
+# The Vibra show, described: every value the generator used to hard-code for it.
+# Regenerate:  cd tools/qlctool && .venv/bin/qlctool newshow --description "../../QLC+ Setups/vibra.toml" --validate
+# Format: docs/superpowers/specs/2026-09-24-show-description-design.md
+
+[show]
+name = "Vibra"
+language = "es"
+
+[rig]
+workspace = "Vibra.qxw"
+output = "Vibra.qxw"
+stage_plot = "vibra-stage-plot.json"
+
+[controllers]
+midi_pad = "smc-pad"
+tablet_desk = true
+
+[palette]
+primary = ["red", "green", "blue", "ultraviolet", "yellow", "cyan", "magenta", "white", "orange", "pink"]
+simple = ["red", "yellow", "green", "cyan", "blue", "magenta"]
+white = "white"
+matrix_colors = ["red", "green", "blue", "amber", "magenta", "cyan"]
+analogous_pairs = [["red", "yellow"], ["amber", "red"], ["red", "magenta"], ["magenta", "blue"], ["cyan", "blue"], ["green", "cyan"], ["yellow", "green"]]
+key_split_pairs = [["blue", "red"], ["red", "blue"]]
+complementary_pairs = [["amber", "blue"], ["yellow", "blue"], ["red", "cyan"], ["magenta", "green"], ["red", "blue"]]
+
+[palette.colors]
+red = [255, 0, 0]
+fire_red = [255, 20, 0]
+orange = [255, 127, 0]
+amber = [255, 183, 0]
+yellow = [255, 255, 0]
+green = [0, 255, 0]
+mint_green = [0, 255, 128]
+cyan = [0, 255, 255]
+light_blue = [0, 200, 255]
+sky_blue = [0, 127, 255]
+blue = [0, 0, 255]
+deep_blue = [0, 35, 255]
+purple = [85, 0, 255]
+ultraviolet = [160, 0, 255]
+magenta = [255, 0, 255]
+fuchsia = [255, 0, 176]
+pink = [255, 0, 100]
+white = [255, 255, 255]
+
+[[groups.BarrasLed.matrices]]
+script = "Sine Wave"
+colors = ["red", "blue"]
+properties = { orientation = "Horizontal" }
+
+[[groups.BarrasLed.matrices]]
+script = "Lines"
+colors = ["green"]
+properties = { linesType = "Horizontal" }
+
+[[groups.BarrasLed.matrices]]
+script = "Marquee"
+colors = ["yellow", "blue"]
+properties = { marquee = "Forward", marqueeCount = "3" }
+
+[[groups.BarrasLed.matrices]]
+script = "Plasma"
+colors = ["cyan"]
+properties = { presetIndex = "Rainbow" }
+
+[[groups.BarrasLed.matrices]]
+script = "Alternate"
+colors = ["blue", "red"]
+properties = { orientation = "Horizontal" }
+
+[[groups.BarrasLed.matrices]]
+script = "Alternate"
+colors = ["cyan", "pink"]
+properties = { orientation = "Horizontal" }
+
+[[groups.BarrasLed.matrices]]
+script = "Alternate"
+colors = ["green", "yellow"]
+properties = { orientation = "Horizontal" }
+
+[[groups.BarrasLed.matrices]]
+script = "Opposite"
+colors = ["green"]
+properties = { orientation = "Horizontal" }
+
+[[groups.BarrasLed.matrices]]
+script = "Fill From Center"
+colors = ["orange"]
+properties = { orientation = "Horizontal" }
+
+[[groups.BarrasLed.matrices]]
+script = "Stripes From Center"
+colors = ["purple"]
+properties = { orientation = "Horizontal" }
+
+[[groups.BarrasLed.matrices]]
+script = "Random Column"
+colors = ["yellow"]
+
+[[groups.BarrasLed.matrices]]
+script = "Fill Unfill"
+colors = ["pink"]
+properties = { orientation = "Horizontal" }
+
+[[groups.BarrasLed.matrices]]
+script = "One By One"
+colors = ["cyan"]
+
+[[groups.Cabezas.matrices]]
+script = "One By One"
+colors = ["cyan"]
+
+[[groups.Cabezas.matrices]]
+script = "Fill Unfill"
+colors = ["orange"]
+properties = { orientation = "Horizontal" }
+
+[[groups.Cabezas.matrices]]
+script = "Noise"
+colors = ["pink"]
+properties = { noisePercentage = "Medium" }
+
+[[groups.Cabezas.matrices]]
+script = "Alternate"
+colors = ["mint_green", "deep_blue"]
+properties = { orientation = "Horizontal" }
+
+[[groups.Cabezas.matrices]]
+script = "Opposite"
+colors = ["light_blue"]
+properties = { orientation = "Horizontal" }
+
+[[groups.Cabezas.matrices]]
+script = "Random Column"
+colors = ["fuchsia"]
+
+[[groups.PAR.matrices]]
+script = "Circular"
+colors = ["red"]
+properties = { circularMode = "Radar" }
+
+[[groups.PAR.matrices]]
+script = "3D Starfield"
+colors = ["light_blue"]
+
+[[groups.PAR.matrices]]
+script = "Gradient"
+colors = ["amber"]
+properties = { presetIndex = "Rainbow", presetSize = "5", orientation = "Horizontal" }
+
+[[groups.PAR.matrices]]
+script = "Fill From Center"
+colors = ["fire_red"]
+properties = { orientation = "Horizontal" }
+
+[[groups.PAR.matrices]]
+script = "Stripes From Center"
+colors = ["sky_blue"]
+properties = { orientation = "Horizontal" }
+
+[[groups.PAR.matrices]]
+script = "Alternate"
+colors = ["pink", "cyan"]
+properties = { orientation = "Horizontal" }
+
+[timing]
+bpm = 120
+levels = { ambient_s = 240, party_s = 480, peak_s = 40, dynamic_s = 240 }
+dynamic = { chase_s = 30, pingpong_s = 8 }
+panels = { effects_s = 480, manual_s = 240 }
+prism_step_s = 8
+matrix_beats = { hold = 4, fade = 0 }
+
+[timing.beat_timings]
+colour_wheel = { hold = 8, fade = 1 }
+soft_movements = { hold = 64, fade = 10 }
+wash_movements = { hold = 32, fade = 10 }
+beam_movements = { hold = 32, fade = 10 }
+fast_washes = { hold = 16, fade = 0 }
+fast_beams = { hold = 16, fade = 0 }
+gobo_animation = { hold = 16, fade = 0 }
+prism_animation = { hold = 32, fade = 0 }
+dimmer_chase = { hold = 4, fade = 0 }
+dimmer_pingpong = { hold = 2, fade = 0 }
+
+[fixture_tuning]
+beam_focus = 127
+prism_spin_slow = 25
+strobe = { fast = 0.97, slow = 0.785 }
+talk_white = [255, 214, 170]
+
+[console]
+canvas = { width = 1440, height = 900 }
+flash_functions = ["flash_full", "flash_half", "flash_colour", "smoke_on", "vertical_smoke_now", "bass_hit", "strobe_fast", "strobe_medium", "stage_aim"]
+
+[console.keys]
+auto = "Q"
+talk_moment = "F1"
+calm_moment = "F2"
+party_moment = "F3"
+frenzy_moment = "F4"
+full_white = "X"
+all_black = "º"
+flash_full = "Space"
+flash_half = "-"
+flash_colour = "."
+smoke_on = "H"
+vertical_smoke_now = "U"
+strobe_fast = "F"
+strobe_medium = "T"
+colour_wheel = "W"
+simple_wheel = "C"
+pastel_wheel = "L"
+multicolour_wheel = "R"
+mix_wheel = "E"
+head_movements = "A"
+gobo_animation = "G"
+prism_animation = "P"
+rainbow_together = "'"
+rainbow_steps = "¡"
+smoke_auto = "J"
+vertical_smoke = "N"
+dimmer_chase = "V"
+dimmer_chase_2 = "B"
+dimmer_sequence = "K"
+dimmer_pingpong = "Z"
+strobe_on = "S"
+strobe_off = "D"

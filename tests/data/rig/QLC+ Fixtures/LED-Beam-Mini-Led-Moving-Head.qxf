@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FixtureDefinition>
+<FixtureDefinition xmlns="http://www.qlcplus.org/FixtureDefinition">
+ <Creator>
+  <Name>Q Light Controller Plus</Name>
+  <Version>4.12.6</Version>
+  <Author>Deluxe Producciones (Spain)</Author>
+ </Creator>
+ <Manufacturer>LED Beam</Manufacturer>
+ <Model>Mini Led Moving Head</Model>
+ <Type>Moving Head</Type>
+ <Channel Name="Pan" Preset="PositionPan"/>
+ <Channel Name="Tilt" Preset="PositionTilt"/>
+ <Channel Name="Dimmer" Preset="IntensityDimmer"/>
+ <Channel Name="Red" Preset="IntensityRed"/>
+ <Channel Name="Green" Preset="IntensityGreen"/>
+ <Channel Name="Blue" Preset="IntensityBlue"/>
+ <Channel Name="White" Preset="IntensityWhite"/>
+ <Channel Name="Strobe" Preset="ShutterStrobeSlowFast"/>
+ <!-- Channels 9-16 were "No function" until 2026-09-02, when three sources
+      that agree with each other on channels 1-8 - the Betopper/Big Dipper LM108
+      manual, the SHEHDS 12x12W manual and ChamSys MagicQ's LM108 personality
+      (Fixture Finder id 10327) - gave them the same eight jobs, and the body in
+      this definition turned out to be an Oukaning 36x3W RGBW listing to the
+      millimetre. The show writes none of them above zero, which on this chart
+      is the inert band everywhere; the channel probe on site is what promotes
+      this from "the OEM's chart" to "this unit's". -->
+ <Channel Name="Pan/Tilt speed" Preset="SpeedPanTiltFastSlow"/>
+ <Channel Name="Colour macro">
+  <Group Byte="0">Colour</Group>
+  <Capability Min="0" Max="10">Colour from the RGBW channels</Capability>
+  <Capability Min="11" Max="127">Colour combinations</Capability>
+  <Capability Min="128" Max="160">Colour jump</Capability>
+  <Capability Min="161" Max="200">Colour fade 1</Capability>
+  <Capability Min="201" Max="255">Colour fade 2</Capability>
+ </Channel>
+ <Channel Name="Colour macro speed">
+  <Group Byte="0">Speed</Group>
+  <Capability Min="0" Max="255" Preset="SlowToFast">Colour macro speed</Capability>
+ </Channel>
+ <Channel Name="Built-in program">
+  <Group Byte="0">Effect</Group>
+  <Capability Min="0" Max="255">Built-in program - 0 leaves the fixture to DMX; the OEM charts name no ranges</Capability>
+ </Channel>
+ <Channel Name="Built-in program speed">
+  <Group Byte="0">Speed</Group>
+  <Capability Min="0" Max="255" Preset="SlowToFast">Built-in program speed</Capability>
+ </Channel>
+ <Channel Name="Pan fine" Preset="PositionPanFine"/>
+ <Channel Name="Tilt fine" Preset="PositionTiltFine"/>
+ <Channel Name="Reset">
+  <Group Byte="0">Maintenance</Group>
+  <Capability Min="0" Max="149">No function</Capability>
+  <Capability Min="150" Max="255" Preset="ResetAll">Reset</Capability>
+ </Channel>
+ <Mode Name="16 Channels">
+  <Channel Number="0">Pan</Channel>
+  <Channel Number="1">Tilt</Channel>
+  <Channel Number="2">Dimmer</Channel>
+  <Channel Number="3">Red</Channel>
+  <Channel Number="4">Green</Channel>
+  <Channel Number="5">Blue</Channel>
+  <Channel Number="6">White</Channel>
+  <Channel Number="7">Strobe</Channel>
+  <Channel Number="8">Pan/Tilt speed</Channel>
+  <Channel Number="9">Colour macro</Channel>
+  <Channel Number="10">Colour macro speed</Channel>
+  <Channel Number="11">Built-in program</Channel>
+  <Channel Number="12">Built-in program speed</Channel>
+  <Channel Number="13">Pan fine</Channel>
+  <Channel Number="14">Tilt fine</Channel>
+  <Channel Number="15">Reset</Channel>
+ </Mode>
+ <Physical>
+  <Bulb Type="LED" Lumens="0" ColourTemperature="0"/>
+  <Dimensions Weight="6.7" Width="310" Height="210" Depth="365"/>
+  <Lens Name="Other" DegreesMin="0" DegreesMax="8"/>
+  <Focus Type="Head" PanMax="540" TiltMax="180"/>
+  <Technical PowerConsumption="70" DmxConnector="3-pin"/>
+ </Physical>
+</FixtureDefinition>

@@ -1,0 +1,4 @@
+# The rig the test suite reads: a frozen copy of vibra-lighting's, 2026-09-25.
+fixtures = ["QLC+ Fixtures"]
+input_profiles = ["QLC+ InputProfiles"]
+gobos = ["QLC+ Setups/Gobos"]

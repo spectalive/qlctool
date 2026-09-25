@@ -1,0 +1,527 @@
+{
+ "name": "Vibra - the montage we always build (CLB2.4 split per head)",
+ "note": [
+  "The real rig, position by position, as described by the owner on 2026-08-25",
+  "from a video of the get-in. This is a written plot, not a generated one:",
+  "`qlctool stage --plot` writes it into the workspace's <Monitor> verbatim.",
+  "The stage is in metres and the positions in millimetres, which is what QLC+",
+  "stores. A fixture position is its NEAR CORNER, not its centre, so every x",
+  "and z here is the line it sits on minus half the fixture's own size. That is",
+  "what makes a row read as evenly spaced rather than evenly left-aligned, and",
+  "what puts a beam in the middle of its flightcase instead of over the edge.",
+  "z grows TOWARDS THE AUDIENCE. QLC+'s 3D camera starts at +Z looking at -Z",
+  "(MainView3D::resetCameraPosition), so the far side of the stage is small z",
+  "and the front edge is large z. Getting this backwards mirrors the whole rig.",
+  "x_rot is degrees about the horizontal axis, and QLC+ turns the fixture by",
+  "MINUS the stored angle (MonitorProperties::fixtureRotationMatrix). WHICH WAY",
+  "THE LIGHT THEN GOES DEPENDS ON THE FIXTURE TYPE. A fixture with a mesh - PAR,",
+  "moving head - emits down (0,-1,0), so POSITIVE leans it out over the audience",
+  "and negative back over the stage: the truss PARs are at 50 and the two",
+  "downstage grids at -35. A fixture QLC+ draws itself - LED Bar (Pixels), LED",
+  "Bar (Beams), Strobe - emits from its TOP face (PixelBar3DItem.qml puts each",
+  "head's plane at +phySize.y/2), so the sign is the other way round: the pixel",
+  "panels and the LED bars face the room at -90. Both halves of this were found",
+  "in the 3D view on 2026-08-25, one flip at a time.",
+  "A MOVING HEAD is mounted, not aimed - 0 hanging, 180 standing on the",
+  "floor - because pan and tilt are what point it, and the show drives those.",
+  "`qlctool stage --plot` prints where every beam meets the floor; use it.",
+  "props are scenery, not fixtures - given as a centre and a size in mm.",
+  "Eight patched fixtures are not built into this montage - they come from",
+  "bigger setups. They keep a parking spot and are marked hidden so the 2D and",
+  "3D views only show what is actually rigged.",
+  "The two CLB2.4 T-bars are patched as four fixtures each, one per PAR head, so every head has its own place and its own aim in the 3D view: QLC+ draws one item per fixture and a meshed item ignores the head index entirely (Fixture3DItem.qml has a single lightColor), so four heads on one fixture collapse into one light. The bar's master dimmer rides with head 1 and its strobe with head 4, which is what keeps all 14 channels covered."
+ ],
+ "stage": [
+  12,
+  6,
+  8
+ ],
+ "point_of_view": "front",
+ "fixtures": [
+  {
+   "id": 0,
+   "model": "CromoWash100",
+   "place": "Spare, not rigged",
+   "x": 9000,
+   "y": 0,
+   "z": 408,
+   "hidden": true
+  },
+  {
+   "id": 1,
+   "model": "CromoWash100",
+   "place": "Spare, not rigged",
+   "x": 10200,
+   "y": 0,
+   "z": 408,
+   "hidden": true
+  },
+  {
+   "id": 2,
+   "model": "LED Bar 240/8 RGB",
+   "place": "Front truss 4 of 7, dead centre, aimed at the audience",
+   "x": 5468,
+   "y": 3000,
+   "z": 6818,
+   "x_rot": -90
+  },
+  {
+   "id": 3,
+   "model": "LED Bar 240/8 RGB",
+   "place": "Over the DJ booth",
+   "x": 5468,
+   "y": 2200,
+   "z": 4498,
+   "x_rot": -90
+  },
+  {
+   "id": 6,
+   "model": "PC-64 LED S",
+   "place": "Back truss 1 of 10, aimed at the audience",
+   "x": 854,
+   "y": 4000,
+   "z": 1466,
+   "x_rot": 50
+  },
+  {
+   "id": 7,
+   "model": "PC-64 LED S",
+   "place": "Back truss 3 of 10, aimed at the audience",
+   "x": 3076,
+   "y": 4000,
+   "z": 1466,
+   "x_rot": 50
+  },
+  {
+   "id": 8,
+   "model": "PC-64 LED S",
+   "place": "Back truss 5 of 10, aimed at the audience",
+   "x": 5298,
+   "y": 4000,
+   "z": 1466,
+   "x_rot": 50
+  },
+  {
+   "id": 9,
+   "model": "PC-64 LED S",
+   "place": "Back truss 6 of 10, aimed at the audience",
+   "x": 6410,
+   "y": 4000,
+   "z": 1466,
+   "x_rot": 50
+  },
+  {
+   "id": 10,
+   "model": "PC-64 LED S",
+   "place": "Back truss 8 of 10, aimed at the audience",
+   "x": 8632,
+   "y": 4000,
+   "z": 1466,
+   "x_rot": 50
+  },
+  {
+   "id": 11,
+   "model": "PC-64 LED S",
+   "place": "Back truss 10 of 10, aimed at the audience",
+   "x": 10854,
+   "y": 4000,
+   "z": 1466,
+   "x_rot": 50
+  },
+  {
+   "id": 12,
+   "model": "PC-64 LED S",
+   "place": "Spare, not rigged",
+   "x": 600,
+   "y": 0,
+   "z": 316,
+   "hidden": true
+  },
+  {
+   "id": 13,
+   "model": "CromoWash100",
+   "place": "Spare, not rigged",
+   "x": 1800,
+   "y": 0,
+   "z": 408,
+   "hidden": true
+  },
+  {
+   "id": 14,
+   "model": "CromoWash100",
+   "place": "Spare, not rigged",
+   "x": 3000,
+   "y": 0,
+   "z": 408,
+   "hidden": true
+  },
+  {
+   "id": 15,
+   "model": "MiN Wash",
+   "place": "Spare, not rigged",
+   "x": 4200,
+   "y": 0,
+   "z": 376,
+   "hidden": true
+  },
+  {
+   "id": 16,
+   "model": "MiN Wash",
+   "place": "Spare, not rigged",
+   "x": 5400,
+   "y": 0,
+   "z": 376,
+   "hidden": true
+  },
+  {
+   "id": 17,
+   "model": "Generic Smoke",
+   "place": "Upstage side, house left",
+   "x": 300,
+   "y": 0,
+   "z": 2000
+  },
+  {
+   "id": 18,
+   "model": "Mini Led Moving Head",
+   "place": "Spare, not rigged",
+   "x": 6600,
+   "y": 0,
+   "z": 318,
+   "hidden": true
+  },
+  {
+   "id": 19,
+   "model": "Mini Led Moving Head",
+   "place": "Spare, not rigged",
+   "x": 7800,
+   "y": 0,
+   "z": 318,
+   "hidden": true
+  },
+  {
+   "id": 20,
+   "model": "BEAM 230W 7R",
+   "place": "Back truss 2 of 10",
+   "x": 1916,
+   "y": 4000,
+   "z": 1485
+  },
+  {
+   "id": 21,
+   "model": "BEAM 230W 7R",
+   "place": "Back truss 9 of 10",
+   "x": 9694,
+   "y": 4000,
+   "z": 1485
+  },
+  {
+   "id": 22,
+   "model": "BEAM 230W 7R",
+   "place": "On a flightcase beside the DJ deck, house left, standing upright, base down",
+   "x": 4405,
+   "y": 600,
+   "z": 4335,
+   "x_rot": 180
+  },
+  {
+   "id": 23,
+   "model": "BEAM 230W 7R",
+   "place": "On a flightcase beside the DJ deck, house right, standing upright, base down",
+   "x": 7205,
+   "y": 600,
+   "z": 4335,
+   "x_rot": 180
+  },
+  {
+   "id": 24,
+   "model": "WX-60WPS-48PARTITION",
+   "place": "Front truss 2 of 7, aimed at the audience",
+   "x": 2808,
+   "y": 3000,
+   "z": 6815,
+   "x_rot": -90
+  },
+  {
+   "id": 25,
+   "model": "WX-60WPS-48PARTITION",
+   "place": "Front truss 3 of 7, aimed at the audience",
+   "x": 4342,
+   "y": 3000,
+   "z": 6815,
+   "x_rot": -90
+  },
+  {
+   "id": 27,
+   "model": "WX-60WPS-48PARTITION",
+   "place": "Front truss 5 of 7, aimed at the audience",
+   "x": 7408,
+   "y": 3000,
+   "z": 6815,
+   "x_rot": -90
+  },
+  {
+   "id": 28,
+   "model": "WX-60WPS-48PARTITION",
+   "place": "Front truss 6 of 7, aimed at the audience",
+   "x": 8942,
+   "y": 3000,
+   "z": 6815,
+   "x_rot": -90
+  },
+  {
+   "id": 29,
+   "model": "CLB2.4 PAR head (split)",
+   "place": "Front truss 1 of 7, head 1 of 4",
+   "x": 896,
+   "y": 3000,
+   "z": 6818,
+   "x_rot": -35
+  },
+  {
+   "id": 30,
+   "model": "CLB2.4 PAR head (split)",
+   "place": "Front truss 1 of 7, head 2 of 4",
+   "x": 1148,
+   "y": 3000,
+   "z": 6818,
+   "x_rot": -35
+  },
+  {
+   "id": 31,
+   "model": "CLB2.4 PAR head (split)",
+   "place": "Front truss 1 of 7, head 3 of 4",
+   "x": 1399,
+   "y": 3000,
+   "z": 6818,
+   "x_rot": -35
+  },
+  {
+   "id": 32,
+   "model": "CLB2.4 PAR head (split)",
+   "place": "Front truss 1 of 7, head 4 of 4",
+   "x": 1651,
+   "y": 3000,
+   "z": 6818,
+   "x_rot": -35
+  },
+  {
+   "id": 33,
+   "model": "CLB2.4 PAR head (split)",
+   "place": "Front truss 7 of 7, head 1 of 4",
+   "x": 10096,
+   "y": 3000,
+   "z": 6818,
+   "x_rot": -35
+  },
+  {
+   "id": 34,
+   "model": "CLB2.4 PAR head (split)",
+   "place": "Front truss 7 of 7, head 2 of 4",
+   "x": 10348,
+   "y": 3000,
+   "z": 6818,
+   "x_rot": -35
+  },
+  {
+   "id": 35,
+   "model": "CLB2.4 PAR head (split)",
+   "place": "Front truss 7 of 7, head 3 of 4",
+   "x": 10599,
+   "y": 3000,
+   "z": 6818,
+   "x_rot": -35
+  },
+  {
+   "id": 36,
+   "model": "CLB2.4 PAR head (split)",
+   "place": "Front truss 7 of 7, head 4 of 4",
+   "x": 10851,
+   "y": 3000,
+   "z": 6818,
+   "x_rot": -35
+  },
+  {
+   "id": 37,
+   "model": "LED Spray Fog",
+   "place": "Floor, downstage line 1 of 4, spraying up - provisional spacing, to confirm at the 2026-08-29 get-in",
+   "x": 2195,
+   "y": 0,
+   "z": 6400
+  },
+  {
+   "id": 38,
+   "model": "LED Spray Fog",
+   "place": "Floor, downstage line 2 of 4, spraying up - provisional spacing, to confirm at the 2026-08-29 get-in",
+   "x": 4595,
+   "y": 0,
+   "z": 6400
+  },
+  {
+   "id": 39,
+   "model": "LED Spray Fog",
+   "place": "Floor, downstage line 3 of 4, spraying up - provisional spacing, to confirm at the 2026-08-29 get-in",
+   "x": 6995,
+   "y": 0,
+   "z": 6400
+  },
+  {
+   "id": 40,
+   "model": "LED Spray Fog",
+   "place": "Floor, downstage line 4 of 4, spraying up - provisional spacing, to confirm at the 2026-08-29 get-in",
+   "x": 9395,
+   "y": 0,
+   "z": 6400
+  },
+  {
+   "id": 41,
+   "model": "MAC WASH 1915Z",
+   "place": "Back truss 4 of 10",
+   "x": 4171,
+   "y": 4000,
+   "z": 1556
+  },
+  {
+   "id": 42,
+   "model": "MAC WASH 1915Z",
+   "place": "Back truss 7 of 10",
+   "x": 7505,
+   "y": 4000,
+   "z": 1556
+  }
+ ],
+ "props": [
+  {
+   "id": 1,
+   "mesh": "generic/cube.obj",
+   "name": "DJ deck top",
+   "cx": 6000,
+   "cy": 860,
+   "cz": 4500,
+   "w": 2000,
+   "h": 80,
+   "d": 1000
+  },
+  {
+   "id": 2,
+   "mesh": "generic/cylinder.obj",
+   "name": "DJ deck leg, downstage left",
+   "cx": 5100,
+   "cy": 410,
+   "cz": 4900,
+   "w": 60,
+   "h": 820,
+   "d": 60
+  },
+  {
+   "id": 3,
+   "mesh": "generic/cylinder.obj",
+   "name": "DJ deck leg, downstage right",
+   "cx": 6900,
+   "cy": 410,
+   "cz": 4900,
+   "w": 60,
+   "h": 820,
+   "d": 60
+  },
+  {
+   "id": 4,
+   "mesh": "generic/cylinder.obj",
+   "name": "DJ deck leg, upstage left",
+   "cx": 5100,
+   "cy": 410,
+   "cz": 4100,
+   "w": 60,
+   "h": 820,
+   "d": 60
+  },
+  {
+   "id": 5,
+   "mesh": "generic/cylinder.obj",
+   "name": "DJ deck leg, upstage right",
+   "cx": 6900,
+   "cy": 410,
+   "cz": 4100,
+   "w": 60,
+   "h": 820,
+   "d": 60
+  },
+  {
+   "id": 6,
+   "mesh": "generic/cube.obj",
+   "name": "Flightcase, house left",
+   "cx": 4600,
+   "cy": 300,
+   "cz": 4500,
+   "w": 600,
+   "h": 600,
+   "d": 600
+  },
+  {
+   "id": 7,
+   "mesh": "generic/cube.obj",
+   "name": "Flightcase, house right",
+   "cx": 7400,
+   "cy": 300,
+   "cz": 4500,
+   "w": 600,
+   "h": 600,
+   "d": 600
+  },
+  {
+   "id": 8,
+   "mesh": "generic/cube.obj",
+   "name": "DJ legs",
+   "cx": 6000,
+   "cy": 425,
+   "cz": 3750,
+   "w": 340,
+   "h": 850,
+   "d": 240
+  },
+  {
+   "id": 9,
+   "mesh": "generic/cube.obj",
+   "name": "DJ torso",
+   "cx": 6000,
+   "cy": 1160,
+   "cz": 3750,
+   "w": 440,
+   "h": 620,
+   "d": 260
+  },
+  {
+   "id": 10,
+   "mesh": "generic/sphere.obj",
+   "name": "DJ head",
+   "cx": 6000,
+   "cy": 1590,
+   "cz": 3750,
+   "w": 230,
+   "h": 250,
+   "d": 230
+  },
+  {
+   "id": 11,
+   "mesh": "generic/cube.obj",
+   "name": "DJ arm, house left",
+   "cx": 5760,
+   "cy": 1000,
+   "cz": 4050,
+   "w": 90,
+   "h": 90,
+   "d": 700
+  },
+  {
+   "id": 12,
+   "mesh": "generic/cube.obj",
+   "name": "DJ arm, house right",
+   "cx": 6240,
+   "cy": 1000,
+   "cz": 4050,
+   "w": 90,
+   "h": 90,
+   "d": 700
+  }
+ ]
+}
