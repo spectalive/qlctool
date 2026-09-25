@@ -8,9 +8,8 @@ anything it starts must never share one - that is what made AUTO die the
 instant it was pressed.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.control_glyph import glyph
 from qlctool.generate.canonical_show import build_canonical_show
@@ -31,7 +30,7 @@ from qlctool.vibra.keys import KEYS
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 # Buttons that exist only when the rig has the fixture behind them. The test

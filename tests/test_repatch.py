@@ -5,9 +5,8 @@ stage, so every mutation here is checked against the whole patch afterwards and
 every test round-trips through save/load.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.capabilities_of import capabilities_of
 from qlctool.fixture import patched_fixtures
@@ -21,7 +20,7 @@ from qlctool.repatch.remove import remove_fixture
 from qlctool.repatch.rename import rename_fixture
 from qlctool.workspace import Workspace
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 FREE_ADDRESS = 300  # 0-based; the show patches 0-299 contiguously
 

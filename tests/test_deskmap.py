@@ -5,9 +5,9 @@ of the saved console, so it is exercised on a freshly generated one.
 """
 
 import re
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.desk_policy import split_caption
 from qlctool.deskmap import build_deskmap
@@ -16,7 +16,7 @@ from qlctool.library import FixtureLibrary
 from qlctool.speed_multiplier import multiplier
 from qlctool.workspace import Workspace
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 SWATCH = re.compile(r"^#[0-9a-f]{6}$")
 
@@ -49,7 +49,15 @@ def test_the_map_names_the_show_and_its_two_global_controls(deskmap):
 def test_the_room_states_are_the_first_thing_on_live(deskmap):
     state = _section(deskmap, "live", "state")
     captions = [deskmap["controls"][k]["caption"] for k in state["controls"]]
-    assert captions == ["AUTO", "CHARLA", "TRANQUILO", "FIESTA", "LOCURA", "BLANCO TOTAL", "TODO NEGRO"]
+    assert captions == [
+        "AUTO",
+        "CHARLA",
+        "TRANQUILO",
+        "FIESTA",
+        "LOCURA",
+        "BLANCO TOTAL",
+        "TODO NEGRO",
+    ]
     auto = deskmap["controls"][state["controls"][0]]
     assert auto["detail"] == "el show se lleva solo"
     assert auto["role"] == "state" and auto["action"] == "toggle" and auto["enabled"]
@@ -153,7 +161,11 @@ def test_the_colour_family_has_hooks_then_picks_with_swatches(deskmap):
     # Seventeen solid picks - the palette minus white, which no rotation
     # steps and no pick offers since 2026-09-22 - plus the two rainbows.
     assert len(picks["controls"]) == 19
-    red = next(deskmap["controls"][k] for k in picks["controls"] if deskmap["controls"][k]["caption"] == "Rig Rojo")
+    red = next(
+        deskmap["controls"][k]
+        for k in picks["controls"]
+        if deskmap["controls"][k]["caption"] == "Rig Rojo"
+    )
     assert red["role"] == "pick" and red["functionType"] == "Collection"
     assert red["swatches"] and all(SWATCH.match(s) for s in red["swatches"])
     assert red["swatches"][0].startswith("#ff")
@@ -203,4 +215,5 @@ def test_captions_split_into_name_and_explanation():
 
 def test_sections_put_the_held_hits_last():
     from qlctool.desk_policy import SECTION_ORDER
+
     assert SECTION_ORDER[-1] == "accents" and SECTION_ORDER[0] == "state"

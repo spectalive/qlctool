@@ -7,9 +7,9 @@ through the `qlctool.rules` entry points.
 
 import re
 from dataclasses import replace
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.checks.finding import ERROR, Finding
 from qlctool.checks.pad_bindings import pad_bindings
@@ -23,7 +23,7 @@ from qlctool.library import FixtureLibrary
 from qlctool.vibra.description import vibra_description
 from qlctool.workspace import Workspace
 
-SHOW = Path(__file__).resolve().parents[3] / "QLC+ Setups" / "Vibra.qxw"
+SHOW = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 
 
 @pytest.fixture(scope="module")

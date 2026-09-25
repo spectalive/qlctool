@@ -10,12 +10,14 @@ else; the copy has to leave the folder in sync.
 import shutil
 from pathlib import Path
 
+from rig_root import RIG_ROOT
+
 from qlctool.apply_install import apply_install
 from qlctool.install_item import MISSING, STALE, SYNCED
 from qlctool.install_plan import install_plan
 from qlctool.toolkit_config import ToolkitConfig
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 
 
 def _fake_repo(tmp_path: Path) -> Path:

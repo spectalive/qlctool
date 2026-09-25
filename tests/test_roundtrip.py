@@ -9,12 +9,13 @@ from pathlib import Path
 
 import pytest
 from lxml import etree
+from rig_root import RIG_ROOT
 
 from qlctool.constants import DOCTYPE, XML_DECLARATION
 from qlctool.workspace import Workspace
 from qlctool.xmlsemantics import first_difference
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SETUPS = REPO / "QLC+ Setups"
 WORKSPACES = sorted(SETUPS.glob("*.qxw"))
 

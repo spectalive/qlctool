@@ -10,9 +10,10 @@ import hashlib
 import json
 from pathlib import Path
 
+from rig_root import RIG_ROOT
 from vibra_regen import regenerate_vibra
 
-SETUPS = Path(__file__).resolve().parents[3] / "QLC+ Setups"
+SETUPS = RIG_ROOT / "QLC+ Setups"
 BASELINE = json.loads(Path(__file__).with_name("vibra_baseline.json").read_text(encoding="utf-8"))
 
 

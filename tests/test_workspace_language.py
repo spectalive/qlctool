@@ -1,10 +1,10 @@
 """Ruling B12 (2026-09-25): the desk reads a workspace in the language it was written in."""
 
 from dataclasses import replace
-from pathlib import Path
 
 import pytest
 from lxml import etree
+from rig_root import RIG_ROOT
 
 from qlctool.deskmap import build_deskmap
 from qlctool.generate.canonical_show import build_canonical_show
@@ -14,7 +14,7 @@ from qlctool.names.workspace_language import workspace_language
 from qlctool.vibra.description import vibra_description
 from qlctool.workspace import Workspace
 
-SHOW = Path(__file__).resolve().parents[3] / "QLC+ Setups" / "Vibra.qxw"
+SHOW = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 
 
 def _console(caption: str, kind: str = "Frame") -> etree._Element:

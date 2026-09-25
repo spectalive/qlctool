@@ -9,9 +9,8 @@ it - `Ola Suave` (washes, Line) and `Cascada Beams` (beams, Circle, Rotation
 axes as their wash counterparts.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.checks.run import check_workspace
 from qlctool.generate.movement_families import generate_movement_families
@@ -21,7 +20,7 @@ from qlctool.skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 
 

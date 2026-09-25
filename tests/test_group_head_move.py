@@ -8,16 +8,15 @@ a 7x3 grid with the CLB2.4 heads bolted to the right of the PC-64 block instead
 of the 8x2 that reads like the rig.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.fixture_group import fixture_groups
 from qlctool.repatch.group_head_move import move_group_head
 from qlctool.repatch.group_size import set_group_size
 from qlctool.workspace import Workspace
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 # The current patch, not DeluxeEventos2: the old workspace declares BarrasLed
 # as 8x2 while holding heads at y=2, so no legal resize can free a cell there.
 SHOW = REPO / "QLC+ Setups" / "Vibra-split.qxw"

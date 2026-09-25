@@ -21,9 +21,8 @@ Each test puts the shipped generator through its paces on the real patch and
 fails if that night can happen again.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
@@ -34,7 +33,7 @@ from qlctool.vibra.tuning import VIBRA_TUNING
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra-split.qxw"
 
 

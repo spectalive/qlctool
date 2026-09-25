@@ -7,9 +7,8 @@ and the profile was quietly useless as documentation. Generating it removes the
 chance of that; this file is what makes the shipped copy stay generated.
 """
 
-from pathlib import Path
-
 from lxml import etree
+from rig_root import RIG_ROOT
 
 from qlctool.generate.input_profile import PROFILE_NAME, build_input_profile
 from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
@@ -18,7 +17,7 @@ from qlctool.input_binding import DEFAULT_LINE_NAME, pin_midi_input
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHIPPED = REPO / "QLC+ InputProfiles" / "M-VAVE-SMC-PAD.qxi"
 
 

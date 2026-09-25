@@ -6,16 +6,15 @@ which is how two of the four pixel panels ended up with 7 scene values against
 their neighbours' 47.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.repatch.group_head import add_group_head
 from qlctool.repatch.group_size import set_group_size
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 
 

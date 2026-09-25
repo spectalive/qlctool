@@ -1,10 +1,10 @@
 """2026-09-13 tablet bench: a lost release must have a master-side deadline."""
 
 from copy import deepcopy
-from pathlib import Path
 
 import pytest
 from lxml import etree
+from rig_root import RIG_ROOT
 
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.rule_context import RuleContext
@@ -23,7 +23,7 @@ from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 
 
 @pytest.fixture(scope="module")

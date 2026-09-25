@@ -4,7 +4,7 @@ Proves the headline generator: 12 colour scenes and a chaser that steps through
 them, all with unique IDs, injected without disturbing existing functions.
 """
 
-from pathlib import Path
+from rig_root import RIG_ROOT
 
 from qlctool.generate.color_palette import generate_color_palette
 from qlctool.ids import existing_function_ids
@@ -13,7 +13,7 @@ from qlctool.palette import PALETTE
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 

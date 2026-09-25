@@ -1,14 +1,13 @@
 """Taking a fixture out of a group, and the two ways that can go wrong."""
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.fixture_group import fixture_groups
 from qlctool.repatch.group_head_remove import remove_group_head
 from qlctool.workspace import Workspace
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 

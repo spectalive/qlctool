@@ -5,9 +5,8 @@ in the wrong mode drives pan instead of intensity, and a strobe value picked off
 an unlabelled shutter channel closes the head instead of flashing it.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
@@ -20,7 +19,7 @@ from qlctool.shutter_open import shutter_open_pairs
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 

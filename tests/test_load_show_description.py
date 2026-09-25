@@ -4,6 +4,7 @@ from dataclasses import replace
 from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.description.controller_settings import ControllerSettings
 from qlctool.description.load_show_description import load_show_description
@@ -12,7 +13,7 @@ from qlctool.vibra.description import vibra_description
 from qlctool.workspace import Workspace
 
 TESTS = Path(__file__).resolve().parent
-SETUPS = TESTS.parents[2] / "QLC+ Setups"
+SETUPS = RIG_ROOT / "QLC+ Setups"
 
 
 @pytest.fixture(scope="module")

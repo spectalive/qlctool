@@ -6,9 +6,8 @@ is why the conversion is a pass of its own and why it is tested against the real
 show rather than a fixture.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.beat_generator import set_beat_generator
 from qlctool.generate.beat_tempo import BeatTiming, apply_beat_tempo
@@ -18,7 +17,7 @@ from qlctool.skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 
 

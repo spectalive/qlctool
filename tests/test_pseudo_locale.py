@@ -12,9 +12,9 @@ definitions before generation (ruling P17), never from a hand-kept list.
 
 import re
 from dataclasses import replace
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.description.controller_settings import ControllerSettings
 from qlctool.description.load_show_description import load_show_description
@@ -28,7 +28,7 @@ from qlctool.vibra.description import vibra_description
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local, localname
 
-SETUPS = Path(__file__).resolve().parents[3] / "QLC+ Setups"
+SETUPS = RIG_ROOT / "QLC+ Setups"
 WORD = r"[^\W\d_]{4,}"
 # Ruling B6: a word both catalogues spell alike inside a longer value.
 B6_WORDS = {"Color"}

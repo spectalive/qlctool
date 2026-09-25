@@ -1,15 +1,14 @@
 """The channel walk that settles what an undocumented fixture's channels do."""
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.generate.channel_probe import generate_channel_probe
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 HYULIGHTS = 25  # 8 channels, one of the fixtures with no usable manual
 

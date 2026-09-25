@@ -7,15 +7,15 @@ the wrong buttons, and nothing had noticed.
 """
 
 import json
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.deskmap import build_deskmap
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 
-SETUPS = Path(__file__).resolve().parents[3] / "QLC+ Setups"
+SETUPS = RIG_ROOT / "QLC+ Setups"
 SHIPPED = sorted(SETUPS.glob("*.desk.json"))
 
 

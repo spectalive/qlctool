@@ -5,9 +5,8 @@ or a mirrored pair. Losing those scenes removes live choices even though the
 all-beam prism still makes the generated workspace look superficially complete.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
@@ -17,7 +16,7 @@ from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 SUBSET_NAMES = ("1", "2", "3", "4", "1 y 3", "2 y 4")
 

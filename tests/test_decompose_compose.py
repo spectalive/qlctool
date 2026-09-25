@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pytest
 from lxml import etree
+from rig_root import RIG_ROOT
 
 from qlctool.compose import compose_workspace
 from qlctool.decompose import FUNCTIONS_DIR, decompose_workspace
@@ -16,7 +17,7 @@ from qlctool.workspace import Workspace
 from qlctool.xmlsemantics import first_difference
 from qlctool.xmlutil import localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 WORKSPACES = sorted((REPO / "QLC+ Setups").glob("*.qxw"))
 
 

@@ -1,8 +1,7 @@
 """Gobo, colour-wheel and prism scenes, read from the fixture definition."""
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.generate.wheel_scenes import generate_wheel_scenes
@@ -11,7 +10,7 @@ from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 BEAMS = (20, 21, 22, 23)  # the four BEAM 230W 7R, the only fixtures with gobos
 

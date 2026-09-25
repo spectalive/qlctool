@@ -1,7 +1,8 @@
 """The show's own choices live in one description (2026-09-24, spec step 2)."""
 
 from dataclasses import replace
-from pathlib import Path
+
+from rig_root import RIG_ROOT
 
 from qlctool.argb import argb_from_rgb
 from qlctool.description.contrast_pairs_of import contrast_pairs_of
@@ -20,7 +21,7 @@ from qlctool.wheel_palette import WHEEL_PALETTE
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 VIBRA_SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 # DeluxeEventos2.qxw is the hand-built show and already carries a
 # VirtualConsole/Properties/Size element; Vibra.qxw never gets one written

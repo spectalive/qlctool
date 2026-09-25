@@ -7,7 +7,8 @@ from the catalogue too, so any shipped language builds.
 """
 
 from dataclasses import replace
-from pathlib import Path
+
+from rig_root import RIG_ROOT
 
 from qlctool.description.localize_description import localize_description
 from qlctool.description.matrices_by_group import matrices_by_group
@@ -22,7 +23,7 @@ from qlctool.vibra.keys import KEYS
 from qlctool.vibra.timing import VIBRA_TIMING
 from qlctool.workspace import Workspace
 
-SHOW = Path(__file__).resolve().parents[3] / "QLC+ Setups" / "Vibra.qxw"
+SHOW = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 
 
 def test_the_vibra_description_names_things_by_identifier():

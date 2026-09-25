@@ -20,6 +20,7 @@ from pathlib import Path
 import pygdtf
 import pymvr
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.definition import Channel, Dimensions, FixtureDefinition
@@ -38,7 +39,7 @@ from qlctool.mvr.write_gdtf import write_gdtf
 from qlctool.mvr.write_mvr import write_mvr
 from qlctool.workspace import Workspace
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra-split.qxw"
 GOBOS = REPO / "QLC+ Setups" / "Gobos"
 SCHEMA = Path(__file__).resolve().parent / "gdtf.xsd"

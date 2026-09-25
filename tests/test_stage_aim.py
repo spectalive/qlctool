@@ -6,7 +6,7 @@ so the test pins them: the scene must land each measured pan/tilt on the
 fixture patched at that DMX address, on its PAN/TILT channels, fine at zero.
 """
 
-from pathlib import Path
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
@@ -15,7 +15,7 @@ from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra-split.qxw"
 
 

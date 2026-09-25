@@ -1,9 +1,9 @@
 """Phase 2 generator coverage for the 2026-09-02 JUGAR play page."""
 
 from itertools import pairwise
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
@@ -19,7 +19,7 @@ from qlctool.vibra.tuning import VIBRA_TUNING
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 

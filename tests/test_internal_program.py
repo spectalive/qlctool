@@ -1,6 +1,6 @@
 """Fixtures that animate themselves, recognised by shape and never by model."""
 
-from pathlib import Path
+from rig_root import RIG_ROOT
 
 from qlctool.capabilities_of import capabilities_of
 from qlctool.internal_program import (
@@ -10,7 +10,7 @@ from qlctool.internal_program import (
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra-split.qxw"
 PANELS = {24, 25, 27, 28}
 

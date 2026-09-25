@@ -8,9 +8,8 @@ have back ("recupera todo lo que tanto me costó"). These tests put each one
 back into a generated show and bite if the generator loses it again.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
@@ -19,7 +18,7 @@ from qlctool.wheel_palette import WHEEL_PALETTE
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 

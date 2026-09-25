@@ -7,9 +7,8 @@ point of view has to be stored - without it QLC+ asks for one on first open and
 rewrites every position it finds.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.fixture import patched_fixtures
 from qlctool.generate.stage_layout import (
@@ -22,7 +21,7 @@ from qlctool.stage_band import BARS, BEAMS, PARS, SMOKE, WASHES
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 

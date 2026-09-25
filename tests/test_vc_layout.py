@@ -5,9 +5,8 @@ function gets exactly one button, and the new frames land below whatever the
 console already holds - and then has QLC+ itself load the result.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.argb import argb_from_rgb
 from qlctool.generate.color_palette import generate_color_palette
@@ -19,7 +18,7 @@ from qlctool.vc.widget_ids import existing_widget_ids
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 

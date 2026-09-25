@@ -5,9 +5,9 @@ round-trip net there, but this stronger check needs the actual binary.
 """
 
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.generate.matrix_effects import generate_matrix_effects
 from qlctool.generate.movement_efx import generate_movement_efx
@@ -19,7 +19,7 @@ from qlctool.validate import (
 )
 from qlctool.workspace import Workspace
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 needs_qlcplus = pytest.mark.skipif(

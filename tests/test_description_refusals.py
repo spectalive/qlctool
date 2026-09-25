@@ -5,15 +5,14 @@ Each case here once passed the loader and failed later inside
 wrote.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.description.load_show_description import load_show_description
 from qlctool.vibra.description import vibra_description
 from qlctool.workspace import Workspace
 
-SETUPS = Path(__file__).resolve().parents[3] / "QLC+ Setups"
+SETUPS = RIG_ROOT / "QLC+ Setups"
 SMALL = (
     "[palette]\n"
     'primary = ["red", "green", "blue", "white"]\n'

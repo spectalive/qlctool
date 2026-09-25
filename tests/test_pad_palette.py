@@ -9,7 +9,8 @@ array and compares it against the generator's, pad by pad.
 """
 
 import re
-from pathlib import Path
+
+from rig_root import RIG_ROOT
 
 from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
 from qlctool.generate.smc_pad_colors import FUNCTION_COLORS
@@ -21,7 +22,7 @@ from qlctool.generate.smc_pad_device import (
     PADS,
 )
 
-BRIDGE = Path(__file__).resolve().parents[3] / "tools" / "smc-pad" / "qlc_led_bridge.swift"
+BRIDGE = RIG_ROOT / "tools" / "smc-pad" / "qlc_led_bridge.swift"
 FREE_PAD = (20, 20, 20)
 ENTRY = re.compile(r"\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)")
 

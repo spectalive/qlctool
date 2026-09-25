@@ -6,12 +6,13 @@ import shutil
 from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.cli import main
 from qlctool.names.load_catalogue import load_catalogue
 
 TESTS = Path(__file__).resolve().parent
-SETUPS = TESTS.parents[2] / "QLC+ Setups"
+SETUPS = RIG_ROOT / "QLC+ Setups"
 BASELINE = json.loads((TESTS / "vibra_baseline.json").read_text(encoding="utf-8"))
 
 

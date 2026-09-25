@@ -6,9 +6,9 @@ on the Spanish show passes on this one.
 """
 
 from dataclasses import replace
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.checks.run import check_workspace
 from qlctool.desk_widgets import desk_widgets
@@ -21,7 +21,7 @@ from qlctool.vibra.description import vibra_description
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import iter_local
 
-SETUPS = Path(__file__).resolve().parents[3] / "QLC+ Setups"
+SETUPS = RIG_ROOT / "QLC+ Setups"
 PLAY_PAGE = 1  # the console's second page, JUGAR / PLAY
 LIBRARY_PAGE = 3
 

@@ -7,9 +7,8 @@ over those groups went left, far right, back to the middle - visible only as an
 animation that never looked like a sweep.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.checks.rule_grid_order import check_grid_order
 from qlctool.fixture_group import fixture_groups
@@ -18,7 +17,7 @@ from qlctool.stage_x_positions import stage_x_positions
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOWS = ("Vibra.qxw", "Vibra-beats.qxw", "Vibra-split.qxw")
 
 

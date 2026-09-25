@@ -5,7 +5,7 @@ save - against the real DeluxeEventos2 show, and checks the untouched functions
 survive the round trip so generation never corrupts existing content.
 """
 
-from pathlib import Path
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
@@ -15,7 +15,7 @@ from qlctool.ids import existing_function_ids, next_function_id
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 from qlctool.library import FixtureLibrary
 

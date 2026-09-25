@@ -6,7 +6,7 @@ red and left the BEAM 230W 7R on whatever it had - no RGB, and a colour name
 the matcher had never heard of. The show's own vocabulary is what spells it.
 """
 
-from pathlib import Path
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
@@ -19,7 +19,7 @@ from qlctool.palette import PALETTE
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 RENAMED = "Rojo Vivo"
 

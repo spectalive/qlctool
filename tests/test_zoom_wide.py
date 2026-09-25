@@ -6,9 +6,8 @@ never out of a model name - a `BigToSmall` zoom driven to 255 is the narrowest
 the head has, which is the bug this module exists to prevent.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
@@ -17,7 +16,7 @@ from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 from qlctool.zoom_wide import zoom_wide_pairs
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 
 
 @pytest.fixture(scope="module")

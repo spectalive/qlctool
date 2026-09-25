@@ -6,14 +6,15 @@ builds Vibra; this one builds a palette Vibra never had, with no [groups] and no
 """
 
 import shutil
-from pathlib import Path
+
+from rig_root import RIG_ROOT
 
 from qlctool.checks.run import check_workspace
 from qlctool.cli import main
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 
-SETUPS = Path(__file__).resolve().parents[3] / "QLC+ Setups"
+SETUPS = RIG_ROOT / "QLC+ Setups"
 # Vibra's default matrices still apply (no [groups]), so every colour they use
 # is here; magenta and ultraviolet are gone, and most values move.
 DESCRIPTION = """

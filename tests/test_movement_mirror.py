@@ -6,7 +6,7 @@ open and close together, and it is the reason the plot's positions are read back
 out of the workspace rather than only written into it.
 """
 
-from pathlib import Path
+from rig_root import RIG_ROOT
 
 from qlctool.generate.home_position import MID, generate_home_position
 from qlctool.generate.movement_efx import generate_movement_efx, moving_head_ids
@@ -16,7 +16,7 @@ from qlctool.skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 
 

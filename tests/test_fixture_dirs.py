@@ -13,6 +13,7 @@ import shutil
 from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.cli import main
 from qlctool.definition import load_definition
@@ -21,7 +22,7 @@ from qlctool.library import FixtureLibrary
 from qlctool.read_toolkit_config import read_toolkit_config
 from qlctool.toolkit_config import ToolkitConfig
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 BASELINE = json.loads((Path(__file__).with_name("vibra_baseline.json")).read_text("utf-8"))
 
 

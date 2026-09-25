@@ -6,9 +6,8 @@ order, attributes and colour encoding are what QLC+ actually wrote. Second, the
 generator injects the cross-product without touching anything that was there.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.argb import argb_from_rgb, rgb_from_argb
 from qlctool.color_format import INDEXED, LEGACY, color_format_of
@@ -24,7 +23,7 @@ from qlctool.workspace import Workspace
 from qlctool.xmlsemantics import first_difference
 from qlctool.xmlutil import find_local, findall_local, iter_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 # The same show as saved by three QLC+ versions: 4.13.1 (SHOW), 4.14.3 and
 # 5.2.2. Each writes the schema slightly differently, and the builders must

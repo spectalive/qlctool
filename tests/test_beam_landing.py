@@ -6,9 +6,9 @@ as "tilted towards the audience" and it was, by two metres too few.
 """
 
 import math
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.beam_landing import HANGING, STANDING, beam_landing
 from qlctool.capabilities_of import capabilities_of
@@ -17,7 +17,7 @@ from qlctool.monitor_node import MonitorItem
 from qlctool.stage_plot import load_stage_plot
 from qlctool.workspace import Workspace
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"
 PLOT = REPO / "QLC+ Setups" / "vibra-stage-plot.json"
 

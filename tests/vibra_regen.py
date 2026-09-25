@@ -9,12 +9,14 @@ import hashlib
 import json
 from pathlib import Path
 
+from rig_root import RIG_ROOT
+
 from qlctool.cli import main
 
 
 def regenerate_vibra(out_dir: Path, use_descriptions: bool = False) -> dict[str, str]:
     """Workspace name -> sha256 of the file `qlctool newshow` writes for it."""
-    setups = Path(__file__).resolve().parents[3] / "QLC+ Setups"
+    setups = RIG_ROOT / "QLC+ Setups"
     recipes = json.loads(
         Path(__file__).with_name("vibra_baseline.json").read_text(encoding="utf-8")
     )

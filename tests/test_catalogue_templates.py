@@ -1,8 +1,7 @@
 """Catalogue templates: a name with a hole in it, the hole the same in every language."""
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.description.reading.read_names import read_names
@@ -21,7 +20,7 @@ from qlctool.skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
-SETUPS = Path(__file__).resolve().parents[3] / "QLC+ Setups"
+SETUPS = RIG_ROOT / "QLC+ Setups"
 SHOW = SETUPS / "DeluxeEventos2.qxw"
 
 

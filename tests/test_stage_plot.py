@@ -7,9 +7,9 @@ patch it was written against.
 """
 
 import json
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.fixture import patched_fixtures
 from qlctool.generate.stage_plot_layout import apply_stage_plot
@@ -19,7 +19,7 @@ from qlctool.stage_plot import load_stage_plot
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 # The plot is bound to the patch it describes, and the patch grew past the
 # hand-built original when the other two pixel panels were added: Vibra.qxw is
 # the current rig, DeluxeEventos2.qxw is kept as the reference the builders are

@@ -6,9 +6,9 @@ to its English catalogue spelling must leave the desk's pages exactly as they we
 """
 
 from copy import deepcopy
-from pathlib import Path
 
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool.desk_burst_duration import desk_burst_duration
 from qlctool.desk_widgets import DeskWidget
@@ -19,7 +19,7 @@ from qlctool.names.default_names import default_names
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.workspace import Workspace
 
-SHOW = Path(__file__).resolve().parents[3] / "QLC+ Setups" / "Vibra.qxw"
+SHOW = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 
 
 @pytest.fixture(scope="module")

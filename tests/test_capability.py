@@ -5,9 +5,8 @@ actual show, so a wrong channel offset (which would send colour to the wrong
 wire on stage) fails here instead of in front of an audience.
 """
 
-from pathlib import Path
-
 import pytest
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capability import FixtureCapabilities
@@ -15,7 +14,7 @@ from qlctool.fixture import patched_fixtures
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
 
 

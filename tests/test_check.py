@@ -12,10 +12,10 @@ what stops a check from being written to fit one file.
 """
 
 import re
-from pathlib import Path
 
 import pytest
 from lxml import etree
+from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.audience_window import BEAM_WINDOW
@@ -38,7 +38,7 @@ from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = RIG_ROOT
 SHOWS = ("Vibra.qxw", "Vibra-beats.qxw", "Vibra-split.qxw")
 BEAMS = (20, 21, 22, 23)
 
