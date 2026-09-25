@@ -168,6 +168,13 @@ HITS: tuple[tuple[str, str], ...] = (
 
 # What page 1 says about itself, because nobody reads a manual at a venue.
 HELP_LINES = ("help_show_1", "help_show_2", "help_show_3", "help_show_4", "help_show_5")
+# The lines that speak of the haze, and what each says on a show without one:
+# "AUTO is colours, haze and ..." and "HAZE NOW works while held" are false on
+# a rig with no haze machine (2026-09-25, Plan C preflight D9).
+HELP_WITHOUT_HAZE = {
+    "help_show_1": "help_show_1_no_haze",
+    "help_show_3": "help_show_3_no_haze",
+}
 
 HELP_ROW_Y = 630
 # The haze row was 28px tall under SMALL_FONT while every other button on the
@@ -452,6 +459,7 @@ def generate_live_console(
         label,
         ids,
         console,
+        master,
         tempo_functions,
         bpm_tap,
         tempo_beat_ms,
@@ -488,6 +496,7 @@ def generate_live_console(
         names,
         banks,
         beam_colors,
+        master,
         mover_fixture_ids,
         movement_functions,
         tempo_beat_ms,
@@ -549,6 +558,7 @@ def _page_show(
     label,
     ids,
     console,
+    master: Mapping[str, int],
     tempo_functions,
     bpm_tap,
     tempo_beat_ms,
@@ -556,6 +566,12 @@ def _page_show(
     vocabulary: Names,
 ) -> None:
     """Page 1: the state the room is in, the hits, and the panic button."""
+    # The show hazes when the haze timer was built: its functions are in the
+    # master, as `canonical_show` puts them only for a fog-only machine.
+    hazes = any(
+        master.get(vocabulary.display(function)) is not None
+        for function in ("smoke_on", *(f for f, _ in SMOKE_RHYTHMS))
+    )
     label(
         outer,
         vocabulary.display("page_show"),
@@ -608,9 +624,12 @@ def _page_show(
         font=TITLE_FONT,
     )
     # Seven across the row: pitch derived from the frame so adding a hit
-    # narrows the buttons instead of pushing the last one off the screen.
-    pitch = (OUTER_WIDTH - 16 - 2 * GAP - 4) // len(HITS)
-    for index, (function, caption) in enumerate(HITS):
+    # narrows the buttons instead of pushing the last one off the screen. A hit
+    # the show has no function for (the haze, on a rig without a machine) takes
+    # no place in the row.
+    present = [(f, c) for f, c in HITS if master.get(vocabulary.display(f)) is not None]
+    pitch = (OUTER_WIDTH - 16 - 2 * GAP - 4) // max(len(present), 1)
+    for index, (function, caption) in enumerate(present):
         master_button(
             hits,
             vocabulary.display(function),
@@ -686,7 +705,7 @@ def _page_show(
     for index, line in enumerate(HELP_LINES):
         label(
             outer,
-            vocabulary.display(line),
+            vocabulary.display(line if hazes else HELP_WITHOUT_HAZE.get(line, line)),
             LEFT_X,
             HELP_ROW_Y + index * 26,
             RIGHT_X - LEFT_X - GAP,
@@ -699,33 +718,35 @@ def _page_show(
     # two timers on one pump is twice the haze: pressing a rhythm stops the one
     # that was running, and pressing the running one again stops the haze
     # altogether. The vertical columns are not here and never will be - those
-    # only fire while HUMO VERT is held down (`rule_held_column`).
-    smoke = frame(
-        outer,
-        vocabulary.display("haze"),
-        LEFT_X,
-        SMOKE_ROW_Y,
-        RIGHT_X - LEFT_X - GAP,
-        SMOKE_ROW_HEIGHT,
-        page=PAGE_SHOW,
-        solo=True,
-        # AUTO starts the one-minute rhythm as a child; choosing another must
-        # stop it, or two timers share the pump.
-        exclude_monitored=False,
-        font=TITLE_FONT,
-    )
-    pitch = (RIGHT_X - LEFT_X - GAP - 2 * GAP) // len(SMOKE_RHYTHMS)
-    for index, (function, caption) in enumerate(SMOKE_RHYTHMS):
-        master_button(
-            smoke,
-            vocabulary.display(function),
-            vocabulary.display(caption),
-            GAP + index * pitch,
-            HEADER + 4,
-            pitch - 6,
-            SMOKE_BUTTON_HEIGHT,
-            font=BIG_FONT,
+    # only fire while HUMO VERT is held down (`rule_held_column`). No haze
+    # machine, no row: an empty solo frame is a promise (`marco vacio`).
+    if hazes:
+        smoke = frame(
+            outer,
+            vocabulary.display("haze"),
+            LEFT_X,
+            SMOKE_ROW_Y,
+            RIGHT_X - LEFT_X - GAP,
+            SMOKE_ROW_HEIGHT,
+            page=PAGE_SHOW,
+            solo=True,
+            # AUTO starts the one-minute rhythm as a child; choosing another must
+            # stop it, or two timers share the pump.
+            exclude_monitored=False,
+            font=TITLE_FONT,
         )
+        pitch = (RIGHT_X - LEFT_X - GAP - 2 * GAP) // len(SMOKE_RHYTHMS)
+        for index, (function, caption) in enumerate(SMOKE_RHYTHMS):
+            master_button(
+                smoke,
+                vocabulary.display(function),
+                vocabulary.display(caption),
+                GAP + index * pitch,
+                HEADER + 4,
+                pitch - 6,
+                SMOKE_BUTTON_HEIGHT,
+                font=BIG_FONT,
+            )
 
     # The tempo dial, where the operator is looking, with the hand-built
     # console's tap key. Each layer carries its own multiplier - see
@@ -774,6 +795,7 @@ def _page_control(
     names,
     banks,
     beam_colors,
+    master: Mapping[str, int],
     mover_fixture_ids,
     movement_functions,
     tempo_beat_ms,
@@ -784,9 +806,12 @@ def _page_control(
     mix_code: Mapping[str, str],
 ) -> None:
     """Page 3: direct controls that remain useful beside the play families."""
+    # Page 3's one haze control is the vertical column's light; without it the
+    # page title does not promise haze.
+    has_haze_light = master.get(vocabulary.display("vertical_smoke")) is not None
     label(
         outer,
-        vocabulary.display("page_control"),
+        vocabulary.display("page_control" if has_haze_light else "page_control_no_haze"),
         LEFT_X,
         30,
         OUTER_WIDTH - 16,
@@ -913,26 +938,28 @@ def _page_control(
 
     # The vertical smoke's light: latched on purpose - the column lasts as
     # long as it lasts, and somebody presses it off when it is over.
-    master_button(
-        outer,
-        vocabulary.display("vertical_smoke"),
-        vocabulary.display("vertical_smoke_light"),
-        RIGHT_X,
-        716,
-        RIGHT_WIDTH,
-        60,
-        page=PAGE_CONTROL,
-    )
-    label(
-        outer,
-        vocabulary.display("vertical_smoke_help"),
-        RIGHT_X,
-        782,
-        RIGHT_WIDTH,
-        60,
-        page=PAGE_CONTROL,
-        font=HELP_FONT,
-    )
+    # Its help explains that button, so it goes where the button goes.
+    if has_haze_light:
+        master_button(
+            outer,
+            vocabulary.display("vertical_smoke"),
+            vocabulary.display("vertical_smoke_light"),
+            RIGHT_X,
+            716,
+            RIGHT_WIDTH,
+            60,
+            page=PAGE_CONTROL,
+        )
+        label(
+            outer,
+            vocabulary.display("vertical_smoke_help"),
+            RIGHT_X,
+            782,
+            RIGHT_WIDTH,
+            60,
+            page=PAGE_CONTROL,
+            font=HELP_FONT,
+        )
 
     # The beams' own colour wheel remains held here. A latched colour-wheel
     # pick on JUGAR would stop the rig wheel and leave every RGB fixture dark.

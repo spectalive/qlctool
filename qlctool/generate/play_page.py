@@ -220,16 +220,19 @@ def _build_reset_strip(
         18,
         font=small_font,
     )
-    pitch = (_WIDTH - 426 - 2 * _GAP) // len(_RESET_NAMES)
+    # A function the show lacks (the haze, on a rig without a machine) takes
+    # no place in the strip.
+    present = [
+        (vocabulary.display(i), master[vocabulary.display(i)])
+        for i in _RESET_NAMES
+        if master.get(vocabulary.display(i)) is not None
+    ]
+    pitch = (_WIDTH - 426 - 2 * _GAP) // max(len(present), 1)
     captions = {
         vocabulary.display(function): vocabulary.display(caption)
         for function, caption in _RESET_CAPTIONS
     }
-    for index, identifier in enumerate(_RESET_NAMES):
-        name = vocabulary.display(identifier)
-        function_id = master.get(name)
-        if function_id is None:
-            continue
+    for index, (name, function_id) in enumerate(present):
         is_flash = name in flashes
         button(
             strip,
@@ -405,6 +408,9 @@ def _build_pixel_family(
     small_font,
     vocabulary: Names,
 ) -> None:
+    hooks = (vocabulary.display("panel_cycle"), vocabulary.display("talk_panels"))
+    if not wrappers.panel_ids and not any(ids_by_name.get(h) is not None for h in hooks):
+        return
     family = frame(
         outer,
         vocabulary.display("family_pixels"),
@@ -564,6 +570,9 @@ def _build_gobo_family(
     small_font,
     vocabulary: Names,
 ) -> None:
+    hooks = (vocabulary.display("gobo_animation"), vocabulary.display("gobo_rest"))
+    if not wrappers.gobo_ids and not any(ids_by_name.get(h) is not None for h in hooks):
+        return
     family = frame(
         outer,
         vocabulary.display("family_gobos"),
@@ -610,6 +619,8 @@ def _build_gobo_family(
         44,
         font=small_font,
     )
+    if not wrappers.gobo_ids:
+        return
     picks = frame(
         family,
         vocabulary.display("gobo_pages"),
@@ -652,6 +663,13 @@ def _build_prism_family(
     small_font,
     vocabulary: Names,
 ) -> None:
+    hooks = (
+        ("prism_animation", "hook_prism", True),
+        ("prism_rest", "rest_caption", False),
+    )
+    offered = [ids_by_name.get(vocabulary.display(function)) for function, _, _ in hooks]
+    if not wrappers.prism_ids and all(function_id is None for function_id in offered):
+        return
     family = frame(
         outer,
         vocabulary.display("family_prism"),
@@ -675,10 +693,6 @@ def _build_prism_family(
     )
     columns = 11
     pitch = (_WIDTH - 2 * _GAP) // columns
-    hooks = (
-        ("prism_animation", "hook_prism", True),
-        ("prism_rest", "rest_caption", False),
-    )
     index = 0
     for function, caption, include_key in hooks:
         _hook(

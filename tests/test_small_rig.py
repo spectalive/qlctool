@@ -11,8 +11,10 @@ import pytest
 from small_rig import build_small_rig_patch
 
 from qlctool.checks.rule_dangling_reference import check_dangling_references
+from qlctool.checks.rule_empty_frame import check_empty_frames
 from qlctool.checks.show_graph import build_show_graph
 from qlctool.cli import main
+from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import iter_local
 
@@ -48,3 +50,21 @@ def test_no_member_names_a_function_that_was_never_built(club):
     root = Workspace.load(club).root
     assert ">None</Step>" not in club.read_text(encoding="utf-8")
     assert not check_dangling_references(build_show_graph(root, []), root)
+
+
+def _captions(club: Path) -> list[str]:
+    root = Workspace.load(club).root
+    return [
+        e.get("Caption") or "" for e in root.iter() if isinstance(e.tag, str) and e.get("Caption")
+    ]
+
+
+def test_no_frame_is_left_with_nothing_to_press(club):
+    """Plan C preflight (D9): the haze row, and the gobo, prism and pixel families."""
+    assert not check_empty_frames(Workspace.load(club).root)
+
+
+def test_the_console_does_not_speak_of_haze(club):
+    """Plan C preflight (D9): no haze machine, so no haze row, hit or help line."""
+    haze = default_names().display("haze_word").casefold()
+    assert not [c for c in _captions(club) if haze in c.casefold()]
