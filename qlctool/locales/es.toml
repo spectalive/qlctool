@@ -198,6 +198,7 @@ path_strobes = "Strobos"
 path_moments = "Momentos"
 
 [console]
+root_frame = "Página 1"
 grand_master = "Master General"
 tempo_dial = "Tempo Show"
 movement_speed = "Vel. Movimiento"

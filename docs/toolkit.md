@@ -101,8 +101,8 @@ same in both (ruling B6): the `Rig` prefix of the unison colour scenes, the
 the `Wash` and `Beam` movement prefixes (no catalogue entry renders them
 alone; `prefix_fast_wash` is "Wash Rapido" / "Fast Wash"), `Gobo Shake - `,
 and the `(8 bit)` / `(16 bit)` suffixes of a split EFX. The root console
-frame's caption is copied from the input workspace (open in the Vibra show's
-[`TODO.md`](https://github.com/Vibra-Lab/vibra-lighting/blob/main/TODO.md)).
+frame's caption comes from the catalogue too (`root_frame`: "Page 1" /
+"Página 1"), whatever the input workspace called it.
 
 `[names.<lang>]` overrides any identifier; an override of a template must keep
 its `{fields}`. An override of a `frames` identifier may reword the explanation

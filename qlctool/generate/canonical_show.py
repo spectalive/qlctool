@@ -147,7 +147,7 @@ def build_canonical_show(
     pastels = pastel_palette_of(colours)
     contrasts = contrast_pairs_of(colours)
     beats = beats or described.timing.beats
-    strip_to_skeleton(workspace)
+    strip_to_skeleton(workspace, vocabulary)
     # Whatever machine the source file was saved on, the show binds to the
     # USB-DMX interface that is actually plugged in (docs/rig.md; the three
     # shipped files disagreed about serial numbers, old-vs-new audit

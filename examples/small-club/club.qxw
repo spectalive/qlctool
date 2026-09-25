@@ -5557,7 +5557,7 @@
     </Function>
   </Engine>
   <VirtualConsole>
-    <Frame Caption="">
+    <Frame Caption="Page 1">
       <Appearance>
         <FrameStyle>None</FrameStyle>
         <ForegroundColor>Default</ForegroundColor>
