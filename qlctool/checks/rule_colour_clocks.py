@@ -17,6 +17,8 @@ layers together is an operator's choice, a state is a promise.
 
 from .colour_clocks_below import colour_clocks_below
 from .finding import ERROR, Finding
+from .joined import Joined
+from .phrase import Phrase
 from .show_graph import ShowGraph
 from .step_colours import step_colours
 
@@ -44,13 +46,14 @@ def check_colour_clocks(
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(collection_id),
-                    message=(
-                        "arranca a la vez "
-                        + " y ".join(f"«{graph.name(clock)}»" for clock in sorted(distinct))
-                        + ", dos ciclos que rotan color cada uno a su ritmo: los "
-                        f"fixtures de uno van a su bola respecto al resto "
-                        f"(boton: {entries[function_id]})"
-                    ),
+                    message_id="colour_clocks_together",
+                    fields={
+                        "clocks": Joined(
+                            tuple(f"«{graph.name(clock)}»" for clock in sorted(distinct)),
+                            Phrase("list_and"),
+                        ),
+                        "button": entries[function_id],
+                    },
                     fixtures=_stray_fixtures(graph, groups, distinct),
                 )
             )

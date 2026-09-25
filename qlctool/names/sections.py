@@ -15,4 +15,6 @@ SECTIONS: tuple[str, ...] = (
     "messages",
     # What each `qlctool check` rule is called (ruling B10): a finding's `rule_id`.
     "checks",
+    # What each finding says (ruling B10, round 2): a finding's `message_id`.
+    "findings",
 )

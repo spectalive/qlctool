@@ -17,6 +17,7 @@ from lxml import etree
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
+from .phrase import Phrase
 from .show_graph import ShowGraph
 
 RULE_ID = "flash_scene"
@@ -46,12 +47,11 @@ def check_flash_scene(graph: ShowGraph, root: etree._Element) -> list[Finding]:
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
-                message=(
-                    f"cuelga en modo Flash del boton "
-                    f"«{button.attrib.get('Caption', '')}», pero es un "
-                    f"{kind or 'nada'}: QLC+ solo sabe flashear escenas "
-                    f"(Scene::flash), asi que el boton se queda a medias"
-                ),
+                message_id="flash_scene_not_a_scene",
+                fields={
+                    "button": button.attrib.get("Caption", ""),
+                    "kind": kind or Phrase("flash_scene_nothing"),
+                },
             )
         )
     return findings

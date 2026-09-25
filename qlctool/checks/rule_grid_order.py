@@ -35,6 +35,8 @@ from lxml import etree
 from ..fixture_group import fixture_groups
 from ..stage_x_positions import stage_x_positions
 from .finding import WARNING, Finding
+from .joined import Joined
+from .phrase import Phrase
 
 RULE_ID = "grid_order"
 
@@ -61,25 +63,26 @@ def check_grid_order(root: etree._Element) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=WARNING,
                     function=group.name,
-                    message=(
-                        f"la fila {y} de la rejilla salta por el escenario "
-                        f"{len(out)} veces ({', '.join(_jump(a, b) for a, b in out[:3])}"
-                        f"{', ...' if len(out) > 3 else ''}): un barrido por la "
-                        f"rejilla no barre la sala. `qlctool patch --group-sort "
-                        f"{group.group_id}` la reordena"
-                    ),
+                    message_id="grid_order_row_jumps",
+                    fields={
+                        "row": y,
+                        "count": len(out),
+                        "jumps": Joined(tuple(_jump(a, b) for a, b in out[:3]), ", "),
+                        "more": ", ..." if len(out) > 3 else "",
+                        "group": group.group_id,
+                    },
                 )
             )
     return findings
 
 
-def _jump(before: tuple[bool, float], after: tuple[bool, float]) -> str:
+def _jump(before: tuple[bool, float], after: tuple[bool, float]) -> Joined:
     """One step of the row, with the not-rigged fixtures named as such."""
-    return f"{_where(before)}->{_where(after)}"
+    return Joined((_where(before), _where(after)), "->")
 
 
-def _where(key: tuple[bool, float]) -> str:
-    return "sin colgar" if key[0] else f"{key[1]:.0f} mm"
+def _where(key: tuple[bool, float]) -> Phrase | str:
+    return Phrase("grid_order_not_rigged") if key[0] else f"{key[1]:.0f} mm"
 
 
 def _rows(root: etree._Element, group_id: int) -> dict[int, list[tuple[int, int]]]:

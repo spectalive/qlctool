@@ -102,11 +102,11 @@ def _orphaned(
                 rule_id=RULE_ID,
                 severity=WARNING,
                 function=graph.name(function_id),
-                message=(
-                    f"el flash «{caption}» mueve una rueda (gobo, prisma o "
-                    f"color) que {', '.join(orphan_states)} no escribe: al soltar, "
-                    f"la rueda se queda donde el flash la dejo y nadie la devuelve"
-                ),
+                message_id="accent_restore_wheel_left",
+                fields={
+                    "caption": caption,
+                    "states": ", ".join(orphan_states),
+                },
                 fixtures=(capability.fixture.name,),
             )
         )

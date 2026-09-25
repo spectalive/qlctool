@@ -94,12 +94,12 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
                 severity=ERROR,
                 function=scene_name,
                 fixtures=tuple(names),
-                message=(
-                    f"es el flash mas rapido que reciben {len(slow)} canales de "
-                    f"estrobo y se queda al {slowest:.0%} de su carrera "
-                    f"slow-to-fast - un flash a toda velocidad vive del "
-                    f"{FAST_FLASH_FRACTION:.0%} para arriba"
-                ),
+                message_id="flash_speed_slow",
+                fields={
+                    "count": len(slow),
+                    "slowest": slowest,
+                    "fast": FAST_FLASH_FRACTION,
+                },
             )
         )
     for scene_name, crawling in sorted(crawl_by_scene.items()):
@@ -116,12 +116,12 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
                 severity=ERROR,
                 function=scene_name,
                 fixtures=tuple(names),
-                message=(
-                    f"escribe {len(crawling)} canales de estrobo por debajo del "
-                    f"{CRAWL_FLASH_FRACTION:.0%} de su carrera slow-to-fast (el "
-                    f"peor al {slowest:.0%}) - eso ya no es un flash, es un "
-                    f"parpadeo a paso de tortuga"
-                ),
+                message_id="flash_speed_crawl",
+                fields={
+                    "count": len(crawling),
+                    "crawl": CRAWL_FLASH_FRACTION,
+                    "slowest": slowest,
+                },
             )
         )
     return findings

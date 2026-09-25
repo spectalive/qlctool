@@ -78,7 +78,7 @@ def _check_widget(
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=caption,
-                message=("no tiene ninguna banda enlazada a canal, funcion o widget: no hace nada"),
+                message_id="audio_trigger_unbound",
             )
         ]
     findings: list[Finding] = []
@@ -92,13 +92,12 @@ def _check_widget(
                         rule_id=RULE_ID,
                         severity=ERROR,
                         function=target.attrib.get("Caption", "") or caption,
-                        message=(
-                            f"la banda «{bar.attrib.get('Name', '')}» de «{caption}» "
-                            f"presiona «{target.attrib.get('Caption', '')}», que "
-                            f"comparte un marco solo con otras funciones: la "
-                            f"musica para lo que estuviera sonando y nada lo "
-                            f"recupera"
-                        ),
+                        message_id="audio_trigger_presses_solo",
+                        fields={
+                            "band": bar.attrib.get("Name", ""),
+                            "caption": caption,
+                            "target": target.attrib.get("Caption", ""),
+                        },
                     )
                 )
         function_id = _bound_function(bar, target)
@@ -112,11 +111,11 @@ def _check_widget(
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(reached),
-                message=(
-                    f"la banda «{bar.attrib.get('Name', '')}» de «{caption}» "
-                    f"lo arranca: la musica lo dispara sola, sin que nadie "
-                    f"decida cuando"
-                ),
+                message_id="audio_trigger_starts_function",
+                fields={
+                    "band": bar.attrib.get("Name", ""),
+                    "caption": caption,
+                },
             )
         )
     return findings

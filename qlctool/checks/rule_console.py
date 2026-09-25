@@ -91,11 +91,11 @@ def _solo_frames(graph: ShowGraph, frame: etree._Element) -> list[Finding]:
                         rule_id=RULE_ID,
                         severity=ERROR,
                         function=graph.name(function_id),
-                        message=(
-                            f"comparte el marco solo «{widget.attrib.get('Caption', '')}» "
-                            f"con {', '.join(graph.name(c) for c in sorted(clash))}, "
-                            f"que es lo que arranca: el marco lo apagara nada mas pulsarlo"
-                        ),
+                        message_id="console_solo_clash",
+                        fields={
+                            "frame": widget.attrib.get("Caption", ""),
+                            "clash": ", ".join(graph.name(c) for c in sorted(clash)),
+                        },
                     )
                 )
     return findings
@@ -120,7 +120,10 @@ def _keys(frame: etree._Element) -> list[Finding]:
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=", ".join(captions),
-                message=f"comparten la tecla «{key}»: pulsarla dispara todos",
+                message_id="console_same_key",
+                fields={
+                    "key": key,
+                },
             )
         )
     return findings
@@ -139,10 +142,13 @@ def _off_canvas(frame: etree._Element, canvas: tuple[int, int]) -> list[Finding]
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=widget.attrib.get("Caption", "") or localname(widget),
-                    message=(
-                        f"se sale de la pantalla ({right}x{bottom} sobre "
-                        f"{width}x{height}): nadie puede pulsarlo"
-                    ),
+                    message_id="console_off_screen",
+                    fields={
+                        "right": right,
+                        "bottom": bottom,
+                        "width": width,
+                        "height": height,
+                    },
                 )
             )
     return findings
@@ -195,11 +201,14 @@ def _parent_bounds(frame: etree._Element) -> list[Finding]:
                         rule_id=RULE_ID,
                         severity=ERROR,
                         function=child.attrib.get("Caption", "") or localname(child),
-                        message=(
-                            f"se sale de su propio marco «{widget.attrib.get('Caption', '')}» "
-                            f"({right}x{bottom} sobre {width}x{height} del marco): "
-                            f"queda cortado o invade lo que hay al lado"
-                        ),
+                        message_id="console_out_of_frame",
+                        fields={
+                            "frame": widget.attrib.get("Caption", ""),
+                            "right": right,
+                            "bottom": bottom,
+                            "width": width,
+                            "height": height,
+                        },
                     )
                 )
     return findings
@@ -229,10 +238,11 @@ def _double_buttons(graph: ShowGraph, frame: etree._Element) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=caption,
-                    message=(
-                        f"tiene dos botones Blackout («{seen}» y «{caption}»): "
-                        "uno de los dos siempre parecera apagado"
-                    ),
+                    message_id="console_two_blackouts",
+                    fields={
+                        "seen": seen,
+                        "caption": caption,
+                    },
                 )
             )
         else:

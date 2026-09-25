@@ -67,11 +67,7 @@ def check_flash_strobe(graph: ShowGraph, groups, root: etree._Element) -> list[F
                     rule_id=AUDIO_RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        "estroba y lo pulsa una barra de audio: un estrobo "
-                        "disparado por lo que haga la musica es un estrobo que "
-                        "nadie ha elegido"
-                    ),
+                    message_id="flash_strobe_audio",
                 )
             )
         elif not by_audio and dark:
@@ -81,12 +77,10 @@ def check_flash_strobe(graph: ShowGraph, groups, root: etree._Element) -> list[F
                     severity=ERROR,
                     function=graph.name(function_id),
                     fixtures=tuple(sorted(dark)),
-                    message=(
-                        f"cuelga de un boton Flash y escribe {len(dark)} aparatos "
-                        f"con canal de estrobo sin estrobarlos - en este show un "
-                        f"flash mantenido estroba, y dejar el shutter en "
-                        f"«Open»/«No function» es la luz de trabajo, no el golpe"
-                    ),
+                    message_id="flash_strobe_not_strobing",
+                    fields={
+                        "count": len(dark),
+                    },
                 )
             )
     return findings

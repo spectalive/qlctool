@@ -40,11 +40,8 @@ def check_empty_frames(root: etree._Element) -> list[Finding]:
             Finding(
                 rule_id=RULE_ID,
                 severity=WARNING,
-                function=frame.get("Caption") or f"marco {frame.get('ID')}",
-                message=(
-                    "este marco no tiene ningun control dentro, solo textos o nada: "
-                    "en la consola no hay nada que pulsar en el"
-                ),
+                function=frame.get("Caption") or f"{localname(frame)} {frame.get('ID')}",
+                message_id="empty_frame_nothing_to_press",
             )
         )
     return findings

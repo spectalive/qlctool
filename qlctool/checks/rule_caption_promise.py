@@ -23,6 +23,8 @@ from lxml import etree
 from ..xmlutil import find_local
 from .caption_promises import CAPTION_PROMISES
 from .finding import ERROR, Finding
+from .joined import Joined
+from .phrase import Phrase
 from .promise_kept import promise_kept
 from .promise_patterns import promise_patterns
 from .promise_words import PROMISE_WORDS
@@ -53,10 +55,11 @@ def check_caption_promise(graph: ShowGraph, root: etree._Element) -> list[Findin
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=caption,
-                message=(
-                    f"el rotulo ({identifier}) promete {', '.join(PROMISE_WORDS[p] for p in missing)}"
-                    " y el rig no lo tiene: la consola habla de algo que no hay"
-                ),
+                message_id="caption_promise_missing",
+                fields={
+                    "identifier": identifier,
+                    "promises": Joined(tuple(Phrase(PROMISE_WORDS[p]) for p in missing), ", "),
+                },
             )
         )
     return findings

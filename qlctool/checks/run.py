@@ -23,7 +23,8 @@ from .console_caption_findings import console_caption_findings
 from .console_states import room_states
 from .entry_points import entry_points
 from .finding import Finding
-from .named_in_order import named_in_order
+from .fixing_order import fixing_order
+from .named_findings import named_findings
 from .rule_accent_restore import check_accent_restore
 from .rule_audio_triggers import check_audio_triggers
 from .rule_collision import check_collisions
@@ -165,4 +166,4 @@ def check_workspace(
     findings += console_caption_findings(graph, root)
     findings += check_audio_triggers(graph, groups, root)
     findings += [finding for provider in applying for finding in provider.check(context)]
-    return named_in_order(findings, root)
+    return fixing_order(named_findings(findings, root))

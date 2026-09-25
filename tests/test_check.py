@@ -23,7 +23,7 @@ from qlctool import roles
 from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.console_states import room_states
-from qlctool.checks.rule_display_name import rule_display_name
+from qlctool.checks.display_name_of_rule import display_name_of_rule
 from qlctool.checks.rule_pick_darkens import check_pick_darkens
 from qlctool.checks.rule_undeclared_heads import check_undeclared_heads
 from qlctool.checks.run import check_workspace
@@ -3190,7 +3190,7 @@ def test_2026_09_25_a_patched_fixture_with_no_definition(tmp_path, monkeypatch, 
     assert main(["check", str(club)]) == 1
     printed = capsys.readouterr().out
     # The club is an English show: since ruling B10 its rule names are English.
-    assert f"  {rule_display_name(RULE_ID, 'en')} (3):" in printed
+    assert f"  {display_name_of_rule(RULE_ID, 'en')} (3):" in printed
     assert "Chauvet MiN Wash" in printed
     assert "buscado en ninguna carpeta" in printed
 
@@ -3229,7 +3229,7 @@ def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_pat
         ("Chauvet MiN Wash (No Such Mode)", message, ("Wash 1",))
     ]
     assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 1
-    assert f"  {rule_display_name(RULE_ID, 'en')} (1):" in capsys.readouterr().out
+    assert f"  {display_name_of_rule(RULE_ID, 'en')} (1):" in capsys.readouterr().out
 
 
 def _recaption(workspace, old, new):

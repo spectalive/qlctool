@@ -8,6 +8,7 @@ from .. import roles
 from ..capability import FixtureCapabilities
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, localname
+from .phrase import Phrase
 from .show_graph import ShowGraph, reach
 from .steps_are_levels import steps_are_levels
 
@@ -44,7 +45,8 @@ _Handoff = tuple[
 @dataclass(frozen=True)
 class _Problem:
     function_id: int
-    message: str
+    # A `[findings]` entry and its fields (ruling B10, round 2).
+    said: Phrase
 
 
 # One frame's problems and handoff, per graph and room states: the layer rules
@@ -87,23 +89,11 @@ def _frame_problems(
     problems: list[_Problem] = []
     for family in sorted(hook_families):
         for function_id in sorted(owners[family] - set(toggles)):
-            problems.append(
-                _Problem(
-                    function_id,
-                    "no tiene su Toggle en el marco: un estado de la sala tambien "
-                    "escribe esa familia y al cambiar de estado la eleccion quedaria suelta",
-                )
-            )
+            problems.append(_Problem(function_id, Phrase("family_owner_no_toggle")))
     state_reachable = set().union(*(graph.descendants(state_id) for state_id in states))
     for function_id in sorted(set(toggles) - hooks):
         if function_id in state_reachable:
-            problems.append(
-                _Problem(
-                    function_id,
-                    "es un pick que un estado de la sala tambien arranca: el marco "
-                    "solo lo apagara al arrancar ese estado",
-                )
-            )
+            problems.append(_Problem(function_id, Phrase("family_owner_state_pick")))
     for hook_id in sorted(hooks):
         starters = sorted(
             function_id
@@ -114,8 +104,7 @@ def _frame_problems(
             problems.append(
                 _Problem(
                     function_id,
-                    f"arranca el hook «{graph.name(hook_id)}» del mismo marco solo: "
-                    "el marco lo apagara nada mas pulsarlo",
+                    Phrase("family_owner_starts_hook", {"hook": graph.name(hook_id)}),
                 )
             )
     return tuple(problems)

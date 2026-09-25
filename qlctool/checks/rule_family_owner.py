@@ -28,7 +28,8 @@ def check_family_owner(
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(problem.function_id),
-                    message=problem.message,
+                    message_id=problem.said.message_id,
+                    fields=problem.said.fields,
                 )
             )
     return findings

@@ -62,11 +62,11 @@ def _collection(graph: ShowGraph, groups, collection_id: int, reported) -> list[
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(collection_id),
-                message=(
-                    f"arranca a la vez «{graph.name(first)}» y «{graph.name(second)}», "
-                    f"y los dos escriben los mismos canales de color, rueda o "
-                    f"posicion: se suman en vez de elegir"
-                ),
+                message_id="collision_same_channels",
+                fields={
+                    "first": graph.name(first),
+                    "second": graph.name(second),
+                },
                 fixtures=tuple(fixtures),
             )
         )

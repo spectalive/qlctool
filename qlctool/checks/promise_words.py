@@ -1,13 +1,17 @@
-"""How a finding of `rule_caption_promise` names each promise, in the checks' Spanish."""
+"""The `[findings]` entry a finding of `rule_caption_promise` names each promise with.
+
+The words themselves ("rueda de gobos", "a gobo wheel") are the catalogue's
+(ruling B10, round 2), so an English show's finding names them in English.
+"""
 
 from .caption_promises import BAR, BEAM_WHEEL, BUILTIN_EFFECTS, GOBO, HAZE, PANEL, PRISM
 
 PROMISE_WORDS: dict[str, str] = {
-    GOBO: "rueda de gobos",
-    PRISM: "prisma",
-    HAZE: "maquina de humo",
-    BEAM_WHEEL: "beam con rueda de color",
-    BAR: "barra de pixeles",
-    PANEL: "panel con efectos propios",
-    BUILTIN_EFFECTS: "aparato con efectos propios",
+    GOBO: "promise_gobo",
+    PRISM: "promise_prism",
+    HAZE: "promise_haze",
+    BEAM_WHEEL: "promise_beam_wheel",
+    BAR: "promise_bar",
+    PANEL: "promise_panel",
+    BUILTIN_EFFECTS: "promise_builtin_effects",
 }

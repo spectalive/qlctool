@@ -19,6 +19,7 @@ from lxml import etree
 
 from .finding import ERROR, Finding
 from .function_references import function_references
+from .phrase import Phrase
 from .show_graph import ShowGraph
 
 RULE_ID = "dangling_reference"
@@ -34,10 +35,10 @@ def check_dangling_references(graph: ShowGraph, root: etree._Element) -> list[Fi
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=holder,
-                message=(
-                    f"nombra la funcion {raw or '(vacio)'}, que no existe en este "
-                    f"workspace: ese paso o ese boton no arranca nada"
-                ),
+                message_id="dangling_reference_missing",
+                fields={
+                    "function": raw or Phrase("dangling_reference_empty"),
+                },
             )
         )
     return findings

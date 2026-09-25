@@ -1,6 +1,6 @@
 """What `qlctool check` prints, in the workspace's language (ruling B10, 2026-09-25).
 
-The rule names are already the workspace's (`named_in_order`); the summary
+The rule names are already the workspace's (`named_findings`); the summary
 lines around them come from the same catalogue, so an English show reads
 "199 buttons checked, no problems" and Vibra still reads "522 botones
 revisados, ningun problema".

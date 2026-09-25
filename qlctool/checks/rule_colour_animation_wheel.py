@@ -65,11 +65,11 @@ def check_colour_animation_wheel(
                 severity=ERROR,
                 function=caption,
                 fixtures=tuple(stuck),
-                message=(
-                    f"anima el color de {len(animated)} aparatos RGB y deja "
-                    f"{len(stuck)} con rueda de color en una sola posicion: el "
-                    f"efecto recorre la sala y esos se quedan en un color fijo"
-                ),
+                message_id="colour_animation_wheel_stuck",
+                fields={
+                    "animated": len(animated),
+                    "stuck": len(stuck),
+                },
             )
         )
     return findings

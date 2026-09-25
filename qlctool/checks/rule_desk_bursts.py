@@ -27,13 +27,21 @@ def check_desk_bursts(
         if duration is None or len(candidates) != 1:
             findings.append(
                 Finding(
-                    RULE_ID,
-                    ERROR,
-                    key,
-                    "requiere un origen, una duracion y un unico Toggle de rafaga",
+                    rule_id=RULE_ID,
+                    severity=ERROR,
+                    function=key,
+                    message_id="desk_burst_incomplete",
                 )
             )
             continue
         for error in desk_burst_errors(graph, root, sources[key], candidates[0], duration):
-            findings.append(Finding(RULE_ID, ERROR, key, error))
+            findings.append(
+                Finding(
+                    rule_id=RULE_ID,
+                    severity=ERROR,
+                    function=key,
+                    message_id=error.message_id,
+                    fields=error.fields,
+                )
+            )
     return findings
