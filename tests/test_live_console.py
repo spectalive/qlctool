@@ -868,7 +868,7 @@ def test_control_middle_column_reflows_without_a_vertical_hole(console):
         return find_local(matches[0], "WindowState")
 
     beam = state_for("Frame", "Color de los BEAM")
-    guidance = state_for("Label", "Apunta las 12 cabezas")
+    guidance = state_for("Label", "Apunta las cabezas")
     pad = state_for("XYPad", "Cabezas")
 
     def geometry(state):

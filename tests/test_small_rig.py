@@ -68,3 +68,13 @@ def test_the_console_does_not_speak_of_haze(club):
     """Plan C preflight (D9): no haze machine, so no haze row, hit or help line."""
     haze = default_names().display("haze_word").casefold()
     assert not [c for c in _captions(club) if haze in c.casefold()]
+
+
+def test_the_aim_label_names_no_count(club):
+    """Plan C preflight (D9): the label said 12 heads on a rig with 4.
+
+    Owner decision, 2026-09-25: the label carries no number on any rig.
+    """
+    aim = default_names().display("aim_frame")
+    assert aim in _captions(club)
+    assert not any(ch.isdigit() for ch in aim)
