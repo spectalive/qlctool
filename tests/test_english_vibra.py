@@ -26,10 +26,10 @@ PLAY_PAGE = 1  # the console's second page, JUGAR / PLAY
 LIBRARY_PAGE = 3
 
 
-def _build(language: str):
+def _build(language: str, names: dict | None = None):
     workspace = Workspace.load(SETUPS / "Vibra.qxw")
     library = FixtureLibrary.load()
-    description = replace(vibra_description(), language=language, names={})
+    description = replace(vibra_description(), language=language, names=names or {})
     show = build_canonical_show(
         workspace,
         library,
@@ -80,6 +80,27 @@ def test_the_console_speaks_english(english):
 def test_every_check_passes(english):
     workspace, library, _ = english
     assert check_workspace(workspace, library) == []
+
+
+def _desk_functions(workspace: Workspace) -> int:
+    return sum(1 for f in iter_local(workspace.root, "Function") if f.get("Path") == "Desk")
+
+
+@pytest.mark.parametrize(
+    "hits",
+    ["HITS — they punch through", "PUNCHES — they punch through"],
+    ids=["explanation", "head"],
+)
+def test_a_frame_override_keeps_the_desk_bursts(english, hits):
+    """2026-09-25, final review of Plan B (ruling F1): an override dropped the bursts.
+
+    The desk bursts looked their frames up through the default vocabulary, so a
+    renamed `hits` frame built 20 Desk functions instead of 34. Reading refuses
+    a renamed head; the "head" case goes round reading to prove the generator
+    itself follows the show's vocabulary.
+    """
+    workspace, _, _ = _build("en", {"en": {"hits": hits}})
+    assert _desk_functions(workspace) == _desk_functions(english[0]) == 34
 
 
 def test_the_desk_map_builds(english):

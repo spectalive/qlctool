@@ -21,7 +21,7 @@ from .live_console import HELP_FONT, PAGE_CONTROL, SMALL_FONT
 
 def generate_desk_bursts(workspace: Workspace, names: Names | None = None) -> list[int]:
     vocabulary = default_names() if names is None else names
-    sources = desk_burst_sources(workspace.root)
+    sources = desk_burst_sources(workspace.root, vocabulary)
     if not sources:
         return []
     functions = {int(f.get("ID")): f for f in workspace.engine if f.get("Type")}

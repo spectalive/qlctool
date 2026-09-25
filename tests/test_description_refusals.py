@@ -121,3 +121,18 @@ def test_an_override_that_names_another_identifier_is_refused(tmp_path, patch_ro
 def test_an_override_may_respell_its_own_identifier(tmp_path, patch_root):
     loaded = load_show_description(_write(tmp_path, '[names.en]\nblue = "Blue"\n'), patch_root)
     assert loaded.names == {"en": {"blue": "Blue"}}
+
+
+# 2026-09-25, final review of Plan B (ruling F1): `[names.en] hits = "PUNCHES —
+# ..."` loaded, and the build dropped 14 desk functions and 7 buttons while
+# `qlctool check`, which finds frames by their shipped head, saw nothing.
+def test_an_override_that_renames_a_frame_head_is_refused(tmp_path, patch_root):
+    path = _write(tmp_path, '[names.en]\nhits = "PUNCHES — they add to whatever is playing"\n')
+    with pytest.raises(ValueError, match=r"\[names\.en\] hits = .* frame heads cannot be renamed"):
+        load_show_description(path, patch_root)
+
+
+def test_an_override_may_reword_a_frame_explanation(tmp_path, patch_root):
+    text = '[names.en]\nhits = "Hits — they punch through"\n'
+    loaded = load_show_description(_write(tmp_path, text), patch_root)
+    assert loaded.names == {"en": {"hits": "Hits — they punch through"}}

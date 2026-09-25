@@ -38,7 +38,7 @@ def test_bursts_preserve_sources_and_validate_without_function_names(generated):
     original, library = generated
     workspace = deepcopy(original)
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
-    sources = desk_burst_sources(workspace.root)
+    sources = desk_burst_sources(workspace.root, default_names())
     buttons = desk_burst_buttons(workspace.root)
     assert sources.keys() == buttons.keys()
     names = default_names()
@@ -88,7 +88,7 @@ def test_2026_09_13_burst_corruption_fails_closed(generated, fault):
     original, library = generated
     workspace = deepcopy(original)
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
-    source = desk_burst_sources(workspace.root)["humo-vert"]
+    source = desk_burst_sources(workspace.root, default_names())["humo-vert"]
     target = desk_burst_buttons(workspace.root)["humo-vert"][0]
     button = next(b for b in iter_local(workspace.root, "Button") if b.get("ID") == str(target.id))
     chaser = graph.functions[target.function]
@@ -167,7 +167,7 @@ def test_burst_map_keeps_source_captions_and_swatches(generated, tmp_path):
     workspace.save(path)
     deskmap = build_deskmap(workspace, library, path)
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
-    for key, source in desk_burst_sources(workspace.root).items():
+    for key, source in desk_burst_sources(workspace.root, default_names()).items():
         control = deskmap["controls"][key]
         glyph, caption = leading_glyph(split_caption(source.caption)[0])
         assert control["caption"] == caption

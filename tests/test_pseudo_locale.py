@@ -45,12 +45,22 @@ COPIED_NAMES = {
 
 
 def _pseudo() -> dict[str, str]:
+    """A marker per identifier; a hit button keeps its hit caption as its head (ruling B7).
+
+    The desk times a burst by the identifier its button's head spells, so a
+    marker that broke B7 would stop the build before the scan (2026-09-25).
+    """
     english = load_catalogue("en")
-    return {
+    pseudo = {
         identifier: f"⟦{identifier}⟧" + "".join(f"{{{f}}}" for f in template_fields(text))
         for entries in english.values()
         for identifier, text in entries.items()
     }
+    for identifier in english["console"]:
+        if identifier.startswith("hit_button_"):
+            head = pseudo[identifier.replace("hit_button_", "hit_", 1)]
+            pseudo[identifier] = f"{head} · {pseudo[identifier]}"
+    return pseudo
 
 
 def _spanish_words() -> set[str]:
