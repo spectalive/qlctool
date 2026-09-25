@@ -77,6 +77,9 @@ CONVERTED: tuple[str, ...] = (
     "generate/stage_layout.py",
     "generate/stage_plot_layout.py",
     "generate/wheel_color_values.py",
+    # Plan C Task 2 (2026-09-25): no catalogue word in them.
+    "generate/haze_machines.py",
+    "generate/rig_has_role.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

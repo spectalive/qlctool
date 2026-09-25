@@ -64,6 +64,7 @@ from .energy_levels import EnergyLevel, generate_energy_levels
 from .flash_color import generate_flash_color
 from .generated_play_wrappers import GeneratedPlayWrappers
 from .gobo_shake import generate_gobo_shake
+from .haze_machines import haze_machines
 from .home_position import generate_home_position
 from .live_console import generate_live_console
 from .matrix_effects import GeneratedMatrices, generate_matrix_effects
@@ -81,6 +82,7 @@ from .prism_spins import generate_prism_spins
 from .quad_color_scenes import generate_quad_color_scenes
 from .rainbow_efx import generate_rainbow_efx
 from .rest_scene import generate_rest_scene
+from .rig_has_role import rig_has_role
 from .smoke_auto import generate_smoke_auto
 from .stage_aim import generate_stage_aim
 from .stage_layout import generate_stage_layout, unplaced_fixtures
@@ -94,7 +96,7 @@ from .unison_colors import (
 from .vertical_smoke_burst import generate_vertical_smoke_burst
 from .vertical_smoke_light import generate_vertical_smoke_light
 from .wheel_color_values import wheel_color_values
-from .wheel_scenes import generate_wheel_scenes
+from .wheel_scenes import GeneratedWheel, generate_wheel_scenes
 
 SHOW_PATH = "Show"
 MATRIX_ALGORITHMS: tuple[str | None, ...] = ("Fill", "Even/Odd", "Strobe", "Waves", None)
@@ -440,19 +442,23 @@ def build_canonical_show(
         companions=((roles.GOBO_SHAKE, 0), (roles.FOCUS, described.tuning.beam_focus)),
         names=vocabulary,
     )
-    gobos = generate_wheel_scenes(
-        workspace,
-        library,
-        role=roles.GOBO,
-        label="Gobo",
-        path="Gobos",
-        dimmer_full=False,
-        companions=(
-            (roles.GOBO_SHAKE, 0, 0),
-            (roles.FOCUS, described.tuning.beam_focus, described.tuning.beam_focus),
-        ),
-        extra_step_ids=shake.scene_ids + dealt,
-        names=vocabulary,
+    gobos = (
+        generate_wheel_scenes(
+            workspace,
+            library,
+            role=roles.GOBO,
+            label="Gobo",
+            path="Gobos",
+            dimmer_full=False,
+            companions=(
+                (roles.GOBO_SHAKE, 0, 0),
+                (roles.FOCUS, described.tuning.beam_focus, described.tuning.beam_focus),
+            ),
+            extra_step_ids=shake.scene_ids + dealt,
+            names=vocabulary,
+        )
+        if rig_has_role(caps, roles.GOBO)
+        else GeneratedWheel([], None)
     )
     if gobos.chaser_id is not None:
         master[vocabulary.display("gobo_animation")] = gobos.chaser_id
@@ -463,40 +469,49 @@ def build_canonical_show(
         for c in capabilities_of(workspace.root, library)
         if c.has_role(roles.GOBO)
     ]
-    beam_colors = generate_wheel_scenes(
-        workspace,
-        library,
-        role=roles.COLOR_MACRO,
-        label="Color Beam",
-        fixture_ids=beams,
-        hold=6000,
-        path="Color Beam",
-        dimmer_full=False,
-        # No chaser of its own since 2026-09-22. A button that walked the beams
-        # through their wheel looked like an on/off and behaved like a colour
-        # pick ("el boton color beam parece un on of pero realmente cambia como
-        # la rueda", owner), and the beams already take the rig's colour from
-        # the rig-wide scenes. The wheel's positions stay, as picks on CONTROL.
-        make_chaser=False,
-        names=vocabulary,
+    beam_colors = (
+        generate_wheel_scenes(
+            workspace,
+            library,
+            role=roles.COLOR_MACRO,
+            label="Color Beam",
+            fixture_ids=beams,
+            hold=6000,
+            path="Color Beam",
+            dimmer_full=False,
+            # No chaser of its own since 2026-09-22. A button that walked the
+            # beams through their wheel looked like an on/off and behaved like
+            # a colour pick ("el boton color beam parece un on of pero
+            # realmente cambia como la rueda", owner), and the beams already
+            # take the rig's colour from the rig-wide scenes. The wheel's
+            # positions stay, as picks on CONTROL.
+            make_chaser=False,
+            names=vocabulary,
+        )
+        if beams
+        else GeneratedWheel([], None)
     )
 
     # The prism spins while it is in: its rotation channel is LTP like the
     # wheel, so every prism scene owns it - slow forward when the prism is
     # inserted, stopped on the "None" position. Without this the channel kept
     # whatever the last look left, and a parked prism does not kaleidoscope.
-    prisms = generate_wheel_scenes(
-        workspace,
-        library,
-        role=roles.PRISM,
-        label=vocabulary.display("prism_label"),
-        run_order="Loop",
-        hold=8000,
-        path=vocabulary.display("path_prism"),
-        dimmer_full=False,
-        make_chaser=False,
-        companions=((roles.PRISM_ROTATION, described.tuning.prism_spin_slow, 0),),
-        names=vocabulary,
+    prisms = (
+        generate_wheel_scenes(
+            workspace,
+            library,
+            role=roles.PRISM,
+            label=vocabulary.display("prism_label"),
+            run_order="Loop",
+            hold=8000,
+            path=vocabulary.display("path_prism"),
+            dimmer_full=False,
+            make_chaser=False,
+            companions=((roles.PRISM_ROTATION, described.tuning.prism_spin_slow, 0),),
+            names=vocabulary,
+        )
+        if rig_has_role(caps, roles.PRISM)
+        else GeneratedWheel([], None)
     )
     # And the same prism turning fast, and turning the other way: one rotation
     # channel, three looks, none of which the show used before 2026-08-30.
@@ -529,13 +544,17 @@ def build_canonical_show(
         else None
     )
 
-    smoke = generate_smoke_auto(workspace, library, names=vocabulary)
-    # The haze timer, one function per rhythm. AUTO starts the default and the
-    # console puts all four in a solo frame, so the operator can change how
-    # often the room hazes without leaving the show page.
-    master.update(smoke.interval_ids)
-    # The burst on its own, for the console: a held button, never a latched one.
-    master[vocabulary.display("smoke_on")] = smoke.on_id
+    smoke = (
+        generate_smoke_auto(workspace, library, names=vocabulary) if haze_machines(caps) else None
+    )
+    if smoke is not None:
+        # The haze timer, one function per rhythm. AUTO starts the default and
+        # the console puts all four in a solo frame, so the operator can change
+        # how often the room hazes without leaving the show page.
+        master.update(smoke.interval_ids)
+        # The burst on its own, for the console: a held button, never a
+        # latched one.
+        master[vocabulary.display("smoke_on")] = smoke.on_id
     # The vertical machines' column, fog and its own LED in one held scene -
     # with DMX plugged in their internal light program is dead, so if this
     # scene does not light them, nothing does (`rule_smoke_light`).
@@ -836,7 +855,7 @@ def build_canonical_show(
                     fid
                     for fid in (
                         movement.cabezas_id,
-                        master[vocabulary.display("gobo_animation")],
+                        master.get(vocabulary.display("gobo_animation")),
                         master.get(vocabulary.display("prism_animation"), prism_off_id),
                         intensity.full_id,
                     )
@@ -850,9 +869,9 @@ def build_canonical_show(
                     fid
                     for fid in (
                         movement.rapidos_id,
-                        master[vocabulary.display("gobo_animation")],
+                        master.get(vocabulary.display("gobo_animation")),
                         master.get(vocabulary.display("prism_animation")),
-                        master[vocabulary.display("dimmer_chase")],
+                        master.get(vocabulary.display("dimmer_chase")),
                         peak_static,
                     )
                     if fid is not None
@@ -868,7 +887,7 @@ def build_canonical_show(
                     fid
                     for fid in (
                         movement.cabezas_id,
-                        master[vocabulary.display("gobo_animation")],
+                        master.get(vocabulary.display("gobo_animation")),
                         master.get(vocabulary.display("prism_animation"), prism_off_id),
                         dimmer_programs_id,
                         peak_static,
@@ -895,16 +914,23 @@ def build_canonical_show(
     # wheel themselves now, and the beams' own wheel walk is gone with its
     # button (2026-09-22).
     auto_members = [
-        master[vocabulary.display("colour_wheel")],
-        master[vocabulary.display("smoke_auto")],
-        *pixel_layer,
-    ]
+        f
+        for f in (
+            master.get(vocabulary.display("colour_wheel")),
+            master.get(vocabulary.display("smoke_auto")),
+        )
+        if f is not None
+    ] + [*pixel_layer]
     if vocabulary.display("energy_cycle") in master:
         auto_members.append(master[vocabulary.display("energy_cycle")])
     else:
         auto_members += [
-            master[vocabulary.display("head_movements")],
-            master[vocabulary.display("gobo_animation")],
+            f
+            for f in (
+                master.get(vocabulary.display("head_movements")),
+                master.get(vocabulary.display("gobo_animation")),
+            )
+            if f is not None
         ]
     master[vocabulary.display("auto")] = _collection(
         workspace, vocabulary.display("auto"), auto_members
@@ -926,7 +952,9 @@ def build_canonical_show(
     )
     beam_white_id = _first(beam_colors.scene_ids)
     master[vocabulary.display("talk_light")] = _collection(
-        workspace, vocabulary.display("talk_light"), [charla_scene_id, beam_white_id]
+        workspace,
+        vocabulary.display("talk_light"),
+        [f for f in (charla_scene_id, beam_white_id) if f is not None],
     )
     # Every moment brings its own intensity base beside its colour, because
     # the colour scenes no longer open anything on their own. The talk state
@@ -956,7 +984,7 @@ def build_canonical_show(
             Moment(
                 vocabulary.display("calm_moment"),
                 [
-                    master[vocabulary.display("colour_wheel")],
+                    master.get(vocabulary.display("colour_wheel")),
                     *pixel_layer,
                     *([movement.slow_id] if movement.slow_id is not None else [home_id]),
                     gobo_open_id,
@@ -970,10 +998,10 @@ def build_canonical_show(
             Moment(
                 vocabulary.display("party_moment"),
                 [
-                    master[vocabulary.display("colour_wheel")],
+                    master.get(vocabulary.display("colour_wheel")),
                     *pixel_layer,
-                    master[vocabulary.display("head_movements")],
-                    master[vocabulary.display("gobo_animation")],
+                    master.get(vocabulary.display("head_movements")),
+                    master.get(vocabulary.display("gobo_animation")),
                     master.get(vocabulary.display("prism_animation"), prism_off_id),
                     intensity.full_id,
                 ],
@@ -988,15 +1016,15 @@ def build_canonical_show(
             Moment(
                 vocabulary.display("frenzy_moment"),
                 [
-                    master[vocabulary.display("colour_wheel")],
+                    master.get(vocabulary.display("colour_wheel")),
                     *pixel_layer,
                     master.get(
                         vocabulary.display("fast_movements"),
-                        master[vocabulary.display("head_movements")],
+                        master.get(vocabulary.display("head_movements")),
                     ),
-                    master[vocabulary.display("gobo_animation")],
+                    master.get(vocabulary.display("gobo_animation")),
                     master.get(vocabulary.display("prism_animation")),
-                    master[vocabulary.display("dimmer_chase")],
+                    master.get(vocabulary.display("dimmer_chase")),
                     peak_static,
                 ],
             ),

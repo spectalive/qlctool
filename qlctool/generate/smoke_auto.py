@@ -18,7 +18,6 @@ with a different pause.
 
 from dataclasses import dataclass, field
 
-from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fog_offsets import fog_offsets
 from ..functions.chaser import build_chaser
@@ -28,6 +27,7 @@ from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
+from .haze_machines import haze_machines
 
 # The rhythms the console offers, in minutes of pause between bursts. The
 # first is the default - the one AUTO starts and the one the key toggles - and
@@ -62,11 +62,7 @@ def generate_smoke_auto(
     """
     vocabulary = default_names() if names is None else names
     path = vocabulary.display("path_haze") if path is None else path
-    smoke = [
-        c
-        for c in capabilities_of(workspace.root, library)
-        if c.is_smoke and not c.has_role(roles.RED)
-    ]
+    smoke = haze_machines(capabilities_of(workspace.root, library))
     if not smoke:
         raise ValueError("no smoke machine in this workspace")
 
