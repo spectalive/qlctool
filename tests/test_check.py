@@ -3096,3 +3096,35 @@ def test_2026_09_25_a_collection_step_that_names_no_function(library):
         button.get("Caption"),
     }
     assert any("None" in f.message for f in findings)
+
+
+def test_2026_09_25_a_frame_with_nothing_to_press(library, tmp_path):
+    """2026-09-25, Plan C preflight (D9): the first show built for a rig with no
+    haze machine put `HUMO AMBIENTE — cada cuánto dispara solo` on page 1 as a
+    solo frame with no button in it, and `check` said "ningun problema".
+    Reproduced on the small club (no haze machine): its console gets that
+    empty haze frame back, and one frame holding only a label beside it.
+    """
+    from small_rig import build_small_rig_patch
+
+    from qlctool.checks.rule_empty_frame import RULE
+    from qlctool.cli import main
+    from qlctool.names.default_names import default_names
+    from qlctool.vc.frame import build_frame
+    from qlctool.vc.label import build_label
+    from qlctool.vc.widget_ids import next_widget_id
+
+    club = tmp_path / "club.qxw"
+    assert main(["newshow", str(build_small_rig_patch(tmp_path)), "--out", str(club)]) == 0
+    workspace = Workspace.load(club)
+    root = workspace.root
+    outer = find_local(find_local(find_local(root, "VirtualConsole"), "Frame"), "Frame")
+    haze = default_names().display("haze")
+    build_frame(outer, next_widget_id(root), haze, 8, 770, 1000, 110, solo=True)
+    words = build_frame(outer, next_widget_id(root), "Words only", 8, 900, 400, 60)
+    build_label(words, next_widget_id(root), "a label over nothing", 6, 26, 300, 20)
+
+    flagged = {f.function for f in check_workspace(workspace, library) if f.rule == RULE}
+    assert {haze, "Words only"} <= flagged
+    # The page frame around them holds controls, so it is not flagged.
+    assert f"marco {outer.get('ID')}" not in flagged
