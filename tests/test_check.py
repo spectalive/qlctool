@@ -3091,13 +3091,19 @@ def test_2026_09_25_a_collection_step_that_names_no_function(library):
     console = find_local(workspace.root, "VirtualConsole")
     button = next(b for b in iter_local(console, "Button") if find_local(b, "Function") is not None)
     find_local(button, "Function").set("ID", "999999")
+    # A slider's <Adjust Function> is a reference too (Task 2a review): the
+    # slider's own <Function> is left valid so only the Adjust can report it.
+    slider = next(iter_local(console, "Slider"))
+    etree.SubElement(slider, f"{{{QLC_NS}}}Adjust", Attribute="0", Function="999998")
 
     findings = [f for f in check_workspace(workspace, library) if f.rule == RULE]
     assert {f.function for f in findings} == {
         default_names().display("talk_light"),
         button.get("Caption"),
+        slider.get("Caption"),
     }
     assert any("None" in f.message for f in findings)
+    assert any("999998" in f.message for f in findings)
 
 
 def test_2026_09_25_a_frame_with_nothing_to_press(library, tmp_path):

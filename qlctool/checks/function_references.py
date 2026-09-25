@@ -5,9 +5,11 @@ does it in Collection and Chaser steps (`ChaserStep::saveXML` writes the id as
 the step's text), a Sequence's `BoundScene`, a Show track's `SceneID` and each
 `ShowFunction` on it. The console does it in a button's, matrix's or slider's
 `<Function>` (an `ID` attribute or the text), a speed dial's `<Function>` list,
-a cue list's `<Chaser>`, a clock `<Schedule Function>`, an audio bar's
-`FunctionID` and an XY pad preset's `<FuncID>`. The tags are QLC+'s own
-(`engine/src/`, `ui/src/virtualconsole/` in the upstream source).
+a cue list's `<Chaser>`, a clock `<Schedule Function>`, a slider's
+`<Adjust Function>`, an audio bar's `FunctionID` (on a `Bar`, `VolumeBar` or
+`SpectrumBar`, so it is read on any element) and an XY pad preset's `<FuncID>`.
+The tags are QLC+'s own (`engine/src/`, `ui/src/virtualconsole/` and
+`qmlui/virtualconsole/` in the upstream source).
 
 A Sequence's steps are left out: their text is channel values, not an id.
 Nothing is interpreted here - the raw text is handed back, so a step that says
@@ -28,7 +30,9 @@ STEP_TYPES = ("Chaser", "Collection")
 # Console tags whose text is a function id.
 CONSOLE_TEXT_TAGS = ("Chaser", "FuncID")
 # Console tags whose attribute is a function id.
-CONSOLE_ATTRIBUTES = {"Schedule": "Function", "SpectrumBar": "FunctionID"}
+CONSOLE_ATTRIBUTES = {"Schedule": "Function", "Adjust": "Function"}
+# The audio bars' attribute: a function id on whichever element carries it.
+AUDIO_BAR_ATTRIBUTE = "FunctionID"
 
 
 def function_references(root: etree._Element) -> Iterator[tuple[str, str]]:
@@ -68,6 +72,8 @@ def _console_reference(element: etree._Element) -> str | None:
         return element.get("ID", (element.text or "").strip())
     if tag in CONSOLE_TEXT_TAGS:
         return (element.text or "").strip()
+    if AUDIO_BAR_ATTRIBUTE in element.attrib:
+        return element.get(AUDIO_BAR_ATTRIBUTE)
     attribute = CONSOLE_ATTRIBUTES.get(tag)
     if attribute is not None and attribute in element.attrib:
         return element.get(attribute)
