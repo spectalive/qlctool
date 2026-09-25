@@ -41,9 +41,9 @@ data = [
   "qlctool/description/reading/description_sections.py",
   "qlctool/description/reading/duration_tables.py",
   "tests/literal_strip.py",
-  # One constant each, imported where it is needed: a tag list, a folder name,
-  # a language, a pattern, the catalogue's sections and where the catalogues
-  # live.
+  # One constant each, imported where it is needed: a tag list, an invalid
+  # function id sentinel, a folder name, a language, a pattern, the
+  # catalogue's sections and where the catalogues live.
   "qlctool/checks/bound_widgets.py",
   "qlctool/checks/invalid_function_id.py",
   "qlctool/checks/rule_group.py",

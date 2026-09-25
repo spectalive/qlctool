@@ -26,28 +26,43 @@
   puts two complementary colours in one group (`complementarios en un mismo
   lavado`). Smallest next step: a dated small-rig test with a two-par group,
   then deal the four colours so no group gets exactly two opposite hues.
-- [ ] **Five structural findings entered the codeality baseline (2026-09-25).**
+- [ ] **Three long modules sit in the codeality baseline (2026-09-25).**
   The gate was red on them beside mypy, and the fix that turned it green was
   told not to restructure modules, so they were recorded as debt instead:
   `checks/run.py` 160 code lines, `generate/color_banks.py` 167 and
-  `generate/matrix_effects.py` 155 (cap 150, BPY004);
-  `checks/function_references.py` holds four declarations (BPY001);
-  `vibra/description.py` holds `vibra_description` (BPY002). Smallest next
-  step: split each over-long module and move the three reference helpers
-  into files of their own, then `codeality-py baseline update` so the
-  entries drop out.
+  `generate/matrix_effects.py` 155 (cap 150, BPY004). The reference helpers
+  and the Vibra description were split out in 356ddd9 and 4799d35. Smallest
+  next step: split each of the three modules, then `codeality-py baseline
+  update` so the entries drop out.
 - [x] **CI's suite cannot meet the 120 s test budget (2026-09-25).** The
-  gate on GitHub failed its pytest stage as `over-budget`: the suite took
-  286-462 s across 3.11 and 3.13 (runs 36122117743, 36127233331) on the
-  four-core runners, where branch coverage falls back to the C tracer below
-  3.14. Solved by codeality-py 0.2.4's `CODEALITY_PY_TEST_BUDGET_SECONDS`,
-  set to 600 on the workflow's gate step; the local budget in
-  `codeality-py.toml` stays 120 s.
-- [ ] **Page 4 counts the panels' effects as 42 on every rig (2026-09-25).**
-  Seen fixing the club's captions: `library_2`, `library_6` and
-  `panels_frame` say "42" in the catalogue, the number Vibra's panels have,
-  while `generate_builtin_effects` builds `min(program.count)` scenes. A rig
-  whose built-in effects number otherwise gets the lines with the wrong
-  count. Smallest next step: render the count from `len(builtins.scene_ids)`
-  through a `{count}` template, with a dated test on a rig with another
-  count; Vibra's bytes stay as they are.
+  gate on GitHub failed its pytest stage as `over-budget` on the four-core
+  runners, where branch coverage falls back to the C tracer below 3.14: 286 s
+  (run 36122117743), then 446 s on 3.11 and 397 s on 3.13 (run 36127233331).
+  Solved by codeality-py 0.2.4's `CODEALITY_PY_TEST_BUDGET_SECONDS`, set to
+  600 on the workflow's gate step; the local budget in `codeality-py.toml`
+  stays 120 s. Closed by the green run 36131008406: 476.8 s on 3.11 and
+  359.9 s on 3.13, under the 600 s budget.
+- [ ] **CI's 3.11 leg uses 79% of its test budget (2026-09-25).** 476.8 s of
+  600 s in run 36131008406. The show builds in `tests/test_check.py` take up
+  to 26 s each on the runner, and each test builds its own. Smallest next
+  step: share one built show per rig shape across those tests through a
+  module-scoped fixture, then measure the CI time again.
+- [ ] **Page 4's matrices caption says "bars and panels" by proxy
+  (2026-09-25).** `matrices_frame_caption` picks `matrices_frame` ("patterns
+  on the bars and panels") for any rig with pixel groups and built-in effects,
+  without checking that the pixel fixtures are bars or that the fixtures with
+  programmes are panels. The library help and the panels frame likewise still
+  say "panels" and "Effect N" on every rig with built-in effects (the count is
+  the rig's since this round). A wording that names what the rig has ("pixel
+  fixtures") changes Vibra's text, so it needs the owner's consent to
+  re-record the three Vibra hashes. Smallest next step: ask the owner, then
+  choose the noun from the capabilities of the fixtures the matrices and the
+  built-in effects actually use.
+- [ ] **No `check` rule sees a caption that promises a missing function
+  (2026-09-25).** The club's console named gobos, prism and panels it lacks;
+  tests now cover the captions, but `qlctool check` has no rule for "a caption
+  on a page or frame promises a function the show did not build". It would
+  reason about the catalogue identifiers the generator chose and the functions
+  it built, never about names. Smallest next step: record, beside each
+  generator-owned caption identifier, the `master` identifiers it promises,
+  and have a rule report a caption whose promised functions are absent.
