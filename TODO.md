@@ -75,14 +75,13 @@
   entries (more than one unit per module), and recorded three new BPY002
   entries, one per module, whose file name no longer matches its only unit
   (209 -> 206). Vibra identical x3.
-- [ ] **Three modules are not named after their unit (2026-09-25).** BPY002
-  since the split above: `checks/run.py` holds `check_workspace`,
-  `generate/color_banks.py` holds `generate_color_banks` and
-  `generate/matrix_effects.py` holds `generate_matrix_effects`. Smallest next
-  step: rename each module after its unit (or the unit after the file) and
-  let `baseline update` drop the three entries. `checks/run.py` is imported
-  across `qlctool/` and `tests/` (and by the rule-provider contract test), so
-  its rename is a coordinated one.
+- [x] **Three modules are not named after their unit (2026-09-25).** BPY002
+  since the split above. Closed by e941b10: `checks/run.py` is
+  `checks/check_workspace.py`, `generate/color_banks.py` is
+  `generate/generate_color_banks.py` and `generate/matrix_effects.py` is
+  `generate/generate_matrix_effects.py`; every importer in `qlctool/` and
+  `tests/` (the controller-reach test starts from `check_workspace`) follows,
+  and `baseline update` dropped the three entries (206 -> 203).
 - [x] **CI's suite cannot meet the 120 s test budget (2026-09-25).** The
   gate on GitHub failed its pytest stage as `over-budget` on the four-core
   runners, where branch coverage falls back to the C tracer below 3.14: 286 s
@@ -104,17 +103,22 @@
   cannot be shared (a few, and the gate test, run on unedited builds). Half
   of one `check_workspace` is `check_pick_darkens` (`instant_dark_fixtures`
   -> `instant_evaluator`).
-  Smallest next step: profile `check_pick_darkens` and cache the instant
-  states it recomputes per pick, measured with `--durations` before and after.
-- [ ] **A wheel whose only nameable detent is one no look asks for is not
-  parked (2026-09-25).** `outside_color_looks` tries every colour in
-  `WHEEL_NAMES`, but the looks only ask for the show's palette: a colour wheel
-  whose only position `color_wheel_pairs` can name is one no look requests
-  (only "UV", say) counts as inside the looks, so neither the colour looks nor
-  the intensity levels park its self-running channel. No rig in the repo has
-  such a wheel (review of ecc61b5). Smallest next step: build a definition
-  with such a wheel, show `modo sin dueño` on it, then ask `color_wheel_pairs`
-  over the colours the looks request instead of `WHEEL_NAMES`.
+  Profiled on 2026-09-26 (e8a8ae3): the instant evaluator keyed a node's memo
+  on the frame's whole set of stopped hooks and rebuilt every (state, pick)
+  pair from scratch; it now keys on the stopped hooks the node can reach and
+  composes a pair from each root's cached result. One `check_workspace` on the
+  frozen Vibra went from about 1.44 s (0.68 s of it `check_pick_darkens`) to
+  about 1.23 s (0.37-0.46 s), and `tests/test_check.py` single-process from
+  160.0 s to 142.7 s; every finding is identical (Vibra x3, DeluxeEventos2's
+  791, an injected-bug Vibra and the club, byte for byte). Smallest next
+  step: read the 3.11 leg of the next few runs; close below 50% (300 s).
+- [x] **A wheel whose only nameable detent is one no look asks for is not
+  parked (2026-09-25).** `outside_color_looks` asked over every colour in
+  `WHEEL_NAMES`; it now asks over the colours the looks request, the show's
+  palette, which `build_canonical_show` hands both intensity generators.
+  Closed by 3a34043, test `tests/test_unrequested_detent_park.py` (a BEAM 230W
+  7R whose wheel names only UV, on a palette without purple or ultraviolet:
+  `modo sin dueño` before, nothing after). Vibra identical x3.
 - [x] **The vertical-smoke light chaser is built where nothing starts it
   (2026-09-25).** Vibra without its smoke machines (fixtures 17, 29-32)
   carried the panels' `Humo Vertical` chaser with no button to start it.
@@ -190,20 +194,25 @@
   Spanish message; the club without `--fixtures` reads English end to end.
   Tests `tests/test_check_finding_catalogue.py` (drift) and
   `tests/test_english_check_names.py` (dated).
-- [ ] **`deskmap`'s refusal of an invalid desk burst reads in Spanish
-  (2026-09-25).** `build_deskmap` raises "invalid desk bursts: ..." joining
-  `Finding.message`, which outside `check_workspace` is the Spanish rendering.
-  Smallest next step: render each finding's `message_id` with the vocabulary
-  `build_deskmap` already holds (`checks/rendered_value.py`).
-- [ ] **`is_panel` calls a plain PAR with a built-in programme a panel
-  (review of 4b50144..655b97d, 2026-09-25).** `qlctool/is_panel.py:26`: the
-  one-cell case (`heads == 1`, layout 1 x 1) accepts any single-head fixture
-  that neither pans nor tilts and has an `internal_program`, so 26 plain PAR
-  modes in the upstream QLC+ library (e.g. LED PAR 64 AT3, SlimPAR T6) are
-  "panels", and page 4 would name panels on a rig of PARs. Not changed yet:
-  Vibra's panels (fixtures 24, 25, 27, 28, WX-60WPS) declare one head and a
-  1 x 1 layout, so the obvious fix darkens Vibra's own words. Smallest next
-  step: read what those four declare (heads, `<Layout>`, physical size) and
-  choose the panel noun's extra condition from that - more than one head, a
-  `<Layout>` larger than one cell, or a physical shape - with a dated test
-  that builds a PAR 64 AT3 rig and a Vibra panel rig and keeps Vibra's bytes.
+- [x] **`deskmap`'s refusal of an invalid desk burst reads in Spanish
+  (2026-09-25).** Closed by 0c8f7c4: `desk_burst_refusal` renders each
+  finding's `message_id` with the vocabulary `build_deskmap` holds.
+  `deskmap.py` is `build_deskmap.py`, and its two helpers and page assembly
+  moved out verbatim (`desk_unique_key`, `desk_dial`, `desk_pages`), so it is
+  under the cap (baseline 203 -> 201). Test
+  `tests/test_english_desk_burst_refusal.py`.
+- [ ] **Show `[names]` overrides do not reach the finding text (review of B10
+  round 2, 2026-09-26).** `named_findings` renders with
+  `shipped_names(language)`, so a show that renamed `full_white` still reads
+  "Blanco Total" / "Full White" in `wheel_white`'s message. Smallest next
+  step: pass the show's overrides into the names `named_findings` renders
+  with, and test it on a show with a renamed function.
+- [x] **`is_panel` calls a plain PAR with a built-in programme a panel
+  (review of 4b50144..655b97d, 2026-09-25).** Closed by f195b2a: a one-cell
+  fixture is a panel only with a panel's body (`has_panel_face`: a
+  `<Dimensions>` face half again as wide as tall, and shallower than tall).
+  Vibra's WX-60WPS is 250 x 130 x 70; the LED PAR 64 AT3 (274 x 268 x 433),
+  the SlimPAR T6 (84 x 226 x 181) and every other PAR fail it. Of the 32
+  upstream modes it accepted, 6 remain: the Wash FX and Frost FX Bar W grids
+  (three modes) and the KLS-180-6 and PartyBar2 light bars (three modes). Test `tests/test_par_is_not_a_panel.py`;
+  Vibra identical x3.
