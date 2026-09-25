@@ -10,9 +10,9 @@ the values, the order and the holds here are that chaser's, verbatim
 
 The chaser exists only where a column does: the vertical smoke machines are
 the smoke machines that carry their own light (`vertical_smoke_columns`, the
-same answer the burst uses). With none patched nothing can start this cue -
-the console builds no `Humo Vertical` button without a smoke machine - so it
-is not built (owner's delegated decision, 2026-09-25).
+same answer the burst uses). With no column patched it is not built (owner's
+delegated decision, 2026-09-25), whatever other smoke machine the rig carries:
+a pump-only machine is smoke, not a column, and lights nothing.
 
 It is a latched look on purpose: the smoke moment lasts as long as it lasts,
 and somebody presses it off - or a room state replaces it - when it is over.

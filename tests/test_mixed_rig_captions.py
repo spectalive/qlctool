@@ -51,4 +51,8 @@ def test_2026_09_25_page_4_counts_the_built_in_effects_the_rig_has(tmp_path, mon
     # 2026-09-25, the owner's delegated decision: panels and no bars, so the
     # matrices frame names the panels alone.
     assert names.display("matrices_frame_panels") in captions
-    assert not [c for c in captions if "bars" in c.casefold()]
+    # The build is Spanish: "bars" could never match (review of 655b97d). Neither
+    # caption naming the bars is on the console, and no caption says "barra".
+    for key in ("matrices_frame", "matrices_frame_bars"):
+        assert names.display(key) not in captions, key
+    assert not [c for c in captions if "barra" in c.casefold()]

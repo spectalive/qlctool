@@ -188,3 +188,15 @@
   through a `[messages]` identifier rendered in the workspace's language,
   module by module, with a scanner like `tests/test_generator_literals.py`
   over `checks/`.
+- [ ] **`is_panel` calls a plain PAR with a built-in programme a panel
+  (review of 4b50144..655b97d, 2026-09-25).** `qlctool/is_panel.py:26`: the
+  one-cell case (`heads == 1`, layout 1 x 1) accepts any single-head fixture
+  that neither pans nor tilts and has an `internal_program`, so 26 plain PAR
+  modes in the upstream QLC+ library (e.g. LED PAR 64 AT3, SlimPAR T6) are
+  "panels", and page 4 would name panels on a rig of PARs. Not changed yet:
+  Vibra's panels (fixtures 24, 25, 27, 28, WX-60WPS) declare one head and a
+  1 x 1 layout, so the obvious fix darkens Vibra's own words. Smallest next
+  step: read what those four declare (heads, `<Layout>`, physical size) and
+  choose the panel noun's extra condition from that - more than one head, a
+  `<Layout>` larger than one cell, or a physical shape - with a dated test
+  that builds a PAR 64 AT3 rig and a Vibra panel rig and keeps Vibra's bytes.
