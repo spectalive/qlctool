@@ -74,10 +74,11 @@ Within one source the first folder wins a model clash, and every one of them
 beats the QLC+ system definitions bundled with the toolkit. A patched fixture
 with no definition is a warning on stderr naming the fixtures and the folders
 searched. `qlctool install` reads the same file for the input profiles and
-gobo images it copies. This repository's `qlctool.toml`:
+gobo images it copies. A rig's `qlctool.toml`, as the Vibra show's reads
+(a frozen copy sits in `tests/data/rig/` for the tests):
 
 ```toml
-# Where qlctool finds this repository's own files (spec step 6). Paths are
+# Where qlctool finds this rig's own files (spec step 6). Paths are
 # relative to this file. Overridden by `qlctool --fixtures`, a description's
 # [rig] fixtures, or QLCTOOL_FIXTURES, in that order.
 fixtures = ["QLC+ Fixtures"]

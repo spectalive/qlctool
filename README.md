@@ -96,7 +96,7 @@ generated from them (`club.qxw`). From the repository root:
   --add "Vortex|PC-64 LED S|Default|0|301|PAR Extra" \
   --set-address "25=1:1" --rename "0=Wash Frontal 1" --remove 26
 
-# place the rig the way it is really built (the plot is versioned in the repo)
+# place the rig the way it is really built (the plot lives with the show)
 .venv/bin/qlctool stage "path/to/Vibra.qxw" \
   --plot "path/to/vibra-stage-plot.json"
 
@@ -227,6 +227,8 @@ The code is under the Apache License 2.0 ([LICENSE](LICENSE)). The five
 documents that came from the Vibra show's repository - `docs/toolkit.md`,
 `docs/checks.md`, `docs/qxw-format.md`, `docs/qlcplus-environment.md` and
 `docs/qlc5-verification.md` - are under CC BY 4.0
-([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)); everything else is Apache-2.0. The
+([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)), and so is the frozen copy of the
+Vibra rig the tests read under `tests/data/rig/` (its `README.txt` says
+which files carry which licence); everything else is Apache-2.0. The
 QLC+ fixture schema and system fixture definitions vendored in
 `qlctool/library/` are QLC+'s, under QLC+'s Apache License 2.0 ([NOTICE](NOTICE)).
