@@ -78,3 +78,16 @@ def test_the_aim_label_names_no_count(club):
     aim = default_names().display("aim_frame")
     assert aim in _captions(club)
     assert not any(ch.isdigit() for ch in aim)
+
+
+def test_the_control_page_does_not_promise_beam_wheels(club):
+    """2026-09-25, Plan C Task 4: page 3 said "ruedas de BEAM" on this rig.
+
+    Its heads mix RGB and have no colour wheel, so no beam wheel frame is
+    built; the title names only what the page holds.
+    """
+    names = default_names()
+    captions = _captions(club)
+    assert names.display("page_control_no_haze_no_beam_wheel") in captions
+    wheel_titles = [names.display(k) for k in ("page_control", "page_control_no_haze")]
+    assert not [c for c in captions if c in wheel_titles]

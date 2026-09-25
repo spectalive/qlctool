@@ -62,6 +62,7 @@ from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
 from .bind_pad import bind_pad
+from .page_control_title import page_control_title
 from .play_page import build_play_page
 from .smc_pad_colors import readable_foreground
 
@@ -806,12 +807,13 @@ def _page_control(
     mix_code: Mapping[str, str],
 ) -> None:
     """Page 3: direct controls that remain useful beside the play families."""
-    # Page 3's one haze control is the vertical column's light; without it the
-    # page title does not promise haze.
+    # Page 3's one haze control is the vertical column's light, and its beam
+    # wheel frame is built only from beam colour scenes; without either the
+    # page title does not promise it.
     has_haze_light = master.get(vocabulary.display("vertical_smoke")) is not None
     label(
         outer,
-        vocabulary.display("page_control" if has_haze_light else "page_control_no_haze"),
+        vocabulary.display(page_control_title(has_haze_light, bool(beam_colors.scene_ids))),
         LEFT_X,
         30,
         OUTER_WIDTH - 16,
