@@ -36,6 +36,10 @@ jobs:
 
       - name: Run the quality gate
         run: uv run codeality-py gate --json
+        # The runner has four cores and coverage uses the C tracer below 3.14:
+        # measured up to 462 s here. The local 120 s in codeality-py.toml stays the rule.
+        env:
+          CODEALITY_PY_TEST_BUDGET_SECONDS: '600'
 
       - name: Type-check with pyrefly, without blocking
         continue-on-error: true
