@@ -3109,6 +3109,7 @@ def test_2026_09_25_a_frame_with_nothing_to_press(library, tmp_path):
 
     from qlctool.checks.rule_empty_frame import RULE
     from qlctool.cli import main
+    from qlctool.constants import QLC_NS
     from qlctool.names.default_names import default_names
     from qlctool.vc.frame import build_frame
     from qlctool.vc.label import build_label
@@ -3123,8 +3124,12 @@ def test_2026_09_25_a_frame_with_nothing_to_press(library, tmp_path):
     build_frame(outer, next_widget_id(root), haze, 8, 770, 1000, 110, solo=True)
     words = build_frame(outer, next_widget_id(root), "Words only", 8, 900, 400, 60)
     build_label(words, next_widget_id(root), "a label over nothing", 6, 26, 300, 20)
+    # An RGB matrix widget is a control: QLC+ writes it as <Matrix>.
+    matrix = build_frame(outer, next_widget_id(root), "Matrix only", 420, 900, 400, 60)
+    etree.SubElement(matrix, f"{{{QLC_NS}}}Matrix", ID=str(next_widget_id(root)))
 
     flagged = {f.function for f in check_workspace(workspace, library) if f.rule == RULE}
     assert {haze, "Words only"} <= flagged
+    assert "Matrix only" not in flagged
     # The page frame around them holds controls, so it is not flagged.
     assert f"marco {outer.get('ID')}" not in flagged

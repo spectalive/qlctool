@@ -6,10 +6,12 @@ from ..xmlutil import localname
 
 # Every widget QLC+ loads into a frame (qmlui/virtualconsole/vcframe.cpp,
 # VCFrame::loadWidgetXML) that does something: a label only says something.
+# The RGB matrix widget is written as <Matrix> (KXMLQLCVCAnimation in
+# qmlui/virtualconsole/vcanimation.h, KXMLQLCVCMatrix in ui/), not <Animation>.
 _CONTROL_TAGS = (
     "Button",
     "Slider",
-    "Animation",
+    "Matrix",
     "AudioTriggers",
     "SpeedDial",
     "XYPad",
