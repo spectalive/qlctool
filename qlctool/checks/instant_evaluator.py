@@ -51,19 +51,16 @@ class InstantEvaluator:
         cached = self._roots.get(key)
         if cached is not None:
             return cached
-        states = frozenset((_Instant(False, False, 0),))
-        for root_id in roots:
-            states = _concurrent(
-                states,
-                self._node_states(
-                    root_id,
-                    fixture_id,
-                    offset,
-                    light_offsets,
-                    stopped,
-                    frozenset(),
-                ),
+        if len(roots) == 1:
+            states = self._node_states(
+                roots[0], fixture_id, offset, light_offsets, stopped, frozenset()
             )
+        else:
+            states = frozenset((_Instant(False, False, 0),))
+            for root_id in roots:
+                states = _concurrent(
+                    states, self.states(root_id, fixture_id, offset, light_offsets, stopped)
+                )
         self._roots[key] = states
         return states
 
@@ -80,15 +77,20 @@ class InstantEvaluator:
 
         The frontier only matters where it meets what this node can reach, so
         the memo is keyed on that meeting - empty on any acyclic show - and a
-        node reached along two paths is evaluated once (2026-09-22).
+        node reached along two paths is evaluated once (2026-09-22). The
+        stopped hooks are keyed the same way: a hook a frame stops outside this
+        node's subtree cannot change what it plays, so every frame's picks
+        share one evaluation of the nodes their hooks do not reach
+        (2026-09-25).
         """
+        below = self._graph.descendants(function_id)
         key = (
             function_id,
             fixture_id,
             offset,
             light_offsets,
-            stopped,
-            seen & self._graph.descendants(function_id),
+            stopped & below if stopped else stopped,
+            seen & below if seen else seen,
         )
         cached = self._states.get(key)
         if cached is not None:
