@@ -13,7 +13,7 @@ NAMES = ("None", "Zero", "1/16", "1/8", "1/4", "1/2", "1", "2", "4", "8", "16")
 _THOUSANDTHS = (None, 0, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000)
 
 
-def multiplier(raw: int) -> dict:
+def multiplier(raw: int) -> dict[str, int | str | float | None]:
     """The enum value as the map carries it: raw, name and effective factor."""
     if not 0 <= raw < len(NAMES):
         raise ValueError(f"speed multiplier {raw} is outside the 5.2.2 enum")

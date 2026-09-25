@@ -32,7 +32,7 @@ def cmd_deskmap(args: argparse.Namespace) -> int:
     return 0
 
 
-def add_deskmap_parser(sub) -> None:
+def add_deskmap_parser(sub: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
     parser = sub.add_parser(
         "deskmap",
         help="write the tablet desk's map: pages, controls, swatches and dials from the saved show",

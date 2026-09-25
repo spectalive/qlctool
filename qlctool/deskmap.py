@@ -9,7 +9,11 @@ desk's own repository, where it would drift from the show.
 """
 
 import hashlib
+from collections.abc import Mapping
 from pathlib import Path
+from typing import Any
+
+from lxml import etree
 
 from .capabilities_of import capabilities_of
 from .checks.rule_desk_bursts import check_desk_bursts
@@ -29,7 +33,7 @@ from .desk_policy import (
     split_caption,
 )
 from .desk_swatch import swatches
-from .desk_widgets import desk_widgets
+from .desk_widgets import DeskWidget, desk_widgets
 from .leading_glyph import leading_glyph
 from .library import FixtureLibrary
 from .names.names import Names
@@ -47,7 +51,7 @@ TARGET_QLC = "5.2.2"
 
 def build_deskmap(
     workspace: Workspace, library: FixtureLibrary, path: str | Path, names: Names | None = None
-) -> dict:
+) -> dict[str, Any]:
     """The desk's map; with no `names`, in the language the workspace was generated in."""
     root = workspace.root
     vocabulary = shipped_names(workspace_language(root)) if names is None else names
@@ -61,14 +65,13 @@ def build_deskmap(
         raise ValueError("invalid desk bursts: " + "; ".join(f.message for f in burst_findings))
     bursts = desk_burst_buttons(root, vocabulary)
 
-    controls: dict[str, dict] = {}
+    controls: dict[str, dict[str, Any]] = {}
     sections: dict[tuple[str, str], list[str]] = {}
     section_solo: dict[tuple[str, str], int | None] = {}
     for widget in widgets:
         function_name = graph.name(widget.function) if widget.function is not None else None
-        placement = place(
-            widget, frames, function_name, graph.kind(widget.function), names=vocabulary
-        )
+        function_kind = graph.kind(widget.function) if widget.function is not None else ""
+        placement = place(widget, frames, function_name, function_kind, names=vocabulary)
         if placement is None:
             continue
         caption, detail = split_caption(widget.caption)
@@ -92,7 +95,7 @@ def build_deskmap(
         controls[key] = {
             "widget": widget.id,
             "function": widget.function,
-            "functionType": graph.kind(widget.function),
+            "functionType": function_kind,
             "action": "toggle" if widget.action == "Toggle" else "flash",
             "caption": caption,
             "icon": icon,
@@ -100,13 +103,18 @@ def build_deskmap(
             "role": placement.role,
             "solo": widget.solo,
             "key": widget.key,
-            "swatches": swatches(graph, groups, widget.function),
+            "swatches": (
+                swatches(graph, groups, widget.function) if widget.function is not None else []
+            ),
             "enabled": placement.enabled,
             "reason": placement.reason,
         }
         if placement.role == "accent":
             burst = bursts[key][0]
             identifier = desk_burst_identifier(widget.caption, vocabulary)
+            if identifier is None:
+                # check_desk_bursts above already refused an accent it cannot name.
+                raise ValueError(f"invalid desk bursts: {key} names no single accent")
             controls[key].update(
                 {
                     "widget": burst.id,
@@ -153,7 +161,7 @@ def build_deskmap(
     grand_master = next(
         (w for w in widgets if w.kind == "Slider" and w.slider_mode == "GrandMaster"), None
     )
-    dials = {}
+    dials: dict[str, dict[str, Any]] = {}
     for widget in widgets:
         if widget.kind != "SpeedDial":
             continue
@@ -177,14 +185,14 @@ def build_deskmap(
     }
 
 
-def _unique_key(existing: dict, caption: str, widget_id: int) -> str:
+def _unique_key(existing: Mapping[str, object], caption: str, widget_id: int) -> str:
     key = slugify(caption)
     if key in existing:
         key = f"{key}-{widget_id}"
     return key
 
 
-def _dial(root, widget) -> dict:
+def _dial(root: etree._Element, widget: DeskWidget) -> dict[str, Any]:
     element = next(
         (
             e

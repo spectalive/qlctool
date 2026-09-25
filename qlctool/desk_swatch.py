@@ -14,7 +14,7 @@ from .checks.show_graph import ShowGraph, reach
 MAX_SWATCHES = 4
 
 
-def swatches(graph: ShowGraph, groups, function_id: int) -> list[str]:
+def swatches(graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int) -> list[str]:
     driven = reach(graph, groups, function_id, kinds=("Scene",))
     found: list[str] = []
     for fixture_id in sorted(driven):
@@ -22,7 +22,7 @@ def swatches(graph: ShowGraph, groups, function_id: int) -> list[str]:
         if capability is None:
             continue
         written = driven[fixture_id]
-        triple = []
+        triple: list[int] = []
         for role in (roles.RED, roles.GREEN, roles.BLUE):
             offsets = capability.offsets_for_role(role)
             if not offsets:

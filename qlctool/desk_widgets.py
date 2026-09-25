@@ -42,7 +42,13 @@ def desk_widgets(root: etree._Element) -> list[DeskWidget]:
     return found
 
 
-def _walk(parent, frames, solo, page, found) -> None:
+def _walk(
+    parent: etree._Element,
+    frames: tuple[int, ...],
+    solo: int | None,
+    page: int,
+    found: list[DeskWidget],
+) -> None:
     for element in parent:
         tag = localname(element)
         if tag not in FRAME_TAGS and tag not in WIDGET_TAGS:
@@ -60,8 +66,10 @@ def _walk(parent, frames, solo, page, found) -> None:
             )
 
 
-def _widget(element, tag, frames, solo, page) -> DeskWidget:
-    function = None
+def _widget(
+    element: etree._Element, tag: str, frames: tuple[int, ...], solo: int | None, page: int
+) -> DeskWidget:
+    function: int | None = None
     action = ""
     fade_out = 0
     if tag == "Button":
