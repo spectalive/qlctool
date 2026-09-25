@@ -13,8 +13,9 @@ from rig_root import RIG_ROOT
 from small_rig import build_small_rig_patch
 
 from qlctool.cli import main
+from qlctool.description.description_names import description_names
 from qlctool.library import FixtureLibrary
-from qlctool.names.default_names import default_names
+from qlctool.vibra.vibra_description import vibra_description
 from qlctool.warn_unresolved import warn_unresolved
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
@@ -36,7 +37,9 @@ def test_2026_09_25_newshow_tells_a_known_model_in_a_missing_mode_to_repatch(tmp
 
     assert main(["newshow", str(patch), "--out", str(tmp_path / "club.qxw")]) == 0
     printed = capsys.readouterr().err
-    expected = default_names().render(
+    # The vocabulary `newshow` warns in: the show's, which with no description
+    # is the Vibra description's.
+    expected = description_names(vibra_description()).render(
         "unresolved_mode", model="Chauvet MiN Wash", mode="No Such Mode", modes="13 Channel"
     )
     assert printed == f"qlctool: {expected}\n"

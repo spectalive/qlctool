@@ -78,15 +78,16 @@
   stays 120 s. Closed by the green run 36131008406: 476.8 s on 3.11 and
   359.9 s on 3.13, under the 600 s budget.
 - [ ] **CI's 3.11 leg uses 55-83% of its test budget (2026-09-25).** 476.8 s
-  of 600 s in run 36131008406, 447.0 s in 36136963884, 496.9 s (3.13: 398.2 s)
-  in 36156626545 after the check suite shared its one repeated build
-  (fe126b1), and 329.2 s (3.13: 399.8 s) in 36157628167 on the same code:
-  the leg varies by up to 170 s between runs, so one run under 60% of the
-  budget does not close this. Measured locally, the show
-  builds are not where the time goes: `tests/test_check.py` single-process
-  went from 162.1 s to 155.9 s, and a canonical build costs 0.4-0.6 s while
-  `check_workspace` costs about 1.6 s and runs 98 times, each on a workspace
-  the test has edited, so it cannot be shared. Half of one `check_workspace`
+  of 600 s in run 36131008406, 447.0 s (3.13: 391.8 s) in 36136963884, 496.9 s
+  (3.13: 398.2 s) in 36156626545 after the check suite shared its one repeated
+  build (fe126b1), 329.2 s (3.13: 399.8 s) in 36157628167 on the same code,
+  and 466.8 s (3.13: 377.7 s) in 36158448357 on fe5a0ac: the leg varies by up
+  to 170 s between runs, so one run under 60% of the budget does not close
+  this. Measured locally, the show builds are not where the time goes:
+  `tests/test_check.py` single-process went from 162.1 s to 155.9 s, and a
+  canonical build costs 0.4-0.6 s while `check_workspace` costs about 1.6 s
+  and runs 98 times, nearly all on a workspace the test has edited, so those
+  cannot be shared (a few, and the gate test, run on unedited builds). Half of one `check_workspace`
   is `check_pick_darkens` (`instant_dark_fixtures` -> `instant_evaluator`).
   Smallest next step: profile `check_pick_darkens` and cache the instant
   states it recomputes per pick, measured with `--durations` before and after.

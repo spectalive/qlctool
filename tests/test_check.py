@@ -85,6 +85,21 @@ def deluxe_show(_deluxe_built):
     return Workspace(etree.ElementTree(copy.deepcopy(_deluxe_built)))
 
 
+@pytest.fixture(scope="module")
+def _club_built(tmp_path_factory):
+    """The small club's patch through `newshow`, built once."""
+    folder = tmp_path_factory.mktemp("club")
+    club = folder / "club.qxw"
+    assert main(["newshow", str(build_small_rig_patch(folder)), "--out", str(club)]) == 0
+    return Workspace.load(club).root
+
+
+@pytest.fixture
+def club_show(_club_built):
+    """A private copy of the club's build, so a test that edits it changes no other."""
+    return Workspace(etree.ElementTree(copy.deepcopy(_club_built)))
+
+
 def _functions(workspace):
     return {
         function.attrib.get("Name"): function
@@ -3105,26 +3120,21 @@ def test_2026_09_25_a_collection_step_that_names_no_function(library):
     assert any("999998" in f.message for f in findings)
 
 
-def test_2026_09_25_a_frame_with_nothing_to_press(library, tmp_path):
+def test_2026_09_25_a_frame_with_nothing_to_press(library, club_show):
     """2026-09-25, Plan C preflight (D9): the first show built for a rig with no
     haze machine put `HUMO AMBIENTE — cada cuánto dispara solo` on page 1 as a
     solo frame with no button in it, and `check` said "ningun problema".
     Reproduced on the small club (no haze machine): its console gets that
     empty haze frame back, and one frame holding only a label beside it.
     """
-    from small_rig import build_small_rig_patch
-
     from qlctool.checks.rule_empty_frame import RULE
-    from qlctool.cli import main
     from qlctool.constants import QLC_NS
     from qlctool.names.default_names import default_names
     from qlctool.vc.frame import build_frame
     from qlctool.vc.label import build_label
     from qlctool.vc.widget_ids import next_widget_id
 
-    club = tmp_path / "club.qxw"
-    assert main(["newshow", str(build_small_rig_patch(tmp_path)), "--out", str(club)]) == 0
-    workspace = Workspace.load(club)
+    workspace = club_show
     root = workspace.root
     outer = find_local(find_local(find_local(root, "VirtualConsole"), "Frame"), "Frame")
     haze = default_names().display("haze")
@@ -3142,7 +3152,7 @@ def test_2026_09_25_a_frame_with_nothing_to_press(library, tmp_path):
     assert f"marco {outer.get('ID')}" not in flagged
 
 
-def test_2026_09_25_a_single_family_energy_cycle_is_not_a_family_owner(tmp_path):
+def test_2026_09_25_a_single_family_energy_cycle_is_not_a_family_owner(library, club_show):
     """2026-09-25, the small club (Plan C): a false positive, not a show bug.
 
     The club's energy cycle steps through level Collections that only move the
@@ -3154,10 +3164,7 @@ def test_2026_09_25_a_single_family_energy_cycle_is_not_a_family_owner(tmp_path)
     <heads centre>". Vibra's own cycle writes several families, which is why
     no shipped workspace showed it.
     """
-    patch = build_small_rig_patch(tmp_path)
-    out = tmp_path / "club.qxw"
-    assert main(["newshow", str(patch), "--out", str(out)]) == 0
-    findings = check_workspace(Workspace.load(out), FixtureLibrary.load())
+    findings = check_workspace(club_show, library)
     assert [
         f for f in findings if f.rule in ("familia con dueño", "capa pisada por el ciclo")
     ] == []
