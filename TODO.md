@@ -66,10 +66,12 @@
   600 on the workflow's gate step; the local budget in `codeality-py.toml`
   stays 120 s. Closed by the green run 36131008406: 476.8 s on 3.11 and
   359.9 s on 3.13, under the 600 s budget.
-- [ ] **CI's 3.11 leg uses 79-83% of its test budget (2026-09-25).** 476.8 s
+- [ ] **CI's 3.11 leg uses 55-83% of its test budget (2026-09-25).** 476.8 s
   of 600 s in run 36131008406, 447.0 s in 36136963884, 496.9 s (3.13: 398.2 s)
   in 36156626545 after the check suite shared its one repeated build
-  (fe126b1): the leg varies by 50 s between runs. Measured locally, the show
+  (fe126b1), and 329.2 s (3.13: 399.8 s) in 36157628167 on the same code:
+  the leg varies by up to 170 s between runs, so one run under 60% of the
+  budget does not close this. Measured locally, the show
   builds are not where the time goes: `tests/test_check.py` single-process
   went from 162.1 s to 155.9 s, and a canonical build costs 0.4-0.6 s while
   `check_workspace` costs about 1.6 s and runs 98 times, each on a workspace
