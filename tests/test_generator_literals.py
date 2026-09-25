@@ -99,6 +99,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/matrix_grid.py",
     "generate/matrix_group_name.py",
     "generate/matrix_pace.py",
+    # 2026-09-25: the four-colour deal's seats; no catalogue word in it.
+    "generate/quad_seats.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

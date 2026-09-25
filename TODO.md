@@ -106,11 +106,16 @@
   re-record the three Vibra hashes. Smallest next step: ask the owner, then
   choose the noun from the capabilities of the fixtures the matrices and the
   built-in effects actually use.
-- [ ] **No `check` rule sees a caption that promises a missing function
+- [x] **No `check` rule sees a caption that promises a missing function
   (2026-09-25).** The club's console named gobos, prism and panels it lacks;
-  tests now cover the captions, but `qlctool check` has no rule for "a caption
-  on a page or frame promises a function the show did not build". It would
-  reason about the catalogue identifiers the generator chose and the functions
-  it built, never about names. Smallest next step: record, beside each
-  generator-owned caption identifier, the `master` identifiers it promises,
-  and have a rule report a caption whose promised functions are absent.
+  tests now cover the captions, but `qlctool check` had no rule for "a caption
+  on a page or frame promises a function the show did not build". Closed by
+  `rotulo que promete lo que no hay` (`checks/rule_caption_promise.py`):
+  `checks/caption_promises.py` maps every identifier the four caption
+  selectors can choose to what its text promises (gobo, prism, haze, beam
+  wheel, pixel group, built-in effects); the rule finds a caption's identifier
+  by matching it against every shipped catalogue and asks the patch through
+  `promise_kept`. Two dated tests in `tests/test_check.py` put `tempo_2`, and
+  the English `matrices_frame` and `library_2`, back on the club and the rule
+  bites; Vibra (which matches seven promising captions) and the club stay
+  clean. Limit: a `[names]` override of those captions is not judged.

@@ -19,6 +19,7 @@ from ..library import FixtureLibrary
 from ..workspace import Workspace
 from .applying_providers import applying_providers
 from .canvas_of import canvas_of
+from .console_caption_findings import console_caption_findings
 from .console_states import room_states
 from .entry_points import entry_points
 from .finding import ERROR, Finding
@@ -30,7 +31,6 @@ from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
 from .rule_context import RuleContext
 from .rule_dangling_reference import check_dangling_references
-from .rule_empty_frame import check_empty_frames
 from .rule_family_owner import check_family_owner
 from .rule_flash_scene import check_flash_scene
 from .rule_flash_speed import check_flash_speed
@@ -161,7 +161,7 @@ def check_workspace(
     findings += check_grid_order(root)
     findings += check_undeclared_heads(graph, root)
     findings += check_console(graph, root, canvas or canvas_of(root))
-    findings += check_empty_frames(root)
+    findings += console_caption_findings(graph, groups, root)
     findings += check_audio_triggers(graph, groups, root)
     for provider in applying:
         findings += provider.check(context)

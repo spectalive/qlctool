@@ -41,6 +41,10 @@ data = [
   "qlctool/description/reading/description_sections.py",
   "qlctool/description/reading/duration_tables.py",
   "tests/literal_strip.py",
+  # What each generator-chosen console caption promises, and the words a
+  # finding names those promises with.
+  "qlctool/checks/caption_promises.py",
+  "qlctool/checks/promise_words.py",
   # One constant each, imported where it is needed: a tag list, the console
   # canvas of a workspace that states none, an invalid function id sentinel, a
   # folder name, a language, a pattern, the catalogue's sections and where the

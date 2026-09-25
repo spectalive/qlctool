@@ -3230,3 +3230,55 @@ def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_pat
     ]
     assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 1
     assert f"  {RULE} (1):" in capsys.readouterr().out
+
+
+def _recaption(workspace, old, new):
+    """Every console widget captioned `old` now says `new`; how many there were."""
+    widgets = [
+        e for e in workspace.root.iter() if isinstance(e.tag, str) and e.get("Caption") == old
+    ]
+    for widget in widgets:
+        widget.set("Caption", new)
+    return len(widgets)
+
+
+def test_2026_09_25_a_caption_that_promises_gobos_and_prism(library, club_show):
+    """2026-09-25, Plan C final review: page 1 said "gobos, prisma y dimmer siguen
+    tu compás" on the small club, whose LED Beam heads have no gobo or prism
+    wheel, and `check` said "ningun problema". The club's own tempo line is
+    replaced with the catalogue's `tempo_2`; the untouched club has no finding.
+    """
+    from qlctool.checks.rule_caption_promise import RULE
+    from qlctool.names.shipped_names import shipped_names
+
+    assert [f for f in check_workspace(club_show, library) if f.rule == RULE] == []
+    names = shipped_names("es")
+    promise = names.display("tempo_2")
+    assert _recaption(club_show, names.display("tempo_2_no_gobo_no_prism"), promise) == 1
+    findings = [f for f in check_workspace(club_show, library) if f.rule == RULE]
+    assert [f.function for f in findings] == [promise]
+    assert "rueda de gobos" in findings[0].message and "prisma" in findings[0].message
+
+
+def test_2026_09_25_a_caption_that_promises_bars_panels_and_their_effects(library, club_show):
+    """2026-09-25, Plan C final review: page 4's matrices frame said "patterns on
+    the bars and panels" and its help "the panels' 42 built-in effects" on the
+    small club, which has no pixel group and nothing with built-in effects.
+    Both captions are put back, in English: the lookup reads every shipped
+    catalogue, and a `{count}` field matches any number.
+    """
+    from qlctool.checks.rule_caption_promise import RULE
+    from qlctool.names.shipped_names import shipped_names
+
+    spanish, english = shipped_names("es"), shipped_names("en")
+    matrices = english.display("matrices_frame")
+    effects = english.render("library_2", count=42)
+    assert _recaption(club_show, spanish.display("matrices_frame_groups"), matrices) == 1
+    assert _recaption(club_show, spanish.display("library_2_no_builtins"), effects) == 1
+    findings = {
+        f.function: f.message for f in check_workspace(club_show, library) if f.rule == RULE
+    }
+    assert set(findings) == {matrices, effects}
+    assert "grupo de pixeles" in findings[matrices]
+    assert "aparato con efectos propios" in findings[matrices]
+    assert "grupo de pixeles" not in findings[effects]
