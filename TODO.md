@@ -50,14 +50,17 @@
   puts two complementary colours in one group (`complementarios en un mismo
   lavado`). Smallest next step: a dated small-rig test with a two-par group,
   then deal the four colours so no group gets exactly two opposite hues.
-- [ ] **Three long modules sit in the codeality baseline (2026-09-25).**
+- [x] **Three long modules sit in the codeality baseline (2026-09-25).**
   The gate was red on them beside mypy, and the fix that turned it green was
   told not to restructure modules, so they were recorded as debt instead:
   `checks/run.py` 160 code lines, `generate/color_banks.py` 167 and
-  `generate/matrix_effects.py` 155 (cap 150, BPY004). The reference helpers
-  and the Vibra description were split out in 356ddd9 and 4799d35. Smallest
-  next step: split each of the three modules, then `codeality-py baseline
-  update` so the entries drop out.
+  `generate/matrix_effects.py` 155 (cap 150, BPY004). Closed by 415ff26
+  (`canvas_of`, `default_canvas`, `applying_providers`), a3e5ac6
+  (`bank_for_group`, `bank_wheel`, `GeneratedBank`) and 557a0d3
+  (`add_matrix`, `matrix_pace`, `matrix_grid`,
+  `matrix_group_name`, `GeneratedMatrices`), bodies moved verbatim; `baseline
+  update` dropped the three BPY004 entries (209 -> 206; the three modules'
+  BPY002 entries were re-recorded at their new lines). Vibra identical x3.
 - [x] **CI's suite cannot meet the 120 s test budget (2026-09-25).** The
   gate on GitHub failed its pytest stage as `over-budget` on the four-core
   runners, where branch coverage falls back to the C tracer below 3.14: 286 s
