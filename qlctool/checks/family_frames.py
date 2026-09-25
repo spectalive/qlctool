@@ -8,6 +8,7 @@ from .. import roles
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, localname
 from .show_graph import ShowGraph, reach
+from .steps_are_levels import steps_are_levels
 
 FAMILIES = {
     "color": frozenset(
@@ -211,7 +212,9 @@ def _owner_families(graph: ShowGraph, groups, function_id: int) -> tuple[str, ..
         for family, fixtures in _function_families(graph, groups, function_id).items()
         if fixtures
     )
-    if graph.kind(function_id) in ("Chaser", "Sequence") and len(families) > 1:
+    if graph.kind(function_id) in ("Chaser", "Sequence") and (
+        len(families) > 1 or steps_are_levels(graph, function_id)
+    ):
         return ()
     return families
 
@@ -233,7 +236,9 @@ def _owner_frontier(graph: ShowGraph, groups, state_id: int) -> set[int]:
     A multi-family Chaser/Sequence coordinates structural level Collections;
     recurse through those until one family has its actual owner. A single-family
     Collection or Chaser such as `Movimientos Suaves` or `Gobo Animacion`
-    remains the functional owner, never its leaf steps.
+    remains the functional owner, never its leaf steps. A Chaser whose steps
+    are all level Collections is structural too, even with one family
+    (`steps_are_levels`, 2026-09-25).
     """
     found: set[int] = set()
     for function_id in graph.members.get(state_id, ()):
@@ -247,6 +252,7 @@ def _nested_owner_frontier(
     function_id: int,
     inside_structural_cycle: bool,
     seen: set[int],
+    level_step: bool = False,
 ) -> set[int]:
     """Flatten only the multi-family level containers inside a state cycle."""
     if function_id in seen:
@@ -257,14 +263,27 @@ def _nested_owner_frontier(
         if fixtures
     )
     kind = graph.kind(function_id)
-    is_cycle = kind in ("Chaser", "Sequence") and len(families) > 1
-    is_level = kind == "Collection" and inside_structural_cycle and len(families) > 1
+    is_cycle = kind in ("Chaser", "Sequence") and (
+        len(families) > 1 or steps_are_levels(graph, function_id)
+    )
+    is_level = (
+        kind == "Collection" and inside_structural_cycle and (len(families) > 1 or level_step)
+    )
     if not (is_cycle or is_level):
         return {function_id}
     nested_seen = {*seen, function_id}
     found: set[int] = set()
     for member_id in graph.members.get(function_id, ()):
-        found.update(_nested_owner_frontier(graph, groups, member_id, True, nested_seen))
+        found.update(
+            _nested_owner_frontier(
+                graph,
+                groups,
+                member_id,
+                True,
+                nested_seen,
+                is_cycle and steps_are_levels(graph, function_id),
+            )
+        )
     return found
 
 

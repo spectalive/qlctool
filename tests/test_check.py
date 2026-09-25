@@ -16,6 +16,7 @@ import re
 import pytest
 from lxml import etree
 from rig_root import RIG_ROOT
+from small_rig import build_small_rig_patch
 
 from qlctool import roles
 from qlctool.audience_window import BEAM_WINDOW
@@ -31,6 +32,7 @@ from qlctool.checks.show_graph import (
     reach,
 )
 from qlctool.checks.strobe_written import strobe_capable_offsets
+from qlctool.cli import main
 from qlctool.fixture_group import fixture_groups
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.canonical_show import build_canonical_show
@@ -3133,3 +3135,24 @@ def test_2026_09_25_a_frame_with_nothing_to_press(library, tmp_path):
     assert "Matrix only" not in flagged
     # The page frame around them holds controls, so it is not flagged.
     assert f"marco {outer.get('ID')}" not in flagged
+
+
+def test_a_single_family_energy_cycle_is_not_a_family_owner(tmp_path):
+    """2026-09-25, the small club (Plan C): a false positive, not a show bug.
+
+    The club's energy cycle steps through level Collections that only move the
+    heads - its pars have no pan/tilt and its dimmer levels sit inside the
+    steps - so it writes one family. `family_frames` counted a Chaser as a
+    structural cycle only when it wrote two or more families, took this one
+    for the position family's owner, and reported "familia con dueño: <energy
+    cycle>: no tiene su Toggle en el marco" and "capa pisada por el ciclo:
+    <heads centre>". Vibra's own cycle writes several families, which is why
+    no shipped workspace showed it.
+    """
+    patch = build_small_rig_patch(tmp_path)
+    out = tmp_path / "club.qxw"
+    assert main(["newshow", str(patch), "--out", str(out)]) == 0
+    findings = check_workspace(Workspace.load(out), FixtureLibrary.load())
+    assert [
+        f for f in findings if f.rule in ("familia con dueño", "capa pisada por el ciclo")
+    ] == []
