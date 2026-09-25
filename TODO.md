@@ -6,6 +6,15 @@
   a running shutter chase, compare each burst to its held source, confirm
   release and timeout, then tune `BURST_MS` if needed. Evidence and the
   per-hit judgment: [desk burst findings](docs/2026-09-13-desk-bursts-findings.md).
+- [ ] **A known model in a mode its definition lacks is warned as "no fixture
+  definition" (2026-09-25).** `warn_unresolved.py` and the catalogue keys
+  `rig_without_definitions` / `missing_definition` (en.toml, es.toml) tell the
+  user to pass `--fixtures`, while `rule_missing_definition` already tells a
+  missing model from a missing mode and names both. The right advice for the
+  mode case is to repatch the fixture in a mode the definition has. No
+  shipped workspace has the case. Smallest next step: a second catalogue key
+  for the mode case, chosen from the same `resolved_definition` check, with a
+  dated test.
 - [ ] **`newshow` builds no show for a rig without movement or a dimmer
   (Plan C final review, 2026-09-25).** Pars only stopped at a traceback `no
   fixture in this workspace has both pan and tilt` (`movement_families.py`),
