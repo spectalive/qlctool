@@ -88,13 +88,26 @@ gobos = ["QLC+ Setups/Gobos"]
 ## Languages
 
 A description's `[show] language` picks the language the show is written in:
-`en` or `es` (Spanish when it does not say). Every name the generator writes -
+`en` or `es` (Spanish when it does not say). The words of a generated show -
 functions, paths, console frames, captions, the JUGAR page and the desk map -
-comes from `qlctool/locales/<lang>.toml`; the standalone `palette`, `matrix`,
-`movement`, `probe` and `layout` commands still write Spanish (ruling B5), and
-the patch's own fixture and group names stay as they were patched. `[names.<lang>]` overrides any
-identifier; an override of a template must keep its `{fields}`. `qlctool
-check` messages are still Spanish on any show (ruling B10, open in `TODO.md`).
+come from `qlctool/locales/<lang>.toml`, with these exceptions. The standalone
+`palette`, `matrix`, `movement`, `probe` and `layout` commands still write
+Spanish (ruling B5). The patch's own fixture and group names, and the wheel
+slot names of the fixture definitions, stay as they were patched. A few
+language-neutral words come from no catalogue, because they are spelled the
+same in both (ruling B6): the `Rig` prefix of the unison colour scenes, the
+`Show` and `Dimmers` function folders, `Solid` for a matrix with no algorithm,
+the `Wash` and `Beam` movement prefixes (no catalogue entry renders them
+alone; `prefix_fast_wash` is "Wash Rapido" / "Fast Wash"), `Gobo Shake - `,
+and the `(8 bit)` / `(16 bit)` suffixes of a split EFX. The root console
+frame's caption is copied from the input workspace (open in `TODO.md`).
+
+`[names.<lang>]` overrides any identifier; an override of a template must keep
+its `{fields}`. An override of a `frames` identifier may reword the explanation
+after " — " but not the head before it: `qlctool check` and the desk find
+frames by their shipped head, so a renamed head is refused while the
+description is read. `qlctool check` messages are still Spanish on any show
+(ruling B10, open in `TODO.md`).
 
 ## Design notes worth keeping
 

@@ -14,6 +14,11 @@ import re
 from dataclasses import replace
 from pathlib import Path
 
+import pytest
+
+from qlctool.description.controller_settings import ControllerSettings
+from qlctool.description.load_show_description import load_show_description
+from qlctool.description.show_description import ShowDescription
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
@@ -42,6 +47,24 @@ COPIED_NAMES = {
     "MeshItem",
     "Property",
 }
+
+
+# Every shipped way of building Vibra, and a show without the pad (2026-09-25,
+# final review of Plan B: the scan covered only plain Vibra).
+VARIANTS = ("plain", "beats", "split", "no-pad")
+
+
+def _variant(name: str) -> tuple[Workspace, ShowDescription]:
+    """The input workspace and the description the variant is built from."""
+    source = "Vibra-split.qxw" if name == "split" else "Vibra.qxw"
+    workspace = Workspace.load(SETUPS / source)
+    if name in ("beats", "split"):
+        description = load_show_description(SETUPS / f"vibra-{name}.toml", workspace.root)
+    else:
+        description = vibra_description()
+    if name == "no-pad":
+        description = replace(description, controllers=ControllerSettings(tablet_desk=True))
+    return workspace, description
 
 
 def _pseudo() -> dict[str, str]:
@@ -119,20 +142,26 @@ def _without(text: str, names: list[str]) -> str:
     return text
 
 
-def test_the_patch_exemptions_are_read_from_the_workspace():
-    workspace = Workspace.load(SETUPS / "Vibra.qxw")
-    patch = _patch_names(workspace, FixtureLibrary.load())
+@pytest.fixture(scope="module")
+def library() -> FixtureLibrary:
+    return FixtureLibrary.load()
+
+
+@pytest.mark.parametrize("variant", VARIANTS)
+def test_the_patch_exemptions_are_read_from_the_workspace(variant, library):
+    workspace, _ = _variant(variant)
+    patch = _patch_names(workspace, library)
     assert all(patch.values()), {kind: len(names) for kind, names in patch.items()}
 
 
-def test_no_spanish_catalogue_word_is_written():
-    workspace = Workspace.load(SETUPS / "Vibra.qxw")
-    library = FixtureLibrary.load()
+@pytest.mark.parametrize("variant", VARIANTS)
+def test_no_spanish_catalogue_word_is_written(variant, library):
+    workspace, described = _variant(variant)
     patch = _patch_names(workspace, library)
     # Whole patch names are exempt, not their words: a fixture called "Humo
     # Vertical 1" must not hide a generator literal "Humo" (ruling P17).
     exempt = sorted({n for names in patch.values() for n in names if n}, key=len, reverse=True)
-    description = replace(vibra_description(), language="en", names={"en": _pseudo()})
+    description = replace(described, language="en", names={"en": _pseudo()})
     build_canonical_show(workspace, library, description=description)
     words = _spanish_words() - B6_WORDS
     texts = [_without(text, exempt) for text in _written(workspace)]
