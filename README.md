@@ -101,6 +101,7 @@ python3 -m venv --system-site-packages .venv   # lxml comes from the system
 # ...or from a show description: the patch stays in QLC+, the .toml says the
 # rest (palette, matrices, timing, console, controllers). Names may be written
 # in any shipped language: red, Red and rojo are the same colour.
+# `[show] language = "en"` writes the whole show in English.
 .venv/bin/qlctool newshow --description "../../QLC+ Setups/vibra.toml" --validate
 
 # find out what each DMX channel of an undocumented fixture does, on site

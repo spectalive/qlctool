@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from qlctool.cli import main
+from qlctool.names.load_catalogue import load_catalogue
 
 TESTS = Path(__file__).resolve().parent
 SETUPS = TESTS.parents[2] / "QLC+ Setups"
@@ -45,10 +46,13 @@ def test_newshow_reports_a_missing_patch_without_a_traceback(tmp_path):
         main(["newshow", "--description", str(path), "--out", str(tmp_path / "out.qxw")])
 
 
-def test_newshow_refuses_an_english_show_without_a_traceback(tmp_path):
+def test_newshow_writes_an_english_show(tmp_path):
+    """2026-09-25: the Spanish-only gate is gone; `language = "en"` builds."""
     path = _rig(tmp_path, '[show]\nlanguage = "en"\n', "Vibra.qxw")
-    with pytest.raises(SystemExit, match="language"):
-        main(["newshow", "--description", str(path), "--out", str(tmp_path / "out.qxw")])
+    out = tmp_path / "out.qxw"
+    assert main(["newshow", "--description", str(path), "--out", str(out)]) == 0
+    title = load_catalogue("en")["frames"]["room_states"]
+    assert f'Caption="{title}"' in out.read_text(encoding="utf-8")
 
 
 def test_newshow_without_out_writes_the_rig_output(tmp_path, capsys):

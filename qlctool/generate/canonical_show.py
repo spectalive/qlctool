@@ -34,7 +34,6 @@ from ..ids import next_function_id
 from ..internal_program import internal_program, internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..monitor_positions import house_right_fixture_ids
-from ..names.check_generator_vocabulary import check_generator_vocabulary
 from ..names.localised_keys import localised_keys
 from ..names.names import Names
 from ..output_binding import pin_generic_output
@@ -135,7 +134,6 @@ def build_canonical_show(
     """Strip the workspace to its patch and generate a self-running show on it."""
     source = description if description is not None else vibra_description()
     vocabulary = description_names(source)
-    check_generator_vocabulary(vocabulary)
     described = localize_description(source, vocabulary)
     colours = described.colours
     wheel = wheel_palette_of(colours)

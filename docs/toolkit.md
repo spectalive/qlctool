@@ -85,6 +85,15 @@ input_profiles = ["QLC+ InputProfiles"]
 gobos = ["QLC+ Setups/Gobos"]
 ```
 
+## Languages
+
+A description's `[show] language` picks the language the show is written in:
+`en` or `es` (Spanish when it does not say). Every name the generator writes -
+functions, paths, console frames, captions, the JUGAR page and the desk map -
+comes from `qlctool/locales/<lang>.toml`. `[names.<lang>]` overrides any
+identifier; an override of a template must keep its `{fields}`. `qlctool
+check` messages are still Spanish on any show (ruling B10, open in `TODO.md`).
+
 ## Design notes worth keeping
 
 - **Fixtures are selected by capability, never by name or ID list.** "Every

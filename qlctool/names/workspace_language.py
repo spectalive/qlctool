@@ -14,10 +14,19 @@ from .shipped_languages import shipped_languages
 
 
 def workspace_language(root: etree._Element) -> str:
-    """The first shipped language whose room-states title is a frame caption here."""
+    """The first shipped language whose room-states title heads a frame caption here.
+
+    Only the head before " — " is compared, ignoring case, as the desk does
+    (`desk_frame_identifier`): a reworded explanation keeps the language.
+    """
     # The desk reads frames and solo frames alike; the room states are a solo frame.
-    captions = {widget.caption for widget in desk_widgets(root) if widget.kind in FRAME_TAGS}
+    heads = {
+        widget.caption.split(" — ", maxsplit=1)[0].strip().casefold()
+        for widget in desk_widgets(root)
+        if widget.kind in FRAME_TAGS
+    }
     for language in shipped_languages():
-        if load_catalogue(language)["frames"]["room_states"] in captions:
+        title = load_catalogue(language)["frames"]["room_states"]
+        if title.split(" — ", maxsplit=1)[0].strip().casefold() in heads:
             return language
     return "es"

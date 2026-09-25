@@ -11,8 +11,6 @@ from pathlib import Path
 
 from lxml import etree
 
-from ..names.check_generator_vocabulary import check_generator_vocabulary
-from ..names.generator_language import GENERATOR_LANGUAGE
 from ..names.shipped_names import shipped_names
 from ..vibra.description import vibra_description
 from .reading.description_sections import DESCRIPTION_SECTIONS
@@ -41,11 +39,6 @@ def load_show_description(path: str | Path, root: etree._Element) -> ShowDescrip
     name, language = read_show(table_at(document, "show", where), source)
     overrides = read_names(table_at(document, "names", where), where)
     names = shipped_names(language, overrides)
-    try:
-        check_generator_vocabulary(names)
-    except ValueError as error:
-        section = "[show]" if language != GENERATOR_LANGUAGE else "[names]"
-        raise ValueError(f"{where}: {section} {error}") from error
     colours = read_palette(table_at(document, "palette", where), base.colours, names, where)
     groups = table_at(document, "groups", where) if "groups" in document else None
     return ShowDescription(

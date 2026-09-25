@@ -142,22 +142,6 @@ def test_a_wrongly_shaped_value_is_a_value_error(tmp_path, patch_root, text):
         load_show_description(_write(tmp_path, text), patch_root)
 
 
-# Fix round 1 (2026-09-24, ruling F11): the generator's Spanish-only vocabulary
-# (R1) is refused while the file is read, naming it, not later as a traceback.
-@pytest.mark.parametrize(
-    ("text", "section"),
-    [
-        ('[show]\nlanguage = "en"\n', r"\[show\].*language 'en'"),
-        ('[names.es]\nparty_moment = "Fiesta"\n', r"\[names\].*party_moment"),
-    ],
-)
-def test_a_vocabulary_the_generator_cannot_write_is_refused(tmp_path, patch_root, text, section):
-    path = _write(tmp_path, text)
-    with pytest.raises(ValueError, match=section) as refused:
-        load_show_description(path, patch_root)
-    assert str(path) in str(refused.value)
-
-
 def test_a_beat_timing_keeps_the_default_it_does_not_state(tmp_path, patch_root):
     text = (
         "[timing]\nmatrix_beats = { fade = 2 }\n"

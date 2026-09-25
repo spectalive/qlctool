@@ -2,21 +2,18 @@
 
 2026-09-24, spec step 3: localised to Spanish, the Vibra description is today's
 show to the byte (tests/test_vibra_byte_identity.py); localised to English only
-the names change. Until the generators' own literals come from the catalogue,
-the build refuses any vocabulary but the Spanish one (plan ruling R1).
+the names change. Since Plan B (2026-09-25) the generators' own literals come
+from the catalogue too, so any shipped language builds.
 """
 
 from dataclasses import replace
 from pathlib import Path
-
-import pytest
 
 from qlctool.description.localize_description import localize_description
 from qlctool.description.matrices_by_group import matrices_by_group
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.matrix_algorithms import CURATED_MATRICES
-from qlctool.names.check_generator_vocabulary import check_generator_vocabulary
 from qlctool.names.shipped_names import shipped_names
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.vibra.description import vibra_description
@@ -55,19 +52,11 @@ def test_localised_to_english_only_the_names_change():
     assert show.console.keys["Party Moment"] == "F3"
 
 
-def test_the_generator_refuses_a_vocabulary_it_cannot_write_yet():
-    check_generator_vocabulary(shipped_names("es"))
-    with pytest.raises(ValueError, match="'en'"):
-        check_generator_vocabulary(shipped_names("en"))
-    with pytest.raises(ValueError, match="party_moment"):
-        check_generator_vocabulary(shipped_names("es", {"es": {"party_moment": "Fiestón"}}))
-
-
-def test_build_refuses_an_english_description():
+def test_an_english_description_builds_in_english():
     workspace = Workspace.load(SHOW)
-    with pytest.raises(ValueError, match="Spanish vocabulary"):
-        build_canonical_show(
-            workspace,
-            FixtureLibrary.load(),
-            description=replace(vibra_description(), language="en"),
-        )
+    show = build_canonical_show(
+        workspace,
+        FixtureLibrary.load(),
+        description=replace(vibra_description(), language="en"),
+    )
+    assert "Party Moment" in show.master_ids
