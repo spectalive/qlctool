@@ -19,6 +19,7 @@ import pytest
 from qlctool.description.controller_settings import ControllerSettings
 from qlctool.description.load_show_description import load_show_description
 from qlctool.description.show_description import ShowDescription
+from qlctool.desk_function_path import DESK_FUNCTION_PATH
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
@@ -163,6 +164,12 @@ def test_no_spanish_catalogue_word_is_written(variant, library):
     exempt = sorted({n for names in patch.values() for n in names if n}, key=len, reverse=True)
     description = replace(described, language="en", names={"en": _pseudo()})
     build_canonical_show(workspace, library, description=description)
+    # The scan once passed for months while no desk burst was built: a marker
+    # broke ruling B7, so the bursts it was meant to read never existed.
+    desk = [
+        f for f in iter_local(workspace.root, "Function") if f.get("Path") == DESK_FUNCTION_PATH
+    ]
+    assert desk, "the pseudo-locale build wrote no desk burst, so the scan cannot cover them"
     words = _spanish_words() - B6_WORDS
     texts = [_without(text, exempt) for text in _written(workspace)]
     leaks = sorted({w for text in texts for w in words if re.search(rf"\b{w}\b", text)})

@@ -18,10 +18,11 @@ def reject_frame_head_renames(overrides: Mapping[str, Mapping[str, str]], where:
         for identifier, word in entries.items():
             if identifier not in frames:
                 continue
-            if frame_caption_head(word) != frame_caption_head(frames[identifier]):
+            shipped = frames[identifier]
+            if frame_caption_head(word) != frame_caption_head(shipped):
                 raise ValueError(
                     f"{where}: [names.{language}] {identifier} = {word!r} renames the frame "
-                    f"head {frames[identifier].split(' — ')[0]!r}: frame heads cannot be renamed "
+                    f"head {shipped.split(' — ')[0].strip()!r}: frame heads cannot be renamed "
                     "yet, because the checker and the desk find frames by their shipped head; "
                     "reword only the text after ' — '"
                 )

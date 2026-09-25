@@ -96,7 +96,7 @@ Spanish (ruling B5). The patch's own fixture and group names, and the wheel
 slot names of the fixture definitions, stay as they were patched. A few
 language-neutral words come from no catalogue, because they are spelled the
 same in both (ruling B6): the `Rig` prefix of the unison colour scenes, the
-`Show` and `Dimmers` function folders, `Solid` for a matrix with no algorithm,
+`Show`, `Dimmers` and `Desk` function folders, `Solid` for a matrix with no algorithm,
 the `Wash` and `Beam` movement prefixes (no catalogue entry renders them
 alone; `prefix_fast_wash` is "Wash Rapido" / "Fast Wash"), `Gobo Shake - `,
 and the `(8 bit)` / `(16 bit)` suffixes of a split EFX. The root console
