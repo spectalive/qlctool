@@ -11,6 +11,7 @@ rule. New rules therefore have to be true of all three shows at once, which is
 what stops a check from being written to fit one file.
 """
 
+import copy
 import re
 
 import pytest
@@ -68,6 +69,20 @@ def test_2026_09_13_desk_link_loss_requires_bounded_hits():
 @pytest.fixture(scope="module")
 def library():
     return FixtureLibrary.load()
+
+
+@pytest.fixture(scope="module")
+def _deluxe_built(library):
+    """The DeluxeEventos2 rig through the canonical generator, built once."""
+    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
+    build_canonical_show(workspace, library)
+    return workspace.root
+
+
+@pytest.fixture
+def deluxe_show(_deluxe_built):
+    """A private copy of that build, so a test that edits it changes no other."""
+    return Workspace(etree.ElementTree(copy.deepcopy(_deluxe_built)))
 
 
 def _functions(workspace):
@@ -2010,7 +2025,7 @@ def test_a_family_frame_missing_a_state_owner(library):
     ), "a family frame missing Luz Charla's hook went unnoticed"
 
 
-def test_a_pick_cannot_dark_a_moment_by_stopping_its_hook(library):
+def test_a_pick_cannot_dark_a_moment_by_stopping_its_hook(library, deluxe_show):
     """2026-09-02: pressing a COLOR pick stops its hook. If that hook alone
     opens Momento Charla's dimmers, the pick paints a black room.
     """
@@ -2018,8 +2033,7 @@ def test_a_pick_cannot_dark_a_moment_by_stopping_its_hook(library):
 
     from qlctool.constants import QLC_NS
 
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     functions = _functions(workspace)
     charla = functions["Luz Charla"]
     moment = functions["Momento Charla"]
@@ -2249,12 +2263,11 @@ def test_a_family_hook_reachable_from_another_frame_button(library):
     ), "a family hook started by another frame button went unnoticed"
 
 
-def test_a_complete_family_frame_with_wrapped_picks_is_silent(library):
+def test_a_complete_family_frame_with_wrapped_picks_is_silent(library, deluxe_show):
     """2026-09-02, play-page design: complete hooks and an isolated wrapper
     let a pick replace AUTO without a state-driven start releasing it.
     """
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     frame = _family_frame(
         workspace,
         (
@@ -2282,12 +2295,11 @@ def test_a_nested_family_frame_still_requires_every_state_owner(library):
     assert any(f.function == "Luz Charla" for f in findings)
 
 
-def test_a_nested_family_frame_exempts_its_wrapper_pick(library):
+def test_a_nested_family_frame_exempts_its_wrapper_pick(library, deluxe_show):
     """2026-09-02, play-page design: an inner plain/multipage frame inherits
     the complete outer SoloFrame and therefore keeps its wrapper layer exempt.
     """
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     frame = _family_frame(
         workspace,
         (
@@ -2310,12 +2322,11 @@ def test_a_nested_family_frame_exempts_its_wrapper_pick(library):
     ]
 
 
-def test_a_zero_panel_effect_is_still_pixel_mode_ownership(library):
+def test_a_zero_panel_effect_is_still_pixel_mode_ownership(library, deluxe_show):
     """2026-09-02: mode zero is an intentional write, not an unowned channel."""
     from qlctool.checks.family_frames import _function_families
 
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     families = _function_families(
         graph,
@@ -2357,12 +2368,11 @@ def test_talk_panel_mode_and_pixel_base_keep_distinct_owners(library):
     ), "Pixeles ON stopped parking every non-cycle matrix fixture mode"
 
 
-def test_a_moments_pixel_intensity_companion_is_not_a_second_play_hook(library):
+def test_a_moments_pixel_intensity_companion_is_not_a_second_play_hook(library, deluxe_show):
     """2026-09-02: a moment's panel intensity support must not take over
     pixel mode or demand a duplicate PIXELES hook.
     """
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
 
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     writes = reach(
@@ -2379,7 +2389,7 @@ def test_a_moments_pixel_intensity_companion_is_not_a_second_play_hook(library):
     assert not any(f.function == "Intensidad Charla Pixeles" for f in findings)
 
 
-def test_a_bare_pixel_mode_state_owner_still_requires_its_play_hook(library):
+def test_a_bare_pixel_mode_state_owner_still_requires_its_play_hook(library, deluxe_show):
     """2026-09-02: adding a second functional pixel owner to AUTO requires
     its own PIXELES hook; an intensity-only companion must not hide it.
     """
@@ -2387,8 +2397,7 @@ def test_a_bare_pixel_mode_state_owner_still_requires_its_play_hook(library):
 
     from qlctool.constants import QLC_NS
 
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     functions = _functions(workspace)
     copied = _twin_scene(
         workspace,
@@ -2409,7 +2418,7 @@ def test_a_bare_pixel_mode_state_owner_still_requires_its_play_hook(library):
     )
 
 
-def test_a_nonmoving_rgb_effect_fixture_is_a_pixel_mode_owner(library):
+def test_a_nonmoving_rgb_effect_fixture_is_a_pixel_mode_owner(library, deluxe_show):
     """2026-09-02: pixel-mode ownership follows capabilities, even if a
     fixture type omits the word "pixel".
     """
@@ -2418,8 +2427,7 @@ def test_a_nonmoving_rgb_effect_fixture_is_a_pixel_mode_owner(library):
 
     from qlctool.checks.family_frames import _is_pixel_fixture
 
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     capability = next(
         c for c in capabilities_of(workspace.root, library) if c.fixture.fixture_id == 24
     )
@@ -2433,7 +2441,7 @@ def test_a_nonmoving_rgb_effect_fixture_is_a_pixel_mode_owner(library):
     )
 
 
-def test_a_state_started_movement_collection_is_its_own_required_hook(library):
+def test_a_state_started_movement_collection_is_its_own_required_hook(library, deluxe_show):
     """2026-09-02, play-page design: future `Movimientos Suaves` is a
     functional Collection started by a state. Its hook is required, but its
     two child movement functions are not separate hooks.
@@ -2446,8 +2454,7 @@ def test_a_state_started_movement_collection_is_its_own_required_hook(library):
     from qlctool.vc.button import build_button
     from qlctool.vc.widget_ids import next_widget_id
 
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     functions = _functions(workspace)
     washes_id = next_function_id(workspace.root)
     workspace.add_function(
@@ -2487,7 +2494,7 @@ def test_a_state_started_movement_collection_is_its_own_required_hook(library):
     assert not [f for f in findings if f.function in {"TEST Suaves Washes", "TEST Suaves Beams"}]
 
 
-def test_a_multi_family_state_chaser_is_not_a_play_hook(library):
+def test_a_multi_family_state_chaser_is_not_a_play_hook(library, deluxe_show):
     """2026-09-02: Ciclo Energia coordinates several families, so a family
     frame must not demand it as a return hook for each one.
     """
@@ -2496,8 +2503,7 @@ def test_a_multi_family_state_chaser_is_not_a_play_hook(library):
     from qlctool.checks.family_frames import _state_owners
     from qlctool.checks.show_graph import build_show_graph, group_fixtures
 
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     groups = group_fixtures(workspace.root)
     states = room_states(workspace.root, graph, groups)
@@ -2529,7 +2535,7 @@ def test_an_energy_nested_owner_missing_from_its_family_frame_is_reported(librar
     ), "an energy-nested gobo owner went unnoticed"
 
 
-def test_the_talk_owners_have_one_family_each(library):
+def test_the_talk_owners_have_one_family_each(library, deluxe_show):
     """2026-09-02, re-review: colour and panel-mode recovery are separate
     state owners, so a renamed frame cannot hide shared hook semantics.
     """
@@ -2538,8 +2544,7 @@ def test_the_talk_owners_have_one_family_each(library):
     from qlctool.checks.family_frames import _state_owners
     from qlctool.checks.show_graph import build_show_graph, group_fixtures
 
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     groups = group_fixtures(workspace.root)
     states = room_states(workspace.root, graph, groups)
@@ -2553,14 +2558,13 @@ def test_the_talk_owners_have_one_family_each(library):
     assert panels_id in owners["pixel-mode"]
 
 
-def test_color_hooks_do_not_take_the_panel_mode_contract(library):
+def test_color_hooks_do_not_take_the_panel_mode_contract(library, deluxe_show):
     """2026-09-02, re-review: graph-derived frame families keep COLOR from
     inheriting PIXELES ownership through a mode-resetting colour hook.
     """
     from qlctool.checks.family_frames import _function_families
 
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     groups = group_fixtures(workspace.root)
     for name in ("Rueda Colores", "Rueda Mezcla", "Luz Charla"):
@@ -2568,23 +2572,21 @@ def test_color_hooks_do_not_take_the_panel_mode_contract(library):
         assert not families["pixel-mode"], name
 
 
-def test_the_room_state_selector_is_not_a_family_handoff(library):
+def test_the_room_state_selector_is_not_a_family_handoff(library, deluxe_show):
     """2026-09-02, re-review: selecting a whole-room state is graph-distinct
     from replacing a family hook, even though both use a SoloFrame.
     """
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
 
     findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
     assert not findings
 
 
-def test_a_scene_only_pixel_owner_requires_its_play_hook(library):
+def test_a_scene_only_pixel_owner_requires_its_play_hook(library, deluxe_show):
     """2026-09-02, re-review: a direct Scene owner is still a state owner;
     only its write capability decides which JUGAR family must include it.
     """
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     _family_frame(workspace, ("Ciclo Paneles Mixto",), caption="renamed")
 
     findings = [f for f in check_workspace(workspace, library) if f.rule == "familia con dueño"]
@@ -2593,12 +2595,11 @@ def test_a_scene_only_pixel_owner_requires_its_play_hook(library):
     )
 
 
-def test_a_renamed_frame_with_a_pixel_wrapper_requires_pixel_owners(library):
+def test_a_renamed_frame_with_a_pixel_wrapper_requires_pixel_owners(library, deluxe_show):
     """2026-09-02, re-review: a wrapper's graph writes, not the frame
     caption, choose the family contract.
     """
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     _family_frame(
         workspace,
         ("Rueda Colores", "Rueda Mezcla", "Luz Charla", "Jugar · Paneles - Effect 1"),
@@ -2610,12 +2611,11 @@ def test_a_renamed_frame_with_a_pixel_wrapper_requires_pixel_owners(library):
     assert {"Ciclo Paneles Mixto", "Paneles Charla"} <= missing
 
 
-def test_a_complete_renamed_pixel_frame_is_silent(library):
+def test_a_complete_renamed_pixel_frame_is_silent(library, deluxe_show):
     """2026-09-02, re-review: the graph-derived pixel handoff does not need
     the colour wheel hooks, regardless of a frame's operator caption.
     """
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     _family_frame(
         workspace,
         ("Ciclo Paneles Mixto", "Paneles Charla"),
@@ -2626,12 +2626,11 @@ def test_a_complete_renamed_pixel_frame_is_silent(library):
     assert not findings
 
 
-def test_luz_charla_keeps_momento_intensity_outside_the_color_hook(library):
+def test_luz_charla_keeps_momento_intensity_outside_the_color_hook(library, deluxe_show):
     """2026-09-02: a COLOR pick stops Luz Charla but leaves Momento Charla's
     dimmer source running, while the hook still restores the beams' wheel.
     """
-    workspace = Workspace.load(REPO / "QLC+ Setups" / "DeluxeEventos2.qxw")
-    build_canonical_show(workspace, library)
+    workspace = deluxe_show
     functions = _functions(workspace)
     charla = functions["Luz Charla"]
     moment = functions["Momento Charla"]
