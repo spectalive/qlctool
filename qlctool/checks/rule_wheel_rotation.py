@@ -21,7 +21,7 @@ from .color_roles import COLOUR
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
-RULE = "rueda de color girando"
+RULE_ID = "wheel_rotation"
 STATES_COLOUR = ("Scene", "Sequence")
 ROTATION_PRESET_PREFIX = "Rotation"
 
@@ -38,7 +38,7 @@ def check_wheel_rotation(graph: ShowGraph, groups) -> list[Finding]:
         if spinning:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

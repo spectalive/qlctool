@@ -18,7 +18,7 @@ from .. import roles
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "intensidad tapada"
+RULE_ID = "shadowed_intensity"
 LEAVES = ("Scene", "Sequence")
 
 
@@ -60,7 +60,7 @@ def _collection(graph: ShowGraph, collection_id: int, reported) -> list[Finding]
             fixture = graph.capabilities.get(channel[0])
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(collection_id),
                     message=(

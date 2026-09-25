@@ -24,7 +24,7 @@ from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .white_fixtures import white_fixtures
 
-RULE = "blanco en la rueda"
+RULE_ID = "wheel_white"
 
 
 def check_wheel_white(
@@ -42,7 +42,7 @@ def check_wheel_white(
                 continue
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(chaser_id),
                     fixtures=tuple(sorted(white)),

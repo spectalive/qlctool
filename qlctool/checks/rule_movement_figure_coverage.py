@@ -32,7 +32,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "figura que deja cabezas quietas"
+RULE_ID = "movement_figure_coverage"
 EFX_PANTILT_MODE = "0"  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 
 
@@ -55,7 +55,7 @@ def check_movement_figure_coverage(
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=caption,
                 fixtures=tuple(still),

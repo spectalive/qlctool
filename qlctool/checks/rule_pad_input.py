@@ -30,9 +30,9 @@ from ..xmlutil import localname
 from .finding import ERROR, Finding
 from .pad_bindings import pad_bindings
 
-RULE = "binding a un control que el pad no manda"
-UNPATCHED_RULE = "consola con bindings y sin entrada MIDI"
-DOUBLE_RULE = "un control atado a dos widgets"
+RULE_ID = "pad_input"
+UNPATCHED_RULE_ID = "pad_bindings_without_input"
+DOUBLE_RULE_ID = "pad_control_bound_twice"
 
 
 def check_pad_input(root: etree._Element) -> list[Finding]:
@@ -46,7 +46,7 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
         if channel not in sendable:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=captions[0],
                     message=(
@@ -59,7 +59,7 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
         if len(captions) > 1:
             findings.append(
                 Finding(
-                    rule=DOUBLE_RULE,
+                    rule_id=DOUBLE_RULE_ID,
                     severity=ERROR,
                     function=captions[0],
                     message=(
@@ -72,7 +72,7 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
     if midi_input_patch(root) is None:
         findings.append(
             Finding(
-                rule=UNPATCHED_RULE,
+                rule_id=UNPATCHED_RULE_ID,
                 severity=ERROR,
                 function="InputOutputMap",
                 message=(

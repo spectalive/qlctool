@@ -25,7 +25,7 @@ from .fixture_colour import fixture_colour
 from .saturated import saturated
 from .show_graph import ShowGraph
 
-RULE = "complementarios en un mismo lavado"
+RULE_ID = "split_complementary"
 STATES_COLOUR = ("Scene", "Sequence")
 
 
@@ -57,7 +57,7 @@ def check_split_complementary(
                 continue
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(scene_id),
                     fixtures=tuple(

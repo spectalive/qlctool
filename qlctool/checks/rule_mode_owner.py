@@ -28,7 +28,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit
 
-RULE = "modo sin dueño"
+RULE_ID = "mode_owner"
 
 
 def check_mode_owner(graph: ShowGraph, groups, entries) -> list[Finding]:
@@ -60,7 +60,7 @@ def check_mode_owner(graph: ShowGraph, groups, entries) -> list[Finding]:
         if orphans:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function="",
                     message=(

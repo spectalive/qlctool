@@ -21,7 +21,7 @@ from .finding import ERROR, Finding
 from .function_references import function_references
 from .show_graph import ShowGraph
 
-RULE = "referencia a una funcion que no existe"
+RULE_ID = "dangling_reference"
 
 
 def check_dangling_references(graph: ShowGraph, root: etree._Element) -> list[Finding]:
@@ -31,7 +31,7 @@ def check_dangling_references(graph: ShowGraph, root: etree._Element) -> list[Fi
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=holder,
                 message=(

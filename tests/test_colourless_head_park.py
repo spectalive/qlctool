@@ -12,7 +12,7 @@ from gobo_spot_rig import build_gobo_spot_patch
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
-from qlctool.checks.rule_mode_owner import RULE
+from qlctool.checks.rule_mode_owner import RULE_ID
 from qlctool.checks.run import check_workspace
 from qlctool.cli import main
 from qlctool.library import FixtureLibrary
@@ -37,7 +37,7 @@ def test_2026_09_25_a_gobo_spot_without_colour_has_its_effect_channel_owned(tmp_
     assert len(spots) == 2
     assert all(capability.offsets_for_role(roles.EFFECT) for capability in spots)
     findings = check_workspace(workspace, library)
-    assert [f for f in findings if f.rule == RULE] == []
+    assert [f for f in findings if f.rule_id == RULE_ID] == []
 
 
 def test_2026_09_25_a_wheel_whose_positions_name_no_colour_is_outside_the_looks():

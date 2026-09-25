@@ -7,7 +7,7 @@ from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "familia con dueño"
+RULE_ID = "family_owner"
 
 
 def check_family_owner(
@@ -25,7 +25,7 @@ def check_family_owner(
         for problem in problems:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(problem.function_id),
                     message=problem.message,

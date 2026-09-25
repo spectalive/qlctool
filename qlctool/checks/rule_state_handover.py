@@ -24,7 +24,7 @@ from .driven_channels import Driven
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
-RULE = "estado que hereda"
+RULE_ID = "state_handover"
 INHERITED_ROLES = (
     roles.COLOR_MACRO,
     roles.GOBO,
@@ -64,7 +64,7 @@ def check_state_handover(
         fixtures = sorted({name for names in inherited.values() for name in names})
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(state_id),
                 fixtures=tuple(fixtures),

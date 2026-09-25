@@ -32,8 +32,8 @@ from ..xmlutil import find_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "unidades de tempo cruzadas"
-COLLECTION_RULE = "tempo en una coleccion"
+RULE_ID = "tempo_units"
+COLLECTION_RULE_ID = "tempo_in_collection"
 
 TEMPO_BEATS = "Beats"
 # Function kinds that time themselves in milliseconds whatever their parent
@@ -52,7 +52,7 @@ def check_tempo_units(graph: ShowGraph) -> list[Finding]:
         if function.attrib.get("Type") == "Collection":
             findings.append(
                 Finding(
-                    rule=COLLECTION_RULE,
+                    rule_id=COLLECTION_RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(
@@ -73,7 +73,7 @@ def check_tempo_units(graph: ShowGraph) -> list[Finding]:
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
                 fixtures=tuple(hurt),

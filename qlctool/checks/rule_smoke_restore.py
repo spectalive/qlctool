@@ -30,7 +30,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
-RULE = "humo pegado"
+RULE_ID = "smoke_restore"
 # The one QLC+ zeroes every cycle. Everything else holds its last value.
 RESET_GROUP = "intensity"
 
@@ -56,7 +56,7 @@ def check_smoke_restore(
         for fixture_id in sorted(held):
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

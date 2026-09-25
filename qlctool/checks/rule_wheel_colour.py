@@ -21,7 +21,7 @@ from .color_roles import COLOUR
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
-RULE = "rueda de color"
+RULE_ID = "wheel_colour"
 STATES_COLOUR = ("Scene", "Sequence")
 
 
@@ -42,7 +42,7 @@ def check_wheel_colour(graph: ShowGraph, groups, entries: dict[int, str]) -> lis
         if missed:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

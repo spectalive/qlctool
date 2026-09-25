@@ -26,7 +26,7 @@ from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph
 from .unowned_instant import unowned_while_lit
 
-RULE = "acento sin dueño"
+RULE_ID = "accent_restore"
 WHEEL_ROLES = (roles.COLOR_MACRO, roles.GOBO, roles.PRISM)
 
 
@@ -99,7 +99,7 @@ def _orphaned(
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=WARNING,
                 function=graph.name(function_id),
                 message=(

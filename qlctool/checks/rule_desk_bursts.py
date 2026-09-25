@@ -11,7 +11,7 @@ from .desk_burst_errors import desk_burst_errors
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "rafaga del desk"
+RULE_ID = "desk_burst_shape"
 
 
 def check_desk_bursts(
@@ -27,10 +27,13 @@ def check_desk_bursts(
         if duration is None or len(candidates) != 1:
             findings.append(
                 Finding(
-                    RULE, ERROR, key, "requiere un origen, una duracion y un unico Toggle de rafaga"
+                    RULE_ID,
+                    ERROR,
+                    key,
+                    "requiere un origen, una duracion y un unico Toggle de rafaga",
                 )
             )
             continue
         for error in desk_burst_errors(graph, root, sources[key], candidates[0], duration):
-            findings.append(Finding(RULE, ERROR, key, error))
+            findings.append(Finding(RULE_ID, ERROR, key, error))
     return findings

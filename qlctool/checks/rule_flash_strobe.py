@@ -34,8 +34,8 @@ from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit
 from .strobe_written import strobe_capable_offsets, value_strobes
 
-RULE = "flash sin estrobo"
-AUDIO_RULE = "estrobo en manos del audio"
+RULE_ID = "flash_strobe"
+AUDIO_RULE_ID = "strobe_held_by_audio"
 
 
 def check_flash_strobe(graph: ShowGraph, groups, root: etree._Element) -> list[Finding]:
@@ -64,7 +64,7 @@ def check_flash_strobe(graph: ShowGraph, groups, root: etree._Element) -> list[F
         if by_audio and strobing:
             findings.append(
                 Finding(
-                    rule=AUDIO_RULE,
+                    rule_id=AUDIO_RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(
@@ -77,7 +77,7 @@ def check_flash_strobe(graph: ShowGraph, groups, root: etree._Element) -> list[F
         elif not by_audio and dark:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     fixtures=tuple(sorted(dark)),

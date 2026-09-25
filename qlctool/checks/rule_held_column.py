@@ -31,7 +31,7 @@ from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
-RULE = "columna automatica"
+RULE_ID = "held_column"
 
 
 def check_held_column(
@@ -72,7 +72,7 @@ def check_held_column(
         if fired:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

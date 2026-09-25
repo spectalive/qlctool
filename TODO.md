@@ -170,3 +170,21 @@
   the English `matrices_frame` and `library_2`, back on the club and the rule
   bites; Vibra (which matches seven promising captions) and the club stay
   clean. Limit: a `[names]` override of those captions is not judged.
+- [~] **An English show's `check` reads in Spanish (ruling B10, 2026-09-25).**
+  The controller decided (the owner delegated it) that the check side follows
+  the spec's "Multilingual" section: every rule has an English identifier and
+  a display name per language. Round 1 done: `Finding.rule_id` (the 62 `RULE`
+  and 5 secondary rule literals in `checks/rule_*.py` are `RULE_ID`
+  identifiers), a `[checks]` section in `es.toml` and `en.toml`,
+  `checks/named_in_order.py` names every finding in `workspace_language` in
+  one place, and `print_check_report.py` renders the summary lines from
+  `[messages]` (`check_clean`, `check_problems`, `check_more`). Vibra prints
+  byte for byte what it printed; the club now reads `199 buttons checked, no
+  problems`. Tests `tests/test_check_rule_catalogue.py` (drift) and
+  `tests/test_english_check_names.py` (dated). Round 2 pending: the finding
+  messages (76 `Finding(...)` sites) are still Spanish literals, and
+  `rule_missing_definition` still renders its message with `default_names()`
+  (Spanish) on an English show. Smallest next step: route each rule's message
+  through a `[messages]` identifier rendered in the workspace's language,
+  module by module, with a scanner like `tests/test_generator_literals.py`
+  over `checks/`.

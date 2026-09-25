@@ -34,7 +34,7 @@ from .driven_channels import EFX_PAN_TILT
 from .finding import ERROR, Finding
 from .show_graph import CONCURRENT, ShowGraph
 
-RULE = "cabezas paradas en el ciclo"
+RULE_ID = "parked_movers"
 
 
 def check_parked_movers(graph: ShowGraph) -> list[Finding]:
@@ -67,7 +67,7 @@ def check_parked_movers(graph: ShowGraph) -> list[Finding]:
                 continue
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(step),
                     message=(

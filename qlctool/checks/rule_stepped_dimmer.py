@@ -23,7 +23,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "dimmer a medias"
+RULE_ID = "stepped_dimmer"
 WRITES_VALUES = ("Scene", "Sequence", "EFX")
 
 
@@ -48,7 +48,7 @@ def check_stepped_dimmer(graph: ShowGraph, groups) -> list[Finding]:
         if caught:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

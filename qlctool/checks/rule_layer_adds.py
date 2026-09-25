@@ -31,7 +31,7 @@ from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph, lit, reach
 from .wrapper_leaves import wrapper_scenes
 
-RULE = "capa que se suma al estado"
+RULE_ID = "layer_adds"
 
 
 def check_layer_adds(
@@ -59,7 +59,7 @@ def check_layer_adds(
         if clashing:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(button.function_id),
                     fixtures=tuple(sorted(clashing)),

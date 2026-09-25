@@ -22,7 +22,8 @@ from .canvas_of import canvas_of
 from .console_caption_findings import console_caption_findings
 from .console_states import room_states
 from .entry_points import entry_points
-from .finding import ERROR, Finding
+from .finding import Finding
+from .named_in_order import named_in_order
 from .rule_accent_restore import check_accent_restore
 from .rule_audio_triggers import check_audio_triggers
 from .rule_collision import check_collisions
@@ -163,6 +164,5 @@ def check_workspace(
     findings += check_console(graph, root, canvas or canvas_of(root))
     findings += console_caption_findings(graph, root)
     findings += check_audio_triggers(graph, groups, root)
-    for provider in applying:
-        findings += provider.check(context)
-    return sorted(findings, key=lambda f: (f.severity != ERROR, f.rule, f.function))
+    findings += [finding for provider in applying for finding in provider.check(context)]
+    return named_in_order(findings, root)

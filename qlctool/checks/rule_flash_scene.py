@@ -19,7 +19,7 @@ from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "flash sin escena"
+RULE_ID = "flash_scene"
 FLASHABLE = ("Scene",)
 
 
@@ -43,7 +43,7 @@ def check_flash_scene(graph: ShowGraph, root: etree._Element) -> list[Finding]:
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
                 message=(

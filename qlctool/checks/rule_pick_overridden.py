@@ -29,7 +29,7 @@ from .show_graph import ShowGraph
 from .stepped_leaves import stepped_leaves
 from .wrapper_leaves import wrapper_scenes
 
-RULE = "capa pisada por el ciclo"
+RULE_ID = "pick_overridden"
 PICK_ROLES = (
     roles.COLOR_MACRO,
     roles.GOBO,
@@ -77,7 +77,7 @@ def check_pick_overridden(
         fixtures = sorted({name for names in overridden.values() for name in names})
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(button.function_id),
                 fixtures=tuple(fixtures),

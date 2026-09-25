@@ -17,7 +17,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit
 
-RULE = "humo"
+RULE_ID = "smoke"
 
 
 def check_smoke(graph: ShowGraph, groups, entries) -> list[Finding]:
@@ -35,7 +35,7 @@ def check_smoke(graph: ShowGraph, groups, entries) -> list[Finding]:
         if others:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

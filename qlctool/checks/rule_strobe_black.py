@@ -25,7 +25,7 @@ from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph, lit, reach
 from .strobe_shape import strobe_flash_rate
 
-RULE = "estrobo sin negro"
+RULE_ID = "strobe_black"
 INTENSITY_GROUP = "Intensity"
 
 
@@ -53,7 +53,7 @@ def check_strobe_black(
             reported.add(function_id)
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

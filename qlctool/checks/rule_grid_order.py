@@ -36,7 +36,7 @@ from ..fixture_group import fixture_groups
 from ..stage_x_positions import stage_x_positions
 from .finding import WARNING, Finding
 
-RULE = "rejilla fuera de orden"
+RULE_ID = "grid_order"
 
 
 def check_grid_order(root: etree._Element) -> list[Finding]:
@@ -58,7 +58,7 @@ def check_grid_order(root: etree._Element) -> list[Finding]:
                 continue
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=WARNING,
                     function=group.name,
                     message=(

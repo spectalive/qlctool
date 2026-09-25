@@ -18,7 +18,7 @@ from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .strobe_shape import strobe_flash_rate
 
-RULE = "estrobo demasiado rapido"
+RULE_ID = "strobe_rate"
 MAX_FLASH_HZ = 4.0
 
 
@@ -31,7 +31,7 @@ def check_strobe_rate(graph: ShowGraph, groups, entries) -> list[Finding]:
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
                 message=(

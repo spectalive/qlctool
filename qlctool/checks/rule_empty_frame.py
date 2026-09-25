@@ -22,7 +22,7 @@ from ..xmlutil import find_local, localname
 from .finding import WARNING, Finding
 from .frame_holds_a_control import frame_holds_a_control
 
-RULE = "marco vacio"
+RULE_ID = "empty_frame"
 
 
 def check_empty_frames(root: etree._Element) -> list[Finding]:
@@ -38,7 +38,7 @@ def check_empty_frames(root: etree._Element) -> list[Finding]:
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=WARNING,
                 function=frame.get("Caption") or f"marco {frame.get('ID')}",
                 message=(

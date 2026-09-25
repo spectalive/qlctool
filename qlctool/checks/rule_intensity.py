@@ -18,7 +18,7 @@ from .color_roles import COLOUR
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
-RULE = "intensidad"
+RULE_ID = "intensity"
 # What a DMX channel reads as when no function has written to it.
 UNTOUCHED = 0
 # A Scene states a colour. A matrix paints one group's pixels and an EFX moves
@@ -55,7 +55,7 @@ def check_intensity(
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
                 message=(

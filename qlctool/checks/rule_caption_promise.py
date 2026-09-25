@@ -28,7 +28,7 @@ from .promise_patterns import promise_patterns
 from .promise_words import PROMISE_WORDS
 from .show_graph import ShowGraph
 
-RULE = "rotulo que promete lo que no hay"
+RULE_ID = "caption_promise"
 
 
 def check_caption_promise(graph: ShowGraph, root: etree._Element) -> list[Finding]:
@@ -50,7 +50,7 @@ def check_caption_promise(graph: ShowGraph, root: etree._Element) -> list[Findin
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=caption,
                 message=(

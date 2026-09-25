@@ -10,7 +10,7 @@ two neighbours of that cycle, and yellow's neighbour is blue.
 import shutil
 from pathlib import Path
 
-from qlctool.checks.rule_split_complementary import RULE
+from qlctool.checks.rule_split_complementary import RULE_ID
 from qlctool.checks.run import check_workspace
 from qlctool.cli import main
 from qlctool.library import FixtureLibrary
@@ -50,7 +50,7 @@ def test_2026_09_25_a_group_of_two_gets_no_complementary_pair(tmp_path):
     out = tmp_path / "two-pars.qxw"
     assert main(["newshow", str(_two_par_patch(tmp_path)), "--out", str(out)]) == 0
     findings = check_workspace(Workspace.load(out), FixtureLibrary.load())
-    assert [str(f) for f in findings if f.rule == RULE] == []
+    assert [str(f) for f in findings if f.rule_id == RULE_ID] == []
 
 
 def _quad_colours():

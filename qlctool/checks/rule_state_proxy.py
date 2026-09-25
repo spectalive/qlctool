@@ -22,7 +22,7 @@ function id presses no button.
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "estado pulsado por otra funcion"
+RULE_ID = "state_proxy"
 
 
 def check_state_proxy(graph: ShowGraph, states: set[int]) -> list[Finding]:
@@ -34,7 +34,7 @@ def check_state_proxy(graph: ShowGraph, states: set[int]) -> list[Finding]:
         for state_id in pressed:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

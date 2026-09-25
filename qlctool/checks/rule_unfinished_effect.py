@@ -21,7 +21,7 @@ from ..xmlutil import find_local, findall_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "efecto cortado"
+RULE_ID = "unfinished_effect"
 BEATS = "Beats"
 
 
@@ -37,7 +37,7 @@ def check_unfinished_effects(graph: ShowGraph, groups, entries) -> list[Finding]
         worst = max(cut, key=lambda item: item[2] - item[1])
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
                 message=(

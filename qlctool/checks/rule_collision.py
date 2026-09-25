@@ -24,7 +24,7 @@ from .color_roles import CONTESTED
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, reach
 
-RULE = "colores pisados"
+RULE_ID = "collision"
 
 
 def check_collisions(graph: ShowGraph, groups, entries: dict[int, str]) -> list[Finding]:
@@ -59,7 +59,7 @@ def _collection(graph: ShowGraph, groups, collection_id: int, reported) -> list[
         )
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(collection_id),
                 message=(

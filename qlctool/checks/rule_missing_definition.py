@@ -23,7 +23,7 @@ from ..names.names import Names
 from ..searched_folders import searched_folders
 from .finding import ERROR, Finding
 
-RULE = "sin definicion"
+RULE_ID = "missing_fixture_definition"
 
 
 def check_missing_definitions(
@@ -44,6 +44,6 @@ def check_missing_definitions(
             message = vocabulary.render("missing_mode", mode=fixture.mode)
         unresolved.setdefault((model, message), []).append(fixture.name)
     return [
-        Finding(RULE, ERROR, model, message, tuple(fixtures))
+        Finding(RULE_ID, ERROR, model, message, tuple(fixtures))
         for (model, message), fixtures in unresolved.items()
     ]

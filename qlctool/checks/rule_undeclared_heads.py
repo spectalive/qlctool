@@ -35,7 +35,7 @@ from ..fixture_group import fixture_groups
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "cabezas sin declarar"
+RULE_ID = "undeclared_heads"
 COLOUR_ROLES = (roles.RED, roles.GREEN, roles.BLUE)
 
 
@@ -56,7 +56,7 @@ def check_undeclared_heads(graph: ShowGraph, root: etree._Element) -> list[Findi
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=group_name,
                 message=(

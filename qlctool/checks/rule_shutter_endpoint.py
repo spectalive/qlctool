@@ -25,7 +25,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "obturador a medio abrir"
+RULE_ID = "shutter_endpoint"
 
 
 def check_shutter_endpoint(graph: ShowGraph, groups) -> list[Finding]:
@@ -38,7 +38,7 @@ def check_shutter_endpoint(graph: ShowGraph, groups) -> list[Finding]:
         _, value, endpoint = short[0]
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
                 message=(

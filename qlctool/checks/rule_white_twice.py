@@ -21,7 +21,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "blanco pagado dos veces"
+RULE_ID = "white_twice"
 RGB = (roles.RED, roles.GREEN, roles.BLUE)
 
 
@@ -61,7 +61,7 @@ def check_white_twice(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> l
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
                 fixtures=tuple(sorted(set(washed))),

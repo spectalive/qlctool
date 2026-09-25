@@ -24,7 +24,7 @@ from ..xmlutil import find_local, findall_local, iter_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "rejilla"
+RULE_ID = "group_grid"
 
 
 def check_group_grids(graph: ShowGraph, root: etree._Element) -> list[Finding]:
@@ -46,7 +46,7 @@ def check_group_grids(graph: ShowGraph, root: etree._Element) -> list[Finding]:
         if outside:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=name,
                     message=(
@@ -60,7 +60,7 @@ def check_group_grids(graph: ShowGraph, root: etree._Element) -> list[Finding]:
         if empty > 0:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=name,
                     message=(

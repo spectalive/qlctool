@@ -23,7 +23,7 @@ from .driven_channels import driven_channels
 from .finding import WARNING, Finding
 from .show_graph import ShowGraph, lit
 
-RULE = "zoom sin declarar"
+RULE_ID = "zoom_narrow"
 
 LIGHTING_ROLES = (roles.DIMMER, roles.RED, roles.GREEN, roles.BLUE, roles.WHITE)
 
@@ -38,7 +38,7 @@ def check_zoom_narrow(graph: ShowGraph, groups) -> list[Finding]:
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=WARNING,
                 function=graph.name(function_id),
                 message=(

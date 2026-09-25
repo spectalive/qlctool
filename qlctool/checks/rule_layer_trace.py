@@ -28,7 +28,7 @@ from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph, reach
 from .wrapper_leaves import wrapper_scenes
 
-RULE = "capa que deja huella"
+RULE_ID = "layer_trace"
 INTENSITY_GROUP = "Intensity"
 
 
@@ -62,7 +62,7 @@ def check_layer_trace(
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(button.function_id),
                 fixtures=tuple(sorted(set(stranded))),

@@ -20,7 +20,7 @@ from ..xmlutil import find_local, localname
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "consola"
+RULE_ID = "console"
 WIDGETS = {
     "Frame",
     "SoloFrame",
@@ -88,7 +88,7 @@ def _solo_frames(graph: ShowGraph, frame: etree._Element) -> list[Finding]:
             if clash:
                 findings.append(
                     Finding(
-                        rule=RULE,
+                        rule_id=RULE_ID,
                         severity=ERROR,
                         function=graph.name(function_id),
                         message=(
@@ -117,7 +117,7 @@ def _keys(frame: etree._Element) -> list[Finding]:
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=", ".join(captions),
                 message=f"comparten la tecla «{key}»: pulsarla dispara todos",
@@ -136,7 +136,7 @@ def _off_canvas(frame: etree._Element, canvas: tuple[int, int]) -> list[Finding]
         if right > width or bottom > height:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=widget.attrib.get("Caption", "") or localname(widget),
                     message=(
@@ -192,7 +192,7 @@ def _parent_bounds(frame: etree._Element) -> list[Finding]:
             if right > width or bottom > height:
                 findings.append(
                     Finding(
-                        rule=RULE,
+                        rule_id=RULE_ID,
                         severity=ERROR,
                         function=child.attrib.get("Caption", "") or localname(child),
                         message=(
@@ -226,7 +226,7 @@ def _double_buttons(graph: ShowGraph, frame: etree._Element) -> list[Finding]:
         if seen is not None:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=caption,
                     message=(

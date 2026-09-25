@@ -46,7 +46,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "ritmo sin reloj"
+RULE_ID = "untempoed_rhythm"
 EFX_DIMMER_MODE = "1"  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 BEATS = "Beats"  # Function::TempoType
 # Longest step a room still reads as a beat rather than as a section. Two bars
@@ -89,7 +89,7 @@ def check_untempoed_rhythm(
             reported.add(member)
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=caption,
                     fixtures=tuple(sorted(pulsed)),

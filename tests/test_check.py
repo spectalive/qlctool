@@ -23,6 +23,7 @@ from qlctool import roles
 from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.console_states import room_states
+from qlctool.checks.rule_display_name import rule_display_name
 from qlctool.checks.rule_pick_darkens import check_pick_darkens
 from qlctool.checks.rule_undeclared_heads import check_undeclared_heads
 from qlctool.checks.run import check_workspace
@@ -3093,7 +3094,7 @@ def test_2026_09_25_a_collection_step_that_names_no_function(library):
     numbers. Reproduced by putting that step back into the talk light, and a
     console button pointed at an id nothing carries beside it.
     """
-    from qlctool.checks.rule_dangling_reference import RULE
+    from qlctool.checks.rule_dangling_reference import RULE_ID
     from qlctool.constants import QLC_NS
     from qlctool.names.default_names import default_names
 
@@ -3110,7 +3111,7 @@ def test_2026_09_25_a_collection_step_that_names_no_function(library):
     slider = next(iter_local(console, "Slider"))
     etree.SubElement(slider, f"{{{QLC_NS}}}Adjust", Attribute="0", Function="999998")
 
-    findings = [f for f in check_workspace(workspace, library) if f.rule == RULE]
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
     assert {f.function for f in findings} == {
         default_names().display("talk_light"),
         button.get("Caption"),
@@ -3127,7 +3128,7 @@ def test_2026_09_25_a_frame_with_nothing_to_press(library, club_show):
     Reproduced on the small club (no haze machine): its console gets that
     empty haze frame back, and one frame holding only a label beside it.
     """
-    from qlctool.checks.rule_empty_frame import RULE
+    from qlctool.checks.rule_empty_frame import RULE_ID
     from qlctool.constants import QLC_NS
     from qlctool.names.default_names import default_names
     from qlctool.vc.frame import build_frame
@@ -3145,7 +3146,7 @@ def test_2026_09_25_a_frame_with_nothing_to_press(library, club_show):
     matrix = build_frame(outer, next_widget_id(root), "Matrix only", 420, 900, 400, 60)
     etree.SubElement(matrix, f"{{{QLC_NS}}}Matrix", ID=str(next_widget_id(root)))
 
-    flagged = {f.function for f in check_workspace(workspace, library) if f.rule == RULE}
+    flagged = {f.function for f in check_workspace(workspace, library) if f.rule_id == RULE_ID}
     assert {haze, "Words only"} <= flagged
     assert "Matrix only" not in flagged
     # The page frame around them holds controls, so it is not flagged.
@@ -3165,9 +3166,7 @@ def test_2026_09_25_a_single_family_energy_cycle_is_not_a_family_owner(library, 
     no shipped workspace showed it.
     """
     findings = check_workspace(club_show, library)
-    assert [
-        f for f in findings if f.rule in ("familia con dueño", "capa pisada por el ciclo")
-    ] == []
+    assert [f for f in findings if f.rule_id in ("family_owner", "pick_overridden")] == []
 
 
 def test_2026_09_25_a_patched_fixture_with_no_definition(tmp_path, monkeypatch, capsys):
@@ -3181,7 +3180,7 @@ def test_2026_09_25_a_patched_fixture_with_no_definition(tmp_path, monkeypatch, 
     import shutil
     from pathlib import Path
 
-    from qlctool.checks.rule_missing_definition import RULE
+    from qlctool.checks.rule_missing_definition import RULE_ID
 
     example = Path(__file__).resolve().parents[1] / "examples" / "small-club"
     club = tmp_path / "club.qxw"
@@ -3190,12 +3189,13 @@ def test_2026_09_25_a_patched_fixture_with_no_definition(tmp_path, monkeypatch, 
     monkeypatch.delenv("QLCTOOL_FIXTURES", raising=False)
     assert main(["check", str(club)]) == 1
     printed = capsys.readouterr().out
-    assert f"  {RULE} (3):" in printed
+    # The club is an English show: since ruling B10 its rule names are English.
+    assert f"  {rule_display_name(RULE_ID, 'en')} (3):" in printed
     assert "Chauvet MiN Wash" in printed
     assert "buscado en ninguna carpeta" in printed
 
     assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 0
-    assert "199 botones revisados, ningun problema" in capsys.readouterr().out
+    assert "199 buttons checked, no problems" in capsys.readouterr().out
 
 
 def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_path, capsys):
@@ -3207,7 +3207,7 @@ def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_pat
     """
     from pathlib import Path
 
-    from qlctool.checks.rule_missing_definition import RULE
+    from qlctool.checks.rule_missing_definition import RULE_ID
     from qlctool.names.default_names import default_names
     from qlctool.xmlutil import find_local, iter_local
 
@@ -3223,13 +3223,13 @@ def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_pat
     workspace.save(club)
 
     library = FixtureLibrary.load([example / "fixtures"])
-    findings = [f for f in check_workspace(Workspace.load(club), library) if f.rule == RULE]
+    findings = [f for f in check_workspace(Workspace.load(club), library) if f.rule_id == RULE_ID]
     message = default_names().render("missing_mode", mode="No Such Mode")
     assert [(f.function, f.message, f.fixtures) for f in findings] == [
         ("Chauvet MiN Wash (No Such Mode)", message, ("Wash 1",))
     ]
     assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 1
-    assert f"  {RULE} (1):" in capsys.readouterr().out
+    assert f"  {rule_display_name(RULE_ID, 'en')} (1):" in capsys.readouterr().out
 
 
 def _recaption(workspace, old, new):
@@ -3248,14 +3248,14 @@ def test_2026_09_25_a_caption_that_promises_gobos_and_prism(library, club_show):
     wheel, and `check` said "ningun problema". The club's own tempo line is
     replaced with the catalogue's `tempo_2`; the untouched club has no finding.
     """
-    from qlctool.checks.rule_caption_promise import RULE
+    from qlctool.checks.rule_caption_promise import RULE_ID
     from qlctool.names.shipped_names import shipped_names
 
-    assert [f for f in check_workspace(club_show, library) if f.rule == RULE] == []
+    assert [f for f in check_workspace(club_show, library) if f.rule_id == RULE_ID] == []
     names = shipped_names("es")
     promise = names.display("tempo_2")
     assert _recaption(club_show, names.display("tempo_2_no_gobo_no_prism"), promise) == 1
-    findings = [f for f in check_workspace(club_show, library) if f.rule == RULE]
+    findings = [f for f in check_workspace(club_show, library) if f.rule_id == RULE_ID]
     assert [f.function for f in findings] == [promise]
     assert "rueda de gobos" in findings[0].message and "prisma" in findings[0].message
 
@@ -3267,7 +3267,7 @@ def test_2026_09_25_a_caption_that_promises_bars_panels_and_their_effects(librar
     Both captions are put back, in English: the lookup reads every shipped
     catalogue, and a `{count}` field matches any number.
     """
-    from qlctool.checks.rule_caption_promise import RULE
+    from qlctool.checks.rule_caption_promise import RULE_ID
     from qlctool.names.shipped_names import shipped_names
 
     spanish, english = shipped_names("es"), shipped_names("en")
@@ -3276,7 +3276,7 @@ def test_2026_09_25_a_caption_that_promises_bars_panels_and_their_effects(librar
     assert _recaption(club_show, spanish.display("matrices_frame_groups"), matrices) == 1
     assert _recaption(club_show, spanish.display("library_2_no_builtins"), effects) == 1
     findings = {
-        f.function: f.message for f in check_workspace(club_show, library) if f.rule == RULE
+        f.function: f.message for f in check_workspace(club_show, library) if f.rule_id == RULE_ID
     }
     assert set(findings) == {matrices, effects}
     # Since the owner's delegated decision (2026-09-25) the nouns are the

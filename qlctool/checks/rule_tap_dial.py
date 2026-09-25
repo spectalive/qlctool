@@ -24,8 +24,8 @@ from lxml import etree
 from ..xmlutil import find_local, findall_local, iter_local
 from .finding import ERROR, Finding
 
-RULE = "tap que aplana los programas"
-EMPTY_RULE = "tap que no re-tempa nada"
+RULE_ID = "tap_dial"
+EMPTY_RULE_ID = "tap_dial_empty"
 
 TAP_CONTROL_ID = "1"
 # Below this many functions, one shared multiplier is a coincidence rather
@@ -50,7 +50,7 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
         if not multipliers:
             findings.append(
                 Finding(
-                    rule=EMPTY_RULE,
+                    rule_id=EMPTY_RULE_ID,
                     severity=ERROR,
                     function=caption,
                     message=(
@@ -65,7 +65,7 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
         if len(multipliers) >= FLATTENING_FROM and len(set(multipliers)) == 1:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=caption,
                     message=(

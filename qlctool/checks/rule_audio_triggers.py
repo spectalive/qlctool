@@ -43,7 +43,7 @@ from .rule_console import WIDGETS
 from .show_graph import ShowGraph
 from .strobe_shape import strobe_flash_rate
 
-RULE = "disparador de audio vacio"
+RULE_ID = "empty_audio_trigger"
 DMX_BAR = "1"
 FUNCTION_BAR = "2"
 WIDGET_BAR = "3"
@@ -75,7 +75,7 @@ def _check_widget(
     if not bars:
         return [
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=caption,
                 message=("no tiene ninguna banda enlazada a canal, funcion o widget: no hace nada"),
@@ -89,7 +89,7 @@ def _check_widget(
             if solo_frame is not None and _solo_frame_conflict(target, solo_frame):
                 findings.append(
                     Finding(
-                        rule=RULE,
+                        rule_id=RULE_ID,
                         severity=ERROR,
                         function=target.attrib.get("Caption", "") or caption,
                         message=(
@@ -109,7 +109,7 @@ def _check_widget(
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(reached),
                 message=(

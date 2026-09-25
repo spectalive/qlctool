@@ -16,7 +16,7 @@ from ..xmlutil import find_local, findall_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "estrobo en un ciclo"
+RULE_ID = "strobe_in_cycle"
 STROBE = "Strobe"
 
 
@@ -38,7 +38,7 @@ def check_strobe_in_cycle(graph: ShowGraph, groups, entries) -> list[Finding]:
         if strobes:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

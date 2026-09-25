@@ -19,7 +19,7 @@ from .driven_channels import EFX_PAN_TILT
 from .finding import WARNING, Finding
 from .show_graph import ShowGraph
 
-RULE = "familias de movimiento mezcladas"
+RULE_ID = "movement_families"
 
 
 def check_movement_families(graph: ShowGraph) -> list[Finding]:
@@ -50,7 +50,7 @@ def check_movement_families(graph: ShowGraph) -> list[Finding]:
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=WARNING,
                 function=graph.name(function_id),
                 message=(

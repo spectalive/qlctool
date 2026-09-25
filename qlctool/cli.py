@@ -12,7 +12,6 @@ from pathlib import Path
 from .apply_install import apply_install
 from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
-from .checks.entry_points import entry_points
 from .checks.run import check_workspace
 from .cmd_deskmap import add_deskmap_parser
 from .compose import compose_workspace
@@ -40,6 +39,7 @@ from .monitor_node import POINTS_OF_VIEW
 from .mvr.write_mvr import write_mvr
 from .newshow_refusal import newshow_refusal
 from .patch_conflicts import patch_conflicts
+from .print_check_report import print_check_report
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
 from .repatch.add import add_fixture
@@ -520,25 +520,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     library = library_for(args.fixtures, Path(args.workspace))
     warn_unresolved(workspace.root, library)
     findings = check_workspace(workspace, library)
-    if not findings:
-        print(
-            f"{args.workspace}: {len(entry_points(workspace.root))} botones "
-            "revisados, ningun problema"
-        )
-        return 0
-
-    by_rule: dict[str, list] = {}
-    for finding in findings:
-        by_rule.setdefault(finding.rule, []).append(finding)
-    print(f"{args.workspace}: {len(findings)} problema(s) en {len(by_rule)} regla(s)")
-    for rule, group in by_rule.items():
-        print(f"\n  {rule} ({len(group)}):")
-        for finding in group[: args.limit]:
-            where = f"  [{', '.join(finding.fixtures)}]" if finding.fixtures else ""
-            print(f"    {finding.function}: {finding.message}{where}")
-        if len(group) > args.limit:
-            print(f"    ... y {len(group) - args.limit} mas")
-    return 1
+    return print_check_report(args.workspace, workspace.root, findings, args.limit)
 
 
 def cmd_install(args: argparse.Namespace) -> int:

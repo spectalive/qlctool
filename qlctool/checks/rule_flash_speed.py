@@ -33,7 +33,7 @@ from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .strobe_written import strobe_capable_offsets, value_strobes
 
-RULE = "flash lento"
+RULE_ID = "flash_speed"
 
 # Where "fast" starts on the slow-to-fast run. The slowest fast flash the
 # hand-built show ever used was the CromoWash's 240 of 10-255 (0.94); the
@@ -90,7 +90,7 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
         slowest = min(fraction for _, fraction in slow)
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=scene_name,
                 fixtures=tuple(names),
@@ -112,7 +112,7 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
         slowest = min(fraction for _, fraction in crawling)
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=scene_name,
                 fixtures=tuple(names),

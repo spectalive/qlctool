@@ -34,7 +34,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit
 
-RULE = "animacion de color sin la rueda"
+RULE_ID = "colour_animation_wheel"
 EFX_RGB_MODE = "2"  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 ROTATION = "Rotation"
 
@@ -61,7 +61,7 @@ def check_colour_animation_wheel(
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=caption,
                 fixtures=tuple(stuck),

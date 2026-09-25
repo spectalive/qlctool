@@ -20,7 +20,7 @@ from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .step_colours import step_colours
 
-RULE = "relojes de color"
+RULE_ID = "colour_clocks"
 
 
 def check_colour_clocks(
@@ -41,7 +41,7 @@ def check_colour_clocks(
                 continue
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(collection_id),
                     message=(

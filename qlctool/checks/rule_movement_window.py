@@ -28,7 +28,7 @@ from .driven_channels import EFX_PAN_TILT
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "figura fuera del publico"
+RULE_ID = "movement_window"
 
 
 def check_movement_window(graph: ShowGraph) -> list[Finding]:
@@ -56,7 +56,7 @@ def check_movement_window(graph: ShowGraph) -> list[Finding]:
                 continue
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

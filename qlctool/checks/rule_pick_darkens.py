@@ -15,7 +15,7 @@ from .instant_dark_fixtures import instant_dark_fixtures
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph
 
-RULE = "pick que apaga"
+RULE_ID = "pick_darkens"
 
 
 def check_pick_darkens(
@@ -42,7 +42,7 @@ def check_pick_darkens(
                     continue
                 findings.append(
                     Finding(
-                        rule=RULE,
+                        rule_id=RULE_ID,
                         severity=ERROR,
                         function=graph.name(state_id),
                         fixtures=tuple(sorted(dark)),

@@ -18,7 +18,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "blanco sin emisor blanco"
+RULE_ID = "white_emitter"
 RGB = (roles.RED, roles.GREEN, roles.BLUE)
 
 
@@ -44,7 +44,7 @@ def check_white_emitter(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) ->
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
                 fixtures=tuple(sorted(set(skipped))),

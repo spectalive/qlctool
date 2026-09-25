@@ -22,7 +22,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "efx de dimmer tapado"
+RULE_ID = "masked_dimmer_efx"
 FULL = 255
 
 
@@ -64,7 +64,7 @@ def _collection(graph: ShowGraph, collection_id: int, reported) -> list[Finding]
             )
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(collection_id),
                     message=(

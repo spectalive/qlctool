@@ -29,7 +29,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
-RULE = "programa interno"
+RULE_ID = "internal_program"
 STATES_COLOUR = ("Scene", "Sequence")
 
 
@@ -53,7 +53,7 @@ def check_internal_programs(
         if stranded:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(

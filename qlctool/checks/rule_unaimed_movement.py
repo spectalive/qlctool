@@ -23,7 +23,7 @@ from .driven_channels import EFX_PAN_TILT
 from .finding import WARNING, Finding
 from .show_graph import ShowGraph
 
-RULE = "movimiento sin apuntar"
+RULE_ID = "unaimed_movement"
 # The raw middle of an 8-bit channel, which is what QLC+ writes by default.
 MID_TRAVEL = 127
 
@@ -41,7 +41,7 @@ def check_unaimed_movement(graph: ShowGraph) -> list[Finding]:
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=WARNING,
                 function=graph.name(function_id),
                 message=(

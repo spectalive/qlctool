@@ -23,7 +23,7 @@ from .instant_dark_fixtures import instant_dark_fixtures
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph
 
-RULE = "color sin dimmer en algun instante"
+RULE_ID = "instant_dimmer"
 
 
 def check_instant_dimmer(
@@ -37,7 +37,7 @@ def check_instant_dimmer(
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(state_id),
                 fixtures=tuple(sorted(dark)),

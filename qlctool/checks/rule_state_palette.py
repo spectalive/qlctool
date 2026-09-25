@@ -21,7 +21,7 @@ from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .step_palette import step_palette
 
-RULE = "mas de dos colores en un estado"
+RULE_ID = "state_palette"
 AT_MOST = 2
 
 
@@ -45,7 +45,7 @@ def check_state_palette(
                 continue
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(chaser_id),
                     message=(

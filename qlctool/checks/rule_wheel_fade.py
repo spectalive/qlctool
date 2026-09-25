@@ -26,7 +26,7 @@ from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
-RULE = "rueda fundida"
+RULE_ID = "wheel_fade"
 
 
 def check_wheel_fade(
@@ -53,7 +53,7 @@ def check_wheel_fade(
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(scene_id),
                 fixtures=tuple(crossed),

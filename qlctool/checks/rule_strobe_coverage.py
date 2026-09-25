@@ -22,7 +22,7 @@ from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .strobe_written import strobe_capable_offsets, value_strobes
 
-RULE = "estrobo incompleto"
+RULE_ID = "strobe_coverage"
 
 
 def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
@@ -49,7 +49,7 @@ def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
         if missing:
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     fixtures=tuple(missing),

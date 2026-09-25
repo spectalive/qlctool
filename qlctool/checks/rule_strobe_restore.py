@@ -39,7 +39,7 @@ from .show_graph import ShowGraph
 from .strobe_written import strobe_capable_offsets, value_strobes
 from .unowned_instant import unowned_while_lit
 
-RULE = "estrobo pegado"
+RULE_ID = "strobe_restore"
 
 
 def check_strobe_restore(
@@ -114,7 +114,7 @@ def _latched(
             continue
         findings.append(
             Finding(
-                rule=RULE,
+                rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
                 message=(

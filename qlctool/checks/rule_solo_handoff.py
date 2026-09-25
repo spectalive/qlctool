@@ -30,7 +30,7 @@ from ..xmlutil import find_local, iter_local, localname
 from .finding import ERROR, Finding
 from .show_graph import BRANCHING, ShowGraph
 
-RULE = "marco solo sordo"
+RULE_ID = "solo_handoff"
 
 
 def check_solo_handoff(graph: ShowGraph, root: etree._Element, states: set[int]) -> list[Finding]:
@@ -56,7 +56,7 @@ def check_solo_handoff(graph: ShowGraph, root: etree._Element, states: set[int])
         names = ", ".join(f"«{graph.name(function_id)}»" for function_id in needing[:3])
         findings.append(
             Finding(
-                RULE,
+                RULE_ID,
                 ERROR,
                 frame.attrib.get("Caption", "") or f"SoloFrame {frame.attrib.get('ID', '?')}",
                 "ignora a los botones que solo vigilan: otro estado o boton arranca "

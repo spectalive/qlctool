@@ -19,7 +19,7 @@ from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .strobe_shape import strobe_flash_rate
 
-RULE = "estrobo enganchado"
+RULE_ID = "latched_strobe"
 BOUNDED = "SingleShot"
 
 
@@ -41,7 +41,7 @@ def check_latched_strobe(graph: ShowGraph, groups, entries) -> list[Finding]:
             reported.add(function_id)
             findings.append(
                 Finding(
-                    rule=RULE,
+                    rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
                     message=(
