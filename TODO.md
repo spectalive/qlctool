@@ -110,8 +110,11 @@
   frozen Vibra went from about 1.44 s (0.68 s of it `check_pick_darkens`) to
   about 1.23 s (0.37-0.46 s), and `tests/test_check.py` single-process from
   160.0 s to 142.7 s; every finding is identical (Vibra x3, DeluxeEventos2's
-  791, an injected-bug Vibra and the club, byte for byte). Smallest next
-  step: read the 3.11 leg of the next few runs; close below 50% (300 s).
+  791, an injected-bug Vibra and the club, byte for byte). The v0.1.4 tag
+  run 36197886956 after it: 454.0 s on 3.11 (76%) and 395.2 s on 3.13, so
+  the cache did not move CI beyond run-to-run noise. Smallest next step:
+  profile the whole suite by test file on 3.11 and cut the heaviest
+  `check_workspace` callers; close below 50% (300 s).
 - [x] **A wheel whose only nameable detent is one no look asks for is not
   parked (2026-09-25).** `outside_color_looks` asked over every colour in
   `WHEEL_NAMES`; it now asks over the colours the looks request, the show's
