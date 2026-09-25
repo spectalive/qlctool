@@ -24,7 +24,7 @@ def generate_desk_bursts(workspace: Workspace, names: Names | None = None) -> li
     sources = desk_burst_sources(workspace.root, vocabulary)
     if not sources:
         return []
-    functions = {int(f.get("ID")): f for f in workspace.engine if f.get("Type")}
+    functions = {int(f.attrib["ID"]): f for f in workspace.engine if f.get("Type")}
     outer = next(
         f for f in iter_local(workspace.root, "Frame") if find_local(f, "Multipage") is not None
     )
@@ -55,6 +55,8 @@ def generate_desk_bursts(workspace: Workspace, names: Names | None = None) -> li
         duration = desk_burst_duration(source, vocabulary)
         if duration is None or duration <= 0:
             raise ValueError(f"burst duration must be positive: {key}")
+        if source.function is None:
+            raise ValueError(f"desk accent must drive a Scene: {key}")
         original = functions[source.function]
         if original.get("Type") != "Scene":
             raise ValueError(f"desk accent must drive a Scene: {key}")
@@ -74,7 +76,10 @@ def generate_desk_bursts(workspace: Workspace, names: Names | None = None) -> li
             run_order="SingleShot",
             path=DESK_FUNCTION_PATH,
         )
-        find_local(chaser, "SpeedModes").set("Duration", "PerStep")
+        speed_modes = find_local(chaser, "SpeedModes")
+        if speed_modes is None:
+            raise ValueError(f"desk burst chaser has no SpeedModes: {key}")
+        speed_modes.set("Duration", "PerStep")
         workspace.add_function(chaser)
         widget_id = next_widget_id(workspace.root)
         build_button(

@@ -2,6 +2,8 @@
 
 from collections.abc import Sequence
 
+from lxml import etree
+
 from ..functions.collection import build_collection
 from ..ids import next_function_id
 from ..names.default_names import default_names
@@ -58,7 +60,11 @@ def _spread(function_ids: Sequence[int], count: int) -> list[int]:
 
 
 def _wrap(
-    workspace: Workspace, functions, function_ids: Sequence[int], prefix: str, path: str
+    workspace: Workspace,
+    functions: dict[int, etree._Element],
+    function_ids: Sequence[int],
+    prefix: str,
+    path: str,
 ) -> list[int]:
     """Build one monitored Collection per unique original function."""
     wrappers: list[int] = []
@@ -70,11 +76,14 @@ def _wrap(
         original = functions.get(original_id)
         if original is None:
             raise ValueError(f"play wrapper source {original_id} is missing")
+        name = original.get("Name")
+        if name is None:
+            raise ValueError(f"play wrapper source {original_id} has no name")
         function_id = next_function_id(workspace.root)
         workspace.add_function(
             build_collection(
                 function_id,
-                prefix + original.attrib["Name"],
+                prefix + name,
                 [original_id],
                 path=path,
             )

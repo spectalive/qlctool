@@ -17,7 +17,13 @@ def beat_timing_value(value: Any, where: str, base: BeatTiming | None = None) ->
     reject_unknown_keys(value, ("hold", "fade"), where)
     hold = value.get("hold", base.hold if base is not None else None)
     fade = value.get("fade", base.fade if base is not None else 0)
-    numbers = all(isinstance(n, (int, float)) and not isinstance(n, bool) for n in (hold, fade))
-    if not numbers or hold <= 0 or fade < 0:
+    if (
+        not isinstance(hold, (int, float))
+        or isinstance(hold, bool)
+        or not isinstance(fade, (int, float))
+        or isinstance(fade, bool)
+        or hold <= 0
+        or fade < 0
+    ):
         raise ValueError(f"{where}: hold is a positive number of beats and fade zero or more")
     return BeatTiming(hold=hold, fade=fade)

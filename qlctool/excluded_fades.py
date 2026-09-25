@@ -18,11 +18,10 @@ def excluded_fades(root: etree._Element) -> dict[int, set[int]]:
     # Direct children only: an EFX carries <Fixture> blocks of its own.
     for fixture in findall_local(engine, "Fixture"):
         identifier = find_local(fixture, "ID")
-        if identifier is None or not (identifier.text or "").strip().isdigit():
+        fixture_text = (identifier.text or "").strip() if identifier is not None else ""
+        if not fixture_text.isdigit():
             continue
         element = find_local(fixture, "ExcludeFade")
         text = (element.text or "") if element is not None else ""
-        found[int(identifier.text)] = {
-            int(part) for part in text.split(",") if part.strip().isdigit()
-        }
+        found[int(fixture_text)] = {int(part) for part in text.split(",") if part.strip().isdigit()}
     return found

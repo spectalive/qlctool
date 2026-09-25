@@ -33,11 +33,12 @@ def pin_wheel_fades(root: etree._Element, capabilities: list[FixtureCapabilities
     # Direct children only: an EFX carries <Fixture> blocks of its own.
     for fixture in findall_local(engine, "Fixture"):
         identifier = find_local(fixture, "ID")
-        if identifier is None or not (identifier.text or "").strip().isdigit():
+        fixture_text = (identifier.text or "").strip() if identifier is not None else ""
+        if not fixture_text.isdigit():
             continue
         for stale in findall_local(fixture, TAG):
             fixture.remove(stale)
-        offsets = offsets_by_id.get(int(identifier.text))
+        offsets = offsets_by_id.get(int(fixture_text))
         if not offsets:
             continue
         element = etree.SubElement(fixture, f"{{{QLC_NS}}}{TAG}")

@@ -1,6 +1,8 @@
 """Build the JUGAR page: one releasable manual surface per channel family."""
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
+
+from lxml import etree
 
 from ..argb import argb_from_rgb
 from ..names.default_names import default_names
@@ -53,11 +55,11 @@ _RESET_CAPTIONS = (
 
 
 def build_play_page(
-    outer,
-    button,
-    master_button,
-    frame,
-    label,
+    outer: etree._Element,
+    button: Callable[..., object],
+    master_button: Callable[..., object],
+    frame: Callable[..., etree._Element],
+    label: Callable[..., object],
     names: Mapping[int, str],
     master: Mapping[str, int],
     play_wrappers: _GeneratedPlayWrappers,
@@ -190,15 +192,15 @@ def build_play_page(
 
 
 def _build_reset_strip(
-    outer,
-    button,
-    frame,
-    label,
-    master,
-    flashes,
-    page,
-    title_font,
-    small_font,
+    outer: etree._Element,
+    button: Callable[..., object],
+    frame: Callable[..., etree._Element],
+    label: Callable[..., object],
+    master: Mapping[str, int],
+    flashes: set[str],
+    page: int,
+    title_font: str,
+    small_font: str,
     vocabulary: Names,
 ) -> None:
     strip = frame(
@@ -249,13 +251,13 @@ def _build_reset_strip(
 
 
 def _build_colour_hits(
-    outer,
-    button,
-    frame,
-    colour_flash_ids,
-    page,
-    title_font,
-    small_font,
+    outer: etree._Element,
+    button: Callable[..., object],
+    frame: Callable[..., etree._Element],
+    colour_flash_ids: Mapping[str, int],
+    page: int,
+    title_font: str,
+    small_font: str,
     palette: Mapping[str, tuple[int, int, int]],
     vocabulary: Names,
 ) -> None:
@@ -290,18 +292,18 @@ def _build_colour_hits(
 
 
 def _build_color_family(
-    outer,
-    button,
-    master_button,
-    frame,
-    label,
-    names,
-    ids_by_name,
-    wrappers,
-    page,
-    title_font,
-    big_font,
-    small_font,
+    outer: etree._Element,
+    button: Callable[..., object],
+    master_button: Callable[..., object],
+    frame: Callable[..., etree._Element],
+    label: Callable[..., object],
+    names: Mapping[int, str],
+    ids_by_name: Mapping[str, int],
+    wrappers: _GeneratedPlayWrappers,
+    page: int,
+    title_font: str,
+    big_font: str,
+    small_font: str,
     vocabulary: Names,
 ) -> None:
     family = frame(
@@ -394,18 +396,18 @@ def _build_color_family(
 
 
 def _build_pixel_family(
-    outer,
-    button,
-    master_button,
-    frame,
-    label,
-    names,
-    ids_by_name,
-    wrappers,
-    page,
-    title_font,
-    big_font,
-    small_font,
+    outer: etree._Element,
+    button: Callable[..., object],
+    master_button: Callable[..., object],
+    frame: Callable[..., etree._Element],
+    label: Callable[..., object],
+    names: Mapping[int, str],
+    ids_by_name: Mapping[str, int],
+    wrappers: _GeneratedPlayWrappers,
+    page: int,
+    title_font: str,
+    big_font: str,
+    small_font: str,
     vocabulary: Names,
 ) -> None:
     hooks = (vocabulary.display("panel_cycle"), vocabulary.display("talk_panels"))
@@ -475,18 +477,18 @@ def _build_pixel_family(
 
 
 def _build_movement_family(
-    outer,
-    button,
-    master_button,
-    frame,
-    label,
-    names,
-    ids_by_name,
-    wrappers,
-    page,
-    title_font,
-    big_font,
-    small_font,
+    outer: etree._Element,
+    button: Callable[..., object],
+    master_button: Callable[..., object],
+    frame: Callable[..., etree._Element],
+    label: Callable[..., object],
+    names: Mapping[int, str],
+    ids_by_name: Mapping[str, int],
+    wrappers: _GeneratedPlayWrappers,
+    page: int,
+    title_font: str,
+    big_font: str,
+    small_font: str,
     vocabulary: Names,
 ) -> None:
     family = frame(
@@ -556,18 +558,18 @@ def _build_movement_family(
 
 
 def _build_gobo_family(
-    outer,
-    button,
-    master_button,
-    frame,
-    label,
-    names,
-    ids_by_name,
-    wrappers,
-    page,
-    title_font,
-    big_font,
-    small_font,
+    outer: etree._Element,
+    button: Callable[..., object],
+    master_button: Callable[..., object],
+    frame: Callable[..., etree._Element],
+    label: Callable[..., object],
+    names: Mapping[int, str],
+    ids_by_name: Mapping[str, int],
+    wrappers: _GeneratedPlayWrappers,
+    page: int,
+    title_font: str,
+    big_font: str,
+    small_font: str,
     vocabulary: Names,
 ) -> None:
     hooks = (vocabulary.display("gobo_animation"), vocabulary.display("gobo_rest"))
@@ -649,18 +651,18 @@ def _build_gobo_family(
 
 
 def _build_prism_family(
-    outer,
-    button,
-    master_button,
-    frame,
-    label,
-    names,
-    ids_by_name,
-    wrappers,
-    page,
-    title_font,
-    big_font,
-    small_font,
+    outer: etree._Element,
+    button: Callable[..., object],
+    master_button: Callable[..., object],
+    frame: Callable[..., etree._Element],
+    label: Callable[..., object],
+    names: Mapping[int, str],
+    ids_by_name: Mapping[str, int],
+    wrappers: _GeneratedPlayWrappers,
+    page: int,
+    title_font: str,
+    big_font: str,
+    small_font: str,
     vocabulary: Names,
 ) -> None:
     hooks = (
@@ -727,17 +729,17 @@ def _build_prism_family(
 
 
 def _hook(
-    master_button,
-    parent,
-    ids_by_name,
-    name,
-    caption,
-    index,
-    columns,
-    pitch,
-    font,
-    top,
-    include_key=False,
+    master_button: Callable[..., object],
+    parent: etree._Element,
+    ids_by_name: Mapping[str, int],
+    name: str,
+    caption: str,
+    index: int,
+    columns: int,
+    pitch: int,
+    font: str,
+    top: int,
+    include_key: bool = False,
 ) -> None:
     x, y = _grid_position(index, columns, pitch, top)
     master_button(
@@ -757,18 +759,18 @@ def _hook(
 
 
 def _bound_pick(
-    master_button,
-    parent,
-    name,
-    function_id,
-    index,
-    columns,
-    pitch,
-    font,
-    vocabulary,
-    top,
-    caption=None,
-    include_key=False,
+    master_button: Callable[..., object],
+    parent: etree._Element,
+    name: str,
+    function_id: int,
+    index: int,
+    columns: int,
+    pitch: int,
+    font: str,
+    vocabulary: Names,
+    top: int,
+    caption: str | None = None,
+    include_key: bool = False,
 ) -> None:
     x, y = _grid_position(index, columns, pitch, top)
     master_button(
@@ -786,7 +788,17 @@ def _bound_pick(
 
 
 def _pick(
-    button, parent, names, function_id, index, columns, pitch, font, vocabulary, top, mark=""
+    button: Callable[..., object],
+    parent: etree._Element,
+    names: Mapping[int, str],
+    function_id: int,
+    index: int,
+    columns: int,
+    pitch: int,
+    font: str,
+    vocabulary: Names,
+    top: int,
+    mark: str = "",
 ) -> None:
     """One manual pick. `mark` is the family's glyph, so a full page of picks
     still says which family each tile belongs to (owner, 2026-09-22).
