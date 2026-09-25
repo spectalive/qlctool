@@ -463,7 +463,8 @@ def generate_movement_families(
         beams,
         BEAM_CASCADE,
         None,
-        "Cascada",
+        # No prefix: the envelope's one shape, Circle, is named by the override.
+        None,
         movement_path,
         make_chaser=False,
         overrides={"Circle": display("cascade_beams")},
