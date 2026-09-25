@@ -22,6 +22,7 @@ that has a fix.
 from lxml import etree
 
 from .. import roles
+from ..capability import FixtureCapabilities
 from .color_roles import COLOUR
 from .driven_channels import driven_channels
 from .family_frames import family_frame_problems
@@ -34,7 +35,7 @@ RULE = "capa que se suma al estado"
 
 
 def check_layer_adds(
-    graph: ShowGraph, groups, root: etree._Element, states: set[int]
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element, states: set[int]
 ) -> list[Finding]:
     if not states:
         return []
@@ -73,7 +74,9 @@ def check_layer_adds(
     return findings
 
 
-def _coloured_by_states(graph: ShowGraph, groups, states: set[int]) -> set[int]:
+def _coloured_by_states(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
+) -> set[int]:
     coloured: set[int] = set()
     for state_id in states:
         for fixture_id, written in reach(graph, groups, state_id).items():
@@ -82,7 +85,7 @@ def _coloured_by_states(graph: ShowGraph, groups, states: set[int]) -> set[int]:
     return coloured
 
 
-def _states_colour(capability, written: dict[int, int | None]) -> bool:
+def _states_colour(capability: FixtureCapabilities | None, written: dict[int, int | None]) -> bool:
     if capability is None or (capability.is_smoke and not capability.is_lit_smoke):
         return False
     offsets = {offset for role in COLOUR for offset in capability.offsets_for_role(role)}

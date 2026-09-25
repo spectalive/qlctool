@@ -18,7 +18,9 @@ next state, whose business it then is.
 """
 
 from .. import roles
+from ..capability import FixtureCapabilities
 from .color_roles import COLOUR
+from .driven_channels import Driven
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
@@ -36,7 +38,9 @@ INHERITED_ROLES = (
 )
 
 
-def check_state_handover(graph: ShowGraph, groups, states: set[int]) -> list[Finding]:
+def check_state_handover(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
+) -> list[Finding]:
     if len(states) < 2:
         return []
     reaches = {state_id: reach(graph, groups, state_id) for state_id in states}
@@ -75,7 +79,7 @@ def check_state_handover(graph: ShowGraph, groups, states: set[int]) -> list[Fin
     return findings
 
 
-def _lights(capability, written: dict[int, int | None]) -> bool:
+def _lights(capability: FixtureCapabilities, written: dict[int, int | None]) -> bool:
     dimmers = capability.offsets_for_role(roles.DIMMER)
     if dimmers:
         return any(lit(written.get(offset, 0)) for offset in dimmers)
@@ -83,7 +87,7 @@ def _lights(capability, written: dict[int, int | None]) -> bool:
     return any(lit(written[offset]) for offset in coloured if offset in written)
 
 
-def _left_showing(reaches, state_id: int, fixture_id: int, offset: int) -> bool:
+def _left_showing(reaches: dict[int, Driven], state_id: int, fixture_id: int, offset: int) -> bool:
     """Whether another state can leave this channel at a value that is not 0."""
     for other_id, other in reaches.items():
         if other_id == state_id:

@@ -55,7 +55,10 @@ BEAT_CEILING_MS = 8000
 
 
 def check_untempoed_rhythm(
-    graph: ShowGraph, groups, root: etree._Element, entries: dict[int, str]
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    root: etree._Element,
+    entries: dict[int, str],
 ) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None or not list(iter_local(console, "SpeedDial")):
@@ -115,7 +118,9 @@ def _sweeps_dimmer(function: etree._Element) -> bool:
     return False
 
 
-def _efx_fixtures(graph: ShowGraph, groups, function_id: int) -> set[str]:
+def _efx_fixtures(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int
+) -> set[str]:
     function = graph.functions[function_id]
     return {
         graph.capabilities[fixture_id].fixture.name
@@ -138,12 +143,15 @@ def _dialled_functions(root: etree._Element) -> set[int]:
     dialled: set[int] = set()
     for dial in iter_local(console, "SpeedDial"):
         for function in findall_local(dial, "Function"):
-            if (function.text or "").strip().isdigit():
-                dialled.add(int(function.text))
+            text = (function.text or "").strip()
+            if text.isdigit():
+                dialled.add(int(text))
     return dialled
 
 
-def _pulsed_fixtures(graph: ShowGraph, groups, chaser_id: int) -> set[str]:
+def _pulsed_fixtures(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], chaser_id: int
+) -> set[str]:
     """The fixtures whose dimmer this chaser's steps put at different levels."""
     levels: dict[int, set[int | None]] = {}
     for step in graph.members.get(chaser_id, ()):

@@ -1,9 +1,13 @@
 """Fixtures left dark by one concurrent graph instant."""
 
+from functools import partial
+
 from .. import roles
+from ..definition import Capability
 from ..shutter_open import shutter_open_ranges
 from ..strobe_range import strobe_range
 from .color_roles import COLOUR
+from .driven_channels import Driven
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph, lit, merge, reach
 from .shutter_closed_while_lit import shutter_closed_while_lit
@@ -20,7 +24,7 @@ def instant_dark_fixtures(
 ) -> list[str]:
     """Fixtures a concurrent instant colours while leaving intensity dark."""
     active_evaluator = evaluator or InstantEvaluator(graph, groups)
-    colour_driven = {}
+    colour_driven: Driven = {}
     for function_id in function_ids:
         colour_driven = merge(colour_driven, reach(graph, groups, function_id))
     dark: list[str] = []
@@ -57,8 +61,10 @@ def instant_dark_fixtures(
                 fixture_id,
                 coloured,
                 offset,
-                lambda value, opening=opening, ranges=capability.capabilities_by_offset[offset]: (
-                    _shut(value, opening, strobe_range(ranges))
+                partial(
+                    _shut,
+                    opening=opening,
+                    strobing=strobe_range(capability.capabilities_by_offset[offset]),
                 ),
                 stopped,
                 evaluator=active_evaluator,
@@ -69,7 +75,7 @@ def instant_dark_fixtures(
     return dark
 
 
-def _shut(value: int | None, opening, strobing) -> bool:
+def _shut(value: int | None, opening: Capability, strobing: Capability | None) -> bool:
     if value is None:
         return False
     if opening.minimum <= value <= opening.maximum:

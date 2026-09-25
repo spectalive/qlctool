@@ -30,7 +30,7 @@ INTENSITY_GROUP = "Intensity"
 
 
 def check_strobe_black(
-    graph: ShowGraph, groups, root: etree._Element, states: set[int]
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element, states: set[int]
 ) -> list[Finding]:
     findings: list[Finding] = []
     reported: set[int] = set()
@@ -69,7 +69,7 @@ def check_strobe_black(
     return findings
 
 
-def _all_dark_and_htp(graph: ShowGraph, groups, step_id: int) -> bool:
+def _all_dark_and_htp(graph: ShowGraph, groups: dict[int, tuple[int, ...]], step_id: int) -> bool:
     """A step whose only claim to darkness is zeros on Intensity channels.
 
     A shutter or strobe channel written is a way to go dark that HTP cannot

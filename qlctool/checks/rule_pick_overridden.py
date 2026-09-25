@@ -45,7 +45,7 @@ PICK_ROLES = (
 
 
 def check_pick_overridden(
-    graph: ShowGraph, groups, root: etree._Element, states: set[int]
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element, states: set[int]
 ) -> list[Finding]:
     if not states:
         return []
@@ -93,7 +93,9 @@ def check_pick_overridden(
     return findings
 
 
-def _stepped_writes(graph: ShowGraph, groups, states: set[int]) -> dict[tuple[int, int], set[int]]:
+def _stepped_writes(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
+) -> dict[tuple[int, int], set[int]]:
     """(fixture, offset) -> the states whose chasers re-write it at a step."""
     found: dict[tuple[int, int], set[int]] = {}
     for state_id in states:

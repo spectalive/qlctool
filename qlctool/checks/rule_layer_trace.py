@@ -33,7 +33,7 @@ INTENSITY_GROUP = "Intensity"
 
 
 def check_layer_trace(
-    graph: ShowGraph, groups, root: etree._Element, states: set[int]
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element, states: set[int]
 ) -> list[Finding]:
     if not states:
         return []
@@ -76,7 +76,9 @@ def check_layer_trace(
     return findings
 
 
-def _written_by_states(graph: ShowGraph, groups, states: set[int]) -> set[tuple[int, int]]:
+def _written_by_states(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
+) -> set[tuple[int, int]]:
     owned: set[tuple[int, int]] = set()
     for state_id in states:
         for fixture_id, written in reach(graph, groups, state_id).items():

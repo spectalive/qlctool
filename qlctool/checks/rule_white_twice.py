@@ -25,7 +25,7 @@ RULE = "blanco pagado dos veces"
 RGB = (roles.RED, roles.GREEN, roles.BLUE)
 
 
-def check_white_twice(graph: ShowGraph, groups) -> list[Finding]:
+def check_white_twice(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, function in sorted(graph.functions.items()):
         if function.attrib.get("Type") != "Scene":
@@ -35,19 +35,20 @@ def check_white_twice(graph: ShowGraph, groups) -> list[Finding]:
             capability = graph.capabilities.get(fixture_id)
             if capability is None:
                 continue
+            # A Scene writes a number to every channel it names: no None here.
             whites = [
-                written[offset]
+                value
                 for offset in capability.offsets_for_role(roles.WHITE)
-                if offset in written
+                if offset in written and (value := written[offset]) is not None
             ]
             if not whites or max(whites) == 0:
                 continue
             stated = []
             for role in RGB:
                 values = [
-                    written[offset]
+                    value
                     for offset in capability.offsets_for_role(role)
-                    if offset in written
+                    if offset in written and (value := written[offset]) is not None
                 ]
                 if values:
                     stated.append(max(values))

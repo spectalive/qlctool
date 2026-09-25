@@ -29,7 +29,9 @@ from .show_graph import ShowGraph
 RULE = "rueda fundida"
 
 
-def check_wheel_fade(graph: ShowGraph, groups, root: etree._Element) -> list[Finding]:
+def check_wheel_fade(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element
+) -> list[Finding]:
     excluded = excluded_fades(root)
     wheels = {
         fixture_id: set(wheel_fade_offsets(capability))

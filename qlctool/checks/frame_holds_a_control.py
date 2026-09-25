@@ -28,8 +28,8 @@ def frame_holds_a_control(frame: etree._Element) -> bool:
     there, gives the operator nothing to press.
     """
     for child in frame:
-        if not isinstance(child.tag, str):
-            continue
+        # A comment's tag is not a string; its local name is "", which is no
+        # control and no frame.
         tag = localname(child)
         if tag in _CONTROL_TAGS:
             return True

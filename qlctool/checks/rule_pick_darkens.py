@@ -19,7 +19,7 @@ RULE = "pick que apaga"
 
 
 def check_pick_darkens(
-    graph: ShowGraph, groups, root: etree._Element, states: set[int]
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element, states: set[int]
 ) -> list[Finding]:
     """Reject family picks that black out a reachable room-state instant."""
     console = find_local(root, "VirtualConsole")

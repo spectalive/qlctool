@@ -25,7 +25,10 @@ wheel ones too, by a rotation range or by more than one value across the look.
 A single static detent under a running rainbow is the bug, not the fix.
 """
 
+from lxml import etree
+
 from .. import roles
+from ..capability import FixtureCapabilities
 from ..xmlutil import find_local, iter_local
 from .driven_channels import driven_channels
 from .finding import ERROR, Finding
@@ -37,7 +40,7 @@ ROTATION = "Rotation"
 
 
 def check_colour_animation_wheel(
-    graph: ShowGraph, groups, entries: dict[int, str]
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], entries: dict[int, str]
 ) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, caption in sorted(entries.items()):
@@ -72,7 +75,9 @@ def check_colour_animation_wheel(
     return findings
 
 
-def _animated_rgb_fixtures(graph: ShowGraph, groups, function_id: int) -> set[int]:
+def _animated_rgb_fixtures(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int
+) -> set[int]:
     """The fixtures whose red, green or blue this look *animates*."""
     animated: set[int] = set()
     for member in graph.descendants(function_id):
@@ -93,7 +98,7 @@ def _animated_rgb_fixtures(graph: ShowGraph, groups, function_id: int) -> set[in
     return animated
 
 
-def _animates_colour(function) -> bool:
+def _animates_colour(function: etree._Element) -> bool:
     """An EFX modulating red, green and blue - a hue that travels by itself.
 
     Matrices are deliberately out, on the same judgment `rule_wheel_colour`
@@ -125,7 +130,9 @@ def _is_lit(channels: dict[int, int | None]) -> bool:
     return any(lit(value) for value in channels.values())
 
 
-def _wheel_animated(graph: ShowGraph, groups, function_id: int, fixture_id: int) -> bool:
+def _wheel_animated(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int, fixture_id: int
+) -> bool:
     """Either a rotation range, or more than one detent across the look."""
     capability = graph.capabilities[fixture_id]
     offsets = set(capability.offsets_for_role(roles.COLOR_MACRO))
@@ -145,7 +152,7 @@ def _wheel_animated(graph: ShowGraph, groups, function_id: int, fixture_id: int)
     return len(seen) > 1
 
 
-def _in_rotation_range(capability, offset: int, value: int) -> bool:
+def _in_rotation_range(capability: FixtureCapabilities, offset: int, value: int) -> bool:
     for ranges in [capability.capabilities_by_offset[offset]]:
         for entry in ranges:
             if entry.minimum <= value <= entry.maximum and entry.preset.startswith(ROTATION):

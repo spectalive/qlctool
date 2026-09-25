@@ -26,7 +26,9 @@ from .show_graph import ShowGraph
 RULE = "color sin dimmer en algun instante"
 
 
-def check_instant_dimmer(graph: ShowGraph, groups, states: set[int]) -> list[Finding]:
+def check_instant_dimmer(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
+) -> list[Finding]:
     evaluator = InstantEvaluator(graph, groups)
     findings: list[Finding] = []
     for state_id in sorted(states):

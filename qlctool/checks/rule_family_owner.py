@@ -11,7 +11,7 @@ RULE = "familia con dueño"
 
 
 def check_family_owner(
-    graph: ShowGraph, groups, root: etree._Element, states: set[int]
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element, states: set[int]
 ) -> list[Finding]:
     """Reject incomplete family frames before their SoloFrame can stop a look."""
     console = find_local(root, "VirtualConsole")

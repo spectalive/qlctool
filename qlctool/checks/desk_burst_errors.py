@@ -18,6 +18,8 @@ def desk_burst_errors(
     errors = []
     if button.action != "Toggle" or button.page != PAGE_CONTROL or button.solo is not None:
         errors.append("requiere un Toggle independiente en CONTROL")
+    if button.function is None:
+        return errors + ["el boton no apunta a un Chaser"]
     chaser = graph.functions.get(button.function)
     if chaser is None or graph.kind(button.function) != "Chaser":
         return errors + ["el boton no apunta a un Chaser"]
@@ -26,7 +28,7 @@ def desk_burst_errors(
         if element is None or element.text != expected:
             errors.append(f"{tag} debe ser {expected}")
     modes = find_local(chaser, "SpeedModes")
-    if modes is None or dict(modes.attrib) != {
+    if modes is None or dict(modes.attrib.items()) != {
         "FadeIn": "Common",
         "FadeOut": "Common",
         "Duration": "PerStep",
@@ -57,10 +59,11 @@ def desk_burst_errors(
     except ValueError:
         return errors + ["el paso no referencia una escena"]
     scene = graph.functions.get(scene_id)
-    original = graph.functions.get(source.function)
+    original = graph.functions.get(source.function) if source.function is not None else None
     if (
         scene is None
         or original is None
+        or source.function is None
         or graph.kind(scene_id) != "Scene"
         or graph.kind(source.function) != "Scene"
     ):

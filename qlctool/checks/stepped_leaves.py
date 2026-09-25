@@ -18,7 +18,9 @@ def stepped_leaves(graph: ShowGraph, function_id: int) -> set[int]:
     return found
 
 
-def _walk(graph: ShowGraph, function_id: int, stepped: bool, seen: set[int], found: set[int]):
+def _walk(
+    graph: ShowGraph, function_id: int, stepped: bool, seen: set[int], found: set[int]
+) -> None:
     if function_id in seen:
         return
     function = graph.functions.get(function_id)

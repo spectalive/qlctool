@@ -24,6 +24,8 @@ states positions rather than animating them, and asking a rest position to cover
 both families would be asking for a different look.
 """
 
+from lxml import etree
+
 from .. import roles
 from ..xmlutil import find_local, iter_local
 from .driven_channels import driven_channels
@@ -35,7 +37,7 @@ EFX_PANTILT_MODE = "0"  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 
 
 def check_movement_figure_coverage(
-    graph: ShowGraph, groups, entries: dict[int, str]
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], entries: dict[int, str]
 ) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, caption in sorted(entries.items()):
@@ -67,7 +69,7 @@ def check_movement_figure_coverage(
     return findings
 
 
-def _moves_pan_tilt(function) -> bool:
+def _moves_pan_tilt(function: etree._Element) -> bool:
     """An EFX running any of its fixtures in PanTilt mode."""
     # An EFX names its members `<Fixture>`, not `<EFXFixture>` (efxfixture.cpp).
     for fixture in iter_local(function, "Fixture"):
@@ -77,7 +79,9 @@ def _moves_pan_tilt(function) -> bool:
     return False
 
 
-def _moved_fixtures(graph: ShowGraph, groups, function_id: int) -> set[int]:
+def _moved_fixtures(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int
+) -> set[int]:
     """The fixtures whose pan or tilt this button animates through an EFX."""
     moved: set[int] = set()
     for member in graph.descendants(function_id):
@@ -90,7 +94,7 @@ def _moved_fixtures(graph: ShowGraph, groups, function_id: int) -> set[int]:
     return moved
 
 
-def _writes_pan_or_tilt(graph: ShowGraph, fixture_id: int, pairs) -> bool:
+def _writes_pan_or_tilt(graph: ShowGraph, fixture_id: int, pairs: dict[int, int | None]) -> bool:
     capability = graph.capabilities.get(fixture_id)
     if capability is None:
         return False

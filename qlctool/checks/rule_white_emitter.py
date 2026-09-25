@@ -22,7 +22,7 @@ RULE = "blanco sin emisor blanco"
 RGB = (roles.RED, roles.GREEN, roles.BLUE)
 
 
-def check_white_emitter(graph: ShowGraph, groups) -> list[Finding]:
+def check_white_emitter(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, function in sorted(graph.functions.items()):
         if function.attrib.get("Type") != "Scene":

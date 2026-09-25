@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from lxml import etree
 
 from .. import roles
+from ..capability import FixtureCapabilities
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, localname
 from .show_graph import ShowGraph, reach
@@ -27,7 +28,9 @@ FAMILIES = {
     "gobo": frozenset((roles.GOBO, roles.GOBO_SHAKE, roles.FOCUS)),
     "prism": frozenset((roles.PRISM, roles.PRISM_ROTATION)),
 }
-_OWNER_CACHE: list[tuple[ShowGraph, dict, frozenset[int], dict[str, set[int]]]] = []
+_OWNER_CACHE: list[
+    tuple[ShowGraph, dict[int, tuple[int, ...]], frozenset[int], dict[str, set[int]]]
+] = []
 # The buttons, Toggles, hooks, hook families and owners of one family frame.
 _Handoff = tuple[
     dict[int, etree._Element],
@@ -58,7 +61,10 @@ _FRAME_CACHE: list[
 
 
 def family_frame_problems(
-    graph: ShowGraph, groups, states: set[int], widget: etree._Element | None
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    states: set[int],
+    widget: etree._Element | None,
 ) -> tuple[_Problem, ...] | None:
     """Problems in a family SoloFrame, or None when the frame has no hook."""
     frame = _solo_frame_of(widget)
@@ -71,7 +77,7 @@ def family_frame_problems(
 
 
 def _frame_problems(
-    graph: ShowGraph, groups, states: set[int], frame: etree._Element
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int], frame: etree._Element
 ) -> tuple[_Problem, ...] | None:
     handoff = _family_frame_handoff(graph, groups, states, frame)
     if handoff is None:
@@ -116,7 +122,10 @@ def _frame_problems(
 
 
 def _family_frame_handoff(
-    graph: ShowGraph, groups, states: set[int], widget: etree._Element | None
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    states: set[int],
+    widget: etree._Element | None,
 ) -> _Handoff | None:
     """The graph-derived members and hooks of one semantic family frame."""
     frame = _solo_frame_of(widget)
@@ -145,7 +154,7 @@ def _frame_memo(
 
 
 def _frame_handoff(
-    graph: ShowGraph, groups, states: set[int], frame: etree._Element
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int], frame: etree._Element
 ) -> _Handoff | None:
     buttons = _buttons(frame)
     toggles = {function_id: button for function_id, button in buttons.items() if _is_toggle(button)}
@@ -160,7 +169,9 @@ def _frame_handoff(
     return buttons, toggles, hooks, hook_families, owners
 
 
-def _hook_families(graph: ShowGraph, groups, toggles: dict[int, etree._Element]) -> set[str]:
+def _hook_families(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], toggles: dict[int, etree._Element]
+) -> set[str]:
     """Families written by every Toggle in one SoloFrame's function graph.
 
     A frame is an operator boundary, not a semantic label: renamed frames and
@@ -195,9 +206,11 @@ def _is_toggle(button: etree._Element) -> bool:
     return action is None or (action.text or "").strip() in ("", "Toggle")
 
 
-def _state_owners(graph: ShowGraph, groups, states: set[int]) -> dict[str, set[int]]:
+def _state_owners(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
+) -> dict[str, set[int]]:
     families = (*FAMILIES, "pixel-mode")
-    owners = {family: set() for family in families}
+    owners: dict[str, set[int]] = {family: set() for family in families}
     for state_id in states:
         for function_id in _owner_frontier(graph, groups, state_id):
             for family in _owner_families(graph, groups, function_id):
@@ -205,7 +218,9 @@ def _state_owners(graph: ShowGraph, groups, states: set[int]) -> dict[str, set[i
     return owners
 
 
-def _owner_families(graph: ShowGraph, groups, function_id: int) -> tuple[str, ...]:
+def _owner_families(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int
+) -> tuple[str, ...]:
     """Every family a direct functional state owner can restore."""
     families = tuple(
         family
@@ -219,7 +234,9 @@ def _owner_families(graph: ShowGraph, groups, function_id: int) -> tuple[str, ..
     return families
 
 
-def _cached_state_owners(graph: ShowGraph, groups, states: set[int]) -> dict[str, set[int]]:
+def _cached_state_owners(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
+) -> dict[str, set[int]]:
     state_ids = frozenset(states)
     if _OWNER_CACHE:
         cached_graph, cached_groups, cached_states, owners = _OWNER_CACHE[0]
@@ -230,7 +247,9 @@ def _cached_state_owners(graph: ShowGraph, groups, states: set[int]) -> dict[str
     return owners
 
 
-def _owner_frontier(graph: ShowGraph, groups, state_id: int) -> set[int]:
+def _owner_frontier(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], state_id: int
+) -> set[int]:
     """Functions whose starts can return one family to its room-state owner.
 
     A multi-family Chaser/Sequence coordinates structural level Collections;
@@ -248,7 +267,7 @@ def _owner_frontier(graph: ShowGraph, groups, state_id: int) -> set[int]:
 
 def _nested_owner_frontier(
     graph: ShowGraph,
-    groups,
+    groups: dict[int, tuple[int, ...]],
     function_id: int,
     inside_structural_cycle: bool,
     seen: set[int],
@@ -287,8 +306,10 @@ def _nested_owner_frontier(
     return found
 
 
-def _function_families(graph: ShowGraph, groups, function_id: int) -> dict[str, set[int]]:
-    found = {family: set() for family in FAMILIES}
+def _function_families(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int
+) -> dict[str, set[int]]:
+    found: dict[str, set[int]] = {family: set() for family in FAMILIES}
     found["pixel-mode"] = set()
     for fixture_id, written in reach(graph, groups, function_id).items():
         capability = graph.capabilities.get(fixture_id)
@@ -303,7 +324,7 @@ def _function_families(graph: ShowGraph, groups, function_id: int) -> dict[str, 
     return found
 
 
-def _is_pixel_fixture(capability) -> bool:
+def _is_pixel_fixture(capability: FixtureCapabilities) -> bool:
     moving_roles = FAMILIES["position"]
     return (
         not capability.is_smoke
@@ -313,7 +334,7 @@ def _is_pixel_fixture(capability) -> bool:
     )
 
 
-def _sets_pixel_mode(capability, written: dict[int, int | None]) -> bool:
+def _sets_pixel_mode(capability: FixtureCapabilities, written: dict[int, int | None]) -> bool:
     return _is_pixel_fixture(capability) and any(
         capability.roles_by_offset[offset] == roles.EFFECT for offset in written
     )
