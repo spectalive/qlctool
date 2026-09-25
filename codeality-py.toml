@@ -23,6 +23,7 @@ test-max-file-lines = 300
 data = [
   "qlctool/analogous_pairs.py",
   "qlctool/complementary_pairs.py",
+  "qlctool/efx_shape_identifiers.py",
   "qlctool/key_split_pairs.py",
   "qlctool/pastel_palette.py",
   "qlctool/pick_marks.py",

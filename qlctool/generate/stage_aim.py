@@ -20,9 +20,9 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
-
-NAME = "Escenario"
 
 # DMX address (0-based, as patched) -> (pan, tilt), read verbatim out of
 # DeluxeEventos2's `Escenario` scene (ID 376) on 2026-08-27.
@@ -39,9 +39,12 @@ MEASURED_AIMS: dict[int, tuple[int, int]] = {
 def generate_stage_aim(
     workspace: Workspace,
     library: FixtureLibrary,
-    path: str = "Movimiento",
+    path: str | None = None,
+    names: Names | None = None,
 ) -> int | None:
-    """The `Escenario` scene, or None when no aimed fixture is patched."""
+    """The stage-aim scene named by `names`, or None when no aimed fixture is patched."""
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_movement") if path is None else path
     values: dict[int, list[tuple[int, int]]] = {}
     for caps in capabilities_of(workspace.root, library):
         aim = MEASURED_AIMS.get(caps.fixture.address)
@@ -63,5 +66,7 @@ def generate_stage_aim(
         return None
 
     function_id = next_function_id(workspace.root)
-    workspace.add_function(build_scene(function_id, NAME, values, path=path))
+    workspace.add_function(
+        build_scene(function_id, vocabulary.display("stage_aim"), values, path=path)
+    )
     return function_id

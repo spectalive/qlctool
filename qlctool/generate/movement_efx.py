@@ -12,12 +12,15 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..efx_16bit import PAN_TILT_PAIRS, keeps_16bit
-from ..efx_algorithms import EFX_ALGORITHMS, SPANISH_LABELS
+from ..efx_algorithms import EFX_ALGORITHMS
+from ..efx_shape_identifiers import EFX_SHAPE_IDENTIFIERS
 from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..functions.efx import EFXAxis, EFXFixture, build_efx
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
 
@@ -52,7 +55,7 @@ def generate_movement_efx(
     library: FixtureLibrary,
     algorithms: Sequence[str] = EFX_ALGORITHMS,
     fixture_ids: Sequence[int] | None = None,
-    path: str = "Movimiento (generado)",
+    path: str | None = None,
     make_chaser: bool = True,
     propagation_mode: str = "Parallel",
     duration: int = 6848,
@@ -60,8 +63,8 @@ def generate_movement_efx(
     height: int = 100,
     chaser_hold: int = 4000,
     chaser_run_order: str = "Loop",
-    chaser_name: str = "Movimientos Cabezas",
-    label_prefix: str = "Movimiento",
+    chaser_name: str | None = None,
+    label_prefix: str | None = None,
     mirrored_ids: Sequence[int] = (),
     rotation: int = 0,
     rotation_by_algorithm: dict[str, int] | None = None,
@@ -69,6 +72,7 @@ def generate_movement_efx(
     spread_phase: bool = True,
     pan_offset: int = 127,
     tilt_offset: int = 127,
+    vocabulary: Names | None = None,
 ) -> GeneratedMovements:
     """Create one EFX per algorithm over the moving heads.
 
@@ -97,7 +101,15 @@ def generate_movement_efx(
     Spreading the phase is what desynchronises heads; a push is the one look
     whose point is that nobody is desynchronised (mirroring still applies, so
     the two sides push toward each other rather than in parallel).
+
+    `path`, `chaser_name` and `label_prefix` default to the generated movement
+    folder, the head-movements chaser and the movement prefix of `vocabulary`,
+    the show's vocabulary (`names` keeps its older meaning: per-shape names).
     """
+    words = default_names() if vocabulary is None else vocabulary
+    path = words.display("path_movement_generated") if path is None else path
+    chaser_name = words.display("head_movements") if chaser_name is None else chaser_name
+    label_prefix = words.display("prefix_movement") if label_prefix is None else label_prefix
     ids = list(fixture_ids) if fixture_ids is not None else moving_head_ids(workspace, library)
     if not ids:
         raise ValueError("no fixture in this workspace has both pan and tilt")
@@ -128,10 +140,14 @@ def generate_movement_efx(
     efx_ids: list[int] = []
     part_ids: list[int] = []
     split = len(parts) > 1
-    part_path = f"{path}/Partes" if split else path
+    part_path = words.render("path_parts", path=path) if split else path
 
     for algorithm in algorithms:
-        label = SPANISH_LABELS.get(algorithm, algorithm)
+        label = (
+            words.display(EFX_SHAPE_IDENTIFIERS[algorithm])
+            if algorithm in EFX_SHAPE_IDENTIFIERS
+            else algorithm
+        )
         name = (names or {}).get(algorithm, f"{label_prefix} {label}")
         shape_rotation = (rotation_by_algorithm or {}).get(algorithm, rotation)
         shape_parts: list[int] = []

@@ -381,18 +381,20 @@ def build_canonical_show(
     # washes wide and slow, beams narrow and shorter - because one geometry
     # over both tuned the show for neither (Codex review, 2026-08-27).
     mirrored = house_right_fixture_ids(workspace.root)
-    movement = generate_movement_families(workspace, library, mirrored_ids=mirrored)
+    movement = generate_movement_families(
+        workspace, library, mirrored_ids=mirrored, names=vocabulary
+    )
     if movement.cabezas_id is not None:
         master["Movimientos Cabezas"] = movement.cabezas_id
     if movement.rapidos_id is not None:
         master["Movimientos Rapidos"] = movement.rapidos_id
-    home_id = generate_home_position(workspace, library)
+    home_id = generate_home_position(workspace, library, names=vocabulary)
     if home_id is not None:
         # On the console beside the movement shapes: stillness is a look too.
         master["Cabezas Centro"] = home_id
     # The hand-built show's stage look, aimed by eye on the real rig and
     # carried as measured data: heads on the stage, colour left to the state.
-    stage_aim_id = generate_stage_aim(workspace, library)
+    stage_aim_id = generate_stage_aim(workspace, library, names=vocabulary)
     if stage_aim_id is not None:
         master["Escenario"] = stage_aim_id
 

@@ -17,6 +17,8 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
 MID = 127
@@ -32,10 +34,14 @@ BEAM_TILT = 130
 def generate_home_position(
     workspace: Workspace,
     library: FixtureLibrary,
-    name: str = "Cabezas Centro",
-    path: str = "Movimiento",
+    name: str | None = None,
+    path: str | None = None,
+    names: Names | None = None,
 ) -> int | None:
     """One scene holding every mover parked. None if none move."""
+    vocabulary = default_names() if names is None else names
+    name = vocabulary.display("heads_centre") if name is None else name
+    path = vocabulary.display("path_movement") if path is None else path
     values: dict[int, list[tuple[int, int]]] = {}
     for caps in capabilities_of(workspace.root, library):
         if not (caps.has_role(roles.PAN) and caps.has_role(roles.TILT)):

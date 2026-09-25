@@ -35,12 +35,14 @@ from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
-from ..efx_algorithms import SPANISH_LABELS
+from ..efx_shape_identifiers import EFX_SHAPE_IDENTIFIERS
 from ..every_other import every_other
 from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 from .cross_position import generate_cross_position
 from .fan_position import generate_fan_position
@@ -322,8 +324,18 @@ def generate_movement_families(
     workspace: Workspace,
     library: FixtureLibrary,
     mirrored_ids: Sequence[int] = (),
+    names: Names | None = None,
 ) -> GeneratedFamilies:
-    """Per-family movement, the fan, and the two rig-wide Collections."""
+    """Per-family movement, the fan, and the two rig-wide Collections, named by `names`."""
+    vocabulary = default_names() if names is None else names
+    display = vocabulary.display
+
+    def label_of(shape: str) -> str:
+        return display(EFX_SHAPE_IDENTIFIERS[shape]) if shape in EFX_SHAPE_IDENTIFIERS else shape
+
+    movement_path = display("path_movement")
+    soft_path = display("path_soft_movement")
+    fast_path = display("path_fast_movement")
     washes: list[int] = []
     beams: list[int] = []
     for caps in capabilities_of(workspace.root, library):
@@ -341,7 +353,7 @@ def generate_movement_families(
         prefix,
         path,
         make_chaser=True,
-        names=None,
+        overrides=None,
         spread_phase=True,
         mirrored=None,
     ):
@@ -365,25 +377,28 @@ def generate_movement_families(
             propagation_mode=envelope.propagation,
             rotation=envelope.rotation,
             rotation_by_algorithm=envelope.rotation_by_algorithm or None,
-            names=names,
+            names=overrides,
             spread_phase=spread_phase,
             pan_offset=envelope.pan_offset,
             tilt_offset=envelope.tilt_offset,
+            vocabulary=vocabulary,
         )
 
-    slow = _family(washes, WASH_SLOW, None, "Suave", "Movimiento Suave", make_chaser=False)
-    slow_beam = _family(beams, BEAM_SLOW, "Suaves Beams", "Beam Suave", "Movimiento Suave")
+    slow = _family(washes, WASH_SLOW, None, display("prefix_soft"), soft_path, make_chaser=False)
+    slow_beam = _family(
+        beams, BEAM_SLOW, display("soft_beams"), display("prefix_soft_beam"), soft_path
+    )
     ola_suave = _family(
         washes,
         WASH_CASCADE,
         None,
-        "Ola",
-        "Movimiento Suave",
+        display("prefix_wave"),
+        soft_path,
         make_chaser=False,
-        names={"Line": "Ola Suave"},
+        overrides={"Line": display("soft_wave")},
     )
-    wash = _family(washes, WASH, None, "Wash", "Movimiento", make_chaser=False)
-    beam = _family(beams, BEAM, None, "Beam", "Movimiento", make_chaser=False)
+    wash = _family(washes, WASH, None, "Wash", movement_path, make_chaser=False)
+    beam = _family(beams, BEAM, None, "Beam", movement_path, make_chaser=False)
     # The old "(Simultaneo)" twins: same shapes, same envelope, every head at
     # phase 0 so the family traces one figure together.
     wash_sim = _family(
@@ -391,11 +406,10 @@ def generate_movement_families(
         WASH,
         None,
         "Wash",
-        "Movimiento",
+        movement_path,
         make_chaser=False,
-        names={
-            shape: f"Wash {SPANISH_LABELS.get(shape, shape)} Simultaneo"
-            for shape in WASH.algorithms
+        overrides={
+            shape: f"Wash {label_of(shape)} {display('mode_together')}" for shape in WASH.algorithms
         },
         spread_phase=False,
     )
@@ -404,16 +418,18 @@ def generate_movement_families(
         BEAM_TWIN_SHAPES,
         None,
         "Beam",
-        "Movimiento",
+        movement_path,
         make_chaser=False,
-        names={
-            shape: f"Beam {SPANISH_LABELS.get(shape, shape)} Simultaneo"
+        overrides={
+            shape: f"Beam {label_of(shape)} {display('mode_together')}"
             for shape in BEAM_TWIN_SHAPES.algorithms
         },
         spread_phase=False,
     )
-    beam_shapes = _family(beams, BEAM_ROTATED_SHAPES, None, "Beam", "Movimiento", make_chaser=False)
-    beam_wide = _family(beams, BEAM_WIDE_SHAPES, None, "Beam", "Movimiento", make_chaser=False)
+    beam_shapes = _family(
+        beams, BEAM_ROTATED_SHAPES, None, "Beam", movement_path, make_chaser=False
+    )
+    beam_wide = _family(beams, BEAM_WIDE_SHAPES, None, "Beam", movement_path, make_chaser=False)
     # Each head against its neighbour: the same figure with every other fixture
     # running it backwards, which is the "cada cabeza para un lado" the owner
     # missed.
@@ -422,10 +438,10 @@ def generate_movement_families(
         WASH_ALTERNATE,
         None,
         "Wash",
-        "Movimiento",
+        movement_path,
         make_chaser=False,
-        names={
-            shape: f"Wash {SPANISH_LABELS.get(shape, shape)} Alternado"
+        overrides={
+            shape: f"Wash {label_of(shape)} {display('mode_alternating')}"
             for shape in WASH_ALTERNATE.algorithms
         },
         mirrored=every_other(washes),
@@ -435,10 +451,10 @@ def generate_movement_families(
         BEAM_ALTERNATE,
         None,
         "Beam",
-        "Movimiento",
+        movement_path,
         make_chaser=False,
-        names={
-            shape: f"Beam {SPANISH_LABELS.get(shape, shape)} Alternado"
+        overrides={
+            shape: f"Beam {label_of(shape)} {display('mode_alternating')}"
             for shape in BEAM_ALTERNATE.algorithms
         },
         mirrored=every_other(beams),
@@ -448,54 +464,58 @@ def generate_movement_families(
         BEAM_CASCADE,
         None,
         "Cascada",
-        "Movimiento",
+        movement_path,
         make_chaser=False,
-        names={"Circle": "Cascada Beams"},
+        overrides={"Circle": display("cascade_beams")},
     )
     # The tilt wave and the synced push, per family like every figure.
     ola_wash = _family(
         washes,
         WASH_TILT_WAVE,
         None,
-        "Ola",
-        "Movimiento",
+        display("prefix_wave"),
+        movement_path,
         make_chaser=False,
-        names={"Line": "Ola Vertical Washes"},
+        overrides={"Line": display("vertical_wave_washes")},
     )
     ola_beam = _family(
         beams,
         BEAM_TILT_WAVE,
         None,
-        "Ola",
-        "Movimiento",
+        display("prefix_wave"),
+        movement_path,
         make_chaser=False,
-        names={"Line": "Ola Vertical Beams"},
+        overrides={"Line": display("vertical_wave_beams")},
     )
     unison_wash = _family(
         washes,
         WASH_UNISON,
         None,
-        "Barrido",
-        "Movimiento",
+        display("prefix_sweep"),
+        movement_path,
         make_chaser=False,
-        names={"Line": "Barrido Unison Washes"},
+        overrides={"Line": display("unison_sweep_washes")},
         spread_phase=False,
     )
     unison_beam = _family(
         beams,
         BEAM_UNISON,
         None,
-        "Barrido",
-        "Movimiento",
+        display("prefix_sweep"),
+        movement_path,
         make_chaser=False,
-        names={"Line": "Barrido Unison Beams"},
+        overrides={"Line": display("unison_sweep_beams")},
         spread_phase=False,
     )
-    fast_wash = _family(washes, WASH_FAST, "Rapidos Washes", "Wash Rapido", "Movimiento Rapido")
-    fast_beam = _family(beams, BEAM_FAST, "Rapidos Beams", "Beam Rapido", "Movimiento Rapido")
+    fast_wash = _family(
+        washes, WASH_FAST, display("fast_washes"), display("prefix_fast_wash"), fast_path
+    )
+    fast_beam = _family(
+        beams, BEAM_FAST, display("fast_beams"), display("prefix_fast_beam"), fast_path
+    )
 
-    fan_id = generate_fan_position(workspace, library, beams)
-    cross_id = generate_cross_position(workspace, library, beams)
+    fan_id = generate_fan_position(workspace, library, beams, names=vocabulary)
+    cross_id = generate_cross_position(workspace, library, beams, names=vocabulary)
 
     # The Suave family gets its own cascade wave beside the two plain shapes.
     slow_wash_id: int | None = None
@@ -505,13 +525,13 @@ def generate_movement_families(
         workspace.add_function(
             build_chaser(
                 slow_wash_id,
-                "Suaves Washes",
+                display("soft_washes"),
                 steps,
                 hold=WASH_SLOW.hold,
                 fade_in=MOVEMENT_CROSSFADE_MS,
                 fade_out=MOVEMENT_CROSSFADE_MS,
                 run_order="Random",
-                path="Movimiento Suave",
+                path=soft_path,
             )
         )
 
@@ -524,7 +544,7 @@ def generate_movement_families(
     if slow_members:
         slow_id = next_function_id(workspace.root)
         workspace.add_function(
-            build_collection(slow_id, "Movimientos Suaves", slow_members, path="Movimiento Suave")
+            build_collection(slow_id, display("soft_movements"), slow_members, path=soft_path)
         )
 
     # The washes' rotation, assembled by hand like the beams' so the wave and
@@ -541,13 +561,13 @@ def generate_movement_families(
         workspace.add_function(
             build_chaser(
                 wash_id,
-                "Movimientos Washes",
+                display("wash_movements"),
                 steps,
                 hold=WASH.hold,
                 fade_in=MOVEMENT_CROSSFADE_MS,
                 fade_out=MOVEMENT_CROSSFADE_MS,
                 run_order="Random",
-                path="Movimiento",
+                path=movement_path,
             )
         )
 
@@ -573,13 +593,13 @@ def generate_movement_families(
         workspace.add_function(
             build_chaser(
                 beam_id,
-                "Movimientos Beams",
+                display("beam_movements"),
                 steps,
                 hold=BEAM.hold,
                 fade_in=MOVEMENT_CROSSFADE_MS,
                 fade_out=MOVEMENT_CROSSFADE_MS,
                 run_order="Random",
-                path="Movimiento",
+                path=movement_path,
             )
         )
 
@@ -610,9 +630,9 @@ def generate_movement_families(
         workspace.add_function(
             build_collection(
                 collection_id,
-                f"Movimiento {SPANISH_LABELS.get(shape, shape)}",
+                vocabulary.render("movement_shape", shape=label_of(shape)),
                 members,
-                path="Movimiento",
+                path=movement_path,
             )
         )
         efx_ids.append(collection_id)
@@ -621,9 +641,9 @@ def generate_movement_families(
     # automatic rotation: "faltan movimientos, unos iban a la vez otros iban
     # alternados" (owner, 2026-09-22). One button per shape and per way of
     # phasing it, each spanning both families like the plain shapes do.
-    for suffix, parts in (
-        ("Simultaneo", ((wash_sim, WASH), (beam_sim, BEAM_TWIN_SHAPES))),
-        ("Alternado", ((wash_alt, WASH_ALTERNATE), (beam_alt, BEAM_ALTERNATE))),
+    for mode, parts in (
+        ("mode_together", ((wash_sim, WASH), (beam_sim, BEAM_TWIN_SHAPES))),
+        ("mode_alternating", ((wash_alt, WASH_ALTERNATE), (beam_alt, BEAM_ALTERNATE))),
     ):
         twins: dict[str, list[int]] = {}
         for generated, envelope in parts:
@@ -639,9 +659,9 @@ def generate_movement_families(
             workspace.add_function(
                 build_collection(
                     collection_id,
-                    f"Movimiento {SPANISH_LABELS.get(shape, shape)} {suffix}",
+                    vocabulary.render("movement_shape", shape=f"{label_of(shape)} {display(mode)}"),
                     members,
-                    path="Movimiento",
+                    path=movement_path,
                 )
             )
             efx_ids.append(collection_id)
@@ -663,14 +683,14 @@ def generate_movement_families(
                 collection_id,
                 name,
                 members,
-                path="Movimiento",
+                path=movement_path,
             )
         )
         efx_ids.append(collection_id)
         play_pick_ids.append(collection_id)
 
-    _figure("Ola Vertical", ola_wash, ola_beam)
-    _figure("Barrido Unison", unison_wash, unison_beam)
+    _figure(display("vertical_wave"), ola_wash, ola_beam)
+    _figure(display("unison_sweep"), unison_wash, unison_beam)
     play_pick_ids += [function_id for function_id in (fan_id, cross_id) if function_id is not None]
 
     def _both(name, first, second, path):
@@ -691,12 +711,12 @@ def generate_movement_families(
         fast_wash_id=fast_wash_id,
         fast_beam_id=fast_beam_id,
         fan_id=fan_id,
-        cabezas_id=_both("Movimientos Cabezas", wash_id, beam_id, "Movimiento"),
+        cabezas_id=_both(display("head_movements"), wash_id, beam_id, movement_path),
         rapidos_id=_both(
-            "Movimientos Rapidos",
+            display("fast_movements"),
             fast_wash_id,
             fast_beam_id,
-            "Movimiento Rapido",
+            fast_path,
         ),
         efx_ids=efx_ids,
         play_pick_ids=play_pick_ids,

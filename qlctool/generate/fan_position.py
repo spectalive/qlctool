@@ -20,6 +20,8 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 from .movement_aim import BEAM_PAN_AIM, BEAM_PAN_SPAN, BEAM_TILT_AIM
 
@@ -37,10 +39,14 @@ def generate_fan_position(
     workspace: Workspace,
     library: FixtureLibrary,
     fixture_ids: Sequence[int],
-    name: str = "Beams Abanico",
-    path: str = "Movimiento",
+    name: str | None = None,
+    path: str | None = None,
+    names: Names | None = None,
 ) -> int | None:
     """One scene fanning `fixture_ids` symmetrically. None when under two."""
+    vocabulary = default_names() if names is None else names
+    name = vocabulary.display("beams_fan") if name is None else name
+    path = vocabulary.display("path_movement") if path is None else path
     wanted = [
         caps
         for caps in capabilities_of(workspace.root, library)

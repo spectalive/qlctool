@@ -7,16 +7,20 @@ import pytest
 from qlctool.description.reading.read_names import read_names
 from qlctool.fixture_group import fixture_groups
 from qlctool.generate.matrix_effects import generate_matrix_effects
+from qlctool.generate.movement_families import generate_movement_families
+from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.sections import SECTIONS
 from qlctool.names.shipped_languages import shipped_languages
 from qlctool.names.shipped_names import shipped_names
 from qlctool.names.template_affixes import template_affixes
 from qlctool.names.template_fields import template_fields
+from qlctool.skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 
-SHOW = Path(__file__).resolve().parents[3] / "QLC+ Setups" / "DeluxeEventos2.qxw"
+SETUPS = Path(__file__).resolve().parents[3] / "QLC+ Setups"
+SHOW = SETUPS / "DeluxeEventos2.qxw"
 
 
 def test_fields_are_read_in_order():
@@ -96,3 +100,18 @@ def test_the_matrix_cycle_starts_with_the_cycle_prefix(language):
     assert cycle.startswith(prefix)
     assert cycle.removeprefix(prefix) == names.render("matrices_of", group=group.name)
     assert chaser.attrib["Path"] == names.display("path_matrices_generated")
+
+
+@pytest.mark.parametrize("language", ["es", "en"])
+def test_a_movement_pick_starts_with_the_movement_prefix(language):
+    """play_page strips the movement prefix from pick captions (B8, P12)."""
+    names = shipped_names(language)
+    workspace = strip_to_skeleton(Workspace.load(SETUPS / "Vibra.qxw"))
+    generated = generate_movement_families(workspace, FixtureLibrary.load(), names=names)
+    engine = find_local(workspace.root, "Engine")
+    by_id = {f.attrib["ID"]: f for f in findall_local(engine, "Function")}
+    circle = by_id[str(generated.play_pick_ids[0])]
+    prefix, _ = template_affixes(names, "movement_shape")
+    assert circle.attrib["Name"].startswith(prefix)
+    assert circle.attrib["Name"].removeprefix(prefix) == names.display("shape_circle")
+    assert circle.attrib["Path"] == names.display("path_movement")

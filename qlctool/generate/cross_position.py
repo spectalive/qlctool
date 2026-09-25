@@ -20,6 +20,8 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 from .fan_position import MID, SPREAD, TILT
 
@@ -28,10 +30,14 @@ def generate_cross_position(
     workspace: Workspace,
     library: FixtureLibrary,
     fixture_ids: Sequence[int],
-    name: str = "Beams Cruce",
-    path: str = "Movimiento",
+    name: str | None = None,
+    path: str | None = None,
+    names: Names | None = None,
 ) -> int | None:
     """One scene crossing `fixture_ids` over the centre. None when under two."""
+    vocabulary = default_names() if names is None else names
+    name = vocabulary.display("beams_cross") if name is None else name
+    path = vocabulary.display("path_movement") if path is None else path
     wanted = [
         caps
         for caps in capabilities_of(workspace.root, library)

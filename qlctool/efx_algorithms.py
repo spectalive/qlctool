@@ -1,9 +1,8 @@
-"""The EFX movement algorithms QLC+ offers, and their show-facing names.
+"""The EFX movement algorithms QLC+ offers.
 
 QLC+ matches `<Algorithm>` against these exact strings (Circle is the fallback
-when it cannot). The Spanish labels are what the existing hand-built functions
-call them ("Movimiento Circulo"), so generated names read the same on the
-console.
+when it cannot). The show-facing label of each shape is a catalogue word
+(`efx_shape_identifiers`), so generated names read in the show's language.
 """
 
 EFX_ALGORITHMS: tuple[str, ...] = (
@@ -15,13 +14,3 @@ EFX_ALGORITHMS: tuple[str, ...] = (
     "Leaf",
     "Lissajous",
 )
-
-SPANISH_LABELS: dict[str, str] = {
-    "Circle": "Circulo",
-    "Eight": "Ocho",
-    "Line": "Linea",
-    "Diamond": "Diamante",
-    "Square": "Cuadrado",
-    "Leaf": "Hoja",
-    "Lissajous": "Lissajous",
-}

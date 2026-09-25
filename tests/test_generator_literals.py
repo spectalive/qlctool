@@ -30,6 +30,13 @@ CONVERTED: tuple[str, ...] = (
     "generate/beam_rainbow_spin.py",
     "color_wheel_match.py",
     "checks/detent_white.py",
+    "efx_algorithms.py",
+    "generate/movement_efx.py",
+    "generate/movement_families.py",
+    "generate/home_position.py",
+    "generate/cross_position.py",
+    "generate/fan_position.py",
+    "generate/stage_aim.py",
 )
 
 
