@@ -10,7 +10,7 @@ from ..argb import RGB
 
 @dataclass(frozen=True)
 class MidiPadProfile:
-    """Its map (widget name -> input channel), its button colours, and how to patch its input."""
+    """Its map (identifier -> input channel), its button colours, how to patch its input."""
 
     name: str
     bindings: Mapping[str, int]
