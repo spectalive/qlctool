@@ -6,10 +6,9 @@ nothing lit is dark, that no two programmes are writing the same colour, that
 the fixtures without RGB were not silently skipped, and that the console cannot
 be pressed into a state the show was never built for.
 
-Every rule here exists because something went wrong in a real room. Adding one
-is how a bug stops being able to happen twice. A controller's rules come from
-the `qlctool.rules` entry points (`checks/rule_providers.py`) and run only where
-that controller is in the workspace.
+Every rule here exists because something went wrong in a real room; adding one
+is how a bug stops being able to happen twice. A controller's rules come from the
+`qlctool.rules` entry points (`checks/rule_providers.py`), each only where its controller is.
 """
 
 from collections.abc import Sequence

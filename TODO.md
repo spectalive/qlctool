@@ -170,24 +170,31 @@
   the English `matrices_frame` and `library_2`, back on the club and the rule
   bites; Vibra (which matches seven promising captions) and the club stay
   clean. Limit: a `[names]` override of those captions is not judged.
-- [~] **An English show's `check` reads in Spanish (ruling B10, 2026-09-25).**
+- [x] **An English show's `check` reads in Spanish (ruling B10, 2026-09-25).**
   The controller decided (the owner delegated it) that the check side follows
   the spec's "Multilingual" section: every rule has an English identifier and
-  a display name per language. Round 1 done: `Finding.rule_id` (the 62 `RULE`
-  and 5 secondary rule literals in `checks/rule_*.py` are `RULE_ID`
-  identifiers), a `[checks]` section in `es.toml` and `en.toml`,
-  `checks/named_in_order.py` names every finding in `workspace_language` in
-  one place, and `print_check_report.py` renders the summary lines from
-  `[messages]` (`check_clean`, `check_problems`, `check_more`). Vibra prints
-  byte for byte what it printed; the club now reads `199 buttons checked, no
-  problems`. Tests `tests/test_check_rule_catalogue.py` (drift) and
-  `tests/test_english_check_names.py` (dated). Round 2 pending: the finding
-  messages (76 `Finding(...)` sites) are still Spanish literals, and
-  `rule_missing_definition` still renders its message with `default_names()`
-  (Spanish) on an English show. Smallest next step: route each rule's message
-  through a `[messages]` identifier rendered in the workspace's language,
-  module by module, with a scanner like `tests/test_generator_literals.py`
-  over `checks/`.
+  a display name per language. Round 1 (026fca4, 64a10de): `Finding.rule_id`,
+  a `[checks]` section in `es.toml` and `en.toml`, the rules named in
+  `workspace_language` in one place, and the summary lines from `[messages]`.
+  Round 2: every finding message is a `[findings]` entry (`message_id` and
+  `fields`, with `Phrase` and `Joined` for catalogue words and lists), rendered
+  in the workspace's language by `checks/named_findings.py`; the helper
+  builders (`desk_burst_errors`, `family_frames`) return phrases, the promise
+  words are catalogue entries, and the intensity plural is two entries.
+  `named_in_order` is split into `named_findings` and `fixing_order`,
+  `rule_display_name` is `display_name_of_rule`, no `Finding` passes its rule
+  positionally, and `docs/checks.md` describes all 67 rules in one table.
+  Evidence: Vibra's check output `cmp`-identical on the frozen Vibra and on
+  the injected-bug copy (29 findings in 5 rules); every one of the 2296
+  distinct findings the suite built before round 2 is rebuilt with the same
+  Spanish message; the club without `--fixtures` reads English end to end.
+  Tests `tests/test_check_finding_catalogue.py` (drift) and
+  `tests/test_english_check_names.py` (dated).
+- [ ] **`deskmap`'s refusal of an invalid desk burst reads in Spanish
+  (2026-09-25).** `build_deskmap` raises "invalid desk bursts: ..." joining
+  `Finding.message`, which outside `check_workspace` is the Spanish rendering.
+  Smallest next step: render each finding's `message_id` with the vocabulary
+  `build_deskmap` already holds (`checks/rendered_value.py`).
 - [ ] **`is_panel` calls a plain PAR with a built-in programme a panel
   (review of 4b50144..655b97d, 2026-09-25).** `qlctool/is_panel.py:26`: the
   one-cell case (`heads == 1`, layout 1 x 1) accepts any single-head fixture
