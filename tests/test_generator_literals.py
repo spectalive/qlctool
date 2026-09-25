@@ -50,6 +50,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/strobe_effects.py",
     "generate/vertical_smoke_burst.py",
     "generate/play_wrappers.py",
+    "generate/gobo_shake.py",
 )
 
 
