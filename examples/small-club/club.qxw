@@ -5938,7 +5938,7 @@
             <Font>Sans Serif,11,-1,5,50,0,0,0,0,0</Font>
           </Appearance>
         </Label>
-        <Label Caption="gobos, prism and dimmer follow your" ID="27">
+        <Label Caption="sweeps and dimmer follow your" ID="27">
           <WindowState Visible="True" X="1176" Y="844" Width="256" Height="20"/>
           <Appearance>
             <FrameStyle>None</FrameStyle>
@@ -8151,7 +8151,7 @@
             <Intensity Adjust="False">100</Intensity>
           </Button>
         </Frame>
-        <SoloFrame Caption="Matrices — patterns on the bars and panels" ID="188" Page="3">
+        <SoloFrame Caption="Matrices — patterns on each group of lights" ID="188" Page="3">
           <Appearance>
             <FrameStyle>Sunken</FrameStyle>
             <ForegroundColor>Default</ForegroundColor>
@@ -9158,7 +9158,7 @@
             <Resource>Waves</Resource>
           </Control>
         </Matrix>
-        <Label Caption="This page is the store: the two-colour mixes, the matrices and" ID="259" Page="3">
+        <Label Caption="This page is the store: the two-colour mixes and the matrices." ID="259" Page="3">
           <WindowState Visible="True" X="8" Y="410" Width="524" Height="24"/>
           <Appearance>
             <FrameStyle>None</FrameStyle>
@@ -9168,7 +9168,7 @@
             <Font>Sans Serif,11,-1,5,50,0,0,0,0,0</Font>
           </Appearance>
         </Label>
-        <Label Caption="the panels' 42 built-in effects. They are here to look at and to" ID="260" Page="3">
+        <Label Caption="They are here to look at and to" ID="260" Page="3">
           <WindowState Visible="True" X="8" Y="436" Width="524" Height="24"/>
           <Appearance>
             <FrameStyle>None</FrameStyle>
@@ -9228,7 +9228,7 @@
             <Font>Sans Serif,11,-1,5,50,0,0,0,0,0</Font>
           </Appearance>
         </Label>
-        <Label Caption="Nobody has watched the panels' 42 effects yet: the device" ID="266" Page="3">
+        <Label Caption="The per-group wheels paint the same fixtures as the main wheel." ID="266" Page="3">
           <WindowState Visible="True" X="8" Y="592" Width="524" Height="24"/>
           <Appearance>
             <FrameStyle>None</FrameStyle>
@@ -9238,7 +9238,7 @@
             <Font>Sans Serif,11,-1,5,50,0,0,0,0,0</Font>
           </Appearance>
         </Label>
-        <Label Caption="only calls them «Effect N». Press, watch, and note which are worth it." ID="267" Page="3">
+        <Label Caption="Switching both on adds the two colours: it comes out white." ID="267" Page="3">
           <WindowState Visible="True" X="8" Y="618" Width="524" Height="24"/>
           <Appearance>
             <FrameStyle>None</FrameStyle>
@@ -9248,37 +9248,7 @@
             <Font>Sans Serif,11,-1,5,50,0,0,0,0,0</Font>
           </Appearance>
         </Label>
-        <Label Caption="· · ·" ID="268" Page="3">
-          <WindowState Visible="True" X="8" Y="644" Width="524" Height="24"/>
-          <Appearance>
-            <FrameStyle>None</FrameStyle>
-            <ForegroundColor>Default</ForegroundColor>
-            <BackgroundColor>Default</BackgroundColor>
-            <BackgroundImage>None</BackgroundImage>
-            <Font>Sans Serif,11,-1,5,50,0,0,0,0,0</Font>
-          </Appearance>
-        </Label>
-        <Label Caption="The per-group wheels paint the same fixtures as the main wheel." ID="269" Page="3">
-          <WindowState Visible="True" X="8" Y="670" Width="524" Height="24"/>
-          <Appearance>
-            <FrameStyle>None</FrameStyle>
-            <ForegroundColor>Default</ForegroundColor>
-            <BackgroundColor>Default</BackgroundColor>
-            <BackgroundImage>None</BackgroundImage>
-            <Font>Sans Serif,11,-1,5,50,0,0,0,0,0</Font>
-          </Appearance>
-        </Label>
-        <Label Caption="Switching both on adds the two colours: it comes out white." ID="270" Page="3">
-          <WindowState Visible="True" X="8" Y="696" Width="524" Height="24"/>
-          <Appearance>
-            <FrameStyle>None</FrameStyle>
-            <ForegroundColor>Default</ForegroundColor>
-            <BackgroundColor>Default</BackgroundColor>
-            <BackgroundImage>None</BackgroundImage>
-            <Font>Sans Serif,11,-1,5,50,0,0,0,0,0</Font>
-          </Appearance>
-        </Label>
-        <AudioTriggers BarsNumber="5" Caption="Audio (pick an input in Configuration)" ID="271" Page="2">
+        <AudioTriggers BarsNumber="5" Caption="Audio (pick an input in Configuration)" ID="268" Page="2">
           <WindowState Visible="True" X="1176" Y="330" Width="256" Height="110"/>
           <Appearance>
             <FrameStyle>Sunken</FrameStyle>

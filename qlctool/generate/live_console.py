@@ -62,9 +62,12 @@ from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
 from .bind_pad import bind_pad
+from .library_help_lines import library_help_lines
+from .matrices_frame_caption import matrices_frame_caption
 from .page_control_title import page_control_title
 from .play_page import build_play_page
 from .smc_pad_colors import readable_foreground
+from .tempo_help_line import tempo_help_line
 
 CANVAS_WIDTH = 1440
 CANVAS_HEIGHT = 900
@@ -211,7 +214,6 @@ SMOKE_RHYTHMS: tuple[tuple[str, str], ...] = (
 # chaser or the figure stops being a proportion of the step.
 TEMPO_TAP_KEY = "M"
 TEMPO_BEAT_MS = 500  # the dial's starting beat: 120 BPM
-TEMPO_LINES = ("tempo_1", "tempo_2", "tempo_3")
 MOVEMENT_DIAL_LINES = ("movement_dial_1", "movement_dial_2", "movement_dial_3")
 
 # The workspace's own GrandMaster - it scales every output - had no widget
@@ -242,23 +244,9 @@ DIMMER_CHASES: tuple[tuple[str, str], ...] = (
 )
 
 # Page 4 says what it is for, because a page of 180 buttons otherwise reads as
-# something somebody is supposed to be using.
-# The "· · ·" separators are not words (ruling B6) and stay literal.
+# something somebody is supposed to be using; `library_help_lines` picks the
+# lines. The "· · ·" separators are not words (ruling B6) and stay literal.
 LIBRARY_SEPARATOR = "· · ·"
-LIBRARY_LINES = (
-    "library_1",
-    "library_2",
-    "library_3",
-    LIBRARY_SEPARATOR,
-    "library_4",
-    "library_5",
-    LIBRARY_SEPARATOR,
-    "library_6",
-    "library_7",
-    LIBRARY_SEPARATOR,
-    "library_8",
-    "library_9",
-)
 
 # The five spectrum bands. The strobe was wired to the upper mids until
 # 2026-08-27: a strobe fired by whatever the PA does is a strobe nobody
@@ -524,6 +512,9 @@ def generate_live_console(
         colours,
         vocabulary,
         mix_code,
+        # The pixel groups' base is built only when some group is made of
+        # pixels, so its presence says the matrices have pixels to draw on.
+        master.get(vocabulary.display("pixels_on")) is not None,
     )
 
     # Last, because a band presses a button and needs its widget ID.
@@ -772,7 +763,17 @@ def _page_show(
     bind_pad(dial, pad_bindings, vocabulary.display("tempo_dial"))
     _on_page(dial, PAGE_SHOW)
     console.widget_ids.append(dial_id)
-    for index, line in enumerate(TEMPO_LINES):
+    # The middle line names the gobo and prism animations only when the show
+    # built them: they are what the dial would re-time.
+    tempo_lines = (
+        "tempo_1",
+        tempo_help_line(
+            master.get(vocabulary.display("gobo_animation")) is not None,
+            master.get(vocabulary.display("prism_animation")) is not None,
+        ),
+        "tempo_3",
+    )
+    for index, line in enumerate(tempo_lines):
         label(
             outer,
             vocabulary.display(line),
@@ -1060,6 +1061,7 @@ def _page_library(
     palette: Mapping[str, tuple[int, int, int]],
     vocabulary: Names,
     mix_code: Mapping[str, str],
+    has_pixel_groups: bool,
 ) -> None:
     """Page 4: the material the show is built from, not buttons for a set."""
     label(
@@ -1141,7 +1143,7 @@ def _page_library(
 
     matrix_frame = frame(
         outer,
-        vocabulary.display("matrices_frame"),
+        vocabulary.display(matrices_frame_caption(has_pixel_groups, bool(builtins.scene_ids))),
         MIDDLE_X,
         68,
         MIDDLE_WIDTH,
@@ -1320,10 +1322,10 @@ def _page_library(
         _on_page(control, PAGE_LIBRARY)
         console.widget_ids.append(matrix_widget_id)
 
-    for index, line in enumerate(LIBRARY_LINES):
+    for index, line in enumerate(library_help_lines(bool(builtins.scene_ids))):
         label(
             outer,
-            line if line == LIBRARY_SEPARATOR else vocabulary.display(line),
+            LIBRARY_SEPARATOR if line is None else vocabulary.display(line),
             LEFT_X,
             410 + index * 26,
             LEFT_WIDTH,

@@ -94,6 +94,40 @@ def test_the_control_page_does_not_promise_beam_wheels(club):
     assert not [c for c in captions if c in wheel_titles]
 
 
+def test_2026_09_25_the_tempo_help_names_no_gobo_or_prism(club):
+    """2026-09-25, Plan C final review: page 1 said gobos and prism follow the tap.
+
+    The LED Beam heads have no gobo or prism wheel, so neither animation is
+    built and the dial re-times neither.
+    """
+    names = default_names()
+    captions = _captions(club)
+    assert names.display("tempo_2") not in captions
+    assert not [c for c in captions if "gobo" in c.casefold() or "prism" in c.casefold()]
+
+
+def test_2026_09_25_the_matrices_frame_names_no_bars_or_panels(club):
+    """2026-09-25, Plan C final review: page 4 drew "patterns on the bars and panels".
+
+    The club's matrices run on its pars and its heads: no fixture is made of
+    pixels and none has built-in effects.
+    """
+    assert default_names().display("matrices_frame") not in _captions(club)
+
+
+def test_2026_09_25_the_library_help_names_no_built_in_effects(club):
+    """2026-09-25, Plan C final review: page 4 spoke of "the panels' 42 built-in effects".
+
+    Nothing on this rig has built-in effects, so no panels frame is built and
+    the help lines about it have nothing to point at.
+    """
+    names = default_names()
+    captions = _captions(club)
+    for key in ("library_1", "library_2", "library_6", "library_7"):
+        assert names.display(key) not in captions, key
+    assert not [c for c in captions if "panel" in c.casefold() or "42" in c]
+
+
 def test_2026_09_25_a_gobo_spot_with_no_colour_wheel_gets_a_show(tmp_path, monkeypatch):
     """2026-09-25, Plan C final review: an LED gobo spot with no Color Macro.
 
