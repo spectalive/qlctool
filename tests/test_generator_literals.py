@@ -56,6 +56,7 @@ CONVERTED: tuple[str, ...] = (
     "control_glyph.py",
     "generate/smc_pad_bindings.py",
     "generate/smc_pad_colors.py",
+    "generate/live_console.py",
 )
 
 

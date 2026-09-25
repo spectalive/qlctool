@@ -39,6 +39,7 @@ from ..control_glyph import GLYPHS
 from ..names.default_names import default_names
 from ..names.localised_keys import localised_keys
 from ..names.names import Names
+from ..names.template_affixes import template_affixes
 from ..palette import PALETTE
 from ..vc.appearance import DEFAULT
 from ..vc.audio_triggers import build_audio_triggers
@@ -219,6 +220,17 @@ GRAND_MASTER_LINES = (
     "grand_master_3",
     "grand_master_4",
     "grand_master_5",
+)
+
+# Page 3's intensity chases and the fixture strobe, three across two rows.
+# (function, caption) identifiers.
+DIMMER_CHASES: tuple[tuple[str, str], ...] = (
+    ("dimmer_chase", "chase_sweep"),
+    ("dimmer_chase_2", "chase_reverse"),
+    ("dimmer_pingpong", "chase_odd_even"),
+    ("dimmer_sequence", "chase_rotation"),
+    ("strobe_on", "chase_strobe_on"),
+    ("strobe_off", "chase_strobe_off"),
 )
 
 # Page 4 says what it is for, because a page of 180 buttons otherwise reads as
@@ -773,7 +785,7 @@ def _page_control(
     """Page 3: direct controls that remain useful beside the play families."""
     label(
         outer,
-        "3 · CONTROL — bancos, ruedas de BEAM, cabezas, intensidad y humo.",
+        vocabulary.display("page_control"),
         LEFT_X,
         30,
         OUTER_WIDTH - 16,
@@ -800,7 +812,7 @@ def _page_control(
     for bank in banks:
         element = frame(
             outer,
-            f"Colores {bank.group_name} — mantén 1-0",
+            vocabulary.render("bank_frame", group=bank.group_name),
             LEFT_X,
             y,
             LEFT_WIDTH,
@@ -845,21 +857,12 @@ def _page_control(
         page=PAGE_CONTROL,
         font=TITLE_FONT,
     )
-    for index, (name, caption) in enumerate(
-        (
-            ("Dimmer Chase", "Barrido de intensidad · V"),
-            ("Dimmer Chase 2", "Barrido inverso · B"),
-            ("Dimmer PingPong", "Pares / impares · Z"),
-            ("Dimmer Secuencia", "Rotación de barridos · K"),
-            ("Strobo ON", "Strobo del fixture · S"),
-            ("Strobo OFF", "Parar ese strobo · D"),
-        )
-    ):
+    for index, (function_id, caption_id) in enumerate(DIMMER_CHASES):
         column, row = index % 3, index // 3
         master_button(
             dimmers,
-            name,
-            caption,
+            vocabulary.display(function_id),
+            vocabulary.display(caption_id),
             GAP + column * 170,
             HEADER + row * 52,
             166,
@@ -874,8 +877,8 @@ def _page_control(
     # beside the audio triggers that press it.
     master_button(
         outer,
-        "Golpe Graves",
-        "GOLPE GRAVES — lo pulsa el audio",
+        vocabulary.display("bass_hit"),
+        vocabulary.display("bass_button"),
         RIGHT_X + GRAND_MASTER_WIDTH + GAP,
         grand_master_y,
         RIGHT_WIDTH - GRAND_MASTER_WIDTH - GAP,
@@ -886,7 +889,7 @@ def _page_control(
     grand_master = build_grand_master_slider(
         outer,
         grand_master_id,
-        "Master General",
+        vocabulary.display("grand_master"),
         RIGHT_X,
         grand_master_y,
         GRAND_MASTER_WIDTH,
@@ -911,7 +914,7 @@ def _page_control(
     # long as it lasts, and somebody presses it off when it is over.
     master_button(
         outer,
-        "Humo Vertical",
+        vocabulary.display("vertical_smoke"),
         vocabulary.display("vertical_smoke_light"),
         RIGHT_X,
         716,
@@ -921,8 +924,7 @@ def _page_control(
     )
     label(
         outer,
-        "Los paneles a sus ciclos de color mientras dispara el humo "
-        "vertical. Se queda puesto: apágalo al terminar.",
+        vocabulary.display("vertical_smoke_help"),
         RIGHT_X,
         782,
         RIGHT_WIDTH,
@@ -940,7 +942,7 @@ def _page_control(
         names,
         vocabulary,
         beam_colors.scene_ids,
-        "Color de los BEAM — su rueda, no RGB",
+        vocabulary.display("beam_wheel_frame"),
         "Color Beam - ",
         MIDDLE_X,
         68,
@@ -955,7 +957,7 @@ def _page_control(
     # taking the space released by moving the wheel up (2026-09-03).
     label(
         outer,
-        "Apunta las 12 cabezas a mano — arrastra dentro del cuadro",
+        vocabulary.display("aim_frame"),
         MIDDLE_X,
         224,
         MIDDLE_WIDTH,
@@ -967,7 +969,7 @@ def _page_control(
     pad = build_xy_pad(
         outer,
         pad_id,
-        "Cabezas",
+        vocabulary.display("xy_pad"),
         MIDDLE_X,
         250,
         MIDDLE_WIDTH,
@@ -986,7 +988,7 @@ def _page_control(
         dial = build_speed_dial(
             outer,
             dial_id,
-            "Vel. Movimiento",
+            vocabulary.display("movement_speed"),
             RIGHT_X,
             68,
             124,
@@ -1032,7 +1034,7 @@ def _page_library(
     """Page 4: the material the show is built from, not buttons for a set."""
     label(
         outer,
-        "4 · LIBRERÍA — de aquí sale el show. No hace falta tocar nada de esto durante una fiesta.",
+        vocabulary.display("page_library"),
         LEFT_X,
         30,
         OUTER_WIDTH - 16,
@@ -1045,7 +1047,7 @@ def _page_library(
     # Toggle adds to the running state's colour instead of showing its own.
     mixes = frame(
         outer,
-        "Mezclas de dos colores — mantén pulsado",
+        vocabulary.display("mixes_frame"),
         LEFT_X,
         68,
         LEFT_WIDTH,
@@ -1057,7 +1059,7 @@ def _page_library(
     for page, bank in enumerate(banks):
         label(
             mixes,
-            f"Grupo: {bank.group_name}",
+            vocabulary.render("group_label", group=bank.group_name),
             GAP,
             HEADER,
             512,
@@ -1097,7 +1099,7 @@ def _page_library(
         names,
         vocabulary,
         beam_subsets.multicolor_scene_ids if beam_subsets is not None else [],
-        "MultiColor BEAM — dos colores a la vez en el haz",
+        vocabulary.display("multicolour_frame"),
         "MultiColor - ",
         LEFT_X,
         306,
@@ -1109,7 +1111,7 @@ def _page_library(
 
     matrix_frame = frame(
         outer,
-        "Matrices — dibujos sobre las barras y los paneles",
+        vocabulary.display("matrices_frame"),
         MIDDLE_X,
         68,
         MIDDLE_WIDTH,
@@ -1123,7 +1125,7 @@ def _page_library(
         group = _before(names.get(_first(generated.matrix_ids), ""), " - ")
         label(
             matrix_frame,
-            f"Grupo: {group}",
+            vocabulary.render("group_label", group=group),
             GAP,
             HEADER,
             400,
@@ -1150,11 +1152,9 @@ def _page_library(
 
     # Each group's own colour wheel and its matrix cycle. Both start the looks
     # sitting in the solo frames above, so both live in a plain frame.
-    wheel_ids = [b.wheel_id for b in banks if b.wheel_id is not None]
-    wheel_ids += [b.mix_wheel_id for b in banks if b.mix_wheel_id is not None]
     cycles = frame(
         outer,
-        "Ruedas y ciclos por grupo — no usar a la vez que la rueda general: se suman los colores",
+        vocabulary.display("group_wheels_frame"),
         MIDDLE_X,
         376,
         MIDDLE_WIDTH,
@@ -1162,9 +1162,21 @@ def _page_library(
         page=PAGE_LIBRARY,
         font=TITLE_FONT,
     )
-    entries = [(fid, _wheel_caption(names.get(fid, ""))) for fid in wheel_ids]
+    # The wheel captions are rendered from the bank, not parsed from the
+    # wheel's name (ruling B8).
+    entries = [
+        (b.wheel_id, vocabulary.render("group_colour_wheel_caption", group=b.group_name))
+        for b in banks
+        if b.wheel_id is not None
+    ]
     entries += [
-        (m.chaser_id, _after(names.get(m.chaser_id, ""), "Ciclo "))
+        (b.mix_wheel_id, vocabulary.render("group_mix_wheel_caption", group=b.group_name))
+        for b in banks
+        if b.mix_wheel_id is not None
+    ]
+    cycle_marker = template_affixes(vocabulary, "cycle")[0]
+    entries += [
+        (m.chaser_id, _after(names.get(m.chaser_id, ""), cycle_marker))
         for m in matrices
         if m.chaser_id is not None
     ]
@@ -1174,7 +1186,7 @@ def _page_library(
         entries.append(
             (
                 builtins.chaser_id,
-                _after(names.get(builtins.chaser_id, ""), "Ciclo "),
+                _after(names.get(builtins.chaser_id, ""), cycle_marker),
             )
         )
     for index, (function_id, caption) in enumerate(entries):
@@ -1193,7 +1205,7 @@ def _page_library(
     if builtins.scene_ids:
         panels = frame(
             outer,
-            "Paneles — sus 42 efectos propios, sin ver todavía",
+            vocabulary.display("panels_frame"),
             MIDDLE_X,
             580,
             MIDDLE_WIDTH,
@@ -1228,7 +1240,7 @@ def _page_library(
         slider = build_level_slider(
             outer,
             slider_id,
-            "Vel. Paneles",
+            vocabulary.display("panel_speed"),
             RIGHT_X,
             580,
             90,
@@ -1239,8 +1251,7 @@ def _page_library(
         console.widget_ids.append(slider_id)
         label(
             outer,
-            "Velocidad de los efectos de los paneles. Sigue la del ciclo (200) hasta que "
-            "lo muevas; desde entonces manda el fader, también a cero. La X roja lo suelta.",
+            vocabulary.display("panel_speed_help"),
             RIGHT_X + 96,
             580,
             RIGHT_WIDTH - 96,
@@ -1253,8 +1264,8 @@ def _page_library(
         # stops it (HTP - the raised fader wins while it is higher).
         master_button(
             outer,
-            "Vel. Paneles Auto",
-            "VEL. AUTO — sube y baja sola",
+            vocabulary.display("panel_speed_auto"),
+            vocabulary.display("panel_speed_auto_button"),
             RIGHT_X + 96,
             704,
             RIGHT_WIDTH - 96,
@@ -1268,7 +1279,7 @@ def _page_library(
         control = build_matrix_control(
             outer,
             matrix_widget_id,
-            "Matriz en vivo",
+            vocabulary.display("live_matrix"),
             RIGHT_X,
             68,
             RIGHT_WIDTH,
@@ -1322,7 +1333,7 @@ def _wheel_frame(
         return
     element = frame(
         outer,
-        f"{caption} — mantén pulsado",
+        vocabulary.render("hold_frame", caption=caption),
         x,
         y,
         width,
@@ -1391,11 +1402,6 @@ def _bank_caption(name: str, short_colour: Mapping[str, str]) -> str:
     """ "Rojo BarrasLed" is a red button in the bars' bank: it says "Rojo"."""
     first = name.split(" ", maxsplit=1)[0] if name else ""
     return short_colour.get(first, first)
-
-
-def _wheel_caption(name: str) -> str:
-    """ "Rueda Colores BarrasLed" is wider than its button; drop the "Rueda"."""
-    return _after(name, "Rueda ")
 
 
 def _mix_caption(name: str, mix_code: Mapping[str, str]) -> str:
