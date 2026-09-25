@@ -172,5 +172,9 @@ def test_no_spanish_catalogue_word_is_written(variant, library):
     assert desk, "the pseudo-locale build wrote no desk burst, so the scan cannot cover them"
     words = _spanish_words() - B6_WORDS
     texts = [_without(text, exempt) for text in _written(workspace)]
-    leaks = sorted({w for text in texts for w in words if re.search(rf"\b{w}\b", text)})
+    # One pattern, not one search per word: with the `[findings]` words (B10,
+    # round 2) there are more words than `re`'s cache holds, and a search per
+    # word recompiled every pattern for every text - ten times slower.
+    spoken = re.compile(r"\b(?:" + "|".join(re.escape(w) for w in sorted(words)) + r")\b")
+    leaks = sorted({w for text in texts for w in spoken.findall(text)})
     assert leaks == []
