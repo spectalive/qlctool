@@ -1,6 +1,6 @@
 """The tablet's map that ships next to a show is the map of that show.
 
-2026-09-24: `Vibra.desk.json` still named the ed1dac1 workspace after 3491a11
+2026-09-24: `Vibra.desk.json` still named the 80261d0 workspace after 29ddaf3
 regenerated `Vibra.qxw`. 36 of its 144 widget ids and 141 function ids no
 longer existed in the new show, so a tablet built from it would have pressed
 the wrong buttons, and nothing had noticed.
