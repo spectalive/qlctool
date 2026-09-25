@@ -66,11 +66,17 @@
   600 on the workflow's gate step; the local budget in `codeality-py.toml`
   stays 120 s. Closed by the green run 36131008406: 476.8 s on 3.11 and
   359.9 s on 3.13, under the 600 s budget.
-- [ ] **CI's 3.11 leg uses 79% of its test budget (2026-09-25).** 476.8 s of
-  600 s in run 36131008406. The show builds in `tests/test_check.py` take up
-  to 26 s each on the runner, and each test builds its own. Smallest next
-  step: share one built show per rig shape across those tests through a
-  module-scoped fixture, then measure the CI time again.
+- [ ] **CI's 3.11 leg uses 79-83% of its test budget (2026-09-25).** 476.8 s
+  of 600 s in run 36131008406, 447.0 s in 36136963884, 496.9 s (3.13: 398.2 s)
+  in 36156626545 after the check suite shared its one repeated build
+  (fe126b1): the leg varies by 50 s between runs. Measured locally, the show
+  builds are not where the time goes: `tests/test_check.py` single-process
+  went from 162.1 s to 155.9 s, and a canonical build costs 0.4-0.6 s while
+  `check_workspace` costs about 1.6 s and runs 98 times, each on a workspace
+  the test has edited, so it cannot be shared. Half of one `check_workspace`
+  is `check_pick_darkens` (`instant_dark_fixtures` -> `instant_evaluator`).
+  Smallest next step: profile `check_pick_darkens` and cache the instant
+  states it recomputes per pick, measured with `--durations` before and after.
 - [ ] **Page 4's matrices caption says "bars and panels" by proxy
   (2026-09-25).** `matrices_frame_caption` picks `matrices_frame` ("patterns
   on the bars and panels") for any rig with pixel groups and built-in effects,
