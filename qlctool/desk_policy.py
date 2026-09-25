@@ -21,7 +21,6 @@ from .names.names import Names
 
 HELD_REASON = "held on the Mac"
 
-BURST_FRAME = "Ráfagas del desk"
 # Provisional durations in milliseconds, tunable by the owner after a rig test.
 BURST_MS = {
     "hit_flash": 8000,
@@ -43,14 +42,16 @@ BURST_MS = {
     "pink": 8000,
 }
 
+# Page and section titles are catalogue identifiers, displayed in the
+# workspace's own language where the map is built.
 PAGES = (
-    ("live", "LIVE"),
-    ("color", "COLOR"),
-    ("pixels", "PIXELES"),
-    ("heads", "CABEZAS"),
-    ("gobos", "GOBOS"),
-    ("prism", "PRISMA"),
-    ("control", "CONTROL"),
+    ("live", "desk_page_live"),
+    ("color", "family_colour"),
+    ("pixels", "family_pixels"),
+    ("heads", "family_heads"),
+    ("gobos", "family_gobos"),
+    ("prism", "family_prism"),
+    ("control", "desk_page_control"),
 )
 FAMILY_PAGES = {
     "family_colour": "color",
@@ -65,31 +66,32 @@ SECTION_ORDER = ("state", "hooks", "picks", "haze", "chases", "haze-light", "acc
 
 # Words the tablet puts under a control where the show's own would mislead
 # an operator in the dark: a black look is not a stop, and a haze rhythm
-# fires the moment it starts. Keyed by the map key, or by role for a whole
-# section. The show's names are never touched.
-SAFETY_DETAIL_BY_KEY = {
-    "todo-negro": "no es parar",
-    "pares": "",
-    "humo-vertical": "",
+# fires the moment it starts. Keyed by the control's function identifier, or
+# by role for a whole section; valued by catalogue identifier, None for no
+# words at all. The show's names are never touched.
+SAFETY_DETAIL_BY_FUNCTION = {
+    "all_black": "desk_detail_not_stop",
+    "dimmer_pingpong": None,
+    "vertical_smoke": None,
 }
 # Names the tablet shows instead of the show's where the show's would be
 # read as something else: the fog fixture's light is not fog, and a chase
 # that alternates halves is one thing, not a name and a footnote.
-SAFETY_CAPTION_BY_KEY = {
-    "humo-vertical": "Luz del humo vertical",
-    "pares": "Pares / impares",
+SAFETY_CAPTION_BY_FUNCTION = {
+    "vertical_smoke": "desk_caption_vertical_smoke_light",
+    "dimmer_pingpong": "desk_caption_odd_even",
 }
 SAFETY_DETAIL_BY_ROLE = {
-    "haze": "dispara ya",
+    "haze": "desk_detail_fire_now",
 }
 SECTION_TITLES = {
-    "state": "LA SALA ESTÁ ASÍ",
-    "accents": "GOLPES",
-    "haze": "HUMO AMBIENTE",
-    "hooks": "AUTO",
-    "picks": "ELEGIR",
-    "chases": "BARRIDOS DE INTENSIDAD",
-    "haze-light": "LUZ DEL HUMO VERTICAL",
+    "state": "desk_section_state",
+    "accents": "desk_section_accents",
+    "haze": "desk_section_haze",
+    "hooks": "desk_section_hooks",
+    "picks": "desk_section_picks",
+    "chases": "desk_section_chases",
+    "haze-light": "desk_section_haze_light",
 }
 
 

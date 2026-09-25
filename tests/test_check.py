@@ -50,11 +50,12 @@ KNOWN: set[tuple[str, str]] = set()
 def test_2026_09_13_desk_link_loss_requires_bounded_hits():
     """Tablet bench night: losing a Flash release left its scene running."""
     from qlctool.checks.rule_desk_bursts import check_desk_bursts
-    from qlctool.desk_policy import BURST_FRAME
+    from qlctool.names.default_names import default_names
 
+    burst_frame = default_names().display("desk_bursts")
     workspace = _show()
     for frame in list(iter_local(workspace.root, "Frame")):
-        if frame.get("Caption") == BURST_FRAME:
+        if frame.get("Caption") == burst_frame:
             frame.getparent().remove(frame)
     graph = build_show_graph(workspace.root, [])
     findings = check_desk_bursts(graph, workspace.root)

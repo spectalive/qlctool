@@ -20,8 +20,8 @@ from .desk_burst_note import desk_burst_note
 from .desk_policy import (
     BURST_MS,
     PAGES,
-    SAFETY_CAPTION_BY_KEY,
-    SAFETY_DETAIL_BY_KEY,
+    SAFETY_CAPTION_BY_FUNCTION,
+    SAFETY_DETAIL_BY_FUNCTION,
     SAFETY_DETAIL_BY_ROLE,
     SECTION_ORDER,
     SECTION_TITLES,
@@ -32,8 +32,9 @@ from .desk_swatch import swatches
 from .desk_widgets import desk_widgets
 from .leading_glyph import leading_glyph
 from .library import FixtureLibrary
-from .names.default_names import default_names
 from .names.names import Names
+from .names.shipped_names import shipped_names
+from .names.workspace_language import workspace_language
 from .slug import slugify
 from .speed_multiplier import multiplier
 from .workspace import Workspace
@@ -47,8 +48,9 @@ TARGET_QLC = "5.2.2"
 def build_deskmap(
     workspace: Workspace, library: FixtureLibrary, path: str | Path, names: Names | None = None
 ) -> dict:
-    vocabulary = default_names() if names is None else names
+    """The desk's map; with no `names`, in the language the workspace was generated in."""
     root = workspace.root
+    vocabulary = shipped_names(workspace_language(root)) if names is None else names
     capabilities = capabilities_of(root, library)
     graph = build_show_graph(root, capabilities)
     groups = group_fixtures(root)
@@ -75,10 +77,18 @@ def build_deskmap(
         icon, caption = leading_glyph(caption)
         if placement.role == "haze":
             # The section heading says HUMO; the tile says only the rhythm.
-            caption = caption.removeprefix("HUMO ")
+            for word in vocabulary.spellings("haze_word"):
+                caption = caption.removeprefix(word + " ")
         key = _unique_key(controls, caption, widget.id)
-        detail = SAFETY_DETAIL_BY_KEY.get(key, SAFETY_DETAIL_BY_ROLE.get(placement.role, detail))
-        caption = SAFETY_CAPTION_BY_KEY.get(key, caption)
+        function = next(iter(vocabulary.lookup(function_name or "", ("functions",))), None)
+        if function in SAFETY_DETAIL_BY_FUNCTION:
+            # An empty detail is written as "", never null (ruling P8).
+            words = SAFETY_DETAIL_BY_FUNCTION[function]
+            detail = vocabulary.display(words) if words is not None else ""
+        elif placement.role in SAFETY_DETAIL_BY_ROLE:
+            detail = vocabulary.display(SAFETY_DETAIL_BY_ROLE[placement.role])
+        if function in SAFETY_CAPTION_BY_FUNCTION:
+            caption = vocabulary.display(SAFETY_CAPTION_BY_FUNCTION[function])
         controls[key] = {
             "widget": widget.id,
             "function": widget.function,
@@ -112,7 +122,7 @@ def build_deskmap(
                     "reason": "",
                 }
             )
-            note = desk_burst_note(identifier)
+            note = desk_burst_note(identifier, vocabulary)
             if note is not None:
                 controls[key]["burstNote"] = note
         where = (placement.page, placement.section)
@@ -125,7 +135,7 @@ def build_deskmap(
             (
                 {
                     "key": section,
-                    "title": SECTION_TITLES[section],
+                    "title": vocabulary.display(SECTION_TITLES[section]),
                     "solo": section_solo[(page_key, section)],
                     "controls": keys,
                 }
@@ -135,7 +145,9 @@ def build_deskmap(
             key=lambda s: SECTION_ORDER.index(s["key"]),
         )
         if page_sections:
-            pages.append({"key": page_key, "title": title, "sections": page_sections})
+            pages.append(
+                {"key": page_key, "title": vocabulary.display(title), "sections": page_sections}
+            )
 
     stop_all = next((w for w in widgets if w.kind == "Button" and w.action == "StopAll"), None)
     grand_master = next(

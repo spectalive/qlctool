@@ -58,6 +58,10 @@ CONVERTED: tuple[str, ...] = (
     "generate/smc_pad_colors.py",
     "generate/live_console.py",
     "generate/play_page.py",
+    "generate/desk_bursts.py",
+    "desk_policy.py",
+    "deskmap.py",
+    "desk_burst_note.py",
 )
 
 

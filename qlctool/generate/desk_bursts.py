@@ -5,10 +5,11 @@ from copy import deepcopy
 from ..desk_burst_duration import desk_burst_duration
 from ..desk_burst_sources import desk_burst_sources
 from ..desk_function_path import DESK_FUNCTION_PATH
-from ..desk_policy import BURST_FRAME, split_caption
+from ..desk_policy import split_caption
 from ..functions.chaser import build_chaser
 from ..ids import next_function_id
 from ..names.default_names import default_names
+from ..names.names import Names
 from ..vc.button import build_button
 from ..vc.frame import build_frame
 from ..vc.label import build_label
@@ -18,7 +19,8 @@ from ..xmlutil import find_local, iter_local
 from .live_console import HELP_FONT, PAGE_CONTROL, SMALL_FONT
 
 
-def generate_desk_bursts(workspace: Workspace) -> list[int]:
+def generate_desk_bursts(workspace: Workspace, names: Names | None = None) -> list[int]:
+    vocabulary = default_names() if names is None else names
     sources = desk_burst_sources(workspace.root)
     if not sources:
         return []
@@ -29,7 +31,7 @@ def generate_desk_bursts(workspace: Workspace) -> list[int]:
     notes = build_label(
         outer,
         next_widget_id(workspace.root),
-        "Tablet: ráfagas con límite; soltar las para antes. Colores pueden mezclarse.",
+        vocabulary.display("desk_bursts_help"),
         8,
         68,
         524,
@@ -40,7 +42,7 @@ def generate_desk_bursts(workspace: Workspace) -> list[int]:
     frame = build_frame(
         outer,
         next_widget_id(workspace.root),
-        BURST_FRAME,
+        vocabulary.display("desk_bursts"),
         8,
         96,
         524,
@@ -50,7 +52,7 @@ def generate_desk_bursts(workspace: Workspace) -> list[int]:
     frame.set("Page", str(PAGE_CONTROL))
     button_ids = []
     for index, (key, source) in enumerate(sources.items()):
-        duration = desk_burst_duration(source, default_names())
+        duration = desk_burst_duration(source, vocabulary)
         if duration is None or duration <= 0:
             raise ValueError(f"burst duration must be positive: {key}")
         original = functions[source.function]
@@ -60,13 +62,13 @@ def generate_desk_bursts(workspace: Workspace) -> list[int]:
         scene = deepcopy(original)
         scene_id = next_function_id(workspace.root)
         scene.set("ID", str(scene_id))
-        scene.set("Name", f"Desk · {caption} (ráfaga)")
+        scene.set("Name", vocabulary.render("desk_burst_scene", caption=caption))
         scene.set("Path", DESK_FUNCTION_PATH)
         workspace.add_function(scene)
         chaser_id = next_function_id(workspace.root)
         chaser = build_chaser(
             chaser_id,
-            f"Desk · {caption} ráfaga {duration / 1000:g} s",
+            vocabulary.render("desk_burst_cue", caption=caption, seconds=f"{duration / 1000:g}"),
             [scene_id],
             hold=duration,
             run_order="SingleShot",

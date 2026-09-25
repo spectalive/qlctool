@@ -1107,7 +1107,7 @@ def build_canonical_show(
         )
         button_ids = console.button_ids
         if described.controllers.tablet_desk:
-            button_ids.extend(generate_desk_bursts(workspace))
+            button_ids.extend(generate_desk_bursts(workspace, names=vocabulary))
 
     functions = [f for f in workspace.engine if f.tag.endswith("}Function")]
     return CanonicalShow(
