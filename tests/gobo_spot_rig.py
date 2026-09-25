@@ -6,7 +6,8 @@ an LED gobo spot looks like to qlctool: pan, tilt, a dimmer, a gobo wheel, a
 prism, and no Color Macro. Found by the Plan C final review on 2026-09-25:
 `newshow` stopped at "no fixture in this workspace has a color_macro channel".
 The rest is the small club's patch (see small_rig.py), so the colour looks
-have the pars and the RGB heads to fall on.
+have the pars and the RGB heads to fall on. `without` takes more channels
+out, for a spot that also lacks a prism.
 """
 
 import re
@@ -20,24 +21,24 @@ from qlctool.cli import main
 EMPTY = Path(__file__).resolve().parent / "data" / "empty-workspace.qxw"
 DEFINITIONS = RIG_ROOT / "QLC+ Fixtures"
 COLOUR_CHANNELS = ("Color Wheel", "Color Effect", "Atomization")
-SPOT = "Generic|Gobo Spot No Wheel|13 channel"
 
 
-def build_gobo_spot_patch(folder: Path) -> Path:
+def build_gobo_spot_patch(folder: Path, without: tuple[str, ...] = ()) -> Path:
     """Write the definitions to `folder`/fixtures and the patch to `folder`; return the patch.
 
     The caller points QLCTOOL_FIXTURES at `folder`/fixtures before calling.
     """
+    width = 16 - len(COLOUR_CHANNELS) - len(without)
     fixtures = folder / "fixtures"
     shutil.copytree(DEFINITIONS, fixtures)
     text = (DEFINITIONS / "BEAM-LIGHT-230W-7R.qxf").read_text(encoding="utf-8")
     text = text.replace("<Model>BEAM 230W 7R</Model>", "<Model>Gobo Spot No Wheel</Model>")
-    for name in COLOUR_CHANNELS:
+    for name in (*COLOUR_CHANNELS, *without):
         text = re.sub(rf' <Channel Name="{name}">.*?</Channel>\n', "", text, flags=re.S)
         text = re.sub(rf'  <Channel Number="\d+">{name}</Channel>\n', "", text)
     numbers = iter(range(64))
     text = re.sub(r'<Channel Number="\d+">', lambda _: f'<Channel Number="{next(numbers)}">', text)
-    text = text.replace('<Mode Name="16 channel">', '<Mode Name="13 channel">')
+    text = text.replace('<Mode Name="16 channel">', f'<Mode Name="{width} channel">')
     assert "ColorMacro" not in text and "Multicolor" not in text
     (fixtures / "Generic-Gobo-Spot-No-Wheel.qxf").write_text(text, encoding="utf-8")
 
@@ -54,8 +55,8 @@ def build_gobo_spot_patch(folder: Path) -> Path:
         adds += ["--add", f"Chauvet|MiN Wash|13 Channel|0|{address}|Wash {index}"]
         address += 13
     for index in range(1, 3):
-        adds += ["--add", f"{SPOT}|0|{address}|Spot {index}"]
-        address += 13
+        adds += ["--add", f"Generic|Gobo Spot No Wheel|{width} channel|0|{address}|Spot {index}"]
+        address += width
     patched = folder / "patched.qxw"
     groups = ["--group-new", "Pars=6x1", "--group-new", "Heads=4x1", "--group-new", "Spots=2x1"]
     assert main(["patch", str(empty), *adds, *groups, "--out", str(patched)]) == 0

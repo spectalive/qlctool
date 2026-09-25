@@ -316,12 +316,15 @@ def generate_live_console(
     pad_colors: Mapping[str, tuple[int, int, int]] | None = None,
     glyphs: Mapping[str, str] | None = None,
     vocabulary: Names | None = None,
+    has_pixel_groups: bool = False,
 ) -> GeneratedConsole:
     """Build the whole console on the workspace's (emptied) root frame.
 
     `pad_bindings`, `pad_colors` and `glyphs` are keyed by display name;
     `glyphs=None` means the shipped glyphs in the vocabulary. The console's
     words come from `vocabulary`; None means `default_names()`.
+    `has_pixel_groups` says some fixture group is made of pixels, which is
+    what page 4's matrices caption is chosen from.
     """
     vocabulary = default_names() if vocabulary is None else vocabulary
     pad_bindings = dict(pad_bindings or {})
@@ -512,9 +515,7 @@ def generate_live_console(
         colours,
         vocabulary,
         mix_code,
-        # The pixel groups' base is built only when some group is made of
-        # pixels, so its presence says the matrices have pixels to draw on.
-        master.get(vocabulary.display("pixels_on")) is not None,
+        has_pixel_groups,
     )
 
     # Last, because a band presses a button and needs its widget ID.
@@ -1237,7 +1238,7 @@ def _page_library(
     if builtins.scene_ids:
         panels = frame(
             outer,
-            vocabulary.display("panels_frame"),
+            vocabulary.render("panels_frame", count=len(builtins.scene_ids)),
             MIDDLE_X,
             580,
             MIDDLE_WIDTH,
@@ -1325,7 +1326,9 @@ def _page_library(
     for index, line in enumerate(library_help_lines(bool(builtins.scene_ids))):
         label(
             outer,
-            LIBRARY_SEPARATOR if line is None else vocabulary.display(line),
+            LIBRARY_SEPARATOR
+            if line is None
+            else vocabulary.render(line, count=len(builtins.scene_ids)),
             LEFT_X,
             410 + index * 26,
             LEFT_WIDTH,

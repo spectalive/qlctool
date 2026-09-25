@@ -1133,6 +1133,7 @@ def build_canonical_show(
             pad_colors=localised_keys(pad.colors, vocabulary) if pad is not None else None,
             glyphs=localised_keys(GLYPHS, vocabulary),
             vocabulary=vocabulary,
+            has_pixel_groups=bool(pixel_group_ids),
         )
         button_ids = console.button_ids
         if described.controllers.tablet_desk:

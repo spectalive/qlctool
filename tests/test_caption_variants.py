@@ -21,7 +21,9 @@ from qlctool.names.shipped_names import shipped_names
         (False, False, "tempo_2_no_gobo_no_prism"),
     ],
 )
-def test_the_tempo_help_names_only_the_animations_the_show_built(has_gobo, has_prism, key):
+def test_2026_09_25_the_tempo_help_names_only_the_animations_the_show_built(
+    has_gobo, has_prism, key
+):
     assert tempo_help_line(has_gobo, has_prism) == key
     for language in ("en", "es"):
         line = shipped_names(language).display(key)
@@ -38,7 +40,7 @@ def test_the_tempo_help_names_only_the_animations_the_show_built(has_gobo, has_p
         (False, False, "matrices_frame_groups"),
     ],
 )
-def test_the_matrices_frame_names_bars_and_panels_only_on_a_rig_with_them(
+def test_2026_09_25_the_matrices_frame_names_bars_and_panels_only_on_a_rig_with_them(
     has_pixel_groups, has_builtin_effects, key
 ):
     assert matrices_frame_caption(has_pixel_groups, has_builtin_effects) == key
@@ -48,9 +50,14 @@ def test_the_matrices_frame_names_bars_and_panels_only_on_a_rig_with_them(
 
 
 @pytest.mark.parametrize("has_builtin_effects", [True, False])
-def test_the_library_help_speaks_of_built_in_effects_only_where_they_exist(has_builtin_effects):
+def test_2026_09_25_the_library_help_speaks_of_built_in_effects_only_where_they_exist(
+    has_builtin_effects,
+):
+    """The count is the rig's, filled in: 17 here, never a written-in 42."""
     for language in ("en", "es"):
         names = shipped_names(language)
-        text = " ".join(names.display(k) for k in library_help_lines(has_builtin_effects) if k)
-        assert ("42" in text) == has_builtin_effects
+        lines = library_help_lines(has_builtin_effects)
+        text = " ".join(names.render(k, count=17) for k in lines if k)
+        assert ("17" in text) == has_builtin_effects
+        assert "42" not in text
         assert ("panel" in text) == has_builtin_effects
