@@ -8,6 +8,7 @@ assumed Vibra's beams and fog.
 from pathlib import Path
 
 import pytest
+from gobo_spot_rig import build_gobo_spot_patch
 from small_rig import build_small_rig_patch
 
 from qlctool.checks.rule_dangling_reference import check_dangling_references
@@ -91,3 +92,17 @@ def test_the_control_page_does_not_promise_beam_wheels(club):
     assert names.display("page_control_no_haze_no_beam_wheel") in captions
     wheel_titles = [names.display(k) for k in ("page_control", "page_control_no_haze")]
     assert not [c for c in captions if c in wheel_titles]
+
+
+def test_2026_09_25_a_gobo_spot_with_no_colour_wheel_gets_a_show(tmp_path, monkeypatch):
+    """2026-09-25, Plan C final review: an LED gobo spot with no Color Macro.
+
+    The beams' colour wheel was built for every fixture with a gobo, so
+    `newshow` stopped at "no fixture in this workspace has a color_macro
+    channel" on a rig whose gobo spots mix no wheel at all.
+    """
+    monkeypatch.setenv("QLCTOOL_FIXTURES", str(tmp_path / "fixtures"))
+    patch = build_gobo_spot_patch(tmp_path)
+    out = tmp_path / "spots.qxw"
+    assert main(["newshow", str(patch), "--out", str(out)]) == 0
+    assert main(["check", str(out)]) == 0

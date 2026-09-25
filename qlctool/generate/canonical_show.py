@@ -463,11 +463,14 @@ def build_canonical_show(
     if gobos.chaser_id is not None:
         master[vocabulary.display("gobo_animation")] = gobos.chaser_id
     # The beams' own colour wheel: restricted to the fixtures that have gobos,
-    # so a MiN Wash's Color Macro channel is not driven with beam positions.
+    # so a MiN Wash's Color Macro channel is not driven with beam positions -
+    # and to those that also have a wheel, since a gobo spot that mixes no
+    # colour has none to walk (2026-09-25, Plan C final review: `newshow`
+    # stopped at "no fixture in this workspace has a color_macro channel").
     beams = [
         c.fixture.fixture_id
         for c in capabilities_of(workspace.root, library)
-        if c.has_role(roles.GOBO)
+        if c.has_role(roles.GOBO) and c.has_role(roles.COLOR_MACRO)
     ]
     beam_colors = (
         generate_wheel_scenes(
