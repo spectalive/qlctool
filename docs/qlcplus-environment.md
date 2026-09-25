@@ -2,8 +2,9 @@
 
 ## Versions in play
 
-- The workspaces in `QLC+ Setups/` are saved in **4.13.1** format; one copy each
-  in 4.14.3 and 5.2.2 is kept as test material.
+- The Vibra show's workspaces - frozen here under `tests/data/rig/QLC+ Setups/`
+  - are saved in **4.13.1** format; one copy each in 4.14.3 and 5.2.2 is kept
+  as test material.
 - The show machine runs **QLC+ 5.2.2** (`qlcplus-qml`, the QML build).
 - QLC+ 5 opens 4.x workspaces on load.
 

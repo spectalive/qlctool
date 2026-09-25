@@ -5,3 +5,9 @@ This product includes software developed as part of Q Light Controller Plus
 (QLC+), https://github.com/mcallegari/qlcplus, licensed under the Apache
 License, Version 2.0: the fixture schema and the system fixture definitions
 vendored in qlctool/library/.
+
+The frozen Vibra rig under tests/data/rig/ carries two more QLC+ fixture
+definitions, under the same Apache License 2.0: "QLC+ Fixtures/Stairville-
+CLB2.4-CompactLED.qxf", QLC+'s own definition with its lens angle modified,
+and "QLC+ Fixtures/Stairville-CLB2.4-PAR-Strobe.qxf", split from it in the
+Vibra show's repository.

@@ -1,6 +1,9 @@
 # qlctool
 
-Programmatic editing of QLC+ workspaces (`.qxw`) for any rig. Generates
+Programmatic editing of QLC+ workspaces (`.qxw`). A whole show is built today
+for a rig with at least one pan/tilt fixture with a dimmer and at least one
+fixture group; pars-only and washes-only rigs are not built yet (tracked in
+[`TODO.md`](TODO.md)). Generates
 scenes, chasers, RGBMatrix effects, movement EFX and the Virtual Console buttons
 for them, in bulk instead of clicking them one by one in QLC+, then checks and
 validates the result. The Vibra show it was built for is at
@@ -34,7 +37,7 @@ Validation needs QLC+ installed; it looks in `/Applications/QLC+.app` and on
 preferred because `--nogui` loads with no window at all; with only the 5.x QML
 build (`qlcplus-qml`) validation still works but a window opens for a second. A missing QLC+ raises rather than
 passing quietly. Custom fixture definitions must be installed in the QLC+ user
-folder or every fixture in this rig reports "No fixture definition found" -
+folder or every fixture that uses them reports "No fixture definition found" -
 QLC+ 4 reads `~/Library/Application Support/QLC+/Fixtures` and QLC+ 5 reads
 `~/Library/Application Support/QLC+ 5/Fixtures`.
 
@@ -215,8 +218,8 @@ A workspace given on the command line as well must be the one `[rig]` names.
 
 ## Fixture library note
 
-`library/system/` holds the two QLC+ built-in definitions the patch uses
-(Stairville LED Bar 240, CLB2.4), copied from the show Mac's QLC+ install so the
+`library/system/` holds three QLC+ built-in definitions the patch uses
+(Stairville LED Bar 240, CLB2.4, Generic Smoke), copied from the show Mac's QLC+ install so the
 capability layer resolves the whole patch without a QLC+ installation present.
 A rig's own fixture definitions (the folders its `qlctool.toml` names, or
 `--fixtures`, or `QLCTOOL_FIXTURES`) override system ones on a name clash.
@@ -227,8 +230,10 @@ The code is under the Apache License 2.0 ([LICENSE](LICENSE)). The five
 documents that came from the Vibra show's repository - `docs/toolkit.md`,
 `docs/checks.md`, `docs/qxw-format.md`, `docs/qlcplus-environment.md` and
 `docs/qlc5-verification.md` - are under CC BY 4.0
-([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)), and so is the frozen copy of the
-Vibra rig the tests read under `tests/data/rig/` (its `README.txt` says
-which files carry which licence); everything else is Apache-2.0. The
+([LICENSE-CC-BY-4.0](LICENSE-CC-BY-4.0)), and so are the workspaces of the
+frozen Vibra rig the tests read under `tests/data/rig/`; its fixture
+definitions and input profile are Apache-2.0, two of the definitions QLC+'s
+own ([NOTICE](NOTICE); its `README.txt` says which files carry which
+licence). Everything else is Apache-2.0. The
 QLC+ fixture schema and system fixture definitions vendored in
 `qlctool/library/` are QLC+'s, under QLC+'s Apache License 2.0 ([NOTICE](NOTICE)).

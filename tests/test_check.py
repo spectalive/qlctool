@@ -3143,7 +3143,7 @@ def test_2026_09_25_a_frame_with_nothing_to_press(library, tmp_path):
     assert f"marco {outer.get('ID')}" not in flagged
 
 
-def test_a_single_family_energy_cycle_is_not_a_family_owner(tmp_path):
+def test_2026_09_25_a_single_family_energy_cycle_is_not_a_family_owner(tmp_path):
     """2026-09-25, the small club (Plan C): a false positive, not a show bug.
 
     The club's energy cycle steps through level Collections that only move the

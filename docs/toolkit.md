@@ -101,14 +101,16 @@ same in both (ruling B6): the `Rig` prefix of the unison colour scenes, the
 the `Wash` and `Beam` movement prefixes (no catalogue entry renders them
 alone; `prefix_fast_wash` is "Wash Rapido" / "Fast Wash"), `Gobo Shake - `,
 and the `(8 bit)` / `(16 bit)` suffixes of a split EFX. The root console
-frame's caption is copied from the input workspace (open in `TODO.md`).
+frame's caption is copied from the input workspace (open in the Vibra show's
+[`TODO.md`](https://github.com/Vibra-Lab/vibra-lighting/blob/main/TODO.md)).
 
 `[names.<lang>]` overrides any identifier; an override of a template must keep
 its `{fields}`. An override of a `frames` identifier may reword the explanation
 after " — " but not the head before it: `qlctool check` and the desk find
 frames by their shipped head, so a renamed head is refused while the
 description is read. `qlctool check` messages are still Spanish on any show
-(ruling B10, open in `TODO.md`).
+(ruling B10, open in the Vibra show's
+[`TODO.md`](https://github.com/Vibra-Lab/vibra-lighting/blob/main/TODO.md)).
 
 ## Examples
 
