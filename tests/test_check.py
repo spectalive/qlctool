@@ -3192,7 +3192,9 @@ def test_2026_09_25_a_patched_fixture_with_no_definition(tmp_path, monkeypatch, 
     # The club is an English show: since ruling B10 its rule names are English.
     assert f"  {display_name_of_rule(RULE_ID, 'en')} (3):" in printed
     assert "Chauvet MiN Wash" in printed
-    assert "buscado en ninguna carpeta" in printed
+    # Since round 2 of ruling B10 its finding messages are English too.
+    assert "searched no folder" in printed
+    assert "buscado" not in printed
 
     assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 0
     assert "199 buttons checked, no problems" in capsys.readouterr().out
@@ -3208,7 +3210,7 @@ def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_pat
     from pathlib import Path
 
     from qlctool.checks.rule_missing_definition import RULE_ID
-    from qlctool.names.default_names import default_names
+    from qlctool.names.shipped_names import shipped_names
     from qlctool.xmlutil import find_local, iter_local
 
     example = Path(__file__).resolve().parents[1] / "examples" / "small-club"
@@ -3224,7 +3226,8 @@ def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_pat
 
     library = FixtureLibrary.load([example / "fixtures"])
     findings = [f for f in check_workspace(Workspace.load(club), library) if f.rule_id == RULE_ID]
-    message = default_names().render("missing_mode", mode="No Such Mode")
+    # The club is an English show, so the message is the English entry (B10, round 2).
+    message = shipped_names("en").render("missing_mode", mode="No Such Mode")
     assert [(f.function, f.message, f.fixtures) for f in findings] == [
         ("Chauvet MiN Wash (No Such Mode)", message, ("Wash 1",))
     ]

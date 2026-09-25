@@ -66,11 +66,11 @@ def check_layer_trace(
                 severity=ERROR,
                 function=graph.name(button.function_id),
                 fixtures=tuple(sorted(set(stranded))),
-                message=(
-                    f"es un Toggle («{button.caption}») que escribe {len(stranded)} "
-                    f"canales LTP que ningun estado de la sala escribe nunca: al "
-                    f"apagarlo el valor se queda hasta que alguien lo cambie a mano"
-                ),
+                message_id="layer_trace_ltp_left",
+                fields={
+                    "caption": button.caption,
+                    "count": len(stranded),
+                },
             )
         )
     return findings

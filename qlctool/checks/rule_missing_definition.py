@@ -18,32 +18,37 @@ from lxml import etree
 from ..definition_outcome_of import definition_outcome_of
 from ..fixture import patched_fixtures
 from ..library import FixtureLibrary
-from ..names.default_names import default_names
-from ..names.names import Names
-from ..searched_folders import searched_folders
 from .finding import ERROR, Finding
+from .phrase import Phrase
 
 RULE_ID = "missing_fixture_definition"
 
 
-def check_missing_definitions(
-    root: etree._Element, library: FixtureLibrary, names: Names | None = None
-) -> list[Finding]:
-    vocabulary = default_names() if names is None else names
-    searched = searched_folders(library, vocabulary)
-    unresolved: dict[tuple[str, str], list[str]] = {}
+def check_missing_definitions(root: etree._Element, library: FixtureLibrary) -> list[Finding]:
+    # The folders, or the catalogue's word for none, said in the workspace's language.
+    folders = ", ".join(str(folder) for folder in library.sources)
+    searched = folders or Phrase("searched_no_folder")
+    unresolved: dict[str, list[str]] = {}
+    said: dict[str, Phrase] = {}
     for fixture in patched_fixtures(root):
         outcome = definition_outcome_of(fixture, library)
         if outcome.resolved:
             continue
         model = f"{fixture.manufacturer} {fixture.model}"
         if not outcome.model_known:
-            message = vocabulary.render("missing_definition", searched=searched)
+            said[model] = Phrase("missing_definition", {"searched": searched})
         else:
             model = f"{model} ({fixture.mode})"
-            message = vocabulary.render("missing_mode", mode=fixture.mode)
-        unresolved.setdefault((model, message), []).append(fixture.name)
+            said[model] = Phrase("missing_mode", {"mode": fixture.mode})
+        unresolved.setdefault(model, []).append(fixture.name)
     return [
-        Finding(RULE_ID, ERROR, model, message, tuple(fixtures))
-        for (model, message), fixtures in unresolved.items()
+        Finding(
+            rule_id=RULE_ID,
+            severity=ERROR,
+            function=model,
+            message_id=said[model].message_id,
+            fields=said[model].fields,
+            fixtures=tuple(fixtures),
+        )
+        for model, fixtures in unresolved.items()
     ]

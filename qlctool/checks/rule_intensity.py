@@ -58,11 +58,9 @@ def check_intensity(
                 rule_id=RULE_ID,
                 severity=ERROR,
                 function=graph.name(function_id),
-                message=(
-                    f"pone color pero no abre la intensidad, asi que "
-                    f"{'ese fixture se queda' if len(dark) == 1 else 'esos fixtures se quedan'} "
-                    f"a oscuras (boton: {caption})"
-                ),
+                # The catalogue says one fixture and several in two entries.
+                message_id="intensity_dark_one" if len(dark) == 1 else "intensity_dark_many",
+                fields={"button": caption},
                 fixtures=tuple(sorted(dark)),
             )
         )

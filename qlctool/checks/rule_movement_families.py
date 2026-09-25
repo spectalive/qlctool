@@ -53,11 +53,11 @@ def check_movement_families(graph: ShowGraph) -> list[Finding]:
                 rule_id=RULE_ID,
                 severity=WARNING,
                 function=graph.name(function_id),
-                message=(
-                    f"mueve {len(washes)} wash(es) y {len(beams)} beam(s) con la "
-                    f"misma geometria; un haz de 2 grados y un wash ancho no "
-                    f"comparten tamaño ni velocidad - un EFX por familia"
-                ),
+                message_id="movement_families_mixed",
+                fields={
+                    "washes": len(washes),
+                    "beams": len(beams),
+                },
                 fixtures=tuple(sorted(washes + beams)),
             )
         )

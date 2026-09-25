@@ -67,12 +67,12 @@ def _collection(graph: ShowGraph, collection_id: int, reported) -> list[Finding]
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(collection_id),
-                    message=(
-                        f"«{graph.name(full_member)}» clava un dimmer a {FULL} "
-                        f"mientras «{graph.name(efx_member)}» lo mueve como "
-                        f"efecto a la vez: la intensidad mezcla HTP, nada supera "
-                        f"{FULL} y el efecto no se ve nunca"
-                    ),
+                    message_id="masked_dimmer_efx_hidden",
+                    fields={
+                        "full": graph.name(full_member),
+                        "level": FULL,
+                        "efx": graph.name(efx_member),
+                    },
                     fixtures=tuple(names),
                 )
             )

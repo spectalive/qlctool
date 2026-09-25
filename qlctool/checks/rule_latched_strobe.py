@@ -44,12 +44,10 @@ def check_latched_strobe(graph: ShowGraph, groups, entries) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        f"es un estrobo que hace bucle y cuelga del boton "
-                        f"«{caption}»: una pulsacion y el rig parpadea hasta que "
-                        f"alguien lo apague; una rafaga es un chaser SingleShot "
-                        f"que termina solo"
-                    ),
+                    message_id="latched_strobe_loops",
+                    fields={
+                        "caption": caption,
+                    },
                 )
             )
     return findings

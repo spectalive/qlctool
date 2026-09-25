@@ -49,10 +49,12 @@ def check_group_grids(graph: ShowGraph, root: etree._Element) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=name,
-                    message=(
-                        f"declara {width}x{height} pero tiene {len(outside)} head(s) "
-                        f"fuera de esa rejilla: ningun efecto los alcanza"
-                    ),
+                    message_id="group_grid_heads_outside",
+                    fields={
+                        "width": width,
+                        "height": height,
+                        "outside": len(outside),
+                    },
                 )
             )
 
@@ -63,11 +65,14 @@ def check_group_grids(graph: ShowGraph, root: etree._Element) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=name,
-                    message=(
-                        f"declara {width}x{height} = {width * height} celdas y solo "
-                        f"{width * height - empty} tienen luz: en cada barrido "
-                        f"{empty} celda(s) se quedan a oscuras sin motivo"
-                    ),
+                    message_id="group_grid_dark_cells",
+                    fields={
+                        "width": width,
+                        "height": height,
+                        "cells": width * height,
+                        "lit": width * height - empty,
+                        "empty": empty,
+                    },
                 )
             )
     return findings

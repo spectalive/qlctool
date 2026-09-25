@@ -75,11 +75,7 @@ def check_held_column(
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        "dispara la bomba de las columnas de humo desde un boton "
-                        "que se queda enganchado: la columna solo debe salir "
-                        "mientras se mantiene pulsada la tecla"
-                    ),
+                    message_id="held_column_latched_pump",
                     fixtures=tuple(fired),
                 )
             )

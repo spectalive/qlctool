@@ -59,11 +59,11 @@ def check_movement_figure_coverage(
                 severity=ERROR,
                 function=caption,
                 fixtures=tuple(still),
-                message=(
-                    f"mueve {len(moved)} aparatos del grupo y deja {len(still)} "
-                    f"quietos aunque tienen pan y tilt: la figura solo la dibuja "
-                    f"una familia de optica"
-                ),
+                message_id="movement_figure_still_heads",
+                fields={
+                    "moved": len(moved),
+                    "still": len(still),
+                },
             )
         )
     return findings

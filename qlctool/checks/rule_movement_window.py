@@ -59,12 +59,14 @@ def check_movement_window(graph: ShowGraph) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        f"dibuja {', '.join(outside)}, y el publico esta en pan "
-                        f"{window.pan_min}-{window.pan_max} tilt "
-                        f"{window.tilt_min}-{window.tilt_max}: parte de la figura "
-                        "apunta fuera de la sala"
-                    ),
+                    message_id="movement_window_outside",
+                    fields={
+                        "outside": ", ".join(outside),
+                        "pan_min": window.pan_min,
+                        "pan_max": window.pan_max,
+                        "tilt_min": window.tilt_min,
+                        "tilt_max": window.tilt_max,
+                    },
                     fixtures=tuple(sorted(names)),
                 )
             )

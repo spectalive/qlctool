@@ -49,11 +49,10 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=captions[0],
-                    message=(
-                        f"escucha el canal {channel}, que no esta en el perfil del "
-                        f"pad: ningun control del aparato manda ese numero, asi que "
-                        f"el widget no se puede pulsar desde el hardware"
-                    ),
+                    message_id="pad_input_unknown_channel",
+                    fields={
+                        "channel": channel,
+                    },
                 )
             )
         if len(captions) > 1:
@@ -62,10 +61,11 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
                     rule_id=DOUBLE_RULE_ID,
                     severity=ERROR,
                     function=captions[0],
-                    message=(
-                        f"comparte el canal {channel} con {', '.join(captions[1:])}: "
-                        f"un solo control dispara todos a la vez"
-                    ),
+                    message_id="pad_input_shared_channel",
+                    fields={
+                        "channel": channel,
+                        "others": ", ".join(captions[1:]),
+                    },
                 )
             )
 
@@ -75,11 +75,10 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
                 rule_id=UNPATCHED_RULE_ID,
                 severity=ERROR,
                 function="InputOutputMap",
-                message=(
-                    f"{len(bindings)} widget(s) tienen binding MIDI y ningun "
-                    f"universo declara <Input>: QLC+ abre el show sin nadie "
-                    f"escuchando y el pad no hace nada hasta configurarlo a mano"
-                ),
+                message_id="pad_input_no_input",
+                fields={
+                    "count": len(bindings),
+                },
             )
         )
     return findings

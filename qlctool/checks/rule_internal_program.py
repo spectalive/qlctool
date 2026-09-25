@@ -56,11 +56,7 @@ def check_internal_programs(
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(function_id),
-                    message=(
-                        "da color a un fixture sin sacarlo de su programa interno: "
-                        "mientras ese canal siga en automatico el fixture ignora el "
-                        "rojo, verde y azul que le mandas"
-                    ),
+                    message_id="internal_program_colour",
                     fixtures=tuple(stranded),
                 )
             )

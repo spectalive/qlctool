@@ -41,12 +41,10 @@ def check_instant_dimmer(
                 severity=ERROR,
                 function=graph.name(state_id),
                 fixtures=tuple(sorted(dark)),
-                message=(
-                    f"en algun instante suyo pone color a {len(dark)} aparatos "
-                    f"y ningun miembro escribe su dimmer: el dimmer es Intensity, "
-                    f"QLC+ lo pone a cero cada ciclo, y el aparato esta coloreado "
-                    f"en los datos y apagado en la sala"
-                ),
+                message_id="instant_dimmer_dark",
+                fields={
+                    "count": len(dark),
+                },
             )
         )
     return findings

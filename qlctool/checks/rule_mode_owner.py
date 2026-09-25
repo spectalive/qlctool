@@ -63,12 +63,7 @@ def check_mode_owner(graph: ShowGraph, groups, entries) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function="",
-                    message=(
-                        "el canal con el que el fixture corre sus propios "
-                        "programas no lo escribe ninguna funcion del show: se "
-                        "queda con lo que dejo la noche anterior y mientras este "
-                        "arriba el aparato ignora posicion, color e intensidad"
-                    ),
+                    message_id="mode_owner_unwritten",
                     fixtures=(capability.fixture.name,),
                 )
             )

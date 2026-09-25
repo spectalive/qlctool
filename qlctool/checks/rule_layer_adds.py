@@ -63,12 +63,11 @@ def check_layer_adds(
                     severity=ERROR,
                     function=graph.name(button.function_id),
                     fixtures=tuple(sorted(clashing)),
-                    message=(
-                        f"es un Toggle («{button.caption}») que pone color sobre "
-                        f"{len(clashing)} aparatos que el estado ya colorea: RGB mezcla "
-                        "HTP, asi que rojo sobre cyan es blanco, nunca rojo - un color "
-                        "que sustituye es un Flash con ForceLTP"
-                    ),
+                    message_id="layer_adds_htp_colour",
+                    fields={
+                        "caption": button.caption,
+                        "count": len(clashing),
+                    },
                 )
             )
     return findings

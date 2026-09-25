@@ -70,11 +70,7 @@ def check_parked_movers(graph: ShowGraph) -> list[Finding]:
                     rule_id=RULE_ID,
                     severity=ERROR,
                     function=graph.name(step),
-                    message=(
-                        "es un bloque del ciclo automatico que mueve unas cabezas "
-                        "y deja estas quietas durante todo el paso: una lira que "
-                        "no se mueve durante minutos parece averiada, no en reposo"
-                    ),
+                    message_id="parked_movers_still",
                     fixtures=tuple(
                         sorted(graph.capabilities[fixture_id].fixture.name for fixture_id in parked)
                     ),
