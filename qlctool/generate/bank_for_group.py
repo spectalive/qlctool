@@ -3,6 +3,7 @@
 from collections.abc import Mapping, Sequence
 
 from ..argb import RGB
+from ..capability import FixtureCapabilities
 from ..fixture_group import DefinedFixtureGroup
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -17,7 +18,7 @@ from .wheel_color_values import wheel_color_values
 
 def bank_for_group(
     workspace: Workspace,
-    caps,
+    caps: list[FixtureCapabilities],
     group: DefinedFixtureGroup,
     colors: Sequence[str],
     split_pairs: Sequence[tuple[str, str]],
