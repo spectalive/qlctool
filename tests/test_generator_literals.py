@@ -84,6 +84,8 @@ CONVERTED: tuple[str, ...] = (
     # Plan C Task 2 (2026-09-25): no catalogue word in them.
     "generate/haze_machines.py",
     "generate/rig_has_role.py",
+    # 2026-09-25: the rig minimum asks the catalogue for every word it reports.
+    "generate/rig_below_minimum.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

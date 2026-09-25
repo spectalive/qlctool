@@ -19,6 +19,7 @@ from .compose import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
 from .description.described_files import described_files
+from .description.description_names import description_names
 from .description.load_show_description import load_show_description
 from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_dirs import fixture_dirs
@@ -29,6 +30,7 @@ from .generate.color_palette import generate_color_palette
 from .generate.input_profile import build_input_profile
 from .generate.matrix_effects import generate_matrix_effects
 from .generate.movement_efx import generate_movement_efx
+from .generate.rig_below_minimum import rig_below_minimum
 from .generate.stage_layout import DEFAULT_STAGE, generate_stage_layout
 from .generate.stage_plot_layout import apply_stage_plot
 from .generate.vc_layout import generate_vc_layout
@@ -360,6 +362,10 @@ def cmd_newshow(args: argparse.Namespace) -> int:
 
     library = library_for(args.fixtures, src, description.rig.fixtures if description else ())
     warn_unresolved(ws.root, library)
+    vocabulary = description_names(shown)
+    missing = rig_below_minimum(ws.root, library, vocabulary)
+    if missing:
+        raise SystemExit(vocabulary.render("rig_below_minimum", missing=", ".join(missing)))
     show = build_canonical_show(
         ws,
         library,

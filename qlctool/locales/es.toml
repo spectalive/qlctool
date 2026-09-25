@@ -368,3 +368,8 @@ white_code = "Bl"
 orange_code = "Na"
 pink_code = "Rs"
 ultraviolet_code = "UV"
+
+[messages]
+rig_below_minimum = "newshow construye un show para un rig con al menos un fixture con pan/tilt y dimmer y un grupo de fixtures; este patch no tiene {missing}"
+rig_needs_pan_tilt_dimmer = "fixture con pan/tilt y dimmer de fader"
+rig_needs_fixture_group = "grupo de fixtures"

@@ -366,3 +366,8 @@ white_code = "Wh"
 orange_code = "Or"
 pink_code = "Pk"
 ultraviolet_code = "UV"
+
+[messages]
+rig_below_minimum = "newshow builds a show for a rig with at least one pan/tilt fixture with a dimmer and one fixture group; this patch has no {missing}"
+rig_needs_pan_tilt_dimmer = "pan/tilt fixture with a fader dimmer"
+rig_needs_fixture_group = "fixture group"

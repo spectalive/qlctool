@@ -11,4 +11,5 @@ SECTIONS: tuple[str, ...] = (
     "help",
     "abbreviations",
     "mix_codes",
+    "messages",
 )

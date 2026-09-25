@@ -6,14 +6,18 @@
   a running shutter chase, compare each burst to its held source, confirm
   release and timeout, then tune `BURST_MS` if needed. Evidence and the
   per-hit judgment: [desk burst findings](docs/2026-09-13-desk-bursts-findings.md).
-- [ ] **`newshow` only builds one rig shape (Plan C final review,
-  2026-09-25).** Pars only -> traceback `no fixture in this workspace has both
-  pan and tilt` (`movement_families.py`); washes only -> `no fixture in this
-  workspace has a dimmer` (`dimmer_chases.py`); a rig with no fixture group
-  builds but flags empty frames and strobe findings. The README states the
-  minimum (a pan/tilt fixture with a dimmer, one group). Smallest next step:
-  refuse a rig below it with a message instead of a traceback, then make each
-  shape build clean with a dated test in `tests/test_small_rig.py`.
+- [ ] **`newshow` builds no show for a rig without movement or a dimmer
+  (Plan C final review, 2026-09-25).** Pars only stopped at a traceback `no
+  fixture in this workspace has both pan and tilt` (`movement_families.py`),
+  washes only at `no fixture in this workspace has a dimmer`
+  (`dimmer_chases.py`), and a rig with no fixture group built but flagged
+  empty frames and strobe findings. Since 2026-09-25 `newshow` refuses a patch
+  below the README's minimum (a pan/tilt fixture with a fader dimmer, one
+  fixture group) up front, with a catalogue message and exit 1
+  (`generate/rig_below_minimum.py`, `tests/test_rig_minimum.py`). Still open:
+  building a show for a pars-only or washes-only rig. Smallest next step: make
+  the movement and dimmer generators optional when the rig lacks them, one
+  shape at a time, each with a dated test in `tests/test_small_rig.py`.
 - [ ] **A head with no colour keeps its Effect channel unowned (2026-09-25).**
   Seen building the gobo-spot regression rig: a BEAM 230W 7R with only its
   colour wheel channels stripped keeps `Atomization` (Effect group), and
