@@ -1,7 +1,7 @@
 """A console caption that promises what the rig or the show does not have.
 
 2026-09-25, Plan C final review: the small club's console said "gobos,
-prisma y dimmer siguen tu compás" on a rig whose heads have no gobo or prism
+prisma y dimmer siguen tu compas" on a rig whose heads have no gobo or prism
 wheel, and "los 42 efectos propios de los paneles" with no panel patched.
 The generator now chooses those captions from the rig, but `check` said
 "ningun problema" either way: no rule read what a caption promises.

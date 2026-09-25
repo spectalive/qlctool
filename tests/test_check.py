@@ -3244,7 +3244,7 @@ def _recaption(workspace, old, new):
 
 def test_2026_09_25_a_caption_that_promises_gobos_and_prism(library, club_show):
     """2026-09-25, Plan C final review: page 1 said "gobos, prisma y dimmer siguen
-    tu compás" on the small club, whose LED Beam heads have no gobo or prism
+    tu compas" on the small club, whose LED Beam heads have no gobo or prism
     wheel, and `check` said "ningun problema". The club's own tempo line is
     replaced with the catalogue's `tempo_2`; the untouched club has no finding.
     """

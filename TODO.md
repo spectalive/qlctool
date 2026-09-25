@@ -106,6 +106,23 @@
   -> `instant_evaluator`).
   Smallest next step: profile `check_pick_darkens` and cache the instant
   states it recomputes per pick, measured with `--durations` before and after.
+- [ ] **A wheel whose only nameable detent is one no look asks for is not
+  parked (2026-09-25).** `outside_color_looks` tries every colour in
+  `WHEEL_NAMES`, but the looks only ask for the show's palette: a colour wheel
+  whose only position `color_wheel_pairs` can name is one no look requests
+  (only "UV", say) counts as inside the looks, so neither the colour looks nor
+  the intensity levels park its self-running channel. No rig in the repo has
+  such a wheel (review of ecc61b5). Smallest next step: build a definition
+  with such a wheel, show `modo sin dueño` on it, then ask `color_wheel_pairs`
+  over the colours the looks request instead of `WHEEL_NAMES`.
+- [ ] **`Humo Vertical` is built on a rig with no smoke machine
+  (2026-09-25).** The column's light is built from the panels' programmes
+  alone, so Vibra without its smoke machines (fixtures 17, 29-32) still gets
+  the `Humo Vertical` button, though page 3's title no longer promises haze
+  (723bc1a). Owner question: should the light cue exist with no smoke to
+  light? Smallest next step: ask the owner; if no, gate
+  `generate_vertical_smoke_light` on `is_smoke_machine` (Vibra has smoke, so
+  its bytes stay).
 - [ ] **Page 4's matrices caption says "bars and panels" by proxy
   (2026-09-25).** `matrices_frame_caption` picks `matrices_frame` ("patterns
   on the bars and panels") for any rig with pixel groups and built-in effects,
