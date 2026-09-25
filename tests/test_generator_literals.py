@@ -86,6 +86,9 @@ CONVERTED: tuple[str, ...] = (
     "generate/rig_has_role.py",
     # 2026-09-25: the rig minimum asks the catalogue for every word it reports.
     "generate/rig_below_minimum.py",
+    "generate/is_pixel_group.py",
+    "generate/all_self_animating.py",
+    "generate/fader_dimmed.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

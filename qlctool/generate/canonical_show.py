@@ -31,7 +31,7 @@ from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..internal_program import internal_program, internal_program_off_pairs
+from ..internal_program import internal_program_off_pairs
 from ..library import FixtureLibrary
 from ..monitor_positions import house_right_fixture_ids
 from ..names.localised_keys import localised_keys
@@ -47,6 +47,7 @@ from ..vc.speed_dial import MULTIPLIER_NONE
 from ..vibra.vibra_description import vibra_description
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
+from .all_self_animating import all_self_animating
 from .beam_rainbow_spin import generate_beam_rainbow_spin
 from .beam_subsets import generate_beam_subsets
 from .beat_tempo import apply_beat_tempo
@@ -66,6 +67,7 @@ from .generated_play_wrappers import GeneratedPlayWrappers
 from .gobo_shake import generate_gobo_shake
 from .haze_machines import haze_machines
 from .home_position import generate_home_position
+from .is_pixel_group import is_pixel_group
 from .live_console import generate_live_console
 from .matrix_effects import GeneratedMatrices, generate_matrix_effects
 from .moments import Moment, generate_moments
@@ -316,7 +318,7 @@ def build_canonical_show(
         # A fixture with forty-two animations of its own does not need a
         # four-cell chase drawn over it, and could not show one anyway: in its
         # automatic mode it ignores the red, green and blue a matrix writes.
-        if _all_self_animating(caps, group.fixture_ids):
+        if all_self_animating(caps, group.fixture_ids):
             continue
         generated = generate_matrix_effects(
             workspace,
@@ -330,7 +332,7 @@ def build_canonical_show(
             names=vocabulary,
         )
         matrices.append(generated)
-        if generated.chaser_id is not None and _is_pixel_group(caps, group.fixture_ids):
+        if generated.chaser_id is not None and is_pixel_group(caps, group.fixture_ids):
             pixel_group_ids.append(group.group_id)
             matrix_lit_ids |= set(group.fixture_ids)
     matrix_ids = [fid for m in matrices for fid in m.matrix_ids]
@@ -1232,18 +1234,6 @@ def _wheel_colors(
     return {name: wheel[name] for name in names}
 
 
-def _is_pixel_group(caps, fixture_ids) -> bool:
-    """True when a member really has pixels: more than one red channel.
-
-    An 8-segment bar has eight of them and a matrix can draw across it; a PAR
-    or a wash head has one, and every algorithm on it collapses to a colour.
-    """
-    wanted = set(fixture_ids)
-    return any(
-        len(c.offsets_for_role(roles.RED)) > 1 for c in caps if c.fixture.fixture_id in wanted
-    )
-
-
 def _steps_are_scenes(workspace: Workspace, name: str) -> bool:
     """True when every step of the named chaser is a Scene.
 
@@ -1483,10 +1473,3 @@ def _collection(workspace: Workspace, name: str, members: list[int]) -> int:
     function_id = next_function_id(workspace.root)
     workspace.add_function(build_collection(function_id, name, members, path=SHOW_PATH))
     return function_id
-
-
-def _all_self_animating(caps, fixture_ids) -> bool:
-    """True when every colour-capable member runs programmes of its own."""
-    wanted = set(fixture_ids)
-    members = [c for c in caps if c.fixture.fixture_id in wanted]
-    return bool(members) and all(internal_program(capability) is not None for capability in members)

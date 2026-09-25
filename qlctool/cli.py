@@ -30,7 +30,6 @@ from .generate.color_palette import generate_color_palette
 from .generate.input_profile import build_input_profile
 from .generate.matrix_effects import generate_matrix_effects
 from .generate.movement_efx import generate_movement_efx
-from .generate.rig_below_minimum import rig_below_minimum
 from .generate.stage_layout import DEFAULT_STAGE, generate_stage_layout
 from .generate.stage_plot_layout import apply_stage_plot
 from .generate.vc_layout import generate_vc_layout
@@ -39,6 +38,7 @@ from .library_for import library_for
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .monitor_node import POINTS_OF_VIEW
 from .mvr.write_mvr import write_mvr
+from .newshow_refusal import newshow_refusal
 from .patch_conflicts import patch_conflicts
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
@@ -363,9 +363,9 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     library = library_for(args.fixtures, src, description.rig.fixtures if description else ())
     warn_unresolved(ws.root, library)
     vocabulary = description_names(shown)
-    missing = rig_below_minimum(ws.root, library, vocabulary)
-    if missing:
-        raise SystemExit(vocabulary.render("rig_below_minimum", missing=", ".join(missing)))
+    refusal = newshow_refusal(ws.root, library, vocabulary)
+    if refusal is not None:
+        raise SystemExit(refusal)
     show = build_canonical_show(
         ws,
         library,

@@ -3190,3 +3190,37 @@ def test_2026_09_25_a_patched_fixture_with_no_definition(tmp_path, monkeypatch, 
 
     assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 0
     assert "199 botones revisados, ningun problema" in capsys.readouterr().out
+
+
+def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_path, capsys):
+    """2026-09-25, review of `sin definicion`: `capabilities_of` also drops a
+    fixture whose definition exists but has no mode of the patched name, and
+    every rule is as blind to it as to a missing definition - the same false
+    pass. One MiN Wash of the club is repatched into a mode the definition
+    does not carry; the check names the model, the mode and that fixture.
+    """
+    from pathlib import Path
+
+    from qlctool.checks.rule_missing_definition import RULE
+    from qlctool.names.default_names import default_names
+    from qlctool.xmlutil import find_local, iter_local
+
+    example = Path(__file__).resolve().parents[1] / "examples" / "small-club"
+    workspace = Workspace.load(example / "club.qxw")
+    wash = next(
+        f
+        for f in iter_local(workspace.root, "Fixture")
+        if find_local(f, "Name") is not None and find_local(f, "Name").text == "Wash 1"
+    )
+    find_local(wash, "Mode").text = "No Such Mode"
+    club = tmp_path / "club.qxw"
+    workspace.save(club)
+
+    library = FixtureLibrary.load([example / "fixtures"])
+    findings = [f for f in check_workspace(Workspace.load(club), library) if f.rule == RULE]
+    message = default_names().render("missing_mode", mode="No Such Mode")
+    assert [(f.function, f.message, f.fixtures) for f in findings] == [
+        ("Chauvet MiN Wash (No Such Mode)", message, ("Wash 1",))
+    ]
+    assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 1
+    assert f"  {RULE} (1):" in capsys.readouterr().out

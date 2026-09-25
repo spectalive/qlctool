@@ -11,5 +11,6 @@ SECTIONS: tuple[str, ...] = (
     "help",
     "abbreviations",
     "mix_codes",
+    # CLI and check text, not show vocabulary: nothing in a workspace is named from it.
     "messages",
 )

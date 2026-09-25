@@ -368,8 +368,11 @@ pink_code = "Pk"
 ultraviolet_code = "UV"
 
 [messages]
-rig_below_minimum = "newshow builds a show for a rig with at least one pan/tilt fixture with a dimmer and one fixture group; this patch has no {missing}"
-rig_needs_pan_tilt_dimmer = "pan/tilt fixture with a fader dimmer"
+rig_below_minimum = "newshow builds a show for a rig with at least one pan/tilt fixture, one fixture with a fader dimmer and one fixture group; this patch has no {missing}"
+rig_needs_pan_tilt = "fixture with pan and tilt"
+rig_needs_dimmer = "fixture with a fader dimmer outside a pixel group and not running its own programmes"
 rig_needs_fixture_group = "fixture group"
+rig_without_definitions = "newshow found no fixture definition for any patched fixture (searched {searched}), so it cannot read their channels; pass --fixtures, set QLCTOOL_FIXTURES, or add a qlctool.toml"
 missing_definition = "no fixture definition for this model (searched {searched}): no rule can see its channels, so this check says nothing about it; pass --fixtures, set QLCTOOL_FIXTURES, or add a qlctool.toml"
+missing_mode = "the definition has no mode {mode}: no rule can see this fixture's channels, so this check says nothing about it; repatch it in a mode the definition has, or fix the definition"
 searched_no_folder = "no folder"

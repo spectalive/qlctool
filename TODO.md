@@ -12,8 +12,9 @@
   washes only at `no fixture in this workspace has a dimmer`
   (`dimmer_chases.py`), and a rig with no fixture group built but flagged
   empty frames and strobe findings. Since 2026-09-25 `newshow` refuses a patch
-  below the README's minimum (a pan/tilt fixture with a fader dimmer, one
-  fixture group) up front, with a catalogue message and exit 1
+  below the README's minimum (a pan/tilt fixture, a fixture with a fader
+  dimmer outside a pixel group and not self-animating, one fixture group) up
+  front, with a catalogue message and exit 1
   (`generate/rig_below_minimum.py`, `tests/test_rig_minimum.py`). Still open:
   building a show for a pars-only or washes-only rig. Smallest next step: make
   the movement and dimmer generators optional when the rig lacks them, one

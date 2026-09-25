@@ -33,9 +33,9 @@ from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
-from ..stepped_dimmer import stepped_dimmer_offsets
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
+from .fader_dimmed import fader_dimmed
 from .movement_efx import spread_offsets
 
 MODE_DIMMER = 1  # EFXFixture::Mode - PanTilt, Dimmer, RGB
@@ -72,10 +72,7 @@ def generate_dimmer_chases(
     dimmable = [
         capability
         for capability in capabilities_of(workspace.root, library)
-        if not capability.is_smoke
-        and capability.fixture.fixture_id not in excluded
-        and capability.offsets_for_role(roles.DIMMER)
-        and not stepped_dimmer_offsets(capability)
+        if capability.fixture.fixture_id not in excluded and fader_dimmed(capability)
     ]
     if not dimmable:
         raise ValueError("no fixture in this workspace has a dimmer")
