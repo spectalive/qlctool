@@ -416,6 +416,7 @@ def build_canonical_show(
         workspace,
         library,
         companions=((roles.GOBO_SHAKE, 0), (roles.FOCUS, described.tuning.beam_focus)),
+        names=vocabulary,
     )
     gobos = generate_wheel_scenes(
         workspace,
@@ -429,6 +430,7 @@ def build_canonical_show(
             (roles.FOCUS, described.tuning.beam_focus, described.tuning.beam_focus),
         ),
         extra_step_ids=shake.scene_ids + dealt,
+        names=vocabulary,
     )
     if gobos.chaser_id is not None:
         master["Gobo Animacion"] = gobos.chaser_id
@@ -454,6 +456,7 @@ def build_canonical_show(
         # la rueda", owner), and the beams already take the rig's colour from
         # the rig-wide scenes. The wheel's positions stay, as picks on CONTROL.
         make_chaser=False,
+        names=vocabulary,
     )
 
     # The prism spins while it is in: its rotation channel is LTP like the
@@ -471,11 +474,12 @@ def build_canonical_show(
         dimmer_full=False,
         make_chaser=False,
         companions=((roles.PRISM_ROTATION, described.tuning.prism_spin_slow, 0),),
+        names=vocabulary,
     )
     # And the same prism turning fast, and turning the other way: one rotation
     # channel, three looks, none of which the show used before 2026-08-30.
-    spins = generate_prism_spins(workspace, library)
-    beam_subsets = generate_beam_subsets(workspace, library)
+    spins = generate_prism_spins(workspace, library, names=vocabulary)
+    beam_subsets = generate_beam_subsets(workspace, library, names=vocabulary)
     prism_animation_id = _prism_choreography(
         workspace,
         prisms.scene_ids,
@@ -497,7 +501,7 @@ def build_canonical_show(
         else None
     )
 
-    smoke = generate_smoke_auto(workspace, library)
+    smoke = generate_smoke_auto(workspace, library, names=vocabulary)
     # The haze timer, one function per rhythm. AUTO starts the default and the
     # console puts all four in a solo frame, so the operator can change how
     # often the room hazes without leaving the show page.
@@ -507,7 +511,7 @@ def build_canonical_show(
     # The vertical machines' column, fog and its own LED in one held scene -
     # with DMX plugged in their internal light program is dead, so if this
     # scene does not light them, nothing does (`rule_smoke_light`).
-    burst_id = generate_vertical_smoke_burst(workspace, library)
+    burst_id = generate_vertical_smoke_burst(workspace, library, names=vocabulary)
     if burst_id is not None:
         master["Humo Vertical YA"] = burst_id
 
@@ -518,6 +522,7 @@ def build_canonical_show(
         workspace,
         library,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
+        names=vocabulary,
     )
     master["Dimmer Chase"] = dimmers.chase_id
     master["Dimmer Chase 2"] = dimmers.chase2_id
@@ -529,7 +534,7 @@ def build_canonical_show(
     # room's colour with never a black between (cross-audit, 2026-09-02). The
     # chaser twins of `Blanco Total`/`Todo Negro` that used to be here also
     # pressed the state buttons by proxy (2026-08-29) before they got twins.
-    strobes = generate_strobe_effects(workspace, library)
+    strobes = generate_strobe_effects(workspace, library, names=vocabulary)
     master["Strobo Rapido"] = strobes.fast_id
     master["Strobo Medio"] = strobes.medium_id
     if strobes.on_id is not None:
@@ -714,6 +719,7 @@ def build_canonical_show(
         workspace,
         caps,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
+        names=vocabulary,
     )
     charla_intensity_ids = [intensity.full_id]
     if charla_pixel_intensity_id is not None:
@@ -730,6 +736,7 @@ def build_canonical_show(
                 dimmers.pingpong_id,
                 dimmers.chase2_id,
             ],
+            names=vocabulary,
         )
     # Peak hands its dimmers to the chase instead: `Intensidad Total` beside it
     # would hold every one of them at 255, and HTP means the chase's dips could
@@ -740,6 +747,7 @@ def build_canonical_show(
         workspace,
         caps,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
+        names=vocabulary,
     )
     if peak_static is not None:
         master["Intensidad Peak"] = peak_static
@@ -840,6 +848,7 @@ def build_canonical_show(
             "Nivel Peak",
             "Nivel Fiesta Dinamico",
         ),
+        names=vocabulary,
     )
     master.update(energy.level_ids)
     if energy.cycle_id is not None:
@@ -965,6 +974,7 @@ def build_canonical_show(
         ],
         gobo_ids=[*gobos.scene_ids[1:-2], *dealt, *shake.scene_ids],
         prism_ids=[*prisms.scene_ids[1:], *beam_subsets.prism_scene_ids, *spins.scene_ids],
+        names=vocabulary,
     )
 
     # The show runs on the clock and is re-timed by the tap dial, which is the

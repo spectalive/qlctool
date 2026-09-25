@@ -25,6 +25,8 @@ from ..functions.chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
 # The rhythms the console offers, in minutes of pause between bursts. The
@@ -48,7 +50,8 @@ def generate_smoke_auto(
     burst_ms: int = 2000,
     pause_ms: int = 60000,
     level: int = 255,
-    path: str = "Humo",
+    path: str | None = None,
+    names: Names | None = None,
 ) -> GeneratedSmoke:
     """Burst/pause the ambient smoke machines; raises when the rig has none.
 
@@ -57,6 +60,8 @@ def generate_smoke_auto(
     that fires four of those every minute all night is a wrong show and four
     empty tanks. Those fire from `vertical_smoke_burst` instead.
     """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_haze") if path is None else path
     smoke = [
         c
         for c in capabilities_of(workspace.root, library)
@@ -74,8 +79,8 @@ def generate_smoke_auto(
         workspace.add_function(build_scene(function_id, name, values, path=path))
         return function_id
 
-    on_id = scene("Humo ON", level)
-    off_id = scene("Humo OFF", 0)
+    on_id = scene(vocabulary.display("smoke_on"), level)
+    off_id = scene(vocabulary.display("smoke_off"), 0)
 
     # A burst, then the long wait before the next one - so the two steps have
     # their own holds, which is what puts this chaser in PerStep duration mode.
@@ -92,10 +97,11 @@ def generate_smoke_auto(
         )
         return function_id
 
-    chaser_id = timer("Humo Auto", pause_ms)
-    interval_ids = {"Humo Auto": chaser_id}
+    default_name = vocabulary.display("smoke_auto")
+    chaser_id = timer(default_name, pause_ms)
+    interval_ids = {default_name: chaser_id}
     for minutes in SMOKE_INTERVALS_MIN[1:]:
-        name = f"Humo Auto {minutes} min"
+        name = vocabulary.display(f"smoke_auto_{minutes}_min")
         interval_ids[name] = timer(name, minutes * 60_000)
 
     return GeneratedSmoke(

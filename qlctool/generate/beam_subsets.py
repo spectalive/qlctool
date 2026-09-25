@@ -16,15 +16,18 @@ from ..definition import Capability
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
+# A single beam is its own number; a pair is named by a catalogue identifier.
 _SUBSETS = (
     ("1", (0,)),
     ("2", (1,)),
     ("3", (2,)),
     ("4", (3,)),
-    ("1 y 3", (0, 2)),
-    ("2 y 4", (1, 3)),
+    ("subset_odd", (0, 2)),
+    ("subset_even", (1, 3)),
 )
 
 
@@ -37,8 +40,10 @@ class GeneratedBeamSubsets:
 def generate_beam_subsets(
     workspace: Workspace,
     library: FixtureLibrary,
+    names: Names | None = None,
 ) -> GeneratedBeamSubsets:
     """Build address-ordered single-beam and mirrored-pair accent scenes."""
+    vocabulary = default_names() if names is None else names
     beams = sorted(
         (
             capability
@@ -50,9 +55,13 @@ def generate_beam_subsets(
     if not beams:
         return GeneratedBeamSubsets()
 
-    subsets = [(name, indices) for name, indices in _SUBSETS if max(indices) < len(beams)]
+    subsets = [
+        (key if key.isdigit() else vocabulary.display(key), indices)
+        for key, indices in _SUBSETS
+        if max(indices) < len(beams)
+    ]
     prism_scene_ids = [
-        _prism_scene(workspace, beams, name, set(indices)) for name, indices in subsets
+        _prism_scene(workspace, beams, vocabulary, name, set(indices)) for name, indices in subsets
     ]
 
     multicolor_offsets = [_multicolor_offset(beam) for beam in beams]
@@ -64,7 +73,7 @@ def generate_beam_subsets(
             workspace,
             beams,
             multicolor_offsets,
-            "Todas",
+            vocabulary.display("subset_all"),
             set(range(len(beams))),
         ),
         _multicolor_scene(workspace, beams, multicolor_offsets, "Off", set()),
@@ -79,7 +88,7 @@ def generate_beam_subsets(
     )
 
 
-def _prism_scene(workspace, beams, name: str, selected: set[int]) -> int:
+def _prism_scene(workspace, beams, vocabulary: Names, name: str, selected: set[int]) -> int:
     values = {}
     for index, beam in enumerate(beams):
         wheel = beam.wheel_for_role(roles.PRISM)
@@ -93,7 +102,14 @@ def _prism_scene(workspace, beams, name: str, selected: set[int]) -> int:
         ]
 
     function_id = next_function_id(workspace.root)
-    workspace.add_function(build_scene(function_id, f"Prisma - {name}", values, path="Prismas"))
+    workspace.add_function(
+        build_scene(
+            function_id,
+            vocabulary.render("prism_subset", subset=name),
+            values,
+            path=vocabulary.display("path_prisms"),
+        )
+    )
     return function_id
 
 

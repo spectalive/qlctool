@@ -17,6 +17,8 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..multicolor_off import multicolor_off_pairs
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
@@ -43,6 +45,7 @@ def generate_wheel_scenes(
     companions: Sequence[tuple[str, int, int]] = (),
     off_presets: tuple[str, ...] = ("PrismEffectOff",),
     extra_step_ids: Sequence[int] = (),
+    names: Names | None = None,
 ) -> GeneratedWheel:
     """One scene per wheel position, driven on every fixture that has the wheel.
 
@@ -62,6 +65,7 @@ def generate_wheel_scenes(
     belong to this wheel's clock (a gobo shake burst) without being one of
     its plain positions.
     """
+    vocabulary = default_names() if names is None else names
     wanted = None if fixture_ids is None else set(fixture_ids)
     caps = [
         c
@@ -71,7 +75,7 @@ def generate_wheel_scenes(
     if not caps:
         raise ValueError(f"no fixture in this workspace has a {role} channel")
 
-    folder = path if path is not None else f"{label} (generado)"
+    folder = path if path is not None else vocabulary.render("path_wheel_generated", label=label)
     # Position names come from the first fixture: they share the wheel.
     _, positions = caps[0].wheel_for_role(role)
 
@@ -110,7 +114,7 @@ def generate_wheel_scenes(
         workspace.add_function(
             build_chaser(
                 chaser_id,
-                f"{label} Animacion",
+                vocabulary.render("animation", label=label),
                 scene_ids + list(extra_step_ids),
                 fade_in=fade,
                 hold=hold,

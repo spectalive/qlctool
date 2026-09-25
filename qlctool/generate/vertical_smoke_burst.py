@@ -33,21 +33,24 @@ from ..fog_offsets import fog_offsets
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
-
-NAME = "Humo Vertical YA"
 
 
 def generate_vertical_smoke_burst(
     workspace: Workspace,
     library: FixtureLibrary,
-    path: str = "Humo",
+    path: str | None = None,
+    names: Names | None = None,
 ) -> int | None:
     """The held column scene, or None when the rig has no lit smoke machine.
 
     Pump and LED master only: the colour comes from whatever the room is
     running, which is the whole point of a lit column.
     """
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_haze") if path is None else path
     machines = [
         c for c in capabilities_of(workspace.root, library) if c.is_smoke and c.has_role(roles.RED)
     ]
@@ -63,5 +66,7 @@ def generate_vertical_smoke_burst(
             pairs += [(offset, 0) for offset in caps.offsets_for_role(role)]
         values[caps.fixture.fixture_id] = sorted(pairs)
     function_id = next_function_id(workspace.root)
-    workspace.add_function(build_scene(function_id, NAME, values, path=path))
+    workspace.add_function(
+        build_scene(function_id, vocabulary.display("vertical_smoke_now"), values, path=path)
+    )
     return function_id

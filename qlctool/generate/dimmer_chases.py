@@ -30,6 +30,8 @@ from ..functions.efx import EFXFixture, build_efx
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..stepped_dimmer import stepped_dimmer_offsets
 from ..workspace import Workspace
@@ -58,8 +60,10 @@ def generate_dimmer_chases(
     pingpong_hold: int = 400,
     path: str = "Dimmers",
     exclude_fixture_ids: Sequence[int] = (),
+    names: Names | None = None,
 ) -> GeneratedDimmers:
     """Build both dimmer chases and the ping-pong; raise when nothing dims."""
+    vocabulary = default_names() if names is None else names
     excluded = set(exclude_fixture_ids)
     # A blade dimmer is not a fader: an EFX sweeping it does not dip the beam,
     # it slides a blade across the lens and the head shows a crescent for most
@@ -133,7 +137,7 @@ def generate_dimmer_chases(
                 _efx(
                     f"{name} {members[0].fixture.model}",
                     members,
-                    f"{path}/Partes",
+                    vocabulary.render("path_parts", path=path),
                     direction,
                 )
             )
@@ -142,15 +146,17 @@ def generate_dimmer_chases(
         workspace.add_function(build_collection(function_id, name, chase_part_ids, path=path))
         return function_id
 
-    chase_id = _chase("Dimmer Chase", "Forward")
-    chase2_id = _chase("Dimmer Chase 2", "Backward")
+    chase_id = _chase(vocabulary.display("dimmer_chase"), "Forward")
+    chase2_id = _chase(vocabulary.display("dimmer_chase_2"), "Backward")
 
-    scene_ids = [_half_lit(workspace, dimmable, remainder, path) for remainder in (0, 1)]
+    scene_ids = [
+        _half_lit(workspace, dimmable, remainder, path, vocabulary) for remainder in (0, 1)
+    ]
     pingpong_id = next_function_id(workspace.root)
     workspace.add_function(
         build_chaser(
             pingpong_id,
-            "Dimmer PingPong",
+            vocabulary.display("dimmer_pingpong"),
             scene_ids,
             hold=pingpong_hold,
             path=path,
@@ -165,7 +171,7 @@ def generate_dimmer_chases(
     )
 
 
-def _half_lit(workspace: Workspace, dimmable, remainder: int, path: str) -> int:
+def _half_lit(workspace: Workspace, dimmable, remainder: int, path: str, vocabulary: Names) -> int:
     """Every other fixture at full, the rest at zero.
 
     The lit half opens its shutter too - a beam at full dimmer behind a closed
@@ -184,6 +190,6 @@ def _half_lit(workspace: Workspace, dimmable, remainder: int, path: str) -> int:
             pairs += zoom_wide_pairs(capability)
         values[capability.fixture.fixture_id] = pairs
     function_id = next_function_id(workspace.root)
-    name = "Dimmer Impares" if remainder else "Dimmer Pares"
+    name = vocabulary.display("dimmer_odd" if remainder else "dimmer_even")
     workspace.add_function(build_scene(function_id, name, values, path=path))
     return function_id

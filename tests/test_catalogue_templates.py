@@ -4,10 +4,12 @@ from pathlib import Path
 
 import pytest
 
+from qlctool import roles
 from qlctool.description.reading.read_names import read_names
 from qlctool.fixture_group import fixture_groups
 from qlctool.generate.matrix_effects import generate_matrix_effects
 from qlctool.generate.movement_families import generate_movement_families
+from qlctool.generate.wheel_scenes import generate_wheel_scenes
 from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.sections import SECTIONS
@@ -115,3 +117,24 @@ def test_a_movement_pick_starts_with_the_movement_prefix(language):
     assert circle.attrib["Name"].startswith(prefix)
     assert circle.attrib["Name"].removeprefix(prefix) == names.display("shape_circle")
     assert circle.attrib["Path"] == names.display("path_movement")
+
+
+WHEEL_FOLDERS = {"es": "Gobo (generado)", "en": "Gobo (generated)"}
+
+
+@pytest.mark.parametrize("language", ["es", "en"])
+def test_wheel_animations_are_the_functions_keys_bind(language):
+    """The wheel chasers are named exactly what `functions` binds (P12)."""
+    names = shipped_names(language)
+    workspace = strip_to_skeleton(Workspace.load(SETUPS / "Vibra.qxw"))
+    library = FixtureLibrary.load()
+    gobo = generate_wheel_scenes(workspace, library, names=names)
+    prism = generate_wheel_scenes(
+        workspace, library, role=roles.PRISM, label=names.display("prism_label"), names=names
+    )
+    engine = find_local(workspace.root, "Engine")
+    by_id = {f.attrib["ID"]: f for f in findall_local(engine, "Function")}
+    gobo_chaser = by_id[str(gobo.chaser_id)]
+    assert gobo_chaser.attrib["Name"] == names.display("gobo_animation")
+    assert gobo_chaser.attrib["Path"] == WHEEL_FOLDERS[language]
+    assert by_id[str(prism.chaser_id)].attrib["Name"] == names.display("prism_animation")

@@ -22,6 +22,8 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
 # How many deals to generate. Eight is two full turns of the four heads through
@@ -39,6 +41,7 @@ def generate_dealt_gobo_scenes(
     library: FixtureLibrary,
     companions: Sequence[tuple[str, int]] = (),
     path: str = "Gobos",
+    names: Names | None = None,
 ) -> list[int]:
     """One scene per deal, or an empty list when the rig has no gobo wheel.
 
@@ -47,6 +50,7 @@ def generate_dealt_gobo_scenes(
     zero - for the same reason the plain gobo scenes carry them: the channels
     are LTP and keep whatever the last look left there.
     """
+    vocabulary = default_names() if names is None else names
     beams = sorted(
         (
             capability
@@ -84,7 +88,7 @@ def generate_dealt_gobo_scenes(
         workspace.add_function(
             build_scene(
                 function_id,
-                f"Gobo Repartido {deal + 1}",
+                vocabulary.render("gobo_dealt", number=deal + 1),
                 values,
                 path=path,
             )

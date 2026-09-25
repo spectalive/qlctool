@@ -28,27 +28,29 @@ LTP - which is exactly the kind of luck a self-contained moment does not get.
 from collections.abc import Sequence
 
 from .. import roles
-
 from ..capability import FixtureCapabilities
 from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..stepped_dimmer import stepped_dimmer_offsets
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
 
-PATH = "Niveles"
-
 
 def generate_dimmerless_intensity(
     workspace: Workspace,
     capabilities: Sequence[FixtureCapabilities],
     exclude_fixture_ids: Sequence[int] = (),
-    name: str = "Intensidad Peak",
+    name: str | None = None,
+    names: Names | None = None,
 ) -> int | None:
     """The chase level's static base. None when no fixture needs one."""
+    vocabulary = default_names() if names is None else names
+    name = vocabulary.display("peak_intensity") if name is None else name
     excluded = set(exclude_fixture_ids)
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:
@@ -83,5 +85,7 @@ def generate_dimmerless_intensity(
     if not values:
         return None
     function_id = next_function_id(workspace.root)
-    workspace.add_function(build_scene(function_id, name, values, path=PATH))
+    workspace.add_function(
+        build_scene(function_id, name, values, path=vocabulary.display("path_levels"))
+    )
     return function_id

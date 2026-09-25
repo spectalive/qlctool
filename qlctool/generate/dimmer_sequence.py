@@ -10,6 +10,8 @@ from collections.abc import Sequence
 
 from ..functions.chaser import build_chaser
 from ..ids import next_function_id
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
 
@@ -20,8 +22,10 @@ def generate_dimmer_sequence(
     breath_hold: int = 20000,
     program_hold: int = 10000,
     path: str = "Dimmers",
+    names: Names | None = None,
 ) -> int:
     """Build the looping breath/program rotation and return its function ID."""
+    vocabulary = default_names() if names is None else names
     if not program_ids:
         raise ValueError("the dimmer sequence needs at least one programme")
 
@@ -35,7 +39,7 @@ def generate_dimmer_sequence(
     workspace.add_function(
         build_chaser(
             function_id,
-            "Dimmer Secuencia",
+            vocabulary.display("dimmer_sequence"),
             steps,
             hold=holds,
             run_order="Loop",

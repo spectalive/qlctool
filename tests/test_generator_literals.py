@@ -37,6 +37,19 @@ CONVERTED: tuple[str, ...] = (
     "generate/cross_position.py",
     "generate/fan_position.py",
     "generate/stage_aim.py",
+    "generate/wheel_scenes.py",
+    "generate/dealt_gobo_scenes.py",
+    "generate/prism_spins.py",
+    "generate/beam_subsets.py",
+    "generate/dimmer_chases.py",
+    "generate/dimmer_sequence.py",
+    "generate/dimmerless_intensity.py",
+    "generate/energy_intensity.py",
+    "generate/energy_levels.py",
+    "generate/smoke_auto.py",
+    "generate/strobe_effects.py",
+    "generate/vertical_smoke_burst.py",
+    "generate/play_wrappers.py",
 )
 
 

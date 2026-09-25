@@ -20,14 +20,16 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
 
-# name, rotation preset, how far along that preset's own range to sit. Slow
+# name identifier, rotation preset, how far along that preset's own range to sit. Slow
 # forward already belongs to the plain prism scene; these are the other two
 # the wheel can do.
 SPINS = (
-    ("Prisma Giro Rapido", "RotationClockwiseSlowToFast", 0.85),
-    ("Prisma Giro Inverso", "RotationCounterClockwiseSlowToFast", 0.5),
+    ("prism_spin_fast", "RotationClockwiseSlowToFast", 0.85),
+    ("prism_spin_reverse", "RotationCounterClockwiseSlowToFast", 0.5),
 )
 
 
@@ -39,9 +41,12 @@ class GeneratedPrismSpins:
 def generate_prism_spins(
     workspace: Workspace,
     library: FixtureLibrary,
-    path: str = "Prisma",
+    path: str | None = None,
+    names: Names | None = None,
 ) -> GeneratedPrismSpins:
     """One scene per extra spin, empty when nothing here has a turning prism."""
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_prism") if path is None else path
     beams = [
         capability
         for capability in capabilities_of(workspace.root, library)
@@ -51,7 +56,7 @@ def generate_prism_spins(
         return GeneratedPrismSpins(scene_ids=[])
 
     scene_ids: list[int] = []
-    for name, preset, fraction in SPINS:
+    for identifier, preset, fraction in SPINS:
         values: dict[int, list[tuple[int, int]]] = {}
         for capability in beams:
             inserted = _preset_value(capability, roles.PRISM, "PrismEffectOn", 0.5)
@@ -68,7 +73,9 @@ def generate_prism_spins(
         if not values:
             continue
         function_id = next_function_id(workspace.root)
-        workspace.add_function(build_scene(function_id, name, values, path=path))
+        workspace.add_function(
+            build_scene(function_id, vocabulary.display(identifier), values, path=path)
+        )
         scene_ids.append(function_id)
     return GeneratedPrismSpins(scene_ids=scene_ids)
 

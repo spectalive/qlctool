@@ -24,13 +24,14 @@ from ..capability import FixtureCapabilities
 from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..stepped_dimmer import stepped_dimmer_offsets
 from ..strobe_off import strobe_off_pairs
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
 
-PATH = "Niveles"
 # The quiet level's dimmer: visibly down from full, nowhere near dark. A first
 # guess for the venue, like the level holds themselves. It reaches every dimmer
 # that is a fader; the ones that are a blade go to full instead.
@@ -48,11 +49,23 @@ def generate_energy_intensity(
     workspace: Workspace,
     capabilities: list[FixtureCapabilities],
     exclude_fixture_ids: Sequence[int] = (),
+    names: Names | None = None,
 ) -> GeneratedIntensity:
     """Two scenes: the rig's dimmers low, and at full - shutters open in both."""
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_levels")
     excluded = set(exclude_fixture_ids)
-    ambient = _scene(workspace, capabilities, excluded, "Intensidad Ambiente", AMBIENT_LEVEL)
-    full = _scene(workspace, capabilities, excluded, "Intensidad Total", FULL_LEVEL)
+    ambient = _scene(
+        workspace,
+        capabilities,
+        excluded,
+        vocabulary.display("ambient_intensity"),
+        AMBIENT_LEVEL,
+        path,
+    )
+    full = _scene(
+        workspace, capabilities, excluded, vocabulary.display("full_intensity"), FULL_LEVEL, path
+    )
     return GeneratedIntensity(ambient_id=ambient, full_id=full)
 
 
@@ -62,6 +75,7 @@ def _scene(
     excluded: set[int],
     name: str,
     level: int,
+    path: str,
 ) -> int | None:
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:
@@ -102,5 +116,5 @@ def _scene(
     if not values:
         return None
     function_id = next_function_id(workspace.root)
-    workspace.add_function(build_scene(function_id, name, values, path=PATH))
+    workspace.add_function(build_scene(function_id, name, values, path=path))
     return function_id

@@ -21,9 +21,9 @@ from dataclasses import dataclass, field
 from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..ids import next_function_id
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..workspace import Workspace
-
-PATH = "Niveles"
 
 
 @dataclass(frozen=True)
@@ -45,7 +45,8 @@ def generate_energy_levels(
     workspace: Workspace,
     levels: Sequence[EnergyLevel],
     order: Sequence[str],
-    cycle_name: str = "Ciclo Energia",
+    cycle_name: str | None = None,
+    names: Names | None = None,
 ) -> GeneratedEnergy:
     """A Collection per level and one Chaser walking `order` through them.
 
@@ -53,13 +54,16 @@ def generate_energy_levels(
     so coming down through the middle level is a step of its own rather than a
     jump from peak to quiet.
     """
+    vocabulary = default_names() if names is None else names
+    cycle_name = vocabulary.display("energy_cycle") if cycle_name is None else cycle_name
+    path = vocabulary.display("path_levels")
     level_ids: dict[str, int] = {}
     for level in levels:
         if not level.members:
             continue
         function_id = next_function_id(workspace.root)
         workspace.add_function(
-            build_collection(function_id, level.name, list(level.members), path=PATH)
+            build_collection(function_id, level.name, list(level.members), path=path)
         )
         level_ids[level.name] = function_id
 
@@ -76,7 +80,7 @@ def generate_energy_levels(
             [level_ids[name] for name in steps],
             hold=[holds[name] for name in steps],
             run_order="Loop",
-            path=PATH,
+            path=path,
         )
     )
     return GeneratedEnergy(level_ids=level_ids, cycle_id=cycle_id)

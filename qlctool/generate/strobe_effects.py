@@ -31,6 +31,8 @@ from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
+from ..names.default_names import default_names
+from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
@@ -55,17 +57,38 @@ class GeneratedStrobes:
 def generate_strobe_effects(
     workspace: Workspace,
     library: FixtureLibrary,
-    path: str = "Strobos",
+    path: str | None = None,
+    names: Names | None = None,
 ) -> GeneratedStrobes:
     """The latched shutter pair plus the two held strobe scenes."""
+    vocabulary = default_names() if names is None else names
+    path = vocabulary.display("path_strobes") if path is None else path
     shutter = _shutter_values(workspace, library)
     on_id = off_id = None
     if shutter:
-        on_id = _scene(workspace, "Strobo ON", {f: v for f, (v, _) in shutter.items()}, path)
-        off_id = _scene(workspace, "Strobo OFF", {f: v for f, (_, v) in shutter.items()}, path)
-    fast_id = _scene(workspace, "Strobo Rapido", _held_values(workspace, library, FAST_FRACTION), path)
+        on_id = _scene(
+            workspace,
+            vocabulary.display("strobe_on"),
+            {f: v for f, (v, _) in shutter.items()},
+            path,
+        )
+        off_id = _scene(
+            workspace,
+            vocabulary.display("strobe_off"),
+            {f: v for f, (_, v) in shutter.items()},
+            path,
+        )
+    fast_id = _scene(
+        workspace,
+        vocabulary.display("strobe_fast"),
+        _held_values(workspace, library, FAST_FRACTION),
+        path,
+    )
     medium_id = _scene(
-        workspace, "Strobo Medio", _held_values(workspace, library, MEDIUM_FRACTION), path
+        workspace,
+        vocabulary.display("strobe_medium"),
+        _held_values(workspace, library, MEDIUM_FRACTION),
+        path,
     )
     return GeneratedStrobes(on_id=on_id, off_id=off_id, fast_id=fast_id, medium_id=medium_id)
 
