@@ -64,13 +64,14 @@ from .energy_intensity import generate_energy_intensity
 from .energy_levels import EnergyLevel, generate_energy_levels
 from .flash_color import generate_flash_color
 from .generated_bank import GeneratedBank
+from .generated_matrices import GeneratedMatrices
 from .generated_play_wrappers import GeneratedPlayWrappers
 from .gobo_shake import generate_gobo_shake
 from .haze_machines import haze_machines
 from .home_position import generate_home_position
 from .is_pixel_group import is_pixel_group
 from .live_console import generate_live_console
-from .matrix_effects import GeneratedMatrices, generate_matrix_effects
+from .matrix_effects import generate_matrix_effects
 from .moments import Moment, generate_moments
 from .movement_efx import moving_head_ids
 from .movement_families import generate_movement_families

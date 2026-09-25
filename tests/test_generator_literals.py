@@ -93,6 +93,12 @@ CONVERTED: tuple[str, ...] = (
     "generate/bank_for_group.py",
     "generate/bank_wheel.py",
     "generate/generated_bank.py",
+    # 2026-09-25: split out of matrix_effects.py, which was converted.
+    "generate/add_matrix.py",
+    "generate/generated_matrices.py",
+    "generate/matrix_grid.py",
+    "generate/matrix_group_name.py",
+    "generate/matrix_pace.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

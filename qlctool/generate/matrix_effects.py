@@ -7,27 +7,21 @@ this does the whole cross-product in one call, optionally chained into a chaser.
 """
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
 
 from ..argb import RGB
 from ..color_format import color_format_of
 from ..constants import ALL_FIXTURES_GROUP
-from ..fixture_group import fixture_groups
 from ..functions.chaser import build_chaser
-from ..functions.rgbmatrix import build_rgbmatrix
 from ..ids import next_function_id
 from ..matrix_algorithms import SCRIPT_ALGORITHMS, CuratedScript
-from ..matrix_step_count import matrix_step_count
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..palette import PALETTE
 from ..workspace import Workspace
-
-
-@dataclass(frozen=True)
-class GeneratedMatrices:
-    matrix_ids: list[int]
-    chaser_id: int | None
+from .add_matrix import add_matrix
+from .generated_matrices import GeneratedMatrices
+from .matrix_grid import matrix_grid
+from .matrix_group_name import matrix_group_name
 
 
 def generate_matrix_effects(
@@ -74,11 +68,11 @@ def generate_matrix_effects(
     vocabulary = default_names() if names is None else names
     path = vocabulary.display("path_matrices_generated") if path is None else path
     colors = palette if palette is not None else PALETTE
-    group_name = _group_name(workspace, group_id, vocabulary)
+    group_name = matrix_group_name(workspace, group_id, vocabulary)
     # Write the colour shape this show already uses (4.13 vs 4.14+).
     color_format = color_format_of(workspace.root)
 
-    width, height = _grid(workspace, group_id)
+    width, height = matrix_grid(workspace, group_id)
     stepped = algorithms if chaser_algorithms is None else chaser_algorithms
 
     matrix_ids: list[int] = []
@@ -86,7 +80,7 @@ def generate_matrix_effects(
     for algorithm in algorithms:
         label = "Solid" if algorithm is None else algorithm
         for color_name, rgb in colors.items():
-            fid, pass_ms = _add_matrix(
+            fid, pass_ms = add_matrix(
                 workspace,
                 f"{group_name} - {label} {color_name}",
                 algorithm,
@@ -108,7 +102,7 @@ def generate_matrix_effects(
 
     curated_colors = PALETTE if curated_palette is None else curated_palette
     for entry in curated:
-        fid, pass_ms = _add_matrix(
+        fid, pass_ms = add_matrix(
             workspace,
             f"{group_name} - {entry.algorithm} {'/'.join(entry.colors)}",
             entry.algorithm,
@@ -145,79 +139,3 @@ def generate_matrix_effects(
         )
 
     return GeneratedMatrices(matrix_ids=matrix_ids, chaser_id=chaser_id)
-
-
-def _add_matrix(
-    workspace: Workspace,
-    name: str,
-    algorithm: str | None,
-    mono_color: RGB,
-    end_color: RGB | None,
-    group_id: int,
-    color_format: str,
-    direction: str,
-    path: str,
-    properties: dict[str, str] | None,
-    width: int,
-    height: int,
-    duration: int,
-    chaser_max_hold: int,
-) -> tuple[int, int]:
-    """Build one RGBMatrix, add it to the workspace, and hand back what both
-    call sites above need next: its function id, and the hold one full pass
-    of it needs. The base cross-product and a curated one-off recipe differ
-    only in what they loop over and whether every result is stepped - this is
-    the build-and-append shape both of them share.
-    """
-    frame_ms, pass_ms = _pace(algorithm, width, height, duration, chaser_max_hold)
-    fid = next_function_id(workspace.root)
-    workspace.add_function(
-        build_rgbmatrix(
-            fid,
-            name,
-            algorithm=algorithm,
-            mono_color=mono_color,
-            end_color=end_color,
-            group_id=group_id,
-            color_format=color_format,
-            duration=frame_ms,
-            direction=direction,
-            path=path,
-            properties=properties,
-        )
-    )
-    return fid, pass_ms
-
-
-def _pace(
-    algorithm: str | None, width: int, height: int, duration: int, cap: int
-) -> tuple[int, int]:
-    """Frame length and full-pass length for one algorithm on one grid.
-
-    A pass longer than the cap is run faster rather than cut off: a wave across
-    fifteen PARs at the nominal frame rate would hold one colour for ten
-    seconds, and holding it is as wrong as cutting it.
-    """
-    count = matrix_step_count(algorithm, width, height)
-    frame_ms = duration
-    if duration * count > cap:
-        frame_ms = max(1, cap // count)
-    return frame_ms, frame_ms * count
-
-
-def _grid(workspace: Workspace, group_id: int) -> tuple[int, int]:
-    """The grid a matrix paints, which is what decides how long a pass takes."""
-    for group in fixture_groups(workspace.root):
-        if group.group_id == group_id:
-            return group.width, group.height
-    return 1, 1
-
-
-def _group_name(workspace: Workspace, group_id: int, vocabulary: Names) -> str:
-    if group_id == ALL_FIXTURES_GROUP:
-        return vocabulary.display("all_fixtures_group")
-    for group in fixture_groups(workspace.root):
-        if group.group_id == group_id:
-            return group.name
-    known = ", ".join(f"{g.group_id}={g.name}" for g in fixture_groups(workspace.root))
-    raise ValueError(f"workspace defines no fixture group {group_id} (have: {known or 'none'})")
