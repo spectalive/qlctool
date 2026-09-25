@@ -20,7 +20,7 @@ from qlctool.description.controller_settings import ControllerSettings
 from qlctool.desk_function_path import DESK_FUNCTION_PATH
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
-from qlctool.vibra.description import vibra_description
+from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
 
 SHOW = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"

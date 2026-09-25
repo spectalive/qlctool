@@ -44,7 +44,7 @@ from ..strobe_speed import strobe_speed_pairs
 from ..vc.beat_multiplier import beat_multiplier
 from ..vc.dial_function import DialFunction
 from ..vc.speed_dial import MULTIPLIER_NONE
-from ..vibra.description import vibra_description
+from ..vibra.vibra_description import vibra_description
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
 from .beam_rainbow_spin import generate_beam_rainbow_spin

@@ -9,7 +9,7 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.description.load_show_description import load_show_description
-from qlctool.vibra.description import vibra_description
+from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
 
 SETUPS = RIG_ROOT / "QLC+ Setups"

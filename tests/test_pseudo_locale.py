@@ -24,7 +24,7 @@ from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.template_fields import template_fields
-from qlctool.vibra.description import vibra_description
+from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local, localname
 

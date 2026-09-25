@@ -54,7 +54,7 @@ from .repatch.rename import rename_fixture
 from .stage_plot import load_stage_plot
 from .toolkit_config_from import toolkit_config_from
 from .validate import validate_workspace
-from .vibra.description import vibra_description
+from .vibra.vibra_description import vibra_description
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
 

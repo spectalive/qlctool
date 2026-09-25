@@ -11,7 +11,7 @@ from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.workspace_language import workspace_language
-from qlctool.vibra.description import vibra_description
+from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
 
 SHOW = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"

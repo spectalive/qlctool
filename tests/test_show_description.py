@@ -16,7 +16,7 @@ from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.pastel_palette import PASTEL_PALETTE
 from qlctool.split_pairs import SPLIT_PAIRS
-from qlctool.vibra.description import vibra_description
+from qlctool.vibra.vibra_description import vibra_description
 from qlctool.wheel_palette import WHEEL_PALETTE
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local

@@ -9,7 +9,7 @@ from rig_root import RIG_ROOT
 from qlctool.description.controller_settings import ControllerSettings
 from qlctool.description.load_show_description import load_show_description
 from qlctool.description.rig_files import RigFiles
-from qlctool.vibra.description import vibra_description
+from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
 
 TESTS = Path(__file__).resolve().parent

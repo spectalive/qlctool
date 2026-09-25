@@ -17,10 +17,10 @@ from qlctool.library import FixtureLibrary
 from qlctool.matrix_algorithms import CURATED_MATRICES
 from qlctool.names.shipped_names import shipped_names
 from qlctool.palette import PALETTE, PRIMARY_COLORS
-from qlctool.vibra.description import vibra_description
 from qlctool.vibra.flash_functions import FLASH_FUNCTIONS
 from qlctool.vibra.keys import KEYS
 from qlctool.vibra.timing import VIBRA_TIMING
+from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
 
 SHOW = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"

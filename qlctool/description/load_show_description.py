@@ -12,7 +12,7 @@ from pathlib import Path
 from lxml import etree
 
 from ..names.shipped_names import shipped_names
-from ..vibra.description import vibra_description
+from ..vibra.vibra_description import vibra_description
 from .reading.description_sections import DESCRIPTION_SECTIONS
 from .reading.read_console import read_console
 from .reading.read_controllers import read_controllers
