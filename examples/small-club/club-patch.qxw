@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workspace>
+<Workspace xmlns="http://www.qlcplus.org/Workspace" CurrentWindow="VC">
+  <Creator>
+    <Name>Q Light Controller Plus</Name>
+    <Version>5.2.2</Version>
+    <Author>qlctool</Author>
+  </Creator>
+  <Engine>
+    <Fixture>
+      <Manufacturer>Vortex</Manufacturer>
+      <Model>PC-64 LED S</Model>
+      <Mode>Default</Mode>
+      <ID>0</ID>
+      <Name>Par 1</Name>
+      <Universe>0</Universe>
+      <Address>0</Address>
+      <Channels>5</Channels>
+    </Fixture>
+    <Fixture>
+      <Manufacturer>Vortex</Manufacturer>
+      <Model>PC-64 LED S</Model>
+      <Mode>Default</Mode>
+      <ID>1</ID>
+      <Name>Par 2</Name>
+      <Universe>0</Universe>
+      <Address>5</Address>
+      <Channels>5</Channels>
+    </Fixture>
+    <Fixture>
+      <Manufacturer>Vortex</Manufacturer>
+      <Model>PC-64 LED S</Model>
+      <Mode>Default</Mode>
+      <ID>2</ID>
+      <Name>Par 3</Name>
+      <Universe>0</Universe>
+      <Address>10</Address>
+      <Channels>5</Channels>
+    </Fixture>
+    <Fixture>
+      <Manufacturer>Vortex</Manufacturer>
+      <Model>PC-64 LED S</Model>
+      <Mode>Default</Mode>
+      <ID>3</ID>
+      <Name>Par 4</Name>
+      <Universe>0</Universe>
+      <Address>15</Address>
+      <Channels>5</Channels>
+    </Fixture>
+    <Fixture>
+      <Manufacturer>Vortex</Manufacturer>
+      <Model>PC-64 LED S</Model>
+      <Mode>Default</Mode>
+      <ID>4</ID>
+      <Name>Par 5</Name>
+      <Universe>0</Universe>
+      <Address>20</Address>
+      <Channels>5</Channels>
+    </Fixture>
+    <Fixture>
+      <Manufacturer>Vortex</Manufacturer>
+      <Model>PC-64 LED S</Model>
+      <Mode>Default</Mode>
+      <ID>5</ID>
+      <Name>Par 6</Name>
+      <Universe>0</Universe>
+      <Address>25</Address>
+      <Channels>5</Channels>
+    </Fixture>
+    <Fixture>
+      <Manufacturer>LED Beam</Manufacturer>
+      <Model>Mini Led Moving Head</Model>
+      <Mode>16 Channels</Mode>
+      <ID>6</ID>
+      <Name>Beam 1</Name>
+      <Universe>0</Universe>
+      <Address>30</Address>
+      <Channels>16</Channels>
+    </Fixture>
+    <Fixture>
+      <Manufacturer>LED Beam</Manufacturer>
+      <Model>Mini Led Moving Head</Model>
+      <Mode>16 Channels</Mode>
+      <ID>7</ID>
+      <Name>Beam 2</Name>
+      <Universe>0</Universe>
+      <Address>46</Address>
+      <Channels>16</Channels>
+    </Fixture>
+    <Fixture>
+      <Manufacturer>Chauvet</Manufacturer>
+      <Model>MiN Wash</Model>
+      <Mode>13 Channel</Mode>
+      <ID>8</ID>
+      <Name>Wash 1</Name>
+      <Universe>0</Universe>
+      <Address>62</Address>
+      <Channels>13</Channels>
+    </Fixture>
+    <Fixture>
+      <Manufacturer>Chauvet</Manufacturer>
+      <Model>MiN Wash</Model>
+      <Mode>13 Channel</Mode>
+      <ID>9</ID>
+      <Name>Wash 2</Name>
+      <Universe>0</Universe>
+      <Address>75</Address>
+      <Channels>13</Channels>
+    </Fixture>
+    <InputOutputMap>
+      <BeatGenerator BeatType="Internal" BPM="120"/>
+      <Universe Name="Universe 1" ID="0"/>
+    </InputOutputMap>
+    <FixtureGroup ID="0">
+      <Name>Pars</Name>
+      <Size X="6" Y="1"/>
+      <Head X="0" Y="0" Fixture="0">0</Head>
+      <Head X="1" Y="0" Fixture="1">0</Head>
+      <Head X="2" Y="0" Fixture="2">0</Head>
+      <Head X="3" Y="0" Fixture="3">0</Head>
+      <Head X="4" Y="0" Fixture="4">0</Head>
+      <Head X="5" Y="0" Fixture="5">0</Head>
+    </FixtureGroup>
+    <FixtureGroup ID="1">
+      <Name>Heads</Name>
+      <Size X="4" Y="1"/>
+      <Head X="0" Y="0" Fixture="6">0</Head>
+      <Head X="1" Y="0" Fixture="7">0</Head>
+      <Head X="2" Y="0" Fixture="8">0</Head>
+      <Head X="3" Y="0" Fixture="9">0</Head>
+    </FixtureGroup>
+  </Engine>
+  <VirtualConsole>
+    <Frame Caption="">
+      <Appearance>
+        <FrameStyle>None</FrameStyle>
+        <ForegroundColor>Default</ForegroundColor>
+        <BackgroundColor>Default</BackgroundColor>
+        <BackgroundImage>None</BackgroundImage>
+        <Font>Default</Font>
+      </Appearance>
+    </Frame>
+    <Properties>
+      <Size Width="1440" Height="900"/>
+      <GrandMaster ChannelMode="Intensity" ValueMode="Reduce" SliderMode="Normal"/>
+    </Properties>
+  </VirtualConsole>
+  <SimpleDesk>
+    <Engine/>
+  </SimpleDesk>
+</Workspace>

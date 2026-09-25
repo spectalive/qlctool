@@ -109,6 +109,28 @@ frames by their shipped head, so a renamed head is refused while the
 description is read. `qlctool check` messages are still Spanish on any show
 (ruling B10, open in `TODO.md`).
 
+## Examples
+
+`tools/qlctool/examples/small-club/` is a second rig, described in English:
+six RGB pars, two beam moving heads with no gobo, prism or colour wheel, and
+two washes. It is a different patch from the Vibra show's: three of Vibra's
+models in other numbers, addresses and groups, with no haze machine and no
+controllers. It holds the three fixture definitions it uses (`fixtures/`),
+the patch (`club-patch.qxw`), the description (`show.toml`, which states
+`language = "en"` and names no `[controllers]`) and the show generated from
+them (`club.qxw`, never edited by hand). Regenerate it from
+`tools/qlctool`:
+
+```bash
+qlctool newshow --description examples/small-club/show.toml --validate
+qlctool --fixtures examples/small-club/fixtures check examples/small-club/club.qxw
+```
+
+`tests/test_small_club_example.py` regenerates it and holds it byte-for-byte
+against the committed `club.qxw`, runs every check over it with no finding,
+asserts it carries no pad binding, desk function or controller rules, and
+loads it in QLC+.
+
 ## Design notes worth keeping
 
 - **Fixtures are selected by capability, never by name or ID list.** "Every
