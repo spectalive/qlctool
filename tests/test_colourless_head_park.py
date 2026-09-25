@@ -15,6 +15,7 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.rule_mode_owner import RULE_ID
 from qlctool.cli import main
+from qlctool.color_wheel_match import WHEEL_NAMES
 from qlctool.library import FixtureLibrary
 from qlctool.outside_color_looks import outside_color_looks
 from qlctool.workspace import Workspace
@@ -31,7 +32,7 @@ def test_2026_09_25_a_gobo_spot_without_colour_has_its_effect_channel_owned(tmp_
     spots = [
         capability
         for capability in capabilities_of(workspace.root, library)
-        if outside_color_looks(capability)
+        if outside_color_looks(capability, WHEEL_NAMES)
     ]
     # The case is really there: two heads with no colour and an Effect channel.
     assert len(spots) == 2
@@ -56,11 +57,13 @@ def test_2026_09_25_a_wheel_whose_positions_name_no_colour_is_outside_the_looks(
         for capability in capabilities_of(shipped.root, FixtureLibrary.load())
         if capability.has_role(roles.GOBO) and capability.has_role(roles.COLOR_MACRO)
     )
-    assert not outside_color_looks(beam)
+    assert not outside_color_looks(beam, WHEEL_NAMES)
     offset, positions = beam.wheel_for_role(roles.COLOR_MACRO)
     renamed = list(beam.capabilities_by_offset)
     renamed[offset] = tuple(
         dataclasses.replace(position, name=f"Slot {index}")
         for index, position in enumerate(positions)
     )
-    assert outside_color_looks(dataclasses.replace(beam, capabilities_by_offset=renamed))
+    assert outside_color_looks(
+        dataclasses.replace(beam, capabilities_by_offset=renamed), WHEEL_NAMES
+    )

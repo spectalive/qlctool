@@ -787,6 +787,7 @@ def build_canonical_show(
         caps,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
         names=vocabulary,
+        look_colours=tuple(colours.palette),
     )
     charla_intensity_ids = [intensity.full_id]
     if charla_pixel_intensity_id is not None:
@@ -815,6 +816,7 @@ def build_canonical_show(
         caps,
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
         names=vocabulary,
+        look_colours=tuple(colours.palette),
     )
     if peak_static is not None:
         master[vocabulary.display("peak_intensity")] = peak_static

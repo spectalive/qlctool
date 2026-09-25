@@ -29,6 +29,7 @@ from collections.abc import Sequence
 
 from .. import roles
 from ..capability import FixtureCapabilities
+from ..color_wheel_match import WHEEL_NAMES
 from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -49,8 +50,12 @@ def generate_dimmerless_intensity(
     exclude_fixture_ids: Sequence[int] = (),
     name: str | None = None,
     names: Names | None = None,
+    look_colours: Sequence[str] = tuple(WHEEL_NAMES),
 ) -> int | None:
-    """The chase level's static base. None when no fixture needs one."""
+    """The chase level's static base. None when no fixture needs one.
+
+    `look_colours` are the colours the show's looks request (its palette).
+    """
     vocabulary = default_names() if names is None else names
     name = vocabulary.display("peak_intensity") if name is None else name
     excluded = set(exclude_fixture_ids)
@@ -83,7 +88,7 @@ def generate_dimmerless_intensity(
         pairs += strobe_off_pairs(capability)
         # A head no colour look reaches is parked by nothing else: this level
         # lights it, so this level states its self-running channel (2026-09-25).
-        if outside_color_looks(capability):
+        if outside_color_looks(capability, look_colours, names):
             pairs += mode_park_pairs(capability)
         if pairs:
             fixture_id = capability.fixture.fixture_id

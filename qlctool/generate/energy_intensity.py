@@ -21,6 +21,7 @@ from dataclasses import dataclass
 
 from .. import roles
 from ..capability import FixtureCapabilities
+from ..color_wheel_match import WHEEL_NAMES
 from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -52,11 +53,19 @@ def generate_energy_intensity(
     capabilities: list[FixtureCapabilities],
     exclude_fixture_ids: Sequence[int] = (),
     names: Names | None = None,
+    look_colours: Sequence[str] = tuple(WHEEL_NAMES),
 ) -> GeneratedIntensity:
-    """Two scenes: the rig's dimmers low, and at full - shutters open in both."""
+    """Two scenes: the rig's dimmers low, and at full - shutters open in both.
+
+    `look_colours` are the colours the show's looks request (its palette): a
+    head whose wheel shows none of them is parked here (`outside_color_looks`).
+    """
     vocabulary = default_names() if names is None else names
     path = vocabulary.display("path_levels")
     excluded = set(exclude_fixture_ids)
+    outside = {
+        c.fixture.fixture_id for c in capabilities if outside_color_looks(c, look_colours, names)
+    }
     ambient = _scene(
         workspace,
         capabilities,
@@ -64,9 +73,16 @@ def generate_energy_intensity(
         vocabulary.display("ambient_intensity"),
         AMBIENT_LEVEL,
         path,
+        outside,
     )
     full = _scene(
-        workspace, capabilities, excluded, vocabulary.display("full_intensity"), FULL_LEVEL, path
+        workspace,
+        capabilities,
+        excluded,
+        vocabulary.display("full_intensity"),
+        FULL_LEVEL,
+        path,
+        outside,
     )
     return GeneratedIntensity(ambient_id=ambient, full_id=full)
 
@@ -78,6 +94,7 @@ def _scene(
     name: str,
     level: int,
     path: str,
+    outside: set[int],
 ) -> int | None:
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities:
@@ -115,7 +132,7 @@ def _scene(
         pairs += fog_off_pairs(capability)
         # A head no colour look reaches is parked by nothing else: its
         # self-running channel is stated here, where it is lit (2026-09-25).
-        if outside_color_looks(capability):
+        if capability.fixture.fixture_id in outside:
             pairs += mode_park_pairs(capability)
         if pairs:
             values[capability.fixture.fixture_id] = sorted(set(pairs))
