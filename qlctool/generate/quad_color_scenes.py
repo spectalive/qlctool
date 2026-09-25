@@ -8,7 +8,7 @@ and lost the deterministic rotation (old-vs-new audit, 2026-08-28). This
 rebuilds the four looks over the whole colour-capable rig: RGB fixtures take
 their dealt colour, the beams take the nearest wheel position for theirs, and
 the deal follows patch order the way `Rig Multicolor` does - except that a
-group of two never takes two opposite hues (`quad_seats`).
+group never takes exactly two opposite hues (`quad_seats`).
 
 Colour only, no intensity: like every wheel step since 2026-08-27, the energy
 levels own the dimmers.
@@ -78,7 +78,7 @@ def generate_quad_color_scenes(
         return []
     seats = quad_seats(
         [c.fixture.fixture_id for c in (*rgb_caps, *wheel_caps)],
-        [group.fixture_ids for group in fixture_groups(workspace.root)],
+        {group.group_id: group.fixture_ids for group in fixture_groups(workspace.root)},
         [values_of[name] for name in dealt],
     )
 

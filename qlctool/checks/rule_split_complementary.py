@@ -17,6 +17,7 @@ button of its own. Saturated, because a pastel has too little hue to fight.
 The rule reasons about the values and the groups, never about a name.
 """
 
+from ..complementary_from import COMPLEMENTARY_FROM
 from ..hue_distance import hue_distance
 from .driven_channels import driven_channels
 from .finding import ERROR, Finding
@@ -25,8 +26,6 @@ from .saturated import saturated
 from .show_graph import ShowGraph
 
 RULE = "complementarios en un mismo lavado"
-# A triad (120 degrees) still mixes to a colour; from here on it mixes to grey.
-COMPLEMENTARY_FROM = 150.0
 STATES_COLOUR = ("Scene", "Sequence")
 
 

@@ -51,3 +51,43 @@ def test_2026_09_25_a_group_of_two_gets_no_complementary_pair(tmp_path):
     assert main(["newshow", str(_two_par_patch(tmp_path)), "--out", str(out)]) == 0
     findings = check_workspace(Workspace.load(out), FixtureLibrary.load())
     assert [str(f) for f in findings if f.rule == RULE] == []
+
+
+def _quad_colours():
+    from qlctool.generate.quad_color_scenes import QUAD_COLORS
+    from qlctool.names.default_names import default_names
+    from qlctool.palette import PALETTE
+
+    return [PALETTE[default_names().display(identifier)] for identifier in QUAD_COLORS]
+
+
+def test_2026_09_25_a_larger_group_on_opposite_seats_is_re_dealt():
+    """2026-09-25, review of the fix above: a group of four whose members sit at
+    patch indices 0, 3, 4 and 7 was dealt blue, yellow, blue, yellow - the same
+    split twice - because only groups of exactly two were re-dealt.
+    """
+    from qlctool.generate.opposite_split import opposite_split
+    from qlctool.generate.quad_seats import quad_seats
+
+    colours = _quad_colours()
+    dealt = list(range(100, 108))
+    group = (100, 103, 104, 107)
+    assert opposite_split([0, 3, 4, 7], colours)
+    seats = quad_seats(dealt, {1: group}, colours)
+    assert not opposite_split([seats[m] for m in group], colours)
+    # Nobody outside the group moves.
+    assert all(seats[m] == m - 100 for m in dealt if m not in group)
+
+
+def test_2026_09_25_a_fixture_in_two_groups_is_seated_by_the_higher_id():
+    """Same review: a fixture in two clashing groups moved depending on the
+    order the groups were visited in. They are visited in ascending id, so
+    fixture 103 ends where group 2 puts it, whatever order they are given in.
+    """
+    from qlctool.generate.quad_seats import quad_seats
+
+    colours = _quad_colours()
+    dealt = [100, 101, 102, 103, 104]
+    expected = {100: 0, 101: 1, 102: 2, 103: 2, 104: 5}
+    assert quad_seats(dealt, {2: (100, 103), 1: (103, 104)}, colours) == expected
+    assert quad_seats(dealt, {1: (103, 104), 2: (100, 103)}, colours) == expected
