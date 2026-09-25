@@ -378,3 +378,5 @@ rig_without_definitions = "newshow no encontro definicion para ningun fixture de
 missing_definition = "no hay definicion de fixture para este modelo (buscado en {searched}): ninguna regla ve sus canales, asi que este check no dice nada de el; usa --fixtures, QLCTOOL_FIXTURES o un qlctool.toml"
 missing_mode = "la definicion no tiene el modo {mode}: ninguna regla ve los canales de este fixture, asi que este check no dice nada de el; repatchealo en un modo de la definicion o corrige la definicion"
 searched_no_folder = "ninguna carpeta"
+unresolved_models = "no hay definicion de fixture para {models} (buscado en {searched}); usa --fixtures, QLCTOOL_FIXTURES o un qlctool.toml"
+unresolved_mode = "{model} esta patcheado en el modo {mode}, que su definicion no tiene, asi que sus canales no se pueden leer; repatchealo en un modo de la definicion: {modes}"

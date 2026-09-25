@@ -6,15 +6,25 @@
   a running shutter chase, compare each burst to its held source, confirm
   release and timeout, then tune `BURST_MS` if needed. Evidence and the
   per-hit judgment: [desk burst findings](docs/2026-09-13-desk-bursts-findings.md).
-- [ ] **A known model in a mode its definition lacks is warned as "no fixture
-  definition" (2026-09-25).** `warn_unresolved.py` and the catalogue keys
-  `rig_without_definitions` / `missing_definition` (en.toml, es.toml) tell the
-  user to pass `--fixtures`, while `rule_missing_definition` already tells a
-  missing model from a missing mode and names both. The right advice for the
-  mode case is to repatch the fixture in a mode the definition has. No
-  shipped workspace has the case. Smallest next step: a second catalogue key
-  for the mode case, chosen from the same `resolved_definition` check, with a
-  dated test.
+- [x] **A known model in a mode its definition lacks is warned as "no fixture
+  definition" (2026-09-25).** `warn_unresolved` now tells the two cases
+  apart from the same `resolved_definition` check as `rule_missing_definition`:
+  unknown models keep the `--fixtures` advice (catalogue key
+  `unresolved_models`), a known model in a missing mode is told to repatch in
+  a mode the definition has, naming the model, the mode and the modes it has
+  (`unresolved_mode`, en and es). `newshow` warns in the show's language.
+  Closed by `fix(newshow): a known model in a missing mode is told to
+  repatch, not to pass --fixtures`, test
+  `tests/test_mode_mismatch_warning.py`; Vibra and the club warn nothing.
+- [ ] **`newshow`'s refusal blames the folder when every fixture is in a
+  missing mode (2026-09-25).** `newshow_refusal` renders
+  `rig_without_definitions` ("found no fixture definition ... pass
+  --fixtures") whenever nothing patched resolves, also when every definition
+  was found and only the modes are wrong; the warning printed just above it
+  now says "repatch". Smallest next step: choose `rig_without_definitions`
+  only when no patched model is known, else a catalogue key that sends the
+  user to the per-model warnings, with a dated test in
+  `tests/test_rig_minimum.py`.
 - [ ] **`newshow` builds no show for a rig without movement or a dimmer
   (Plan C final review, 2026-09-25).** Pars only stopped at a traceback `no
   fixture in this workspace has both pan and tilt` (`movement_families.py`),

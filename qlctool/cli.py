@@ -361,8 +361,8 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     auto_hint = f" (key {auto_key})" if auto_key else ""
 
     library = library_for(args.fixtures, src, description.rig.fixtures if description else ())
-    warn_unresolved(ws.root, library)
     vocabulary = description_names(shown)
+    warn_unresolved(ws.root, library, vocabulary)
     refusal = newshow_refusal(ws.root, library, vocabulary)
     if refusal is not None:
         raise SystemExit(refusal)
