@@ -9,17 +9,17 @@ none they can see: their silence was not a clean result, it was no result.
 So the missing definition is itself the finding, one per model, naming the
 fixtures and the folders searched, and the run exits non-zero. A known model
 patched in a mode its definition lacks is the same blindness
-(`resolved_definition`, 2026-09-25 review) and is reported with its mode. It
+(`definition_outcome_of`, 2026-09-25 review) and is reported with its mode. It
 is asked of the library, never of a model's name.
 """
 
 from lxml import etree
 
+from ..definition_outcome_of import definition_outcome_of
 from ..fixture import patched_fixtures
 from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
-from ..resolved_definition import resolved_definition
 from ..searched_folders import searched_folders
 from .finding import ERROR, Finding
 
@@ -33,10 +33,11 @@ def check_missing_definitions(
     searched = searched_folders(library, vocabulary)
     unresolved: dict[tuple[str, str], list[str]] = {}
     for fixture in patched_fixtures(root):
-        if resolved_definition(fixture, library) is not None:
+        outcome = definition_outcome_of(fixture, library)
+        if outcome.resolved:
             continue
         model = f"{fixture.manufacturer} {fixture.model}"
-        if library.get(fixture.manufacturer, fixture.model) is None:
+        if not outcome.model_known:
             message = vocabulary.render("missing_definition", searched=searched)
         else:
             model = f"{model} ({fixture.mode})"

@@ -22,6 +22,7 @@ from qlctool.generate.rig_below_minimum import rig_below_minimum
 from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
+from qlctool.xmlutil import find_local, iter_local
 
 EMPTY = Path(__file__).resolve().parent / "data" / "empty-workspace.qxw"
 PAR = "Vortex|PC-64 LED S|Default|0|{address}|Par {index}"
@@ -114,3 +115,18 @@ def test_2026_09_25_no_definition_found_is_said_not_blamed_on_the_rig(
     searched = names.display("searched_no_folder")
     expected = names.render("rig_without_definitions", searched=searched)
     assert _refusal(patch, capsys) == expected
+
+
+def test_2026_09_25_every_fixture_in_a_missing_mode_is_told_to_repatch(tmp_path, capsys):
+    """2026-09-25 review: when every definition was found and only the patched
+    modes were missing, the refusal still said "pass --fixtures" right under
+    the warnings that ask for a repatch. A folder cannot help there.
+    """
+    patch = _patch(tmp_path, [(PAR, 6, 5), (BEAM, 2, 16)], grouped=True)
+    workspace = Workspace.load(patch)
+    for fixture in iter_local(workspace.root, "Fixture"):
+        find_local(fixture, "Mode").text = "No Such Mode"
+    workspace.save(patch)
+    refusal = _refusal(patch, capsys)
+    assert refusal == default_names().display("rig_without_modes")
+    assert "--fixtures" not in refusal

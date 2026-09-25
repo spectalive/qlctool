@@ -11,6 +11,7 @@ import sys
 
 from lxml import etree
 
+from .definition_outcome_of import definition_outcome_of
 from .library import FixtureLibrary
 from .names.names import Names
 from .names.shipped_names import shipped_names
@@ -27,7 +28,7 @@ def warn_unresolved(
     lines: list[str] = []
     for fixture in unresolved_fixtures(root, library):
         model = f"{fixture.manufacturer} {fixture.model}"
-        definition = library.get(fixture.manufacturer, fixture.model)
+        definition = definition_outcome_of(fixture, library).definition
         if definition is None:
             unknown[model] = None
             continue

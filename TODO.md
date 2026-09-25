@@ -16,15 +16,19 @@
   Closed by `fix(newshow): a known model in a missing mode is told to
   repatch, not to pass --fixtures`, test
   `tests/test_mode_mismatch_warning.py`; Vibra and the club warn nothing.
-- [ ] **`newshow`'s refusal blames the folder when every fixture is in a
-  missing mode (2026-09-25).** `newshow_refusal` renders
+- [x] **`newshow`'s refusal blames the folder when every fixture is in a
+  missing mode (2026-09-25).** `newshow_refusal` rendered
   `rig_without_definitions` ("found no fixture definition ... pass
-  --fixtures") whenever nothing patched resolves, also when every definition
-  was found and only the modes are wrong; the warning printed just above it
-  now says "repatch". Smallest next step: choose `rig_without_definitions`
-  only when no patched model is known, else a catalogue key that sends the
-  user to the per-model warnings, with a dated test in
-  `tests/test_rig_minimum.py`.
+  --fixtures") whenever nothing patched resolved, also when every definition
+  was found and only the modes were wrong. It now renders
+  `rig_without_definitions` only when no patched model is known, else
+  `rig_without_modes` (en and es), which sends the user to the per-model
+  warnings and asks for the repatch. The missing-model / missing-mode
+  distinction lives once in `definition_outcome_of` (`DefinitionOutcome`),
+  shared by `resolved_definition`, `warn_unresolved`,
+  `rule_missing_definition` and the refusal. Closed by `fix(newshow): the
+  refusal asks for a repatch when only the modes are missing`, test
+  `tests/test_rig_minimum.py` (fails without the fix).
 - [ ] **`newshow` builds no show for a rig without movement or a dimmer
   (Plan C final review, 2026-09-25).** Pars only stopped at a traceback `no
   fixture in this workspace has both pan and tilt` (`movement_families.py`),
