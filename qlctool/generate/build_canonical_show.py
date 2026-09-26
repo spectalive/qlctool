@@ -50,9 +50,10 @@ def build_canonical_show(
     description: ShowDescription | None = None,
 ) -> CanonicalShow:
     """Strip the workspace to its patch and generate a self-running show on it."""
-    build = start_show_build(
-        workspace, library, algorithms, matrix_colors, plot_path, beats, bpm_tap, description
-    )
+    build = start_show_build(workspace, library, plot_path, beats, description)
+    build.bpm_tap = bpm_tap
+    build.algorithms = algorithms
+    build.matrix_colors = matrix_colors
     add_base_looks(build)
     add_panel_looks(build)
     add_pixel_layers(build)

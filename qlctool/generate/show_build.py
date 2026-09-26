@@ -48,14 +48,15 @@ class ShowBuild:
     pastels: dict[str, RGB]
     contrasts: tuple[tuple[str, str], ...]
     beats: bool
-    bpm_tap: bool
-    algorithms: Sequence[str | None]
-    matrix_colors: Sequence[str] | None
     pad: MidiPadProfile | None
     stage_placed: int
     caps: list[FixtureCapabilities]
     master: dict[str, int] = field(default_factory=dict)
 
+    # Set by `build_canonical_show` straight from its arguments.
+    bpm_tap: bool = field(init=False)
+    algorithms: Sequence[str | None] = field(init=False)
+    matrix_colors: Sequence[str] | None = field(init=False)
     colour_flash_ids: dict[str, int] = field(init=False)
     builtins: GeneratedBuiltins = field(init=False)
     banks: list[GeneratedBank] = field(init=False)

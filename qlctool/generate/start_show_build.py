@@ -5,8 +5,6 @@ description resolved into the show's words, the rig bound to the interface
 and the pad it is driven from, the stage placed, the wheels kept from fading.
 """
 
-from collections.abc import Sequence
-
 from ..capabilities_of import capabilities_of
 from ..controllers.midi_pad_named import midi_pad_named
 from ..description.contrast_pairs_of import contrast_pairs_of
@@ -30,11 +28,8 @@ from .stage_plot_layout import apply_stage_plot
 def start_show_build(
     workspace: Workspace,
     library: FixtureLibrary,
-    algorithms: Sequence[str | None],
-    matrix_colors: Sequence[str] | None,
     plot_path: str | None,
     beats: bool,
-    bpm_tap: bool,
     description: ShowDescription | None,
 ) -> ShowBuild:
     """The workspace stripped and bound, and the build its stages share."""
@@ -87,9 +82,6 @@ def start_show_build(
         pastels=pastels,
         contrasts=contrasts,
         beats=beats,
-        bpm_tap=bpm_tap,
-        algorithms=algorithms,
-        matrix_colors=matrix_colors,
         pad=pad,
         stage_placed=stage_placed,
         caps=caps,
