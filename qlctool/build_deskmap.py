@@ -12,8 +12,8 @@ import hashlib
 from pathlib import Path
 from typing import Any
 
+from .attach_release_hooks import attach_release_hooks
 from .capabilities_of import capabilities_of
-from .checks.console_states import room_states
 from .checks.rule_desk_bursts import check_desk_bursts
 from .checks.show_graph import build_show_graph, group_fixtures
 from .desk_burst_buttons import desk_burst_buttons
@@ -30,7 +30,6 @@ from .desk_policy import (
     place,
     split_caption,
 )
-from .desk_release_hooks import desk_release_hooks
 from .desk_swatch import swatches
 from .desk_unique_key import desk_unique_key
 from .desk_widgets import desk_widgets
@@ -138,18 +137,7 @@ def build_deskmap(
 
     pages = desk_pages(sections, section_solo, vocabulary)
 
-    # Optional, schema 2 unchanged: the desk ignores keys it does not know.
-    # Per room state, the hook to press when a latched pick is released.
-    states = room_states(root, graph, groups)
-    state_widgets = {
-        c["function"]: c["widget"]
-        for c in controls.values()
-        if c["role"] == "state" and c["function"] in states
-    }
-    release = desk_release_hooks(graph, groups, root, states, state_widgets)
-    for control in controls.values():
-        if control["widget"] in release:
-            control["releaseTo"] = release[control["widget"]]
+    attach_release_hooks(controls, root, graph, groups)
 
     stop_all = next((w for w in widgets if w.kind == "Button" and w.action == "StopAll"), None)
     grand_master = next(
