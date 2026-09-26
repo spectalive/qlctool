@@ -1,5 +1,19 @@
 # qlctool follow-up
 
+- [x] **Flash Color leaves the lit smoke columns out (owner decision,
+  2026-09-26).** `Flash Color` (and its desk burst's private copy) skipped
+  every smoke fixture, so while held the four vertical LED fog machines kept
+  the colour beneath, unstrobed, beside a flashing rig; `Flash 100%` has
+  always written them white. Asked, the owner decided "Si, el flash enciende
+  las maquinas de humo en blanco" and accepted the byte change. Closed by
+  `7740c73 fix(generate): Flash Color lights the lit smoke machines white`:
+  `rule_flash_lit_smoke` (a Flash scene that raises light on every non-smoke
+  fixture with a dimmer or strobe channel and leaves a lit smoke machine
+  unlit) bit Vibra on `Flash Color` only; `generate_flash_color` now writes
+  each lit smoke machine `Flash 100%`'s white minus the pump. Vibra x3 and
+  `Vibra.desk.json` re-baselined (diff: the four columns in `Flash Color` and
+  its desk copy; the desk tile gains a `#ffffff` swatch). Test
+  `tests/test_flash_colour_lit_smoke.py`.
 - [ ] **Verify desk bursts on the rig (2026-09-13).** Normal API priority
   cannot guarantee the Mac Flash's colour or shutter override. The generated
   map marks 15 cues with `burstNote`; durations are provisional. Over AUTO and
