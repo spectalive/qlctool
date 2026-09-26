@@ -9,6 +9,7 @@ import argparse
 from dataclasses import replace
 from pathlib import Path
 
+from .add_mcp_parser import add_mcp_parser
 from .add_pad_palette_parser import add_pad_palette_parser
 from .apply_install import apply_install
 from .beam_landing import beam_landing
@@ -920,6 +921,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     add_deskmap_parser(sub)
     add_pad_palette_parser(sub)
+    add_mcp_parser(sub)
 
     p_com = sub.add_parser("compose", help="rebuild a workspace from a fragment tree")
     p_com.add_argument("src_dir")

@@ -12,6 +12,9 @@ Homepage = "https://github.com/spectalive/qlctool"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-xdist>=3"]
+# `qlctool mcp`: the MCP server and the websocket client its live tools
+# talk to a running QLC+ with. Plain qlctool never imports either.
+mcp = ["mcp>=2.2,<3", "websockets>=14"]
 
 [project.scripts]
 qlctool = "qlctool.cli:main"
