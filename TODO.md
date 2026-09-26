@@ -151,6 +151,18 @@
   0.74-0.76 s. Suite: summed 480.9 s -> 393.9 s, `test_check.py` 259.9 s ->
   184.3 s, wall 69-73 s -> 55 s. Smallest next step: read the next CI runs'
   3.11 leg; close below 50% (300 s).
+- [ ] **The MiN Wash sit at full in Ambiente (ruling D2, en-sala audit
+  2026-09-26).** Their one Dimmer/Strobe channel is in the Intensity group
+  and inverted (8 = 100 %, 134 = 0 %), and the levels hold it at 255 "Open"
+  through `shutter_open_pairs`, so they are at full while every other fixture
+  sits at 110 in Ambiente. Only the strobe was fixed (ForceLTP on the flash
+  and strobe buttons, `rule_strobe_masked_by_htp`); the dim was left on
+  purpose because both MiN Wash are spares, hidden in the stage plot. Cost if
+  they are ever rigged: two washes too bright in every quiet level. Smallest
+  next step, when one is rigged: a level that dims a fixture whose only
+  intensity path is a combined dimmer/strobe channel writes the dimmer range
+  value for that level, with a `check` rule that compares its brightness to
+  the level's.
 - [ ] **No rule sees two patched fixtures sharing an ID (round G review,
   2026-09-26).** The show graph keys capabilities by fixture ID, so a second
   fixture with the same ID is silently one entry; `caption_promise` used to

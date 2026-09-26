@@ -26,6 +26,7 @@ def flat_scene(
     dimmer_full: bool = True,
     exclude_effect_mode_fixture_ids: Sequence[int] = (),
     wheel_fixture_ids: Sequence[int] | None = None,
+    pump_off: bool = True,
 ) -> int:
     """One colour on every colour-capable fixture; smoke machines excluded.
 
@@ -35,7 +36,9 @@ def flat_scene(
     run, overriding the open-shutter values a plain look carries - which is
     what turns the work light into a flash. `names` is the vocabulary
     `wheel_color` is spelled in; `wheel_fixture_ids`, when given, limits the
-    wheel colour to those fixtures.
+    wheel colour to those fixtures. `pump_off` writes every smoke pump 0: a
+    latched look is a room state and owns the pump; a held flash, forced LTP,
+    must leave it alone (`rule_flash_forced_zero`).
     """
     values = color_scene_values(
         caps,
@@ -44,8 +47,10 @@ def flat_scene(
         exclude_effect_mode_fixture_ids=exclude_effect_mode_fixture_ids,
     )
     # The pump, shut. A work light is a room state, and a room state that never
-    # writes the pump is what a released smoke flash latches against.
-    for capability in caps:
+    # writes the pump is what a released smoke flash latches against. A held
+    # flash neither starts nor stops smoke (ruling D1, 2026-09-26): forced LTP,
+    # its zero would cut a smoke burst in progress.
+    for capability in caps if pump_off else ():
         off = fog_off_pairs(capability)
         if off:
             merged = dict(values.get(capability.fixture.fixture_id, []))

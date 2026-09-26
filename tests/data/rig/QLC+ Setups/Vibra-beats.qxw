@@ -598,13 +598,12 @@
       <FixtureVal ID="25">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,4,8,0,11,0</FixtureVal>
@@ -635,13 +634,12 @@
       <FixtureVal ID="25">0,255,1,255,2,255,3,255,4,200,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,255,3,255,4,200,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,255,3,255,4,200,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,202,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,202,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,199,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,199,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,199,6,255,7,4,8,0,11,0</FixtureVal>
@@ -706,13 +704,12 @@
       <FixtureVal ID="25">0,255,1,255,2,0,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,0,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,0,3,0,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,0,10,0,11,0,12,255,13,0,14,0,15,0,16,255,17,0,18,0,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,0,10,0,11,0,12,255,13,0,14,0,15,0,16,255,17,0,18,0,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,12,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,12,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,12,8,0,11,0</FixtureVal>
@@ -743,13 +740,12 @@
       <FixtureVal ID="25">0,255,1,0,2,255,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,0,2,255,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,0,2,255,3,0,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,0,9,255,10,0,11,0,12,0,13,255,14,0,15,0,16,0,17,255,18,0,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,0,9,255,10,0,11,0,12,0,13,255,14,0,15,0,16,0,17,255,18,0,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,35,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,35,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,35,8,0,11,0</FixtureVal>
@@ -780,13 +776,12 @@
       <FixtureVal ID="25">0,255,1,0,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,0,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,0,2,0,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,0,9,0,10,255,11,0,12,0,13,0,14,255,15,0,16,0,17,0,18,255,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,0,9,0,10,255,11,0,12,0,13,0,14,255,15,0,16,0,17,0,18,255,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,43,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,43,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,43,8,0,11,0</FixtureVal>
@@ -817,13 +812,12 @@
       <FixtureVal ID="25">0,255,1,160,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,160,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,160,2,0,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,160,9,0,10,255,11,0,12,160,13,0,14,255,15,0,16,160,17,0,18,255,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,160,9,0,10,255,11,0,12,160,13,0,14,255,15,0,16,160,17,0,18,255,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,99,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,99,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,99,8,0,11,0</FixtureVal>
@@ -854,13 +848,12 @@
       <FixtureVal ID="25">0,255,1,255,2,255,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,255,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,255,3,0,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,255,10,0,11,0,12,255,13,255,14,0,15,0,16,255,17,255,18,0,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,255,10,0,11,0,12,255,13,255,14,0,15,0,16,255,17,255,18,0,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,27,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,27,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,27,8,0,11,0</FixtureVal>
@@ -891,13 +884,12 @@
       <FixtureVal ID="25">0,255,1,0,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,0,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,0,2,255,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,0,9,255,10,255,11,0,12,0,13,255,14,255,15,0,16,0,17,255,18,255,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,0,9,255,10,255,11,0,12,0,13,255,14,255,15,0,16,0,17,255,18,255,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,59,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,59,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,59,8,0,11,0</FixtureVal>
@@ -928,13 +920,12 @@
       <FixtureVal ID="25">0,255,1,255,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,0,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,0,10,255,11,0,12,255,13,0,14,255,15,0,16,255,17,0,18,255,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,0,10,255,11,0,12,255,13,0,14,255,15,0,16,255,17,0,18,255,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,51,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,51,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,51,8,0,11,0</FixtureVal>
@@ -965,13 +956,12 @@
       <FixtureVal ID="25">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,4,8,0,11,0</FixtureVal>
@@ -1002,13 +992,12 @@
       <FixtureVal ID="25">0,255,1,255,2,127,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,127,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,127,3,0,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,127,10,0,11,0,12,255,13,127,14,0,15,0,16,255,17,127,18,0,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,127,10,0,11,0,12,255,13,127,14,0,15,0,16,255,17,127,18,0,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,19,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,19,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,19,8,0,11,0</FixtureVal>
@@ -1039,13 +1028,12 @@
       <FixtureVal ID="25">0,255,1,255,2,0,3,100,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,0,3,100,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,0,3,100,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,0,10,100,11,0,12,255,13,0,14,100,15,0,16,255,17,0,18,100,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,0,10,100,11,0,12,255,13,0,14,100,15,0,16,255,17,0,18,100,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,51,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,51,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,51,8,0,11,0</FixtureVal>
@@ -1076,13 +1064,12 @@
       <FixtureVal ID="25">0,255,1,255,2,255,3,255,4,0,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,255,3,255,4,0,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,255,3,255,4,0,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,0,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,0,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,255,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,255,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,255,6,255,7,4,8,0,11,0</FixtureVal>
@@ -14789,13 +14776,12 @@
       <FixtureVal ID="25">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,4,8,0,11,0</FixtureVal>
@@ -14833,13 +14819,12 @@
       <FixtureVal ID="25">0,255,1,255,2,255,3,255,4,200,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,255,3,255,4,200,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,255,3,255,4,200,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,202,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,202,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,199,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,199,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,199,6,255,7,4,8,0,11,0</FixtureVal>
@@ -15017,13 +15002,12 @@
       <FixtureVal ID="25">0,255,1,255,2,0,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,0,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,0,3,0,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,0,4,0,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,0,10,0,11,0,12,255,13,0,14,0,15,0,16,255,17,0,18,0,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,0,10,0,11,0,12,255,13,0,14,0,15,0,16,255,17,0,18,0,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,12,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,12,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,12,8,0,11,0</FixtureVal>
@@ -15061,13 +15045,12 @@
       <FixtureVal ID="25">0,255,1,0,2,255,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,0,2,255,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,0,2,255,3,0,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,0,3,255,4,0,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,0,9,255,10,0,11,0,12,0,13,255,14,0,15,0,16,0,17,255,18,0,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,0,9,255,10,0,11,0,12,0,13,255,14,0,15,0,16,0,17,255,18,0,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,35,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,35,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,35,8,0,11,0</FixtureVal>
@@ -15105,13 +15088,12 @@
       <FixtureVal ID="25">0,255,1,0,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,0,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,0,2,0,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,0,3,0,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,0,9,0,10,255,11,0,12,0,13,0,14,255,15,0,16,0,17,0,18,255,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,0,9,0,10,255,11,0,12,0,13,0,14,255,15,0,16,0,17,0,18,255,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,43,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,43,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,43,8,0,11,0</FixtureVal>
@@ -15149,13 +15131,12 @@
       <FixtureVal ID="25">0,255,1,160,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,160,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,160,2,0,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,160,3,0,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,160,9,0,10,255,11,0,12,160,13,0,14,255,15,0,16,160,17,0,18,255,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,160,9,0,10,255,11,0,12,160,13,0,14,255,15,0,16,160,17,0,18,255,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,99,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,99,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,99,8,0,11,0</FixtureVal>
@@ -15193,13 +15174,12 @@
       <FixtureVal ID="25">0,255,1,255,2,255,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,255,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,255,3,0,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,255,4,0,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,255,10,0,11,0,12,255,13,255,14,0,15,0,16,255,17,255,18,0,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,255,10,0,11,0,12,255,13,255,14,0,15,0,16,255,17,255,18,0,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,27,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,27,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,27,8,0,11,0</FixtureVal>
@@ -15237,13 +15217,12 @@
       <FixtureVal ID="25">0,255,1,0,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,0,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,0,2,255,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,0,3,255,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,0,9,255,10,255,11,0,12,0,13,255,14,255,15,0,16,0,17,255,18,255,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,0,9,255,10,255,11,0,12,0,13,255,14,255,15,0,16,0,17,255,18,255,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,59,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,59,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,59,8,0,11,0</FixtureVal>
@@ -15281,13 +15260,12 @@
       <FixtureVal ID="25">0,255,1,255,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,0,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,0,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,0,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,0,10,255,11,0,12,255,13,0,14,255,15,0,16,255,17,0,18,255,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,0,10,255,11,0,12,255,13,0,14,255,15,0,16,255,17,0,18,255,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,51,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,51,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,51,8,0,11,0</FixtureVal>
@@ -15325,13 +15303,12 @@
       <FixtureVal ID="25">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,255,3,255,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,255,4,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,255,10,255,11,255,12,255,13,255,14,255,15,255,16,255,17,255,18,255,19,255,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,4,8,0,11,0</FixtureVal>
@@ -15369,13 +15346,12 @@
       <FixtureVal ID="25">0,255,1,255,2,127,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,127,3,0,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,127,3,0,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,127,4,0,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,127,10,0,11,0,12,255,13,127,14,0,15,0,16,255,17,127,18,0,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,127,10,0,11,0,12,255,13,127,14,0,15,0,16,255,17,127,18,0,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,19,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,19,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,19,8,0,11,0</FixtureVal>
@@ -15413,13 +15389,12 @@
       <FixtureVal ID="25">0,255,1,255,2,0,3,100,4,247,5,0</FixtureVal>
       <FixtureVal ID="27">0,255,1,255,2,0,3,100,4,247,5,0</FixtureVal>
       <FixtureVal ID="28">0,255,1,255,2,0,3,100,4,247,5,0</FixtureVal>
-      <FixtureVal ID="29">0,0,1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
-      <FixtureVal ID="30">0,0,1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
-      <FixtureVal ID="31">0,0,1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
-      <FixtureVal ID="32">0,0,1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
+      <FixtureVal ID="29">1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
+      <FixtureVal ID="30">1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
+      <FixtureVal ID="31">1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
+      <FixtureVal ID="32">1,255,2,255,3,0,4,100,5,0,6,0</FixtureVal>
       <FixtureVal ID="33">5,0,6,255,7,248,8,255,9,0,10,100,11,0,12,255,13,0,14,100,15,0,16,255,17,0,18,100,19,0,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,6,255,7,248,8,255,9,0,10,100,11,0,12,255,13,0,14,100,15,0,16,255,17,0,18,100,19,0,20,0</FixtureVal>
-      <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="20">5,234,6,255,7,51,8,0,11,0</FixtureVal>
       <FixtureVal ID="21">5,234,6,255,7,51,8,0,11,0</FixtureVal>
       <FixtureVal ID="22">5,234,6,255,7,51,8,0,11,0</FixtureVal>
@@ -15621,7 +15596,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="2"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key>Space</Key>
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37040"/>
@@ -15636,7 +15611,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="3"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key>-</Key>
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37041"/>
@@ -15651,7 +15626,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="4"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key>.</Key>
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37042"/>
@@ -15666,7 +15641,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="662"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key>H</Key>
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37037"/>
@@ -15681,7 +15656,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="668"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key>U</Key>
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37036"/>
@@ -15696,7 +15671,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="684"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key>F</Key>
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37038"/>
@@ -15711,7 +15686,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="685"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key>T</Key>
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37039"/>
@@ -16041,7 +16016,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="2"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -16055,7 +16030,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="4"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -16069,7 +16044,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="662"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -16083,7 +16058,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="684"/>
-            <Action Override="1">Flash</Action>
+            <Action Override="1" ForceLTP="1">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -19003,7 +18978,7 @@
             <Font>Default</Font>
           </Appearance>
           <Function ID="15"/>
-          <Action Override="1">Flash</Action>
+          <Action Override="1" ForceLTP="1">Flash</Action>
           <Key/>
           <Intensity Adjust="False">100</Intensity>
         </Button>

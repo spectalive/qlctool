@@ -246,6 +246,7 @@ def _build_reset_strip(
             _SMALL_BUTTON_HEIGHT,
             action=FLASH if is_flash else TOGGLE,
             flash_override=is_flash,
+            flash_force_ltp=is_flash,
             font=small_font,
         )
 

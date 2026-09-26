@@ -3,7 +3,6 @@
 from collections.abc import Mapping, Sequence
 
 from ..capability import FixtureCapabilities
-from ..fog_off import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..names.default_names import default_names
@@ -26,7 +25,9 @@ def generate_color_flashes(
     """Generate one full-output held flash per palette solid.
 
     The fixture footprint exactly follows `Flash 100%`: illuminated smoke
-    fixtures join the colour hit, while every smoke pump stays explicitly off.
+    fixtures join the colour hit, and no smoke pump is written. The hit is held
+    with ForceLTP, so a pump zero would cut a smoke burst in progress; a held
+    flash neither starts nor stops smoke (ruling D1, 2026-09-26).
     `names` is the show's vocabulary; `path` defaults to its hits folder.
     """
     vocabulary = default_names() if names is None else names
@@ -34,14 +35,6 @@ def generate_color_flashes(
     generated: dict[str, int] = {}
     for color_name, rgb in colors.items():
         values = color_scene_values(list(capabilities), rgb)
-        for capability in capabilities:
-            off = fog_off_pairs(capability)
-            if not off:
-                continue
-            fixture_id = capability.fixture.fixture_id
-            merged = dict(values.get(fixture_id, []))
-            merged.update(off)
-            values[fixture_id] = sorted(merged.items())
         for fixture_id, pairs in wheel_color_values(
             list(capabilities), color_name, names=vocabulary
         ).items():

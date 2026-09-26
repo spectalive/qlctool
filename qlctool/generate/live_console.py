@@ -423,9 +423,13 @@ def generate_live_console(
             page=page,
             key=keys.get(name) if include_key else None,
             action=FLASH if name in flash else TOGGLE,
-            # A hit must read over the running state, not merely join it:
-            # without override priority a white flash is one more HTP bid.
+            # A hit must read over the running state, not merely join it.
+            # Override only orders the faders: on an HTP channel the level's
+            # higher value still wins the compare, so a MiN Wash strobe on its
+            # Intensity-group Dimmer/Strobe channel never showed under a level
+            # (`rule_strobe_masked_by_htp`, 2026-09-26). ForceLTP writes past it.
             flash_override=name in flash,
+            flash_force_ltp=name in flash,
             **kwargs,
         )
         bind_pad(element, pad_bindings, name)

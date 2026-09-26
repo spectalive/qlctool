@@ -49,6 +49,7 @@ def add_base_looks(build: ShowBuild) -> None:
         names=vocabulary,
         wheel_color=vocabulary.display("white"),
         strobe=described.tuning.strobe_fast,
+        pump_off=False,
     )
     master[vocabulary.display("flash_half")] = flat_scene(
         workspace,
@@ -58,6 +59,7 @@ def add_base_looks(build: ShowBuild) -> None:
         names=vocabulary,
         wheel_color=vocabulary.display("white"),
         strobe=described.tuning.strobe_slow,
+        pump_off=False,
     )
     # And the third flash the old console had on `.`: the strobe over whatever
     # colour is already running - dimmer and shutter only, RGB untouched.
@@ -87,5 +89,6 @@ def add_base_looks(build: ShowBuild) -> None:
         (255, 255, 255),
         names=vocabulary,
         wheel_color=vocabulary.display("white"),
+        pump_off=False,
     )
     build.colour_flash_ids = color_flashes.ids
