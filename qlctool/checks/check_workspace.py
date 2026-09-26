@@ -26,6 +26,7 @@ from .finding import Finding
 from .fixing_order import fixing_order
 from .flash_button_findings import flash_button_findings
 from .key_binding_findings import key_binding_findings
+from .movement_findings import movement_findings
 from .named_findings import named_findings
 from .rule_accent_restore import check_accent_restore
 from .rule_collision import check_collisions
@@ -47,10 +48,7 @@ from .rule_layer_trace import check_layer_trace
 from .rule_masked_dimmer_efx import check_masked_dimmer_efx
 from .rule_missing_definition import check_missing_definitions
 from .rule_mode_owner import check_mode_owner
-from .rule_movement_families import check_movement_families
 from .rule_movement_figure_coverage import check_movement_figure_coverage
-from .rule_movement_window import check_movement_window
-from .rule_parked_movers import check_parked_movers
 from .rule_pick_darkens import check_pick_darkens
 from .rule_pick_overridden import check_pick_overridden
 from .rule_provider import RuleProvider
@@ -72,7 +70,6 @@ from .rule_strobe_rate import check_strobe_rate
 from .rule_strobe_restore import check_strobe_restore
 from .rule_tap_dial import check_tap_dial
 from .rule_tempo_units import check_tempo_units
-from .rule_unaimed_movement import check_unaimed_movement
 from .rule_undeclared_heads import check_undeclared_heads
 from .rule_unfinished_effect import check_unfinished_effects
 from .rule_untempoed_rhythm import check_untempoed_rhythm
@@ -154,10 +151,7 @@ def check_workspace(
     findings += check_tap_dial(root)
     findings += check_untempoed_rhythm(graph, groups, root, entries)
     findings += check_tempo_units(graph)
-    findings += check_movement_families(graph)
-    findings += check_parked_movers(graph)
-    findings += check_unaimed_movement(graph)
-    findings += check_movement_window(graph)
+    findings += movement_findings(graph, root)
     findings += check_smoke(graph, groups, entries)
     findings += check_smoke_light(graph, groups, entries)
     findings += check_smoke_restore(graph, groups, root, states)

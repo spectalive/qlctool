@@ -3596,3 +3596,75 @@ def test_2026_09_26_a_forced_flash_that_halves_a_dimmer(library):
     findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
     assert [f.function for f in findings] == ["Flash 100%"]
     assert set(findings[0].fixtures) == halved
+
+
+def _efx_under(by_id, function):
+    """The EFX a function starts, in step order."""
+    if function.attrib.get("Type") == "EFX":
+        return [function]
+    return [
+        efx
+        for step in findall_local(function, "Step")
+        for efx in _efx_under(by_id, by_id[(step.text or "").strip()])
+    ]
+
+
+def _heads_of(efx):
+    """(fixture id, direction, start offset) per head, in the EFX's own order."""
+    return [
+        (
+            int(find_local(f, "ID").text),
+            find_local(f, "Direction").text,
+            int(find_local(f, "StartOffset").text),
+        )
+        for f in findall_local(efx, "Fixture")
+    ]
+
+
+def test_2026_09_26_alternado_equals_the_default_on_the_rigged_heads(library):
+    """2026-09-26, en-sala DMX audit (item 2): the seven `Alternado` buttons
+    moved the four 7R and the two MAC WASH exactly as the plain buttons did.
+    "Every other head" came from patch order, which on this rig is the
+    house-right pair the default already reverses, and the washes' every
+    other head and phase slot went to spares. Ruling D5: the beams alternate
+    by stage order (x 20, 22, 23, 21 - reverse 22 and 21), and two rigged
+    washes run both Forward half a figure apart. Give `Movimiento Circulo
+    Alternado` the default's heads back and the rule must pair the buttons.
+    """
+    from qlctool.checks.rule_twin_movement import RULE_ID, check_twin_movement
+
+    for name, graph, _ in _shipped_graphs(library):
+        assert check_twin_movement(graph, _show(name).root) == [], name
+
+    workspace = _show("Vibra.qxw")
+    functions = _functions(workspace)
+    beams = _heads_of(functions["Beam Circulo Alternado"])
+    assert {i for i, direction, _ in beams if direction == "Backward"} == {22, 21}
+    assert [i for i, _, _ in beams] == [20, 22, 23, 21]
+    washes = _heads_of(_efx_under(_functions_by_id(workspace), functions["Wash Circulo"])[0])
+    alternate = _heads_of(
+        _efx_under(_functions_by_id(workspace), functions["Wash Circulo Alternado"])[0]
+    )
+    assert washes[:2] == [(33, "Forward", 0), (34, "Backward", 180)]
+    assert alternate[:2] == [(33, "Forward", 0), (34, "Forward", 180)]
+
+    by_id = _functions_by_id(workspace)
+    plain = _efx_under(by_id, functions["Movimiento Circulo"])
+    twin = _efx_under(by_id, functions["Movimiento Circulo Alternado"])
+    for source, target in zip(plain, twin, strict=True):
+        for head in findall_local(target, "Fixture"):
+            target.remove(head)
+        for head in findall_local(source, "Fixture"):
+            target.append(copy.deepcopy(head))
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert [(f.function, f.fields["twin"]) for f in findings] == [
+        ("Jugar · Movimiento Circulo Alternado", "Jugar · Movimiento Circulo")
+    ]
+    assert set(findings[0].fixtures) == {
+        "BEAM 230W 7R #1",
+        "BEAM 230W 7R #2",
+        "BEAM 230W 7R #3",
+        "BEAM 230W 7R #4",
+        "MAC WASH 1915Z #1",
+        "MAC WASH 1915Z #2",
+    }
