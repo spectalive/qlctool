@@ -91,12 +91,25 @@ the same way, logs to the pipe validation reads, and focus never moves.
 
 What it loads is an offline copy of the workspace, beside the original so
 media and definitions named relative to it still resolve, with every
-universe's `<Input>`, `<Output>` and `<Feedback>` removed. QLC+ 5 has no flag
-to load a workspace without opening those patches, and a validation run
-during a show must never take the DMX interface, Art-Net or the MIDI pad the
-show is using - so **validation no longer checks the I/O map a workspace
-names**. A file that is not well-formed XML is refused before QLC+ is started,
-since QLC+ would load it up to the break, patches included.
+universe's `<Input>`, `<Output>` and `<Feedback>` removed, an audio beat
+generator (`BeatType="Audio"`, the microphone) made `Internal`, and a network
+server's `AutoStart` off. QLC+ 5 has no flag to load a workspace without
+opening those, and a validation run during a show must never take the DMX
+interface, Art-Net or the MIDI pad the show is using - so **validation no
+longer checks the I/O map a workspace names**. A file that is not
+well-formed XML is refused before QLC+ is started, since QLC+ would load it up
+to the break, patches included.
+
+The copy only governs the file. At startup, before any workspace, QLC+ opens
+the default patches stored in its own settings (`InputOutputMap::loadDefaults`:
+the `/inputmap/universeN/...` and `/outputmap/universeN/...` keys QLC+ 4's I/O
+manager writes; on macOS `~/Library/Preferences/org.qlcplus.Q Light Controller
+Plus.plist`, shared by both builds). Validation looks for those keys first and
+refuses to start while any exist, naming the keys and never their values;
+`QLCTOOL_ALLOW_SAVED_IO=1` validates anyway. QLC+ also adds the copy it loaded
+to its recent-files list, which validation does not restore; the copy is
+named `.<name>.qlctool-validate-<id>.qxw`, removed afterwards, and ignored by
+git.
 
 The only process it stops is its own child, by that exact pid (and, should a
 wrapper script have started QLC+ under it, that child's children, by parent

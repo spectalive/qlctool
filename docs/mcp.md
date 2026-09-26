@@ -130,13 +130,23 @@ its neighbours.
   without `overwrite=true`, a missing folder, and the installed package.
 - **Validation uses its own QLC+, offline.** `validate` (and `newshow` with
   `validate=true`) starts a QLC+ as its own child on a copy of the workspace
-  whose universes have no `<Input>`, `<Output>` or `<Feedback>`, and stops
-  exactly that process; a QLC+ somebody else runs, started before or during
-  the validation, is never signalled. So validation no longer checks the I/O
-  map the file names: QLC+ 5 has no way to load a workspace without opening
-  its DMX, Art-Net and MIDI patches, and a validation run during a show must
-  never take the rig's outputs. Both tools are annotated as not read-only
-  and open-world for that reason.
+  whose universes have no `<Input>`, `<Output>` or `<Feedback>`, whose audio
+  beat generator is made internal (no microphone) and whose network server
+  does not start on its own, and stops exactly that process; a QLC+ somebody
+  else runs, started before or during the validation, is never signalled. So
+  validation no longer checks the I/O map the file names: QLC+ 5 has no way
+  to load a workspace without opening its DMX, Art-Net and MIDI patches, and
+  a validation run during a show must never take the rig's outputs. What the
+  copy governs is the file: QLC+ also opens the default I/O patches kept in
+  its own settings (`inputmap`/`outputmap` keys, which QLC+ 4's I/O manager
+  writes) before it loads any workspace, so validation refuses to start while
+  any exist, naming the keys and never their values; set
+  `QLCTOOL_ALLOW_SAVED_IO=1` in the server's environment to validate anyway.
+  Both tools are annotated as not read-only and open-world for that reason.
+- **Recent files.** QLC+ adds every workspace it loads to its recent-files
+  list, validation's hidden copy (`.<name>.qlctool-validate-<id>.qxw`)
+  included. Validation does not restore the list; the copy itself is
+  removed when QLC+ stops.
 - **Annotations.** The file writers (`newshow`, `deskmap`, `pad_palette`) are
   destructive, since `overwrite=true` replaces a file; `info` and `check` are
   read-only; `live_press` and `live_function` are destructive and open-world.

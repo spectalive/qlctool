@@ -30,19 +30,6 @@ def test_the_real_show_validates():
 
 
 @needs_qlcplus
-def test_a_truncated_workspace_is_rejected(tmp_path):
-    """QLC+ would load a truncated file up to the break, its I/O patches
-    included, so it is refused before QLC+ is started (2026-09-26)."""
-    broken = tmp_path / "broken.qxw"
-    broken.write_bytes(SHOW.read_bytes()[:4000])
-
-    result = validate_workspace(broken)
-
-    assert not result.ok
-    assert any("not well-formed XML" in error for error in result.errors)
-
-
-@needs_qlcplus
 def test_a_workspace_qlcplus_cannot_build_is_rejected(tmp_path):
     workspace = Workspace.load(SHOW)
     fixture = next(

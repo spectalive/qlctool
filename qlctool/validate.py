@@ -10,11 +10,16 @@ QLC+ has no "load and exit" mode: it starts its engine and stays up. So it is
 launched, watched until loading is done, then killed, and the verdict comes from
 its log rather than the exit code.
 
-What QLC+ loads is an offline copy (`validation_copy`): every universe kept,
-its `<Input>`, `<Output>` and `<Feedback>` removed. A validation run during a
-show must never open the rig's DMX interface, Art-Net or MIDI again, and QLC+ 5
-has no flag to load without them - so validation no longer checks the I/O map
-the file names (2026-09-26, review of round D6). The only process it stops is
+What QLC+ loads is an offline copy (`validation_copy`, `offline_workspace`):
+every universe kept, its `<Input>`, `<Output>` and `<Feedback>` removed, an
+audio beat generator made internal and a network server's autostart off. A
+validation run during a show must never open the rig's DMX interface,
+Art-Net, MIDI or the microphone again, and QLC+ 5 has no flag to load without
+them - so validation no longer checks the I/O map the file names (2026-09-26,
+reviews of round D6). The default patches QLC+ keeps in its own settings are
+beyond a copy's reach: validation refuses to start while any exist
+(`refuse_saved_io`). QLC+ also records the copy in its recent-files list,
+which is not restored. The only process it stops is
 the one it started, by that child's exact pid (`stop_own_process`).
 
 Two builds behave differently. The 4.x widgets build (`qlcplus`) takes
@@ -40,6 +45,7 @@ from lxml import etree
 
 from .qlcplus_candidates import qlcplus_candidates
 from .quiet_launch_environment import quiet_launch_environment
+from .refuse_saved_io import refuse_saved_io
 from .stop_own_process import stop_own_process
 from .validation_copy import validation_copy
 
@@ -106,6 +112,7 @@ def validate_workspace(
     binary: str | None = None,
     timeout: float = 30.0,
     quiet_period: float = 1.0,
+    allow_saved_io: bool = False,
 ) -> ValidationResult:
     """Load an offline copy of the workspace in QLC+ and collect its complaints.
 
@@ -117,6 +124,12 @@ def validate_workspace(
     complaint lands in the same 20 ms as the first marker and the log stops
     growing 0,2 s after it, so one second is a fivefold margin - and half of
     what every validation used to wait.
+
+    Raises RuntimeError, before QLC+ is started, when QLC+'s own settings
+    hold default I/O patches it would open at startup (`refuse_saved_io`),
+    unless `allow_saved_io` or `QLCTOOL_ALLOW_SAVED_IO=1` says to go ahead.
+    QLC+ adds each file it loads to its recent-files list; validation does
+    not restore that list.
     """
     path = Path(path).resolve()
     executable = binary or qlcplus_binary()
@@ -124,6 +137,7 @@ def validate_workspace(
         raise FileNotFoundError("no QLC+ executable found; set QLCTOOL_QLCPLUS to its path")
 
     qml = Path(executable).name.endswith("-qml")
+    refuse_saved_io(allow_saved_io)
     try:
         with validation_copy(path) as copy:
             output = _load(executable, copy, qml, timeout, quiet_period)
@@ -142,11 +156,14 @@ def _load(executable: str, copy: Path, qml: bool, timeout: float, quiet_period: 
         if qml
         else [executable, "--nowm", "--nogui", "-d", "1", "-o", str(copy)]
     )
+    # Unbuffered bytes: a buffered reader takes every line waiting in the pipe
+    # at once, and select() then sees none of the ones it holds - the QML
+    # build's end-of-load marker sat in the buffer until the timeout.
     process = subprocess.Popen(
         arguments,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        text=True,
+        bufsize=0,
         env=quiet_launch_environment(),
     )
     try:
@@ -174,7 +191,7 @@ def _verdict(output: str) -> ValidationResult:
 
 
 def _read_until_loaded(
-    process: "subprocess.Popen[str]", timeout: float, quiet_period: float, qml: bool
+    process: "subprocess.Popen[bytes]", timeout: float, quiet_period: float, qml: bool
 ) -> str:
     """Collect output until QLC+ has finished loading, then kill it.
 
@@ -191,7 +208,7 @@ def _read_until_loaded(
     lines: list[str] = []
     while True:
         if process.poll() is not None:
-            lines.extend(stdout.readlines())
+            lines.extend(line.decode(errors="replace") for line in stdout.readlines())
             break
         now = time.monotonic()
         settled = (
@@ -201,11 +218,11 @@ def _read_until_loaded(
         )
         if now > deadline or settled:
             stop_own_process(process)
-            lines.extend(stdout.readlines())
+            lines.extend(line.decode(errors="replace") for line in stdout.readlines())
             break
         ready, _, _ = select.select([stdout], [], [], 0.2)
         if ready:
-            line = stdout.readline()
+            line = stdout.readline().decode(errors="replace")
             if line:
                 lines.append(line)
                 last_line_at = time.monotonic()

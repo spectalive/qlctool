@@ -6,3 +6,5 @@ __pycache__/
 .coverage
 .DS_Store
 pyrefly.json
+# Validation's I/O-free copy, beside the workspace it validates, while QLC+ loads it
+.*.qlctool-validate-*.qxw

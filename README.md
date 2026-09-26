@@ -32,9 +32,13 @@ validation**: `qlctool validate` (or `--validate` on any command that writes)
 loads the result in a real QLC+ with `--nowm --nogui` and fails on anything the
 application complains about - a missing fixture definition, overlapping
 addresses, a function it could not build. It loads a copy whose universes have
-no input, output or feedback patch, so a validation during a show never opens
-the rig's DMX, Art-Net or MIDI - which also means it does not check that I/O
-map - and it stops only the QLC+ it started, by that process's own pid. Commands never overwrite the input -
+no input, output or feedback patch, an internal beat generator instead of the
+microphone and no auto-starting network server, so the file itself asks QLC+ to
+open none of the rig's connections - which also means it does not check that
+I/O map. QLC+ also opens the default patches kept in its own settings, which a
+copy cannot reach, so validation refuses to start while any exist
+(`QLCTOOL_ALLOW_SAVED_IO=1` overrides). It stops only the QLC+ it started, by
+that process's own pid, and QLC+ lists the copy among its recent files. Commands never overwrite the input -
 they write a new `<name>-generado.qxw`.
 
 Validation needs QLC+ installed; it looks in `/Applications/QLC+.app` and on

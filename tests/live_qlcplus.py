@@ -16,6 +16,7 @@ from pathlib import Path
 
 from qlctool.offline_workspace import offline_workspace
 from qlctool.quiet_launch_environment import quiet_launch_environment
+from qlctool.refuse_saved_io import refuse_saved_io
 from qlctool.stop_own_process import stop_own_process
 from qlctool.validate import qlcplus_binary
 
@@ -37,6 +38,7 @@ def running_qlcplus(workspace: Path, folder: Path) -> Iterator[int]:
     """Yield the web port of a QLC+ running an offline copy of `workspace`."""
     binary = qml_binary()
     assert binary is not None, "no QLC+ 5 to launch"
+    refuse_saved_io()
     copy = offline_workspace(workspace, folder / "live.qxw")
     port = free_port()
     assert port not in (9998, 9999)

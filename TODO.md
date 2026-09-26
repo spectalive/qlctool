@@ -1,5 +1,19 @@
 # qlctool follow-up
 
+- [ ] **Validation can hang on a QLC+ that stops writing without closing
+  its log (2026-09-26, second review of round D6).** `validate.py`'s
+  `_read_until_loaded` reads what is left with `readlines()` after killing
+  QLC+ (and on exit), which has no timeout: a child QLC+ spawned that kept
+  the pipe open would block it. Smallest next step: drain with `select()`
+  and a deadline instead of `readlines()`, with a stand-in that forks a
+  child holding stdout.
+- [ ] **A QLC+ 5 load that times out counts as a pass (2026-09-26, second
+  review of round D6).** When the QML build never logs an end-of-load
+  marker, `_read_until_loaded` stops at the timeout and `_verdict` judges
+  whatever was logged, so a load that never finished can read clean.
+  Smallest next step: return whether a marker was seen and make a QML run
+  without one a failure ("QLC+ never finished loading"), with a
+  `qlcplus-qml` stand-in that logs no marker.
 - [x] **Flash Color leaves the lit smoke columns out (owner decision,
   2026-09-26).** `Flash Color` (and its desk burst's private copy) skipped
   every smoke fixture, so while held the four vertical LED fog machines kept

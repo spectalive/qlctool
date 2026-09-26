@@ -52,3 +52,25 @@ def test_a_universe_reference_elsewhere_is_left_alone(tmp_path):
     root = etree.parse(str(offline_workspace(source, tmp_path / "copy.qxw"))).getroot()
     assert [u.text for u in iter_local(root, "Universe")] == [None, "0"]
     assert not list(iter_local(root, "Output"))
+
+
+def test_the_microphone_beat_is_made_internal(tmp_path):
+    """Vibra-beats' audio beat generator opened the microphone (2026-09-26)."""
+    beats = RIG_ROOT / "QLC+ Setups" / "Vibra-beats.qxw"
+    root = etree.parse(str(offline_workspace(beats, tmp_path / "c.qxw"))).getroot()
+    assert [b.get("BeatType") for b in iter_local(root, "BeatGenerator")] == ["Internal"]
+
+
+def test_a_network_server_never_starts_on_its_own(tmp_path):
+    """A web server there would bind QLC+'s port, the operator's among them."""
+    source = tmp_path / "show.qxw"
+    source.write_text(
+        '<Workspace xmlns="http://www.qlcplus.org/Workspace"><Engine><InputOutputMap>'
+        '<BeatGenerator BeatType="Disabled" BPM="0"/>'
+        '<NetworkServer Type="Web" AutoStart="True" Name="x" Password=""/>'
+        "</InputOutputMap></Engine></Workspace>"
+    )
+    root = etree.parse(str(offline_workspace(source, tmp_path / "copy.qxw"))).getroot()
+    server = next(iter_local(root, "NetworkServer"))
+    assert (server.get("Type"), server.get("AutoStart")) == ("Web", "False")
+    assert next(iter_local(root, "BeatGenerator")).get("BeatType") == "Disabled"
