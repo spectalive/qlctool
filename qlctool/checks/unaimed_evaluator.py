@@ -6,10 +6,16 @@ every member can; a Chaser plays one step at a time, so any step that leaves
 it unaimed is an instant that does. A stopped hook plays nothing. Memoised per
 node, head and the stopped hooks that node can reach, like the instant
 evaluator, because every state and pick asks about the same subtrees.
+
+A floor a Collection starts first (`static_floors`) aims a head only while no
+later member that still runs writes it: under one, it plays no part
+(`floor_overridden`, 2026-09-27).
 """
 
 from .aims_head import aims_head
+from .floor_overridden import floor_overridden
 from .show_graph import CONCURRENT, ShowGraph
+from .static_floors import static_floors
 
 
 class UnaimedEvaluator:
@@ -19,6 +25,7 @@ class UnaimedEvaluator:
         self._graph = graph
         self._groups = groups
         self._memo: dict[tuple[int, int, frozenset[int], frozenset[int]], bool] = {}
+        self._floors: dict[int, frozenset[int]] = {}
 
     def can_leave(self, roots: tuple[int, ...], fixture_id: int, stopped: frozenset[int]) -> bool:
         """True when the `roots`, running together, can leave `fixture_id` unaimed."""
@@ -37,8 +44,26 @@ class UnaimedEvaluator:
             result = True
         elif not members:
             result = not aims_head(self._graph, self._groups, function_id, fixture_id)
+        elif self._graph.kind(function_id) == CONCURRENT:
+            floors = self._floors_of(function_id)
+            result = all(
+                self._node(m, fixture_id, stopped, seen | {function_id})
+                or (
+                    m in floors
+                    and floor_overridden(
+                        self._graph, self._groups, members[i + 1 :], fixture_id, stopped
+                    )
+                )
+                for i, m in enumerate(members)
+            )
         else:
-            parts = (self._node(m, fixture_id, stopped, seen | {function_id}) for m in members)
-            result = all(parts) if self._graph.kind(function_id) == CONCURRENT else any(parts)
+            result = any(self._node(m, fixture_id, stopped, seen | {function_id}) for m in members)
         self._memo[key] = result
         return result
+
+    def _floors_of(self, collection_id: int) -> frozenset[int]:
+        floors = self._floors.get(collection_id)
+        if floors is None:
+            floors = static_floors(self._graph, self._groups, collection_id)
+            self._floors[collection_id] = floors
+        return floors

@@ -14,9 +14,9 @@ The question is asked of every instant the console can make: each room state
 that places the heads, and each pick of a position frame over each state, with
 the frame's hooks stopped. Every rigged head must have a writer that aims it
 (`aims_head`): a Scene value that is not mid-travel outside the window, or an
-EFX that moves it from the start. The instant after a pick is released is not
-asked yet - releasing a latched pick leaves its family with no owner at all,
-which is the next cause in the plan (C8).
+EFX that moves it from the start. A floor under a state aims a head only
+while nothing later writes it (`floor_overridden`). The instant after a pick
+is released is `rule_pick_release_orphans`' question.
 """
 
 from lxml import etree
