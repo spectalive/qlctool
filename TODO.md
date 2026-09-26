@@ -159,6 +159,20 @@
   address both through one ID. Smallest next step: a `check` rule that
   reports every fixture ID patched more than once, with a regression test
   that duplicates one in a generated show.
+- [ ] **A lone fixture is refused instead of getting a smaller show (round G
+  review, 2026-09-26).** The rig minimum became one fixture group of two or
+  more fixtures because the sweep (`tests/test_every_single_model_rig.py`)
+  showed a lone fixture fails `check`: the odd/even strobe has no odd half and
+  the tap dial re-tempos only the colour wheels, all at one multiplier. A lone
+  four-head bar used to build a passing show and is now refused. Smallest next
+  step: let the strobe and tap-dial generators degrade for a one-fixture group,
+  then lower the minimum and let the sweep prove it.
+- [ ] **`wheel_only_fixture_ids` has no direct test (round G review,
+  2026-09-26).** The talk light's white on wheel-only, gobo-less fixtures is
+  exercised only end to end by the sweep's CLB2.4 2-channel case, and no
+  shipped rig carries such a fixture. Smallest next step: a unit test with
+  stand-in capabilities asserting the ids returned and that the talk scene
+  lands on the wheel's white.
 - [ ] **`check` cannot see whether page 4's help names the frames drawn
   (round G review, 2026-09-26).** `library_help_lines` picks the lines that
   name the two-colour mixes and the matrices from the frames `live_console`
