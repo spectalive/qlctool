@@ -62,7 +62,6 @@ def build_deskmap(
     if burst_findings:
         raise ValueError(desk_burst_refusal(burst_findings, vocabulary))
     bursts = desk_burst_buttons(root, vocabulary)
-    release = desk_release_hooks(graph, groups, root, room_states(root, graph, groups))
 
     controls: dict[str, dict[str, Any]] = {}
     sections: dict[tuple[str, str], list[str]] = {}
@@ -108,10 +107,6 @@ def build_deskmap(
             "enabled": placement.enabled,
             "reason": placement.reason,
         }
-        if widget.id in release:
-            # Optional, schema 2 unchanged: the desk ignores keys it does not
-            # know. The hook to press when this latched pick is released.
-            controls[key]["releaseTo"] = release[widget.id]
         if placement.role == "accent":
             burst = bursts[key][0]
             identifier = desk_burst_identifier(widget.caption, vocabulary)
@@ -142,6 +137,19 @@ def build_deskmap(
         section_solo.setdefault(where, widget.solo)
 
     pages = desk_pages(sections, section_solo, vocabulary)
+
+    # Optional, schema 2 unchanged: the desk ignores keys it does not know.
+    # Per room state, the hook to press when a latched pick is released.
+    states = room_states(root, graph, groups)
+    state_widgets = {
+        c["function"]: c["widget"]
+        for c in controls.values()
+        if c["role"] == "state" and c["function"] in states
+    }
+    release = desk_release_hooks(graph, groups, root, states, state_widgets)
+    for control in controls.values():
+        if control["widget"] in release:
+            control["releaseTo"] = release[control["widget"]]
 
     stop_all = next((w for w in widgets if w.kind == "Button" and w.action == "StopAll"), None)
     grand_master = next(

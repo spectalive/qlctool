@@ -227,30 +227,89 @@ def test_2026_09_26_the_colour_flash_tile_shows_no_swatch_of_the_smoke_columns(d
     assert deskmap["controls"]["flash"]["swatches"] == ["#ffffff"]
 
 
+def _by_caption(deskmap, page, section):
+    controls = deskmap["controls"]
+    return {
+        controls[k]["caption"]: controls[k] for k in _section(deskmap, page, section)["controls"]
+    }
+
+
 def test_2026_09_27_a_released_pick_names_the_hook_the_desk_presses(deskmap):
-    """Ruling D8: picks stay latched, and the tablet presses the frame's hook
-    when one is released, since QLC+ 5's solo frame restores nothing. The map
-    names that hook on every family-frame pick (`releaseTo`, optional, schema 2
-    unchanged): the hook the most room states start, first in the frame on a
-    tie - the one AUTO's looks use.
+    """Ruling D8, then R3a (2026-09-27 review, C-1): picks stay latched, and the
+    tablet presses the frame's hook when one is released, since QLC+ 5's solo
+    frame restores nothing. Which hook is the running state's: `releaseTo` maps
+    the widget of each room state that starts exactly one of the frame's hooks
+    to that hook's widget. AUTO starts two or three heads, gobo and prism hooks
+    through its energy levels, so it has no entry there: the desk presses
+    nothing and the floor holds the family.
     """
     assert deskmap["schema"] == 2
     controls = deskmap["controls"]
     by_widget = {c["widget"]: c for c in controls.values()}
-    released = {k: c for k, c in controls.items() if "releaseTo" in c}
+    states = {c["caption"]: str(c["widget"]) for c in controls.values() if c["role"] == "state"}
+    released = [c for c in controls.values() if "releaseTo" in c]
     assert released
-    for control in released.values():
-        hook = by_widget[control["releaseTo"]]
-        assert hook["solo"] == control["solo"] and hook["role"] == "hook"
-        assert control["action"] == "toggle" and control["releaseTo"] != control["widget"]
+    for control in released:
+        assert control["releaseTo"] and control["action"] == "toggle"
+        for state, hook in control["releaseTo"].items():
+            assert by_widget[int(state)]["role"] == "state"
+            assert by_widget[hook]["role"] == "hook" and by_widget[hook]["solo"] == control["solo"]
+            assert hook != control["widget"]
     assert not [c for c in controls.values() if c["role"] == "state" and "releaseTo" in c]
-    expected = {
-        "color": "Colores completos",
-        "heads": "AUTO lento",
-        "gobos": "AUTO gobos",
-        "prism": "AUTO prisma",
-    }
-    for page, caption in expected.items():
-        picks = _section(deskmap, page, "picks")["controls"]
-        targets = {by_widget[controls[k]["releaseTo"]]["caption"] for k in picks}
-        assert targets == {caption}, page
+
+    auto, charla, fiesta = states["AUTO"], states["CHARLA"], states["FIESTA"]
+    colour_hooks = _by_caption(deskmap, "color", "hooks")
+    luz_charla = next(c for caption, c in colour_hooks.items() if "Charla" in caption)["widget"]
+    for pick in _by_caption(deskmap, "color", "picks").values():
+        assert pick["releaseTo"][charla] == luz_charla
+        assert pick["releaseTo"][auto] == colour_hooks["Colores completos"]["widget"]
+    heads = {c["function"]: c["widget"] for c in _by_caption(deskmap, "heads", "hooks").values()}
+    cabezas = next(
+        widget
+        for function, widget in heads.items()
+        if by_widget[widget]["caption"] == "AUTO normal"
+    )
+    for page in ("heads", "gobos", "prism"):
+        for pick in _by_caption(deskmap, page, "picks").values():
+            assert auto not in pick["releaseTo"], page
+    for pick in _by_caption(deskmap, "heads", "picks").values():
+        assert pick["releaseTo"][fiesta] == cabezas
+
+
+def test_2026_09_27_a_desk_hook_carries_release_only_when_the_graph_calls_it_a_pick(deskmap):
+    """Review M-1: `Colores simples`, `Pastel tenue`, `Multicolor` and `Mezcla`
+    sit among the tablet's colour hooks but are latched picks of the colour
+    frame in the graph, so they carry `releaseTo`; the frame's graph hooks
+    (`Colores completos`, `Luz Charla`) carry none.
+    """
+    hooks = _by_caption(deskmap, "color", "hooks")
+    carrying = {caption for caption, c in hooks.items() if "releaseTo" in c}
+    assert carrying == {"Colores simples", "Pastel tenue", "Multicolor", "Mezcla"}
+    targets = {w for c in hooks.values() for w in c.get("releaseTo", {}).values()}
+    assert all("releaseTo" not in c for c in hooks.values() if c["widget"] in targets)
+
+
+def test_2026_09_27_a_state_that_starts_no_hook_of_the_frame_has_no_entry(tmp_path):
+    """R3a re-injection: take `Luz Charla` out of `Momento Charla` and CHARLA
+    starts no hook of the colour frame, so its key disappears from every
+    colour pick's `releaseTo`.
+    """
+    from qlctool.xmlutil import findall_local
+
+    workspace = Workspace.load(SHOW)
+    library = FixtureLibrary.load()
+    build_canonical_show(workspace, library)
+    functions = {f.get("Name"): f for f in findall_local(workspace.engine, "Function")}
+    moment, light = functions["Momento Charla"], functions["Luz Charla"]
+    for step in findall_local(moment, "Step"):
+        if step.text == light.get("ID"):
+            moment.remove(step)
+    out = tmp_path / "Vibra.qxw"
+    workspace.save(out)
+    deskmap = build_deskmap(Workspace.load(out), library, out)
+    charla = next(
+        str(c["widget"]) for c in deskmap["controls"].values() if c["caption"] == "CHARLA"
+    )
+    picks = _by_caption(deskmap, "color", "picks").values()
+    assert picks and all(charla not in p["releaseTo"] for p in picks)
+    assert all(len(p["releaseTo"]) == 4 for p in picks)
