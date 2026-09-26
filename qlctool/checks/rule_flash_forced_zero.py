@@ -1,18 +1,20 @@
-"""A held flash forced LTP that writes zero where another button gives light.
+"""A held flash forced LTP that writes an intensity lower than another button gives.
 
 `ForceLTP` is what lets a held flash strobe a channel the level holds higher
-(`rule_strobe_masked_by_htp`). It forces every value of the scene, zeros
+(`rule_strobe_masked_by_htp`). It forces every value of the scene, the low ones
 included: `Flash 100%` also wrote the smoke pumps 0, so once forced, holding
 FLASH would have cut a smoke burst in progress. The ruling (D1, 2026-09-26): a
 held flash neither starts nor stops smoke, and its pump pairs go.
 
-The rule reads the wiring, the channel groups and the graph, never a name: a
-Flash button with `ForceLTP` whose Scene writes 0 on a channel QLC+ merges HTP
-(`htp_offsets`) that is neither colour nor strobe - a colour's zeros are part
-of the colour a bank or a hit replaces, and a strobe channel's zero is the
-flash choosing not to strobe, as the plain bass hit does - where some other
-console button reaches a lit value on the same channel, cuts that button's
-output while it is held: a dimmer, or a smoke pump.
+The rule reads the wiring, the capabilities and the graph, never a name: a
+Flash button with `ForceLTP` whose Scene writes a channel QLC+ merges HTP
+(`htp_offsets`) lower than some other console button reaches on the same
+channel cuts that button's output while it is held. Colour is left alone - a
+colour's zeros are part of the colour a bank or a hit replaces. On a
+strobe-role channel only a value that shuts the fixture counts
+(`value_shuts`: the MiN Wash's "Closed", not a PAR's "no strobe"), and only
+against a button that holds it lit without strobing: a flash that chooses not
+to strobe over another that strobes is two hands, not a cut.
 """
 
 from lxml import etree
@@ -24,9 +26,12 @@ from .color_roles import COLOUR
 from .finding import ERROR, Finding
 from .fixture_names_of import fixture_names_of
 from .htp_offsets import htp_offsets
-from .show_graph import ShowGraph, lit, reach
+from .show_graph import ShowGraph, reach
+from .strobe_written import strobe_capable_offsets, value_strobes
+from .value_shuts import value_shuts
 
 RULE_ID = "flash_forced_zero"
+FULL = 255
 
 
 def check_flash_forced_zero(
@@ -55,16 +60,21 @@ def check_flash_forced_zero(
         scene = graph.functions.get(function_id)
         if scene is None or scene.attrib.get("Type") != "Scene":
             continue  # rule_flash_scene already reports that wiring
-        zeros = {
-            (fixture_id, offset)
-            for fixture_id, written in graph.driven_of(scene, groups).items()
-            if (capability := graph.capabilities.get(fixture_id)) is not None
-            for offset, value in written.items()
-            if value == 0
-            and offset in htp.get(fixture_id, frozenset())
-            and capability.roles_by_offset[offset] not in (*COLOUR, roles.STROBE)
-        }
-        if not zeros:
+        lowered: dict[tuple[int, int], int] = {}
+        for fixture_id, written in graph.driven_of(scene, groups).items():
+            capability = graph.capabilities.get(fixture_id)
+            if capability is None:
+                continue
+            for offset, value in written.items():
+                role = capability.roles_by_offset[offset]
+                if value is None or offset not in htp.get(fixture_id, frozenset()):
+                    continue
+                if role in COLOUR:
+                    continue
+                if role == roles.STROBE and not value_shuts(capability, offset, value):
+                    continue
+                lowered[(fixture_id, offset)] = value
+        if not lowered:
             continue
         cut: set[int] = set()
         cut_from: list[int] = []
@@ -72,7 +82,23 @@ def check_flash_forced_zero(
             if other == function_id:
                 continue
             driven = reach(graph, groups, other)
-            hit = {f for f, o in zeros if o in driven.get(f, {}) and lit(driven[f][o])}
+            hit: set[int] = set()
+            for (fixture_id, offset), value in lowered.items():
+                if offset not in driven.get(fixture_id, {}):
+                    continue
+                given = driven[fixture_id][offset]
+                # An effect (None) may be anything, but nothing is above full.
+                if value >= FULL or (given is not None and given <= value):
+                    continue
+                capability = graph.capabilities[fixture_id]
+                strobing = strobe_capable_offsets(capability)
+                if (
+                    given is not None
+                    and offset in strobing
+                    and value_strobes(strobing[offset], given)
+                ):
+                    continue
+                hit.add(fixture_id)
             if hit - cut:
                 cut |= hit
                 cut_from.append(other)

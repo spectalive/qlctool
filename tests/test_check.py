@@ -3397,7 +3397,12 @@ def test_2026_09_26_a_forced_flash_that_cuts_the_smoke(library):
     A held flash neither starts nor stops smoke. Put the pump zeros back into
     `Flash 100%` and the rule must name the smoke machines.
     """
-    from qlctool.checks.rule_flash_forced_zero import RULE_ID
+    from qlctool.checks.entry_points import entry_points
+    from qlctool.checks.rule_flash_forced_zero import RULE_ID, check_flash_forced_zero
+
+    for name, graph, groups in _shipped_graphs(library):
+        root = _show(name).root
+        assert check_flash_forced_zero(graph, groups, root, entry_points(root)) == [], name
 
     workspace = _show()
     scene = _functions(workspace)["Flash 100%"]
@@ -3457,3 +3462,62 @@ def test_2026_09_26_a_bank_key_that_skips_the_front_pars(library):
         "CLB2.4 Compact LED PAR System #1",
         "CLB2.4 Compact LED PAR System #2",
     )
+
+
+def _lower_in_flash(workspace, library, pick, level):
+    """Write `level` on the offsets `pick(capability)` gives, in `Flash 100%`."""
+    scene = _functions(workspace)["Flash 100%"]
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(workspace.root, library)}
+    lowered = set()
+    for value in findall_local(scene, "FixtureVal"):
+        capability = caps[int(value.attrib["ID"])]
+        offsets = pick(capability)
+        if not offsets:
+            continue
+        pairs = _pairs_of(value)
+        for offset in offsets:
+            pairs[offset] = level
+        _write_pairs(value, pairs)
+        lowered.add(capability.fixture.name)
+    return lowered
+
+
+def test_2026_09_26_a_forced_flash_that_closes_the_min_wash(library):
+    """2026-09-26, round 1 review (I1): the MiN Wash's only intensity is its
+    Dimmer/Strobe channel, and 0 there is "Closed". A forced flash writing it
+    0 blacks out what the level and the work light give them - the D1 trap on
+    a strobe-role channel. Unlike a PAR's "no strobe" 0, it must bite.
+    """
+    from qlctool.checks.rule_flash_forced_zero import RULE_ID
+
+    workspace = _show()
+    closed = _lower_in_flash(
+        workspace,
+        library,
+        lambda c: c.offsets_for_role(roles.STROBE) if not c.offsets_for_role(roles.DIMMER) else [],
+        0,
+    )
+    assert {"MiN Wash #1", "MiN Wash #2"} <= closed
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert [f.function for f in findings] == ["Flash 100%"]
+    assert {"MiN Wash #1", "MiN Wash #2"} <= set(findings[0].fixtures)
+
+
+def test_2026_09_26_a_forced_flash_that_halves_a_dimmer(library):
+    """2026-09-26, round 1 review (M3): a forced flash cuts a dimmer by writing
+    it lower than a state holds it, not only by writing it 0. Half the
+    dimmers of `Flash 100%` and the rule must name those fixtures.
+    """
+    from qlctool.checks.rule_flash_forced_zero import RULE_ID
+
+    workspace = _show()
+    halved = _lower_in_flash(
+        workspace,
+        library,
+        lambda c: [] if c.is_smoke else c.offsets_for_role(roles.DIMMER),
+        128,
+    )
+    assert halved
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert [f.function for f in findings] == ["Flash 100%"]
+    assert set(findings[0].fixtures) == halved
