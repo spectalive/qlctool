@@ -3,9 +3,9 @@
 Task 2a's review (2026-09-25) found `rule_dangling_reference` tested only on a
 Collection step, a button's `<Function>` and a slider's `<Adjust Function>`.
 The other paths - a clock's `<Schedule Function>`, an XY pad preset's
-`<FuncID>`, a cue list's `<Chaser>`, a Show's `ShowFunction` and `Track
-SceneID`, a Sequence's `BoundScene` - would have gone unreported if their
-branch broke, and no shipped workspace carries any of them to notice. Each
+`<FuncID>`, a cue list's `<Chaser>`, an audio bar's `FunctionID` (added after
+the review of round D1), a Show's `ShowFunction` and `Track SceneID`, a
+Sequence's `BoundScene` - would have gone unreported if their branch broke, and no shipped workspace carries any of them to notice. Each
 case writes the element, in QLC+'s own tags (`engine/src/`,
 `ui/src/virtualconsole/`), with an id nothing carries.
 """
@@ -60,6 +60,15 @@ def _cue_list(root: etree._Element) -> str:
     return "broken cues"
 
 
+def _audio_bar(root: etree._Element) -> str:
+    # `AudioBar::saveXML`: a function bar (Type 2) writes FunctionID on its own tag.
+    triggers = _widget(root, "AudioTriggers", "broken bars")
+    etree.SubElement(triggers, _tag("SpectrumBar"), Name="bar", Type="2", Index="0").set(
+        "FunctionID", NOBODY
+    )
+    return "broken bars"
+
+
 def _show_function(root: etree._Element) -> str:
     show = _function(root, "Show", "broken show")
     track = etree.SubElement(show, _tag("Track"), ID="0", Name="track", SceneID=INVALID_ID)
@@ -80,7 +89,7 @@ def _bound_scene(root: etree._Element) -> str:
 
 @pytest.mark.parametrize(
     "breaks",
-    [_clock, _xy_pad, _cue_list, _show_function, _track_scene, _bound_scene],
+    [_clock, _xy_pad, _cue_list, _audio_bar, _show_function, _track_scene, _bound_scene],
     ids=lambda f: f.__name__.strip("_"),
 )
 def test_a_reference_nothing_carries_is_reported(breaks: Callable[[etree._Element], str]):
