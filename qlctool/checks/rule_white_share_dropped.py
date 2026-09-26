@@ -14,6 +14,11 @@ a fixture with RGB and no White role written exactly the RGB a White-emitter
 fixture carries beside a lit White is a fixture that got the remainder of the
 split and lost the rest of the colour. A step is reported only for fixtures
 none of its own scenes already reports.
+
+The rule needs a witness: the remainder is recognised only beside a White
+emitter that carries it. A scene or step that writes the remainder to
+RGB-only fixtures alone reads as a deliberate saturated colour - (115, 0, 0)
+is a legitimate dark red - and passes.
 """
 
 from .dropped_white_share import dropped_white_share

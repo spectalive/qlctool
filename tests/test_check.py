@@ -3351,6 +3351,64 @@ def test_2026_09_26_a_pastel_that_loses_its_white_on_rgb_only_fixtures(library):
         assert findings[scene_name] == (fixture,)
 
 
+def test_2026_09_26_a_pastel_split_across_the_scenes_of_one_step(library):
+    """2026-09-26, en-sala DMX audit (items 1 and 9), the chaser half: a step
+    that starts one scene for the White emitters and another for the rest
+    loses the white share just the same, and neither scene shows it alone.
+    Split `Rig Pastel Rojo` that way, with the remainder on one RGB-only
+    fixture, run both from a Collection stepped by a chaser, and the rule
+    must name that fixture on the step.
+    """
+    from qlctool.checks.rule_white_share_dropped import RULE_ID
+    from qlctool.functions.chaser import build_chaser
+    from qlctool.functions.collection import build_collection
+    from qlctool.ids import next_function_id
+
+    workspace = _show()
+    functions = _functions(workspace)
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(workspace.root, library)}
+    emitters = _twin_scene(workspace, functions, "Rig Pastel Rojo", "Pastel Emisores")
+    rest = _twin_scene(workspace, functions, "Rig Pastel Rojo", "Pastel Resto")
+    remainder = None
+    for value in list(findall_local(emitters, "FixtureVal")):
+        capability = caps[int(value.attrib["ID"])]
+        if not capability.offsets_for_role(roles.WHITE):
+            emitters.remove(value)
+        elif remainder is None:
+            pairs = _pairs_of(value)
+            remainder = [
+                max(pairs[o] for o in capability.offsets_for_role(r))
+                for r in (roles.RED, roles.GREEN, roles.BLUE)
+            ]
+    plain = next(
+        v
+        for v in findall_local(rest, "FixtureVal")
+        if caps[int(v.attrib["ID"])].offsets_for_role(roles.RED)
+        and not caps[int(v.attrib["ID"])].offsets_for_role(roles.WHITE)
+    )
+    for value in list(findall_local(rest, "FixtureVal")):
+        if value is not plain:
+            rest.remove(value)
+    plain_caps = caps[int(plain.attrib["ID"])]
+    pairs = _pairs_of(plain)
+    for role, level in zip((roles.RED, roles.GREEN, roles.BLUE), remainder, strict=True):
+        for offset in plain_caps.offsets_for_role(role):
+            pairs[offset] = level
+    _write_pairs(plain, pairs)
+    step_id = next_function_id(workspace.root)
+    members = [int(emitters.attrib["ID"]), int(rest.attrib["ID"])]
+    workspace.add_function(build_collection(step_id, "Pastel Partido", members))
+    workspace.add_function(
+        build_chaser(next_function_id(workspace.root), "Rueda Pastel", [step_id])
+    )
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert [(f.message_id, f.function, f.fixtures) for f in findings] == [
+        ("white_share_dropped_step", "Rueda Pastel", (plain_caps.fixture.name,))
+    ]
+    assert findings[0].fields["step"] == "Pastel Partido"
+
+
 def test_2026_09_26_a_strobe_the_level_outbids(library):
     """2026-09-26, en-sala DMX audit (items 7 and 16): holding STROBO, STROBO
     SUAVE or any of the three flashes left both MiN Wash at 255 "Open". Their
