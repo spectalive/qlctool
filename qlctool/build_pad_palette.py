@@ -1,29 +1,27 @@
 """The SMC-PAD LED bridge's palette, read from the saved workspace.
 
-The bridge paints the pad under the finger the colour the console paints the
-button, dimmed while the function is idle and full-bright while QLC+'s
-feedback says it is active. It used to hard-code that palette in Swift, and a
-test in the show's repository compared the two by hand (ruling D-R2,
-2026-09-26). This writes it instead, from the same profile the console is
-generated with: a pad is lit when the workspace binds a widget to its channel
-and the profile gives that channel a colour; every other pad of the two banks
-the show uses glows the faint free-pad grey, so a lit pad always does something.
+The bridge lights the pad under the finger, dimmed while the function is idle
+and full-bright while QLC+'s feedback says it is active. It used to hard-code
+that palette in Swift, and a test in the show's repository compared it with
+the toolkit's tables by hand (ruling D-R2, 2026-09-26). This writes it instead,
+from the SMC-PAD profile the console is generated with: the colour comes from
+the pad profile (`smc_pad_colors`), not from the console button, which on some
+page-2 hooks wears its page's colour. A pad is lit when the workspace binds a
+widget to its channel on the pad's input universe and the profile colours that
+channel; every other pad of the two banks the show uses glows the faint free
+grey, so a lit pad always does something.
 """
 
 import hashlib
 from pathlib import Path
 from typing import Any
 
-from .bound_widget_ids import bound_widget_ids
-from .controllers.midi_pad_profile import MidiPadProfile
+from .checks.bound_inputs import bound_inputs
 from .controllers.smc_pad_profile import SMC_PAD
-from .generate.smc_pad_device import (
-    FIRST_PAD_NOTE,
-    PAD_MIDI_CHANNEL,
-    PADS,
-    pad_channel,
-)
+from .generate.smc_pad_device import PAD_MIDI_CHANNEL, PADS, pad_channel
+from .generate.smc_pad_note import pad_note
 from .pad_idle_colour import pad_idle_colour
+from .pad_input_universe import pad_input_universe
 from .slug import slugify
 from .workspace import Workspace
 
@@ -35,27 +33,30 @@ BANKS = (1, 2)
 FREE_PAD = (20, 20, 20)
 
 
-def build_pad_palette(
-    workspace: Workspace, path: str | Path, profile: MidiPadProfile = SMC_PAD
-) -> dict[str, Any]:
+def build_pad_palette(workspace: Workspace, path: str | Path) -> dict[str, Any]:
     """Every pad's note, control and colours; no pads at all when nothing is bound to one."""
-    bound = bound_widget_ids(workspace.root)
-    control_of = {channel: name for name, channel in profile.bindings.items()}
+    root = workspace.root
+    bound: dict[int, list[int]] = {}
+    for channel, element in bound_inputs(root, pad_input_universe(root)):
+        bound.setdefault(channel, []).append(int(element.get("ID", "-1")))
+    control_of = {channel: name for name, channel in SMC_PAD.bindings.items()}
     pads: list[dict[str, Any]] = []
     for bank in BANKS:
         for pad in range(1, PADS + 1):
             channel = pad_channel(pad, bank)
             widgets = bound.get(channel, [])
             control = control_of.get(channel) if widgets else None
-            active = profile.colors.get(control or "", FREE_PAD)
+            colour = SMC_PAD.colors.get(control or "")
+            active = FREE_PAD if colour is None else colour
             pads.append(
                 {
                     "bank": bank,
                     "pad": pad,
-                    "note": FIRST_PAD_NOTE + (bank - 1) * PADS + pad - 1,
+                    "note": pad_note(pad, bank),
                     "channel": channel,
                     "control": control,
                     "widgets": widgets,
+                    "lit": colour is not None,
                     "active": list(active),
                     "idle": list(pad_idle_colour(active)),
                 }
@@ -67,7 +68,7 @@ def build_pad_palette(
     return {
         "format": FORMAT,
         "generator": GENERATOR,
-        "device": profile.name,
+        "device": SMC_PAD.name,
         "midiChannel": PAD_MIDI_CHANNEL,
         "show": {
             "key": slugify(path.stem),

@@ -16,6 +16,7 @@ from rig_root import RIG_ROOT
 
 from qlctool.build_pad_palette import FREE_PAD, build_pad_palette
 from qlctool.cli import main
+from qlctool.constants import QLC_NS
 from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
 from qlctool.generate.smc_pad_colors import FUNCTION_COLORS
 from qlctool.generate.smc_pad_device import PADS
@@ -35,6 +36,7 @@ def test_every_coloured_function_lights_its_own_pad(palette):
     for name, colour in FUNCTION_COLORS.items():
         pad = by_channel[SMC_PAD_BINDINGS[name]]
         assert pad["control"] == name
+        assert pad["lit"]
         assert pad["active"] == list(colour), f"{name} on bank {pad['bank']} pad {pad['pad']}"
         assert pad["idle"] == [c // 6 for c in colour]
         assert pad["widgets"], f"{name} is lit but no widget listens on its pad"
@@ -47,6 +49,7 @@ def test_the_pads_with_no_function_stay_faint(palette):
     for pad in palette["pads"]:
         if pad["channel"] not in coloured:
             assert pad["control"] is None
+            assert not pad["lit"]
             assert pad["active"] == list(FREE_PAD), f"bank {pad['bank']} pad {pad['pad']}"
 
 
@@ -74,3 +77,13 @@ def test_the_file_names_its_workspace_and_is_deterministic(tmp_path, capsys):
 def test_a_rig_with_no_pad_writes_no_pads():
     """The small club binds nothing to any input: an empty list, not an error."""
     assert build_pad_palette(Workspace.load(CLUB), CLUB)["pads"] == []
+
+
+def test_a_binding_on_another_universe_is_not_the_pad(tmp_path):
+    """Review of round D1: only the pad's input universe lights a pad."""
+    workspace = Workspace.load(SHOW)
+    for source in workspace.root.iter(f"{{{QLC_NS}}}Input"):
+        if source.get("Channel") == str(SMC_PAD_BINDINGS["full_white"]):
+            source.set("Universe", "1")
+    first = build_pad_palette(workspace, tmp_path / "unsaved.qxw")["pads"][0]
+    assert (first["control"], first["lit"], first["widgets"]) == (None, False, [])

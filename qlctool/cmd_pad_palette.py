@@ -13,6 +13,6 @@ def cmd_pad_palette(args: argparse.Namespace) -> int:
     out = Path(args.out)
     text = json.dumps(palette, indent=1, sort_keys=True, ensure_ascii=False) + "\n"
     out.write_text(text, encoding="utf-8")
-    lit = sum(1 for pad in palette["pads"] if pad["control"] is not None)
+    lit = sum(1 for pad in palette["pads"] if pad["lit"])
     print(f"{out}: {len(palette['pads'])} pads, {lit} lit")
     return 0

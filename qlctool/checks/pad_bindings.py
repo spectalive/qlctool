@@ -1,20 +1,16 @@
-"""Every input channel a console widget listens on, and the widgets listening on it."""
+"""Every input channel of the pad's universe a console widget listens on, and who listens."""
 
 from lxml import etree
 
-from ..xmlutil import findall_local, localname
-from .bound_widgets import BOUND_WIDGETS
+from ..pad_input_universe import pad_input_universe
+from ..xmlutil import localname
+from .bound_inputs import bound_inputs
 
 
 def pad_bindings(root: etree._Element) -> dict[int, list[str]]:
-    """Channel -> captions of the widgets bound to it. Key-only `<Input>`s bind a keyboard, not a pad."""
+    """Channel -> captions of the widgets bound to it on the pad's input universe."""
     bindings: dict[int, list[str]] = {}
-    for element in root.iter():
-        if localname(element) not in BOUND_WIDGETS:
-            continue
+    for channel, element in bound_inputs(root, pad_input_universe(root)):
         caption = element.attrib.get("Caption") or localname(element)
-        for source in findall_local(element, "Input"):
-            if "Channel" not in source.attrib:
-                continue
-            bindings.setdefault(int(source.attrib["Channel"]), []).append(caption)
+        bindings.setdefault(channel, []).append(caption)
     return bindings

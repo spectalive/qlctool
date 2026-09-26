@@ -3,8 +3,11 @@
 The M-VAVE SMC-PAD cannot light its own LEDs from QLC+: a small bridge holds
 the pad's Bluetooth LED session and paints each pad when QLC+'s feedback says
 the widget bound to it lit. The bridge reads which colour each pad wears from
-this file, written from the saved show, so the pad under the finger and the
-console button above it always read as the same surface.
+this file, written from the saved show. The colour is the pad profile's
+(`generate/smc_pad_colors.py`), the table the console paints most pad-bound
+buttons with. Some page-2 hooks (the colour and mix wheels, the head movements,
+the gobo and prism animations) wear their page's colour on the console instead,
+so on those pads the LED and the button differ.
 
 ```
 qlctool pad-palette --out "Vibra.pads.json" "QLC+ Setups/Vibra.qxw"
@@ -12,8 +15,9 @@ qlctool pad-palette --out "Vibra.pads.json" "QLC+ Setups/Vibra.qxw"
 
 ## Where the colours come from
 
-A pad is **lit** when the workspace binds a console widget to its input channel
-*and* the pad's profile (`qlctool/controllers/smc_pad_profile.py`: the bindings
+A pad is **lit** when the workspace binds a console widget to its input channel,
+on the universe that carries the show's MIDI input patch (universe 0 when there
+is none), *and* the pad's profile (`qlctool/controllers/smc_pad_profile.py`: the bindings
 of `generate/smc_pad_bindings.py`, the colours of `generate/smc_pad_colors.py`)
 gives that channel a colour. Every other pad of the two banks the show uses is
 **free** and glows a faint grey, `(20, 20, 20)`: a pad that looks lit and does
@@ -44,5 +48,6 @@ Each pad:
 | `channel` | the QLC+ input channel the console binds (omni mode). |
 | `control` | the catalogue identifier the bindings use (`"flash_full"`), or `null` for a free pad. |
 | `widgets` | the ids of the console widgets bound to the pad's channel. |
+| `lit` | `true` when the profile gives the bound control a colour; a free pad is `false`. |
 | `active` | `[r, g, b]` while the function is active (feedback note on). |
 | `idle` | `[r, g, b]` while it is idle: `active` divided by 6, rounded down. |
