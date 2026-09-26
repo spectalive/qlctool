@@ -47,7 +47,7 @@ def check_unaimed_rigged_mover(
     }
     if not movers:
         return []
-    evaluator = UnaimedEvaluator(graph, groups)
+    evaluator = UnaimedEvaluator(graph, groups, states)
     findings: list[Finding] = []
     for state_id in sorted(states):
         driven = reach(graph, groups, state_id)

@@ -3928,13 +3928,17 @@ def test_2026_09_27_a_floor_under_the_gobo_hook_is_not_a_collision(library):
     fiesta = functions["Momento Fiesta"]
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     groups = group_fixtures(workspace.root)
-    floors = static_floors(graph, groups, int(fiesta.attrib["ID"]))
+    floors = static_floors(
+        graph, groups, int(fiesta.attrib["ID"]), room_states(workspace.root, graph, groups)
+    )
     members = [int(s.text) for s in findall_local(fiesta, "Step") if int(s.text) not in floors]
     floor = int(_twin_scene(workspace, functions, "Gobo Reposo", "Gobo Suelo").attrib["ID"])
 
     _set_steps(fiesta, [floor, *members])
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
-    assert static_floors(graph, groups, int(fiesta.attrib["ID"])) == {floor}
+    assert static_floors(
+        graph, groups, int(fiesta.attrib["ID"]), room_states(workspace.root, graph, groups)
+    ) == {floor}
     found = {(f.rule_id, f.function) for f in check_workspace(workspace, library)}
     assert ("collision", "Momento Fiesta") not in found
     assert ("family_owner", "Gobo Suelo") not in found
@@ -3943,6 +3947,51 @@ def test_2026_09_27_a_floor_under_the_gobo_hook_is_not_a_collision(library):
     found = {(f.rule_id, f.function) for f in check_workspace(workspace, library)}
     assert ("collision", "Momento Fiesta") in found
     assert ("family_owner", "Gobo Suelo") in found
+
+
+def test_2026_09_27_a_floor_is_only_a_state_s_and_only_ltp(library):
+    """2026-09-27, round 3 review (I-2, M-8): the floor exemption is the D8
+    fallback under a room state's hooks, nothing more. The same LTP-only Scene
+    put first in a pick's own Collection, under a member that writes the 7R
+    wheel too, is a look nobody sees and still a collision. And a Scene that
+    also writes an HTP channel is merged, not ordered: first in a state, it
+    is no floor and collides.
+    """
+    from qlctool.checks.static_floors import static_floors
+
+    workspace = _show()
+    functions = _functions(workspace)
+    wrapper = functions["Rig Rojo + Pixeles"]
+    members = [int(s.text) for s in findall_local(wrapper, "Step")]
+    wheel = int(_twin_scene(workspace, functions, "Color Beam - White", "Beam Suelo").attrib["ID"])
+    _set_steps(wrapper, [wheel, *members])
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    states = room_states(workspace.root, graph, groups)
+    assert int(wrapper.attrib["ID"]) not in states
+    assert static_floors(graph, groups, int(wrapper.attrib["ID"]), states) == frozenset()
+    found = {(f.rule_id, f.function) for f in check_workspace(workspace, library)}
+    assert ("collision", "Rig Rojo + Pixeles") in found
+
+    workspace = _show()
+    functions = _functions(workspace)
+    capabilities = {c.fixture.fixture_id: c for c in capabilities_of(workspace.root, library)}
+    fiesta = functions["Momento Fiesta"]
+    graph = build_show_graph(workspace.root, list(capabilities.values()))
+    states = room_states(workspace.root, graph, groups)
+    floors = static_floors(graph, groups, int(fiesta.attrib["ID"]), states)
+    members = [int(s.text) for s in findall_local(fiesta, "Step") if int(s.text) not in floors]
+    lit_floor = _twin_scene(workspace, functions, "Gobo Reposo", "Gobo Suelo Encendido")
+    for value in findall_local(lit_floor, "FixtureVal"):
+        capability = capabilities[int(value.attrib["ID"])]
+        pairs = _pairs_of(value)
+        pairs.update(dict.fromkeys(capability.offsets_for_role(roles.DIMMER), 255))
+        _write_pairs(value, pairs)
+    _set_steps(fiesta, [int(lit_floor.attrib["ID"]), *members])
+    graph = build_show_graph(workspace.root, list(capabilities.values()))
+    assert static_floors(graph, groups, int(fiesta.attrib["ID"]), states) == frozenset()
+    found = {(f.rule_id, f.function) for f in check_workspace(workspace, library)}
+    assert ("collision", "Momento Fiesta") in found
 
 
 def test_2026_09_26_releasing_a_pick_leaves_the_beams_red(library):
@@ -3990,7 +4039,7 @@ def test_2026_09_26_releasing_a_pick_leaves_the_beams_red(library):
     _, graph, groups, states = findings(workspace)
     by_id = {int(f.attrib["ID"]): f for f in _functions(workspace).values()}
     for state_id in states:
-        floors = static_floors(graph, groups, state_id)
+        floors = static_floors(graph, groups, state_id, states)
         if floors:
             kept = [m for m in graph.members[state_id] if m not in floors]
             _set_steps(by_id[state_id], kept)

@@ -17,13 +17,14 @@ any step - is what gets compared. If two concurrent members reach the same
 contested channel, then at some step of some chaser both are writing it, and
 the room shows the sum.
 
-A static floor is the exception (`static_floors`): a Scene the Collection
+A static floor is the exception (`static_floors`): a Scene a room state
 starts before every member that writes its channels, on LTP channels only, is
 overridden by each of them while they run and holds the channel when they
 stop. That order is QLC+ 5's, measured, so the pair is a floor under a look,
 not two looks fighting.
 """
 
+from collections.abc import Collection
 from itertools import combinations
 
 from .color_roles import CONTESTED
@@ -34,21 +35,25 @@ from .static_floors import static_floors
 RULE_ID = "collision"
 
 
-def check_collisions(graph: ShowGraph, groups, entries: dict[int, str]) -> list[Finding]:
+def check_collisions(
+    graph: ShowGraph, groups, entries: dict[int, str], states: Collection[int]
+) -> list[Finding]:
     findings: list[Finding] = []
     reported: set[tuple[int, int, int]] = set()
     for function_id in sorted(entries):
         for collection_id in graph.collections(function_id):
-            findings += _collection(graph, groups, collection_id, reported)
+            findings += _collection(graph, groups, collection_id, reported, states)
     return findings
 
 
-def _collection(graph: ShowGraph, groups, collection_id: int, reported) -> list[Finding]:
+def _collection(
+    graph: ShowGraph, groups, collection_id: int, reported, states: Collection[int]
+) -> list[Finding]:
     members = graph.members.get(collection_id, ())
     if len(members) < 2:
         return []
     contested = {member: _contested_channels(graph, groups, member) for member in members}
-    floors = static_floors(graph, groups, collection_id)
+    floors = static_floors(graph, groups, collection_id, states)
     findings: list[Finding] = []
     for first, second in combinations(members, 2):
         if first in floors:

@@ -121,7 +121,7 @@ def check_workspace(
     findings += check_wheel_fade(graph, groups, root)
     findings += check_internal_programs(graph, groups, entries, states)
     findings += check_mode_owner(graph, groups, entries)
-    findings += check_collisions(graph, groups, entries)
+    findings += check_collisions(graph, groups, entries, states)
     findings += check_layer_adds(graph, groups, root, states)
     findings += check_layer_trace(graph, groups, root, states)
     findings += check_pick_overridden(graph, groups, root, states)

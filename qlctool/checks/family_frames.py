@@ -254,7 +254,7 @@ def _owner_frontier(
     on, and the frame's hooks still own the family (2026-09-27, ruling D8).
     """
     found: set[int] = set()
-    floors = static_floors(graph, groups, state_id)
+    floors = static_floors(graph, groups, state_id, (state_id,))
     for function_id in graph.members.get(state_id, ()):
         if function_id in floors:
             continue

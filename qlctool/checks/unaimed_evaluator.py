@@ -12,6 +12,8 @@ later member that still runs writes it: under one, it plays no part
 (`floor_overridden`, 2026-09-27).
 """
 
+from collections.abc import Collection
+
 from .aims_head import aims_head
 from .floor_overridden import floor_overridden
 from .show_graph import CONCURRENT, ShowGraph
@@ -21,9 +23,12 @@ from .static_floors import static_floors
 class UnaimedEvaluator:
     """Answer "can this instant leave that head unaimed" for one immutable graph."""
 
-    def __init__(self, graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> None:
+    def __init__(
+        self, graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: Collection[int]
+    ) -> None:
         self._graph = graph
         self._groups = groups
+        self._states = states
         self._memo: dict[tuple[int, int, frozenset[int], frozenset[int]], bool] = {}
         self._floors: dict[int, frozenset[int]] = {}
 
@@ -64,6 +69,6 @@ class UnaimedEvaluator:
     def _floors_of(self, collection_id: int) -> frozenset[int]:
         floors = self._floors.get(collection_id)
         if floors is None:
-            floors = static_floors(self._graph, self._groups, collection_id)
+            floors = static_floors(self._graph, self._groups, collection_id, self._states)
             self._floors[collection_id] = floors
         return floors

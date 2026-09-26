@@ -15,21 +15,30 @@ and shake 1, pan 40 and tilt 200), until the hook was pressed again and won
 again. That is a floor, not a second opinion: the release of a latched pick
 lands on it instead of on whatever the pick left (ruling D8).
 
-Only LTP channels: an Intensity channel is merged HTP and zeroed every tick, so
-order means nothing there. The channel groups come from the definitions; the
-generator writes no `<ForcedHTP>` on a wheel or a position.
+Only LTP channels: an HTP channel is merged highest-takes-precedence and zeroed
+every tick, so order means nothing there. Which channels are HTP is the patch's
+answer, ForcedLTP and ForcedHTP included (`merged_htp`).
+
+Only under a room state (2026-09-27 review, I-2): the floor is what a released
+pick lands on, and a pick is released over a state. In any other Collection a
+Scene hidden under a later member that writes its channels is still a look
+nobody sees, and `collision` must go on saying so.
 """
 
-from .show_graph import ShowGraph, reach
+from collections.abc import Collection
 
-INTENSITY_GROUP = "Intensity"
+from .merged_htp import merged_htp
+from .show_graph import ShowGraph, reach
 
 
 def static_floors(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], collection_id: int
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    collection_id: int,
+    states: Collection[int],
 ) -> frozenset[int]:
-    """Scene members that write only LTP channels, under a later member and no earlier one."""
-    if graph.kind(collection_id) != "Collection":
+    """A state's Scene members that write only LTP channels, under a later member and no earlier one."""
+    if collection_id not in states or graph.kind(collection_id) != "Collection":
         return frozenset()
     members = graph.members.get(collection_id, ())
     channels = [
@@ -41,9 +50,7 @@ def static_floors(
         if graph.kind(member) != "Scene" or not channels[index]:
             continue
         if any(
-            (capability := graph.capabilities.get(f)) is None
-            or capability.groups_by_offset[o] == INTENSITY_GROUP
-            for f, o in channels[index]
+            f not in graph.capabilities or o in merged_htp(graph, f) for f, o in channels[index]
         ):
             continue
         earlier = set().union(*channels[:index])

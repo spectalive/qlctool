@@ -27,6 +27,7 @@ from ..fixture_group import fixture_groups
 from ..xmlutil import find_local, findall_local, localname
 from .driven_channels import Driven, driven_channels
 from .freeze_driven import freeze_driven
+from .htp_offsets import htp_offsets
 from .read_only_driven import ReadOnlyDriven
 
 BRANCHING = ("Chaser", "Collection", "Sequence")
@@ -43,6 +44,9 @@ class ShowGraph:
     # group id -> the (width, height) an RGBMatrix paints across. The grid, not
     # the head count: how long one pass of a script takes depends on it.
     grids: dict[int, tuple[int, int]] = field(default_factory=dict)
+    # fixture id -> the offsets QLC+ merges HTP, the patch's ForcedLTP and
+    # ForcedHTP applied (`htp_offsets`); `merged_htp` reads it.
+    htp: dict[int, frozenset[int]] = field(default_factory=dict)
     # What each leaf drives, parsed once. A show is immutable while it is
     # checked, and the instant rules ask the same question of the same scene
     # hundreds of thousands of times: without this, one pass of every rule
@@ -152,10 +156,12 @@ def build_show_graph(root: etree._Element, capabilities: list[FixtureCapabilitie
                 for step in findall_local(element, "Step")
                 if step.text and step.text.strip().isdigit()
             )
+    by_id = {c.fixture.fixture_id: c for c in capabilities}
     return ShowGraph(
         functions=functions,
         members=members,
-        capabilities={c.fixture.fixture_id: c for c in capabilities},
+        capabilities=by_id,
+        htp=htp_offsets(root, by_id),
         grids={group.group_id: (group.width, group.height) for group in fixture_groups(root)},
     )
 
