@@ -3,8 +3,8 @@
 A button's background colour on the Mac is decoration and is wrong for most
 two-colour looks; the light itself is in the scene values. For every fixture
 with red, green and blue channels that the function's scenes reach, the
-triple written is one colour of the look; the distinct triples, in fixture
-order, are its swatches. Smoke machines are not read. A look made only of effects and matrices has none,
+triple written, with a White emitter's share folded back in, is one colour
+of the look; the distinct triples, in fixture order, are its swatches. Smoke machines are not read. A look made only of effects and matrices has none,
 and the desk draws none rather than guessing.
 """
 
@@ -12,6 +12,7 @@ from . import roles
 from .checks.show_graph import ShowGraph, reach
 
 MAX_SWATCHES = 4
+FULL = 255
 
 
 def swatches(graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int) -> list[str]:
@@ -38,7 +39,11 @@ def swatches(graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: 
             triple.append(value)
         if len(triple) != 3:
             continue
-        red, green, blue = triple
+        # A White emitter carries the tint's white share (`rgbw_split`): fold it
+        # back, or a pastel's tile shows its remainder beside the whole pastel.
+        whites = capability.offsets_for_role(roles.WHITE)
+        white = (written.get(whites[0]) or 0) if whites else 0
+        red, green, blue = (min(FULL, level + white) for level in triple)
         colour = f"#{red:02x}{green:02x}{blue:02x}"
         if colour not in found:
             found.append(colour)

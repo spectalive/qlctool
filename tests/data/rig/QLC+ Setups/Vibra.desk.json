@@ -5,7 +5,7 @@
  "show": {
   "key": "vibra",
   "workspace": "Vibra.qxw",
-  "sha256": "12a75704c7096c3d2c3940799e88925008817313d50428e1de0cfc2c2cc301aa"
+  "sha256": "a5f5422aff56f8e39cf7080d411f169035b6a8f312364fd5170b8c7661216842"
  },
  "grandMaster": {
   "widget": 258
@@ -344,7 +344,7 @@
    "solo": 3,
    "key": "F1",
    "swatches": [
-    "#552c00"
+    "#ffd6aa"
    ],
    "enabled": true,
    "reason": ""
@@ -868,7 +868,7 @@
    "solo": 62,
    "key": "L",
    "swatches": [
-    "#737373"
+    "#ffffff"
    ],
    "enabled": true,
    "reason": ""
@@ -919,7 +919,7 @@
    "solo": 62,
    "key": null,
    "swatches": [
-    "#552c00"
+    "#ffd6aa"
    ],
    "enabled": true,
    "reason": ""

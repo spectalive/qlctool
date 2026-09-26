@@ -32,7 +32,11 @@ def color_scene_values(
 ) -> dict[int, list[tuple[int, int]]]:
     # One emitter owns the colour's white share, or the tint is washed out by
     # its own achromatic part arriving twice (`rule_white_twice`, 2026-09-22).
-    red, green, blue, white = rgbw_split(rgb)
+    # Only a fixture that has a White emitter gives the share away: the others
+    # keep the whole colour, or a pastel arrives as its dim saturated remainder
+    # (`rule_white_share_dropped`, 2026-09-26).
+    split = rgbw_split(rgb)
+    whole = (*rgb, 0)
     result: dict[int, list[tuple[int, int]]] = {}
     wanted = None if fixture_ids is None else set(fixture_ids)
     excluded_effect_modes = set(exclude_effect_mode_fixture_ids)
@@ -50,6 +54,7 @@ def color_scene_values(
         ):
             continue
 
+        red, green, blue, white = split if caps.offsets_for_role(roles.WHITE) else whole
         pairs: list[tuple[int, int]] = []
         for offset in caps.offsets_for_role(roles.RED):
             pairs.append((offset, red))

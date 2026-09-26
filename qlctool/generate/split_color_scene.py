@@ -56,7 +56,12 @@ def split_color_scene_values(
 
     result: dict[int, list[tuple[int, int]]] = {}
     for index, caps in enumerate(ordered):
-        red, green, blue, white = rgbw_split(first if index % 2 == 0 else second)
+        rgb = first if index % 2 == 0 else second
+        # The white share goes to a White emitter only where there is one
+        # (`rule_white_share_dropped`, 2026-09-26).
+        red, green, blue, white = (
+            rgbw_split(rgb) if caps.offsets_for_role(roles.WHITE) else (*rgb, 0)
+        )
         pairs: list[tuple[int, int]] = []
         for offset in caps.offsets_for_role(roles.RED):
             pairs.append((offset, red))
