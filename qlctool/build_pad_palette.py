@@ -18,8 +18,8 @@ from typing import Any
 
 from .checks.bound_inputs import bound_inputs
 from .controllers.smc_pad_profile import SMC_PAD
+from .generate.pad_note import pad_note
 from .generate.smc_pad_device import PAD_MIDI_CHANNEL, PADS, pad_channel
-from .generate.smc_pad_note import pad_note
 from .pad_idle_colour import pad_idle_colour
 from .pad_input_universe import pad_input_universe
 from .slug import slugify
