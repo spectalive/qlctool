@@ -3828,3 +3828,19 @@ def test_2026_09_27_a_figure_owes_no_movement_to_a_spare(library):
     findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
     assert findings
     assert all(f.fixtures == ("MAC WASH 1915Z #2",) for f in findings)
+
+
+def test_2026_09_27_a_pick_with_the_washes_held_is_still_a_wrapper(library):
+    """2026-09-27, Round 2 review: `Jugar · Beams Abanico` became a two-member
+    Collection when ruling D7 put the washes-held scene beside the fan, and
+    `wrapper_scenes` - one member only - stopped seeing it, so the pick rules
+    skipped it without a word. A Collection of Scenes is a wrapper too.
+    """
+    from qlctool.checks.wrapper_leaves import wrapper_scenes
+
+    workspace = _show("Vibra.qxw")
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    ids = {graph.name(i): i for i in graph.functions}
+    pick = ids["Jugar · Beams Abanico"]
+    assert len(graph.members[pick]) == 2
+    assert set(wrapper_scenes(graph, pick)) == set(graph.members[pick])
