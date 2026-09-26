@@ -3844,3 +3844,51 @@ def test_2026_09_27_a_pick_with_the_washes_held_is_still_a_wrapper(library):
     pick = ids["Jugar · Beams Abanico"]
     assert len(graph.members[pick]) == 2
     assert set(wrapper_scenes(graph, pick)) == set(graph.members[pick])
+
+
+def test_2026_09_26_the_columns_do_not_strobe_on_strobo(library):
+    """2026-09-26, en-sala DMX audit (items 7 and 14): STROBO, STROBO SUAVE,
+    FLASH and FLASH LENTO strobed every fixture but the four vertical smoke
+    columns, whose LED has a strobe channel of its own ("Strobe, slow to
+    fast"). Every strobe writer skipped the whole smoke machine, pump and
+    LED alike, and both rules skipped it too. Ruling D3: the columns strobe
+    with the rig and the pump is never written; `Flash Color`, which keeps
+    the running colour, lights them white and steady (owner, 2026-09-26).
+    Strip the columns out of STROBO, or park their strobe in FLASH, and the
+    rules must name all four; `Flash Color` stays silent.
+    """
+    from qlctool.checks.rule_flash_strobe import check_flash_strobe
+    from qlctool.checks.rule_strobe_coverage import check_strobe_coverage
+
+    columns = ("Humo Vertical 1", "Humo Vertical 2", "Humo Vertical 3", "Humo Vertical 4")
+
+    def findings(workspace):
+        graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+        groups = group_fixtures(workspace.root)
+        return check_strobe_coverage(graph, groups) + check_flash_strobe(
+            graph, groups, workspace.root
+        )
+
+    for name in SHOWS:
+        assert findings(_show(name)) == []
+
+    workspace = _show()
+    capabilities = {
+        c.fixture.fixture_id: c for c in capabilities_of(workspace.root, library) if c.is_lit_smoke
+    }
+    assert sorted(c.fixture.name for c in capabilities.values()) == list(columns)
+    functions = _functions(workspace)
+    for value in list(findall_local(functions["Strobo Rapido"], "FixtureVal")):
+        if int(value.attrib["ID"]) in capabilities:
+            value.getparent().remove(value)
+    for value in findall_local(functions["Flash 100%"], "FixtureVal"):
+        capability = capabilities.get(int(value.attrib["ID"]))
+        if capability is None:
+            continue
+        pairs = _pairs_of(value)
+        for offset in capability.offsets_for_role(roles.STROBE):
+            pairs[offset] = 0
+        _write_pairs(value, pairs)
+
+    found = {(f.function, f.fixtures) for f in findings(workspace)}
+    assert found == {("Strobo Rapido", columns), ("Flash 100%", columns)}

@@ -15,6 +15,13 @@ also a Flash button and touches nothing with a shutter - but writing a fixture
 while parking its shutter in "Open" or "No function" is exactly the shape of
 the regression.
 
+The lit smoke columns are judged like any other fixture, since their LED
+strobe is a strobe channel and the pump is not: `Flash 100%` wrote them white
+with the strobe at "No strobe" (en-sala DMX audit, 2026-09-26; ruling D3). A
+flash that states no colour on the rig (`states_rig_colour`) is the one that
+keeps the running colour, and there the owner wants the columns white and
+steady, so it owes them no strobe.
+
 One structural exception, cutting both ways: a Flash button that an
 AudioTriggers bar presses is worked by the PA, not by a finger, and a strobe
 fired by whatever the music does is a strobe nobody chose. That button is
@@ -30,6 +37,7 @@ from .audio_pressed_widgets import audio_pressed_widgets
 from .finding import ERROR, Finding
 from .raises_light import raises_light
 from .show_graph import ShowGraph
+from .states_rig_colour import states_rig_colour
 from .strobe_written import strobe_capable_offsets, value_strobes
 
 RULE_ID = "flash_strobe"
@@ -86,9 +94,13 @@ def _strobe_writes(graph: ShowGraph, groups, scene) -> tuple[list[str], bool]:
     """(fixtures written but not strobed, whether anything strobes at all)."""
     dark: list[str] = []
     strobing_anywhere = False
-    for fixture_id, written in graph.driven_of(scene, groups).items():
+    driven = graph.driven_of(scene, groups)
+    colours_rig = states_rig_colour(graph, driven)
+    for fixture_id, written in driven.items():
         capability = graph.capabilities.get(fixture_id)
-        if capability is None or capability.is_smoke:
+        if capability is None or (capability.is_smoke and not capability.is_lit_smoke):
+            continue
+        if capability.is_lit_smoke and not colours_rig:
             continue
         capable = strobe_capable_offsets(capability)
         if not capable:

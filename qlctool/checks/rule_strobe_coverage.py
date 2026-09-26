@@ -8,8 +8,11 @@ did write was correct; what was wrong was who it never wrote.
 
 The rule reads the shape, not the name: a scene whose writes all land on
 strobe-role channels, at least one of them actually strobing, is a strobe
-scene, and a strobe scene must write every patched, non-smoke fixture that
-has a strobe-capable channel. The strobing write is what separates it from
+scene, and a strobe scene must write every patched fixture that has a
+strobe-capable channel. A smoke machine with lights of its own counts: its
+LED strobe is a strobe channel like any PAR's, and the pump is not one, so
+the scene cannot touch the smoke. STROBO left the four vertical columns steady
+beside a flashing rig (en-sala DMX audit, 2026-09-26, item 7; ruling D3). The strobing write is what separates it from
 `Intensidad Peak`, which opens two shutters as its intensity path and strobes
 nothing. The reopening scene is not checked - it has the same shape as any
 opener - but the generator builds it from the same fixture list as the ON,
@@ -28,7 +31,8 @@ def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
     capable = {
         fixture_id: offsets
         for fixture_id, capability in graph.capabilities.items()
-        if not capability.is_smoke and (offsets := strobe_capable_offsets(capability))
+        if not (capability.is_smoke and not capability.is_lit_smoke)
+        and (offsets := strobe_capable_offsets(capability))
     }
     findings: list[Finding] = []
     for function_id in sorted(graph.functions):
