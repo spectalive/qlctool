@@ -14,6 +14,14 @@
   `Vibra.desk.json` re-baselined (diff: the four columns in `Flash Color` and
   its desk copy; the desk tile gains a `#ffffff` swatch). Test
   `tests/test_flash_colour_lit_smoke.py`.
+- [ ] **The SMC-PAD notes still point at `tools/smc-pad/` (2026-09-26).**
+  The bridge and its capture tools moved to spectalive/smc-pad (vibra-lighting
+  `9495f85`), but `generate/input_profile.py:54` (and so the generated
+  `M-VAVE-SMC-PAD.qxi`), `generate/smc_pad_device.py:18` and
+  `generate/smc_pad_colors.py:6` still name the old paths. Smallest next step:
+  name `spectalive/smc-pad` (`midicap.swift`, `qlc_led_bridge.swift`) in all
+  three, rebaseline the rig copy of the `.qxi`, and release with the next
+  toolkit round so vibra-lighting's shipped profile follows.
 - [ ] **Verify desk bursts on the rig (2026-09-13).** Normal API priority
   cannot guarantee the Mac Flash's colour or shutter override. The generated
   map marks 15 cues with `burstNote`; durations are provisional. Over AUTO and
