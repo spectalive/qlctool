@@ -5,7 +5,7 @@
  "show": {
   "key": "vibra",
   "workspace": "Vibra.qxw",
-  "sha256": "dbf61aa5e335dbe197ec7df3135a1877bcd1c9c4813f02cab3d5c107c8955166"
+  "sha256": "6e8c8dad217ea13284910acba09b65f3a0aea0f3b3468b90ea378205e554b7c6"
  },
  "grandMaster": {
   "widget": 258
@@ -902,7 +902,8 @@
    "solo": 62,
    "key": "E",
    "swatches": [
-    "#ffffff"
+    "#ffffff",
+    "#ff00ff"
    ],
    "enabled": true,
    "reason": ""

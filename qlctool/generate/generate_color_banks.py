@@ -22,6 +22,7 @@ from ..wheel_palette import WHEEL_PALETTE
 from ..workspace import Workspace
 from .bank_for_group import bank_for_group
 from .generated_bank import GeneratedBank
+from .ungrouped_colour_fixture_ids import ungrouped_colour_fixture_ids
 
 
 def generate_color_banks(
@@ -48,6 +49,10 @@ def generate_color_banks(
     values_of = PALETTE if palette is None else palette
     wheel_of = WHEEL_PALETTE if wheel_palette is None else wheel_palette
 
+    # Keys 1-0 press every bank at once, so a colour fixture in no group needs
+    # to be in one of them: the first bank's (ruling D9, 2026-09-26). It then
+    # follows that bank's colour only.
+    extra = ungrouped_colour_fixture_ids(workspace.root, caps)
     for group in fixture_groups(workspace.root):
         bank = bank_for_group(
             workspace,
@@ -62,7 +67,9 @@ def generate_color_banks(
             wheel_of,
             key_split_pairs,
             vocabulary,
+            extra_fixture_ids=extra,
         )
         if bank is not None:
             banks.append(bank)
+            extra = []
     return banks

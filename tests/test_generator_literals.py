@@ -144,6 +144,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/opposite_split.py",
     # 2026-09-26, round G: which tempo line closes page 1's help; identifiers only.
     "generate/tempo_close_line.py",
+    # 2026-09-26, en-sala round 1: the colour fixtures a bank key would skip.
+    "generate/ungrouped_colour_fixture_ids.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

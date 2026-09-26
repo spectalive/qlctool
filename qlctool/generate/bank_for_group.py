@@ -29,7 +29,14 @@ def bank_for_group(
     wheel_of: Mapping[str, RGB],
     key_split_pairs: Sequence[tuple[str, str]],
     vocabulary: Names,
+    extra_fixture_ids: Sequence[int] = (),
 ) -> GeneratedBank | None:
+    """The bank's scenes, splits and wheels; None when the group mixes no colour.
+
+    `extra_fixture_ids` are colour fixtures in no group (ruling D9,
+    2026-09-26): they join every solid and the splits the keys press, after
+    the group's own members, and never become cells of its grid.
+    """
     path = vocabulary.render("path_group_colours", group=group.name)
     scene_ids: list[int] = []
     # The bank keeps white - key 8 is a hand pick, and a hand may ask for it -
@@ -43,7 +50,7 @@ def bank_for_group(
         values = color_scene_values(
             caps,
             values_of[name],
-            fixture_ids=group.fixture_ids,
+            fixture_ids=[*group.fixture_ids, *extra_fixture_ids],
             dimmer_full=False,
             exclude_effect_mode_fixture_ids=exclude_effect_mode_fixture_ids,
         )
@@ -55,7 +62,7 @@ def bank_for_group(
                 caps, name, fixture_ids=group.fixture_ids, dimmer=None, names=vocabulary
             )
         )
-        if not values:
+        if not values.keys() & set(group.fixture_ids):
             return None  # no colour-capable fixture in this group
         function_id = next_function_id(workspace.root)
         workspace.add_function(build_scene(function_id, f"{name} {group.name}", values, path=path))
@@ -66,11 +73,12 @@ def bank_for_group(
     split_ids: list[int] = []
     split_of: dict[tuple[str, str], int] = {}
     for first, second in split_pairs:
+        keyed = (first, second) in key_split_pairs
         values = split_color_scene_values(
             caps,
             values_of[first],
             values_of[second],
-            fixture_ids=group.fixture_ids,
+            fixture_ids=[*group.fixture_ids, *extra_fixture_ids] if keyed else group.fixture_ids,
             color_names=(first, second),
             dimmer_full=False,
             exclude_effect_mode_fixture_ids=exclude_effect_mode_fixture_ids,
