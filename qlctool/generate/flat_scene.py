@@ -64,7 +64,9 @@ def flat_scene(
         )
     if strobe is not None:
         for capability in caps:
-            if capability.is_smoke:
+            # The lit columns strobe with the rig; their pump is no strobe
+            # channel, so a flash never fires it (ruling D3, 2026-09-26).
+            if capability.is_smoke and not capability.is_lit_smoke:
                 continue
             strobing = strobe_speed_pairs(capability, strobe)
             if not strobing:

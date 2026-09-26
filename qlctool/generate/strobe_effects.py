@@ -97,7 +97,9 @@ def _held_values(workspace: Workspace, library: FixtureLibrary, fraction: float)
     """Fixture id -> every strobe channel at `fraction`, nothing else."""
     values: dict[int, list[tuple[int, int]]] = {}
     for capability in capabilities_of(workspace.root, library):
-        if capability.is_smoke:
+        # A lit smoke machine strobes its LED like any PAR; the pump is not a
+        # strobe channel, so nothing here can fire it (ruling D3, 2026-09-26).
+        if capability.is_smoke and not capability.is_lit_smoke:
             continue
         strobing = strobe_speed_pairs(capability, fraction)
         if strobing:
@@ -119,7 +121,7 @@ def _shutter_values(workspace: Workspace, library: FixtureLibrary):
     """
     result: dict[int, tuple[list[tuple[int, int]], list[tuple[int, int]]]] = {}
     for capability in capabilities_of(workspace.root, library):
-        if capability.is_smoke:
+        if capability.is_smoke and not capability.is_lit_smoke:
             continue
         reopen = dict(shutter_open_pairs(capability))
         strobing = strobe_speed_pairs(capability, ON_FRACTION)

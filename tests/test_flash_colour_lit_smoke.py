@@ -88,9 +88,12 @@ def test_2026_09_26_flash_color_lights_the_columns_white_and_leaves_the_pump(vib
         assert not any(
             o in written and value_strobes(strobing, written[o]) for o, strobing in strobes.items()
         )
-        # Exactly Flash 100%'s white, minus the pump that scene shuts.
-        expected = {o: v for o, v in full[capability.fixture.fixture_id].items() if o not in pump}
-        assert written == expected
+        # Exactly Flash 100%'s white, minus the pump that scene shuts and the
+        # strobe it drives: FLASH strobes the columns, Flash Color leaves them
+        # steady (ruling D3, 2026-09-26).
+        steady = pump | set(strobes)
+        expected = {o: v for o, v in full[capability.fixture.fixture_id].items() if o not in steady}
+        assert {o: v for o, v in written.items() if o not in strobes} == expected
     fog_only = [c for c in caps if c.is_smoke and not c.is_lit_smoke]
     assert fog_only and all(c.fixture.fixture_id not in colour for c in fog_only)
 

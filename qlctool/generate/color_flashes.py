@@ -42,7 +42,9 @@ def generate_color_flashes(
             merged.update(pairs)
             values[fixture_id] = sorted(merged.items())
         for capability in capabilities:
-            if capability.is_smoke:
+            # `Flash 100%`'s footprint, strobe included: the lit columns strobe
+            # their LED, the pump is untouched (ruling D3, 2026-09-26).
+            if capability.is_smoke and not capability.is_lit_smoke:
                 continue
             strobe = strobe_speed_pairs(capability, strobe_fraction)
             if not strobe:
