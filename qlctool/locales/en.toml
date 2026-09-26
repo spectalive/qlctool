@@ -386,6 +386,8 @@ unresolved_mode = "{model} is patched in mode {mode}, which its definition does 
 check_clean = "{count} buttons checked, no problems"
 check_problems = "{count} problem(s) in {rules} rule(s)"
 check_more = "... and {count} more"
+desk_bursts_invalid = "invalid desk bursts: {findings}"
+desk_burst_no_accent = "{control} names no single accent"
 
 [checks]
 accent_restore = "accent without an owner"

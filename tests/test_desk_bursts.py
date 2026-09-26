@@ -20,6 +20,7 @@ from qlctool.desk_policy import BURST_MS
 from qlctool.generate.canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
+from qlctool.names.load_catalogue import load_catalogue
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 
@@ -145,7 +146,8 @@ def test_2026_09_13_burst_corruption_fails_closed(generated, fault):
         dial.append(member)
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     assert check_desk_bursts(graph, workspace.root)
-    with pytest.raises(ValueError, match="invalid desk bursts"):
+    frame = load_catalogue("es")["messages"]["desk_bursts_invalid"].split("{")[0]
+    with pytest.raises(ValueError, match=frame):
         build_deskmap(workspace, library, "unsaved.qxw")
     if fault == "loop":
         groups = group_fixtures(workspace.root)

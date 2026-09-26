@@ -110,7 +110,8 @@ def build_deskmap(
             identifier = desk_burst_identifier(widget.caption, vocabulary)
             if identifier is None:
                 # check_desk_bursts above already refused an accent it cannot name.
-                raise ValueError(f"invalid desk bursts: {key} names no single accent")
+                refusal = vocabulary.render("desk_burst_no_accent", control=key)
+                raise ValueError(vocabulary.render("desk_bursts_invalid", findings=refusal))
             controls[key].update(
                 {
                     "widget": burst.id,

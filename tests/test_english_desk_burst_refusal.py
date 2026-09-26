@@ -2,6 +2,7 @@
 
 `build_deskmap` joined each finding's `message`, which outside `check_workspace`
 is the Spanish rendering, so the refusal of an English show read in Spanish.
+Since 2026-09-26 the frame around the findings follows the language as well.
 """
 
 from copy import deepcopy
@@ -39,7 +40,20 @@ def test_2026_09_25_the_burst_refusal_reads_in_the_show_language(language):
     with pytest.raises(ValueError) as refusal:
         build_deskmap(workspace, FixtureLibrary.load(), "unsaved.qxw")
     said = str(refusal.value)
-    assert said.startswith("invalid desk bursts: ")
     other = "es" if language == "en" else "en"
     assert load_catalogue(language)["findings"]["desk_burst_one_step"] in said
     assert load_catalogue(other)["findings"]["desk_burst_one_step"] not in said
+
+
+@pytest.mark.parametrize("language", ["en", "es"])
+def test_2026_09_26_the_refusal_frame_reads_in_the_show_language_too(language):
+    """Review of round C: the findings were in the show's language, the frame
+    around them ("invalid desk bursts: ") was English on a Spanish show."""
+    workspace = _with_two_step_burst(language)
+    with pytest.raises(ValueError) as refusal:
+        build_deskmap(workspace, FixtureLibrary.load(), "unsaved.qxw")
+    said = str(refusal.value)
+    other = "es" if language == "en" else "en"
+    frame = load_catalogue(language)["messages"]["desk_bursts_invalid"].split("{")[0]
+    assert said.startswith(frame)
+    assert load_catalogue(other)["messages"]["desk_bursts_invalid"].split("{")[0] not in said
