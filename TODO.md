@@ -191,8 +191,9 @@
   xdist workers, or two threads in one test), so `read_until_loaded` stopped
   reading before the error ever printed and `ok` came back True. `renderPage`
   (Virtual Console page rendered) still fires reliably only once the whole
-  document is loaded, so it is now the sole marker. Fixed by dropping the two
-  timer lines: `QML_LOADED_MARKERS = ("renderPage",)`. Verified
+  document is loaded, so it is now the sole marker. Closed by `960ee92
+  fix(validate): stop treating the DMX timer's lateness log as end-of-load`:
+  `QML_LOADED_MARKERS = ("renderPage",)`. Verified
   with the whole document loaded: `tests/test_validate.py`,
   `test_validate_reads.py`, `test_validate_ownership.py`,
   `test_qlcplus_discovery.py`, `test_saved_io_patches.py` (29 tests) green
