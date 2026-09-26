@@ -98,6 +98,25 @@ def test_2026_09_25_the_library_help_speaks_of_built_in_effects_only_where_they_
         assert ("panel" in text) == has_panels
 
 
+@pytest.mark.parametrize("has_builtin_effects", [True, False])
+@pytest.mark.parametrize(
+    ("has_mixes", "has_matrices"), [(True, False), (False, True), (False, False)]
+)
+def test_2026_09_26_the_library_help_names_the_mixes_and_matrices_only_where_drawn(
+    has_builtin_effects, has_mixes, has_matrices
+):
+    """Round G review: one beam has no mix and two panels no matrix, so the
+    page draws neither frame, and its help must not send the operator there.
+    """
+    for language in ("en", "es"):
+        names = shipped_names(language)
+        lines = library_help_lines(has_builtin_effects, True, has_mixes, has_matrices)
+        text = " ".join(names.render(k, count=17) for k in lines if k).casefold()
+        mix_word = "mix" if language == "en" else "mezcla"
+        assert (mix_word in text) == has_mixes, language
+        assert ("matri" in text) == has_matrices, language
+
+
 def test_2026_09_25_every_selectable_caption_has_a_promise_entry():
     """2026-09-25, review of `rotulo que promete lo que no hay`: five of the
     library lines were missing from `CAPTION_PROMISES`, and nothing tied the
@@ -117,7 +136,9 @@ def test_2026_09_25_every_selectable_caption_has_a_promise_entry():
             chosen.add(tempo_close_line(third))
         chosen.add(matrices_frame_caption(first, second))
         chosen.add(panels_frame_caption(first))
-        chosen.update(line for line in library_help_lines(first, second) if line is not None)
+        for mixes, matrices in product((False, True), repeat=2):
+            lines = library_help_lines(first, second, has_mixes=mixes, has_matrices=matrices)
+            chosen.update(line for line in lines if line is not None)
     assert chosen - set(CAPTION_PROMISES) == set()
 
 

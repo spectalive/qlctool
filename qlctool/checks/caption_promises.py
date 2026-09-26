@@ -19,7 +19,10 @@ built-in effects, so each line of it carries the promise, and the lines that
 call them the panels' promise a panel (2026-09-25); the
 other lines (AUTO, the group arrows, the wheels adding up to white) promise
 nothing the rig could lack. `tests/test_caption_variants.py` holds this table
-to every identifier the selectors can return.
+to every identifier the selectors can return. Whether the library lines name
+the two-colour mixes and the matrices follows the frames the page draws
+(2026-09-26, round G review), which no capability shows, so those variants
+promise nothing here.
 """
 
 from .. import roles
@@ -52,16 +55,24 @@ CAPTION_PROMISES: dict[str, tuple[str, ...]] = {
     "panels_frame": (PANEL,),
     "builtins_frame": (BUILTIN_EFFECTS,),
     "library_1": (BUILTIN_EFFECTS,),
+    "library_1_no_mixes": (BUILTIN_EFFECTS,),
+    "library_1_no_matrices": (BUILTIN_EFFECTS,),
+    "library_1_no_mixes_no_matrices": (BUILTIN_EFFECTS,),
     "library_2": (PANEL,),
     "library_2_no_panels": (BUILTIN_EFFECTS,),
     "library_6": (PANEL,),
     "library_6_no_panels": (BUILTIN_EFFECTS,),
     "library_7": (BUILTIN_EFFECTS,),
     "library_1_no_builtins": (),
+    "library_1_no_builtins_no_mixes": (),
+    "library_1_no_builtins_no_matrices": (),
+    "library_1_no_builtins_no_mixes_no_matrices": (),
     "library_2_no_builtins": (),
     "library_3": (),
     "library_4": (),
     "library_5": (),
+    "library_5_no_mixes": (),
+    "library_5_no_matrices": (),
     "library_8": (),
     "library_9": (),
     "page_control": (HAZE, BEAM_WHEEL, HEADS),

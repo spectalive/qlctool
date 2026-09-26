@@ -1102,52 +1102,54 @@ def _page_library(
 
     # Held with ForceLTP like the banks (2026-09-02): a two-colour scene on a
     # Toggle adds to the running state's colour instead of showing its own.
-    mixes = frame(
-        outer,
-        vocabulary.display("mixes_frame"),
-        LEFT_X,
-        68,
-        LEFT_WIDTH,
-        230,
-        page=PAGE_LIBRARY,
-        pages=len(banks) or 1,
-        font=TITLE_FONT,
-    )
-    for page, bank in enumerate(banks):
-        label(
-            mixes,
-            vocabulary.render("group_label", group=bank.group_name),
-            GAP,
-            HEADER,
-            512,
-            20,
-            page=page,
-            font=HELP_FONT,
+    # The blue/red pair lives on the bank's keys 9/0 (restored 2026-08-28); a
+    # second button here would always look off. A rig whose banks hold no
+    # other mix (one beam, 2026-09-26) gets no frame: it would be empty.
+    library_splits = [[fid for fid in bank.split_ids if fid not in bank.key_ids] for bank in banks]
+    if any(library_splits):
+        mixes = frame(
+            outer,
+            vocabulary.display("mixes_frame"),
+            LEFT_X,
+            68,
+            LEFT_WIDTH,
+            230,
+            page=PAGE_LIBRARY,
+            pages=len(banks) or 1,
+            font=TITLE_FONT,
         )
-        # The blue/red pair lives on the bank's keys 9/0 (restored
-        # 2026-08-28); a second button here would always look off.
-        library_splits = [fid for fid in bank.split_ids if fid not in bank.key_ids]
-        for index, function_id in enumerate(library_splits):
-            column, row = index % 10, index // 10
-            name = names.get(function_id, "")
-            _on_page(
-                button(
-                    mixes,
-                    function_id,
-                    _mix_caption(name, mix_code),
-                    x=GAP + column * 51,
-                    y=HEADER + 24 + row * 51,
-                    w=48,
-                    h=45,
-                    action=FLASH,
-                    flash_override=True,
-                    flash_force_ltp=True,
-                    background=_swatch(name, palette),
-                    foreground=_swatch(name, palette, second=True),
-                    font=TINY_FONT,
-                ),
-                page,
+        for page, bank in enumerate(banks):
+            label(
+                mixes,
+                vocabulary.render("group_label", group=bank.group_name),
+                GAP,
+                HEADER,
+                512,
+                20,
+                page=page,
+                font=HELP_FONT,
             )
+            for index, function_id in enumerate(library_splits[page]):
+                column, row = index % 10, index // 10
+                name = names.get(function_id, "")
+                _on_page(
+                    button(
+                        mixes,
+                        function_id,
+                        _mix_caption(name, mix_code),
+                        x=GAP + column * 51,
+                        y=HEADER + 24 + row * 51,
+                        w=48,
+                        h=45,
+                        action=FLASH,
+                        flash_override=True,
+                        flash_force_ltp=True,
+                        background=_swatch(name, palette),
+                        foreground=_swatch(name, palette, second=True),
+                        font=TINY_FONT,
+                    ),
+                    page,
+                )
 
     _wheel_frame(
         outer,
@@ -1166,46 +1168,49 @@ def _page_library(
         columns=8,
     )
 
-    matrix_frame = frame(
-        outer,
-        vocabulary.display(matrices_frame_caption(has_bars, has_panels)),
-        MIDDLE_X,
-        68,
-        MIDDLE_WIDTH,
-        300,
-        page=PAGE_LIBRARY,
-        solo=True,
-        pages=len(matrices) or 1,
-        font=TITLE_FONT,
-    )
-    for page, generated in enumerate(matrices):
-        group = _before(names.get(_first(generated.matrix_ids), ""), " - ")
-        label(
-            matrix_frame,
-            vocabulary.render("group_label", group=group),
-            GAP,
-            HEADER,
-            400,
-            20,
-            page=page,
-            font=HELP_FONT,
+    # No matrix to press (a rig of two panels, 2026-09-26): no frame, and no
+    # caption promising patterns on them.
+    if any(generated.matrix_ids for generated in matrices):
+        matrix_frame = frame(
+            outer,
+            vocabulary.display(matrices_frame_caption(has_bars, has_panels)),
+            MIDDLE_X,
+            68,
+            MIDDLE_WIDTH,
+            300,
+            page=PAGE_LIBRARY,
+            solo=True,
+            pages=len(matrices) or 1,
+            font=TITLE_FONT,
         )
-        step = (MIDDLE_WIDTH - GAP * 2) // MATRIX_COLUMNS
-        for index, function_id in enumerate(generated.matrix_ids):
-            column, row = index % MATRIX_COLUMNS, index // MATRIX_COLUMNS
-            _on_page(
-                button(
-                    matrix_frame,
-                    function_id,
-                    _after(names.get(function_id, ""), " - "),
-                    x=GAP + column * step,
-                    y=HEADER + 24 + row * MATRIX_ROW_HEIGHT,
-                    w=step - 6,
-                    h=MATRIX_BUTTON_HEIGHT,
-                    font=SMALL_FONT,
-                ),
-                page,
+        for page, generated in enumerate(matrices):
+            group = _before(names.get(_first(generated.matrix_ids), ""), " - ")
+            label(
+                matrix_frame,
+                vocabulary.render("group_label", group=group),
+                GAP,
+                HEADER,
+                400,
+                20,
+                page=page,
+                font=HELP_FONT,
             )
+            step = (MIDDLE_WIDTH - GAP * 2) // MATRIX_COLUMNS
+            for index, function_id in enumerate(generated.matrix_ids):
+                column, row = index % MATRIX_COLUMNS, index // MATRIX_COLUMNS
+                _on_page(
+                    button(
+                        matrix_frame,
+                        function_id,
+                        _after(names.get(function_id, ""), " - "),
+                        x=GAP + column * step,
+                        y=HEADER + 24 + row * MATRIX_ROW_HEIGHT,
+                        w=step - 6,
+                        h=MATRIX_BUTTON_HEIGHT,
+                        font=SMALL_FONT,
+                    ),
+                    page,
+                )
 
     # Each group's own colour wheel and its matrix cycle. Both start the looks
     # sitting in the solo frames above, so both live in a plain frame.
@@ -1347,7 +1352,13 @@ def _page_library(
         _on_page(control, PAGE_LIBRARY)
         console.widget_ids.append(matrix_widget_id)
 
-    for index, line in enumerate(library_help_lines(bool(builtins.scene_ids), has_panels)):
+    lines = library_help_lines(
+        bool(builtins.scene_ids),
+        has_panels,
+        has_mixes=any(library_splits),
+        has_matrices=any(generated.matrix_ids for generated in matrices),
+    )
+    for index, line in enumerate(lines):
         label(
             outer,
             LIBRARY_SEPARATOR

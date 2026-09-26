@@ -19,6 +19,8 @@ from qlctool.checks.rule_dangling_reference import check_dangling_references
 from qlctool.checks.rule_empty_frame import check_empty_frames
 from qlctool.checks.show_graph import build_show_graph
 from qlctool.cli import main
+from qlctool.generate.library_help_lines import library_help_lines
+from qlctool.generate.matrices_frame_caption import matrices_frame_caption
 from qlctool.generate.tempo_help_line import tempo_help_line
 from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
@@ -207,3 +209,45 @@ def test_2026_09_26_the_caption_rule_bites_on_a_heads_promise(shape):
 @pytest.mark.skipif(qlcplus_binary() is None, reason="QLC+ is not installed on this machine")
 def test_2026_09_26_qlcplus_loads_the_pars_washes_and_rgb_shows(shape):
     assert validate_workspace(shape[1]).errors == []
+
+
+# Round G review, 2026-09-26: the rig minimum admitted rigs whose show failed
+# its own check. One beam drew an empty two-colour-mix frame, two panels an
+# empty matrices frame "on the panels". The page now draws neither empty frame
+# and its help names neither; a rig newshow accepts must pass check.
+REVIEW_SHAPES = {
+    "beam": ("Generic|BEAM 230W 7R|16 channel|0|{address}|Beam {index}", 1, 16),
+    "panels": ("HYULIGHTS|WX-60WPS-48PARTITION|A MODE - DMX 8 CH|0|{address}|Panel {index}", 2, 8),
+    "bars": ("Stairville|CLB2.4 Compact LED PAR System|14 Channel|0|{address}|Bar {index}", 2, 14),
+}
+
+
+@pytest.mark.parametrize("name", sorted(REVIEW_SHAPES))
+def test_2026_09_26_a_beam_panels_or_bars_only_rig_passes_its_own_check(name, tmp_path):
+    patch = build_single_shape_patch(tmp_path, *REVIEW_SHAPES[name])
+    show = tmp_path / "show.qxw"
+    assert main(["newshow", str(patch), "--out", str(show)]) == 0
+    assert main(["check", str(show)]) == 0
+    names = default_names()
+    captions = console_captions(show)
+    has_mixes = names.display("mixes_frame") in captions
+    has_matrices = any(
+        names.display(matrices_frame_caption(bars, panels)) in captions
+        for bars in (False, True)
+        for panels in (False, True)
+    )
+    assert (has_mixes, has_matrices) == {
+        "beam": (False, True),
+        "panels": (True, False),
+        "bars": (True, True),
+    }[name]
+    # Page 4's help is one of the two line sets chosen for what it draws.
+    candidates = (
+        library_help_lines(False, False, has_mixes, has_matrices),
+        library_help_lines(True, name == "panels", has_mixes, has_matrices),
+    )
+    worded = [
+        [names.display(k) for k in keys if k and "{count}" not in names.display(k)]
+        for keys in candidates
+    ]
+    assert any(all(line in captions for line in lines) for lines in worded)
