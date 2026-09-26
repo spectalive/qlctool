@@ -10,6 +10,7 @@ from ...names.sections import SECTIONS
 from ...names.shipped_languages import shipped_languages
 from .reject_ambiguous_names import reject_ambiguous_names
 from .reject_frame_head_renames import reject_frame_head_renames
+from .reject_hit_button_heads import reject_hit_button_heads
 
 
 def read_names(table: Mapping[str, Any], where: str) -> dict[str, dict[str, str]]:
@@ -32,5 +33,6 @@ def read_names(table: Mapping[str, Any], where: str) -> dict[str, dict[str, str]
         overrides[language] = dict(entries)
     reject_ambiguous_names(overrides, where)
     reject_frame_head_renames(overrides, where)
+    reject_hit_button_heads(overrides, where)
     check_override_fields(overrides, where)
     return overrides

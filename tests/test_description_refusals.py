@@ -135,3 +135,34 @@ def test_an_override_may_reword_a_frame_explanation(tmp_path, patch_root):
     text = '[names.en]\nhits = "Hits — they punch through"\n'
     loaded = load_show_description(_write(tmp_path, text), patch_root)
     assert loaded.names == {"en": {"hits": "Hits — they punch through"}}
+
+
+# 2026-09-25, final review of Plan B (ruling B7): `[names.en] hit_button_flash =
+# "BANG · Space"` loaded, and the build failed deep in the desk bursts with
+# "burst duration must be positive: bang", naming nothing the user wrote.
+@pytest.mark.parametrize(
+    "text",
+    ['hit_button_flash = "BANG · Space"\n', 'hit_flash = "BANG"\n'],
+    ids=["button", "caption"],
+)
+def test_2026_09_26_an_override_that_parts_a_hit_button_from_its_hit_is_refused(
+    tmp_path, patch_root, text
+):
+    path = _write(tmp_path, "[names.en]\n" + text)
+    with pytest.raises(
+        ValueError, match=r"\[names\.en\] hit_.* rename hit_button_flash and hit_flash"
+    ):
+        load_show_description(path, patch_root)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        'hit_button_flash = "Flash · Space"\n',
+        'hit_flash = "BANG"\nhit_button_flash = "BANG · Space"\n',
+    ],
+    ids=["respelled", "renamed-together"],
+)
+def test_2026_09_26_a_hit_button_renamed_with_its_hit_is_accepted(tmp_path, patch_root, text):
+    loaded = load_show_description(_write(tmp_path, "[names.en]\n" + text), patch_root)
+    assert "hit_button_flash" in loaded.names["en"]
