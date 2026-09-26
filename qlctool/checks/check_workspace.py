@@ -117,7 +117,7 @@ def check_workspace(
     findings += check_white_share_dropped(graph, groups)
     findings += check_wheel_colour(graph, groups, entries)
     findings += check_colour_animation_wheel(graph, groups, entries)
-    findings += check_movement_figure_coverage(graph, groups, entries)
+    findings += check_movement_figure_coverage(graph, groups, entries, root)
     findings += check_wheel_rotation(graph, groups)
     findings += check_wheel_fade(graph, groups, root)
     findings += check_internal_programs(graph, groups, entries, states)

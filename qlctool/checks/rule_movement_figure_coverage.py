@@ -19,6 +19,12 @@ so that the room moves as a whole. So what has to cover the group is whatever th
 operator can press: if pressing it animates part of Cabezas and leaves the rest
 of Cabezas standing, the room shows half a rig moving.
 
+Only rigged heads are owed a figure. A spare the stage plot hides in a flight
+case moves for nobody, and asking the waves to carry the spares put six
+invisible heads into `Ola Vertical Washes`' propagation, so the two rigged MACs
+were a ninth of a loop apart instead of a third (Round 2 review of the en-sala
+DMX audit, 2026-09-27).
+
 Only EFX count. A Scene that aims the heads somewhere (`Beams Abanico`, the fan)
 states positions rather than animating them, and asking a rest position to cover
 both families would be asking for a different look.
@@ -29,6 +35,7 @@ from collections.abc import Mapping
 from lxml import etree
 
 from .. import roles
+from ..rigged_fixture_ids import rigged_fixture_ids
 from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
@@ -38,8 +45,12 @@ EFX_PANTILT_MODE = "0"  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 
 
 def check_movement_figure_coverage(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], entries: dict[int, str]
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    entries: dict[int, str],
+    root: etree._Element,
 ) -> list[Finding]:
+    rigged = rigged_fixture_ids(root)
     findings: list[Finding] = []
     for function_id, caption in sorted(entries.items()):
         moved = _moved_fixtures(graph, groups, function_id)
@@ -50,7 +61,7 @@ def check_movement_figure_coverage(
             for group_members in groups.values()
             if moved & set(group_members)
             for fixture_id in group_members
-            if fixture_id not in moved and _can_move(graph, fixture_id)
+            if fixture_id not in moved and fixture_id in rigged and _can_move(graph, fixture_id)
         )
         if not still:
             continue

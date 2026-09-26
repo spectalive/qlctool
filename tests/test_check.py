@@ -3798,3 +3798,33 @@ def test_2026_09_27_a_fan_folded_in_patch_order(library):
         "BEAM 230W 7R #4",
         "BEAM 230W 7R #2",
     )
+
+
+def test_2026_09_27_a_figure_owes_no_movement_to_a_spare(library):
+    """2026-09-27, Round 2 review of the en-sala DMX audit: the waves carried
+    the six washes the stage plot hides, because a figure that left them out
+    was reported as moving half the group. Those spares took the propagation
+    offsets, and the two rigged MACs were a ninth of a loop apart instead of a
+    third. A figure owes movement to rigged heads only - and still to all of
+    them: take a MAC out of the wave and the rule must name it.
+    """
+    from qlctool.checks.rule_movement_figure_coverage import RULE_ID
+    from qlctool.rigged_fixture_ids import rigged_fixture_ids
+
+    workspace = _show("Vibra.qxw")
+    rigged = rigged_fixture_ids(workspace.root)
+    wave = _efx_under(_functions_by_id(workspace), _functions(workspace)["Ola Vertical Washes"])
+    for efx in wave:
+        for head in findall_local(efx, "Fixture"):
+            if int(find_local(head, "ID").text) not in rigged:
+                efx.remove(head)
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert findings == []
+
+    for efx in wave:
+        for head in findall_local(efx, "Fixture"):
+            if find_local(head, "ID").text == "34":
+                efx.remove(head)
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert findings
+    assert all(f.fixtures == ("MAC WASH 1915Z #2",) for f in findings)
