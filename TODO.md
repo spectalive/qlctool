@@ -163,6 +163,23 @@
   intensity path is a combined dimmer/strobe channel writes the dimmer range
   value for that level, with a `check` rule that compares its brightness to
   the level's.
+- [ ] **A wheel's desk tile shows the max of all its steps (en-sala round 1,
+  2026-09-26).** `desk_swatch.swatches` reads `reach`, which merges every step
+  of a chaser by the highest value, so a colour wheel's tile is no colour it
+  ever shows: `Pastel tenue` read #737373 before the white-share fix and
+  #ffffff after it, and the mix wheel gained #ff00ff when the ungrouped
+  fixtures joined the first bank (red on one, blue on the other). Smallest
+  next step: for a Chaser, take the swatches of its first step (or of each
+  step, deduplicated) instead of the merged reach, and rebuild
+  `Vibra.desk.json`.
+- [ ] **`tests/test_validate.py` passes a broken workspace on the show Mac
+  (2026-09-26).** `test_a_workspace_qlcplus_cannot_build_is_rejected` and
+  `test_two_validations_at_once_keep_their_own_verdicts` fail at v0.1.8 as
+  well as after en-sala round 1: headless QLC+ 5.2.2 loads a fixture renamed
+  to "No Such Model" and its log carries no complaint, so `ok` is True. The
+  operator's QLC+ (port 9998) was running each time. Smallest next step: run
+  the two tests with no other QLC+ up and read the child's full log for the
+  missing-definition line; if it is gone, match what 5.2.2 prints now.
 - [ ] **No rule sees two patched fixtures sharing an ID (round G review,
   2026-09-26).** The show graph keys capabilities by fixture ID, so a second
   fixture with the same ID is silently one entry; `caption_promise` used to
