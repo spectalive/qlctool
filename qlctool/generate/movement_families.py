@@ -48,6 +48,7 @@ from ..workspace import Workspace
 from .alternate_mirror import alternate_mirror
 from .cross_position import generate_cross_position
 from .fan_position import generate_fan_position
+from .generate_wash_hold import generate_wash_hold
 from .movement_aim import (
     BEAM_PAN_AIM,
     BEAM_PAN_SPAN,
@@ -152,10 +153,14 @@ BEAM_FAST = Envelope(
 )
 
 # The rig's 23 EFX all ran Rotation=0 and Parallel propagation, every shape an
-# axis-aligned clone of the others (Codex A6). A Serial EFX delays each
+# axis-aligned clone of the others (Codex A6). An Asymmetric EFX offsets each
 # fixture by loopDuration/(fixtureCount+1)*serialNumber (efxfixture.cpp:
 # 380-386) for a cascade down the row at no extra cost; Line's smooth cosine
 # path (efx.cpp calculatePoint) makes that a wave rather than a stutter.
+# These were Serial, which applies the same offset as a wait: a head writes
+# nothing until its turn, so it sat at 127/127 - MAC #1 and #2 for 10 and
+# 11.6 s at the start of `Ola Vertical` (en-sala DMX audit, 2026-09-26).
+# Asymmetric moves every head from the first frame, in the same phases.
 #
 # Diamond and Leaf were wash-only shapes before this task - the beam family
 # was deliberately scoped down to Circle/Eight/Line (2026-08-27 review, see
@@ -190,7 +195,7 @@ WASH_CASCADE = Envelope(
     WASH_SLOW.width,
     WASH_SLOW.height,
     WASH_SLOW.hold,
-    propagation="Serial",
+    propagation="Asymmetric",
     pan_offset=WASH_SLOW.pan_offset,
     tilt_offset=WASH_SLOW.tilt_offset,
 )
@@ -200,7 +205,7 @@ BEAM_CASCADE = Envelope(
     BEAM.width,
     BEAM.height,
     BEAM.hold,
-    propagation="Serial",
+    propagation="Asymmetric",
     rotation=45,
     pan_offset=BEAM.pan_offset,
     tilt_offset=BEAM.tilt_offset,
@@ -209,7 +214,7 @@ BEAM_CASCADE = Envelope(
 # The classic club wave: tilt only. QLC+'s Line traces x=y - a diagonal, and
 # no rotation makes it vertical (efx.cpp calculatePoint / rotateAndScale mix
 # both axes through width and height) - so the pan term is killed by Width 0
-# and the wave lives on the tilt alone, cascaded Serial down the row. Per
+# and the wave lives on the tilt alone, cascaded down the row. Per
 # family, like every other figure: same shape, each family's own size.
 WASH_TILT_WAVE = Envelope(
     ("Line",),
@@ -217,7 +222,7 @@ WASH_TILT_WAVE = Envelope(
     0,
     WASH.height,
     WASH.hold,
-    propagation="Serial",
+    propagation="Asymmetric",
     pan_offset=WASH.pan_offset,
     tilt_offset=WASH.tilt_offset,
 )
@@ -227,7 +232,7 @@ BEAM_TILT_WAVE = Envelope(
     0,
     BEAM.height,
     BEAM.hold,
-    propagation="Serial",
+    propagation="Asymmetric",
     pan_offset=BEAM.pan_offset,
     tilt_offset=BEAM.tilt_offset,
 )
@@ -320,6 +325,9 @@ class GeneratedFamilies:
     # Exact movement functions the play page may wrap as manual picks.
     play_pick_ids: list[int] = field(default_factory=list)
     dial_ids: list[int] = field(default_factory=list)
+    # What a play pick starts beside its function: the washes held at their
+    # window while a beam-only look is picked (`generate_wash_hold`).
+    pick_companions: dict[int, list[int]] = field(default_factory=dict)
 
 
 def generate_movement_families(
@@ -528,6 +536,9 @@ def generate_movement_families(
 
     fan_id = generate_fan_position(workspace, library, beams, names=vocabulary)
     cross_id = generate_cross_position(workspace, library, beams, names=vocabulary)
+    rests = [function_id for function_id in (fan_id, cross_id) if function_id is not None]
+    hold_id = generate_wash_hold(workspace, library, washes, names=vocabulary) if rests else None
+    companions = {rest: [hold_id] for rest in rests} if hold_id is not None else {}
 
     # The Suave family gets its own cascade wave beside the two plain shapes.
     slow_wash_id: int | None = None
@@ -738,4 +749,5 @@ def generate_movement_families(
         efx_ids=efx_ids,
         play_pick_ids=play_pick_ids,
         dial_ids=[m for m in (wash_id, beam_id) if m is not None],
+        pick_companions=companions,
     )

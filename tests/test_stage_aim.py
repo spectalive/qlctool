@@ -10,6 +10,7 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.generate.movement_aim import WASH_PAN_AIM, WASH_TILT_AIM
 from qlctool.generate.stage_aim import MEASURED_AIMS, generate_stage_aim
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
@@ -33,12 +34,14 @@ def test_the_measured_aims_land_on_the_patched_fixtures():
     )
     assert scene.attrib["Name"] == "Escenario"
 
-    seen_addresses = set()
+    # Ruling D7 (2026-09-26): a rigged head with no measured aim - the MAC
+    # WASH - holds its window's centre until somebody measures it on site.
+    seen = set()
     for value in findall_local(scene, "FixtureVal"):
         capability = by_id[int(value.attrib["ID"])]
         address = capability.fixture.address
-        pan, tilt = MEASURED_AIMS[address]
-        seen_addresses.add(address)
+        pan, tilt = MEASURED_AIMS.get(address, (WASH_PAN_AIM, WASH_TILT_AIM))
+        seen.add(capability.fixture.name)
         numbers = [int(n) for n in value.text.split(",")]
         written = dict(zip(numbers[0::2], numbers[1::2], strict=True))
         for role, expected in (
@@ -50,8 +53,14 @@ def test_the_measured_aims_land_on_the_patched_fixtures():
             for offset in capability.offsets_for_role(role):
                 assert written[offset] == expected, (address, role)
 
-    # Every measured address that is patched got aimed - the four beams and
-    # the two downstage CromoWash, on this rig.
-    patched = {c.fixture.address for c in by_id.values()}
-    assert seen_addresses == set(MEASURED_AIMS) & patched
-    assert len(seen_addresses) == 6
+    # The four beams at their measured aims and the two MACs at the window
+    # centre; the two downstage CromoWash the hand-built scene aimed are
+    # spares in a flight case on this rig now, and are left out.
+    assert seen == {
+        "BEAM 230W 7R #1",
+        "BEAM 230W 7R #2",
+        "BEAM 230W 7R #3",
+        "BEAM 230W 7R #4",
+        "MAC WASH 1915Z #1",
+        "MAC WASH 1915Z #2",
+    }

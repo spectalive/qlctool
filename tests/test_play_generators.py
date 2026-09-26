@@ -168,7 +168,11 @@ def test_play_wrappers_are_single_member_collections_in_their_families(built):
             members = _members(wrapper, functions)
             assert wrapper.attrib["Type"] == "Collection"
             assert wrapper.attrib["Path"] == f"Jugar/{family}"
-            assert len(members) == 1
+            # 2026-09-26, ruling D7: a beam-only look carries the scene that
+            # holds the rigged washes at their window, not at 127/127.
+            companions = [member.attrib["Name"] for member in members[1:]]
+            assert companions in ([], ["Washes Quietos"])
+            assert not companions or family == "Cabezas"
             assert wrapper.attrib["Name"] == f"Jugar · {members[0].attrib['Name']}"
 
     assert len(show.play_wrappers.rainbow_ids) == 2

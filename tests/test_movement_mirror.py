@@ -8,7 +8,8 @@ out of the workspace rather than only written into it.
 
 from rig_root import RIG_ROOT
 
-from qlctool.generate.home_position import MID, generate_home_position
+from qlctool.generate.home_position import generate_home_position
+from qlctool.generate.movement_aim import WASH_PAN_AIM, WASH_TILT_AIM
 from qlctool.generate.movement_efx import generate_movement_efx, moving_head_ids
 from qlctool.library import FixtureLibrary
 from qlctool.monitor_positions import house_right_fixture_ids
@@ -73,4 +74,5 @@ def test_the_heads_have_somewhere_to_be_when_nothing_moves_them():
     driven = {int(v.attrib["ID"]) for v in findall_local(scene, "FixtureVal")}
     assert driven == set(moving_head_ids(ws, library))
     values = [int(n) for n in (findall_local(scene, "FixtureVal")[0].text).split(",")]
-    assert MID in values[1::2]
+    # Ruling D7 (2026-09-26): a wash rests in its window, not at mid-travel.
+    assert {WASH_PAN_AIM, WASH_TILT_AIM} <= set(values[1::2])

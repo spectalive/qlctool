@@ -1,6 +1,10 @@
-"""One-member Collections that isolate JUGAR picks from automatic state starts."""
+"""Collections that isolate JUGAR picks from automatic state starts.
 
-from collections.abc import Sequence
+Each wraps one original function; a pick with `companions` also starts those
+beside it - the washes held while a beam-only look is picked (`wash_hold`).
+"""
+
+from collections.abc import Mapping, Sequence
 
 from lxml import etree
 
@@ -23,6 +27,7 @@ def generate_play_wrappers(
     gobo_ids: Sequence[int],
     prism_ids: Sequence[int],
     names: Names | None = None,
+    companions: Mapping[int, Sequence[int]] | None = None,
 ) -> _GeneratedPlayWrappers:
     """Wrap every play pick once, preserving each original function as its leaf."""
     vocabulary = default_names() if names is None else names
@@ -44,7 +49,9 @@ def generate_play_wrappers(
         color_ids=_wrap(workspace, functions, color_ids, prefix, family("path_family_colour")),
         rainbow_ids=_wrap(workspace, functions, rainbow_ids, prefix, family("path_family_colour")),
         panel_ids=_wrap(workspace, functions, panels, prefix, family("path_family_pixels")),
-        movement_ids=_wrap(workspace, functions, movement_ids, prefix, family("path_family_heads")),
+        movement_ids=_wrap(
+            workspace, functions, movement_ids, prefix, family("path_family_heads"), companions
+        ),
         gobo_ids=_wrap(workspace, functions, gobo_ids, prefix, gobos),
         prism_ids=_wrap(workspace, functions, prism_ids, prefix, family("path_prism")),
     )
@@ -65,8 +72,9 @@ def _wrap(
     function_ids: Sequence[int],
     prefix: str,
     path: str,
+    companions: Mapping[int, Sequence[int]] | None = None,
 ) -> list[int]:
-    """Build one monitored Collection per unique original function."""
+    """Build one monitored Collection per unique original function, and its companions."""
     wrappers: list[int] = []
     seen: set[int] = set()
     for original_id in function_ids:
@@ -84,7 +92,7 @@ def _wrap(
             build_collection(
                 function_id,
                 prefix + name,
-                [original_id],
+                [original_id, *(companions or {}).get(original_id, ())],
                 path=path,
             )
         )

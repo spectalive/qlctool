@@ -611,7 +611,9 @@ def test_every_play_pick_is_a_one_member_family_wrapper(console):
             function = functions[_function_id(pick)]
             assert function.attrib["Type"] == "Collection"
             assert function.attrib["Path"] == paths[caption]
-            assert len(findall_local(function, "Step")) == 1
+            # 2026-09-26, ruling D7: a beam-only look also holds the washes.
+            steps = [functions[int(step.text)] for step in findall_local(function, "Step")]
+            assert [step.attrib["Name"] for step in steps[1:]] in ([], ["Washes Quietos"])
 
 
 def test_the_play_strip_is_keyless_binding_free_and_has_only_safe_actions(console):

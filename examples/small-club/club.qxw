@@ -158,10 +158,10 @@
       <FixtureVal ID="3">0,255,1,255,2,255,3,255,4,0</FixtureVal>
       <FixtureVal ID="4">0,255,1,255,2,255,3,255,4,0</FixtureVal>
       <FixtureVal ID="5">0,255,1,255,2,255,3,255,4,0</FixtureVal>
-      <FixtureVal ID="6">0,127,1,127,2,255,3,255,4,255,5,255,6,255,7,0,11,0,13,0,14,0</FixtureVal>
-      <FixtureVal ID="7">0,127,1,127,2,255,3,255,4,255,5,255,6,255,7,0,11,0,13,0,14,0</FixtureVal>
-      <FixtureVal ID="8">0,127,1,0,2,127,3,0,5,255,6,255,7,255,8,255,11,0</FixtureVal>
-      <FixtureVal ID="9">0,127,1,0,2,127,3,0,5,255,6,255,7,255,8,255,11,0</FixtureVal>
+      <FixtureVal ID="6">0,92,1,221,2,255,3,255,4,255,5,255,6,255,7,0,11,0,13,0,14,0</FixtureVal>
+      <FixtureVal ID="7">0,92,1,221,2,255,3,255,4,255,5,255,6,255,7,0,11,0,13,0,14,0</FixtureVal>
+      <FixtureVal ID="8">0,92,1,0,2,221,3,0,5,255,6,255,7,255,8,255,11,0</FixtureVal>
+      <FixtureVal ID="9">0,92,1,0,2,221,3,0,5,255,6,255,7,255,8,255,11,0</FixtureVal>
     </Function>
     <Function ID="1" Type="Scene" Name="All Black" Path="Show">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -1615,7 +1615,7 @@
         <Direction>Backward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
-      <PropagationMode>Serial</PropagationMode>
+      <PropagationMode>Asymmetric</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="28000"/>
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
@@ -1651,7 +1651,7 @@
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
-      <PropagationMode>Serial</PropagationMode>
+      <PropagationMode>Asymmetric</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="28000"/>
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
@@ -3287,7 +3287,7 @@
         <Direction>Backward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
-      <PropagationMode>Serial</PropagationMode>
+      <PropagationMode>Asymmetric</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
@@ -3323,7 +3323,7 @@
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
-      <PropagationMode>Serial</PropagationMode>
+      <PropagationMode>Asymmetric</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
@@ -4080,10 +4080,10 @@
     </Function>
     <Function ID="262" Type="Scene" Name="Heads Centre" Path="Movement">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
-      <FixtureVal ID="6">0,127,1,127,13,0,14,0</FixtureVal>
-      <FixtureVal ID="7">0,127,1,127,13,0,14,0</FixtureVal>
-      <FixtureVal ID="8">0,127,1,0,2,127,3,0</FixtureVal>
-      <FixtureVal ID="9">0,127,1,0,2,127,3,0</FixtureVal>
+      <FixtureVal ID="6">0,92,1,221,13,0,14,0</FixtureVal>
+      <FixtureVal ID="7">0,92,1,221,13,0,14,0</FixtureVal>
+      <FixtureVal ID="8">0,92,1,0,2,221,3,0</FixtureVal>
+      <FixtureVal ID="9">0,92,1,0,2,221,3,0</FixtureVal>
     </Function>
     <Function ID="263" Type="EFX" Name="Dimmer Chase PC-64 LED S" Path="Dimmers/Parts">
       <Fixture>

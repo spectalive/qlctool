@@ -43,5 +43,6 @@ def add_play_wrappers(build: ShowBuild) -> None:
         gobo_ids=[*gobos.scene_ids[1:-2], *dealt, *shake.scene_ids],
         prism_ids=[*prisms.scene_ids[1:], *beam_subsets.prism_scene_ids, *spins.scene_ids],
         names=vocabulary,
+        companions=movement.pick_companions,
     )
     build.play_wrappers = play_wrappers

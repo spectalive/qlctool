@@ -79,7 +79,9 @@ def test_ola_suave_is_a_serial_line_wash(library):
     assert "Ola Suave" in functions
     ola = functions["Ola Suave"]
     assert find_local(ola, "Algorithm").text == "Line"
-    assert find_local(ola, "PropagationMode").text == "Serial"
+    # Asymmetric since 2026-09-26 (ruling D7): Serial left each head at
+    # 127/127 until its turn; this phases them the same, moving from the start.
+    assert find_local(ola, "PropagationMode").text == "Asymmetric"
     # Slow, the Suave duration class (28000ms family), not the faster Wash one.
     assert int(find_local(ola, "Speed").attrib["Duration"]) == 28000
 
@@ -91,7 +93,7 @@ def test_cascada_beams_is_a_serial_rotated_circle(library):
     assert "Cascada Beams" in functions
     cascada = functions["Cascada Beams"]
     assert find_local(cascada, "Algorithm").text == "Circle"
-    assert find_local(cascada, "PropagationMode").text == "Serial"
+    assert find_local(cascada, "PropagationMode").text == "Asymmetric"
     assert int(find_local(cascada, "Rotation").text) == 45
 
 

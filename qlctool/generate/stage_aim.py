@@ -7,12 +7,15 @@ encode where the stage is from each truss position, so they are carried here
 as measured data, keyed by the fixture's DMX address - the one identity that
 survives repatching, because it names the cable, not the file.
 
-Only the fixtures the hand-built scene aimed are aimed: the four BEAM 7R and
-the two downstage CromoWash. A patched fixture whose address is not in the
-table is simply not part of the look, and an address in the table with no
-fixture on it (a repatch that moved things) is skipped rather than guessed at.
-The scene writes position only - what colour the stage gets stays with
-whatever state is running, exactly like the original.
+The measured aims go to the rigged heads patched at those addresses; a spare
+the stage plot hides in a flight case is skipped, and an address in the table
+with no fixture on it (a repatch that moved things) is skipped rather than
+guessed at. Every other rigged mover holds the centre of its family's window
+until somebody measures it on site: the two CromoWash the hand-built scene
+aimed are spares now, and the MAC WASH that replaced them sat at 127/127, the
+wall behind the stage, while `Escenario` was pressed (en-sala DMX audit,
+2026-09-26; ruling D7). The scene writes position only - what colour the stage
+gets stays with whatever state is running, exactly like the original.
 """
 
 from .. import roles
@@ -22,7 +25,9 @@ from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..rigged_fixture_ids import rigged_fixture_ids
 from ..workspace import Workspace
+from .movement_aim import BEAM_PAN_AIM, BEAM_TILT_AIM, WASH_PAN_AIM, WASH_TILT_AIM
 
 # DMX address (0-based, as patched) -> (pan, tilt), read verbatim out of
 # DeluxeEventos2's `Escenario` scene (ID 376) on 2026-08-27.
@@ -42,15 +47,29 @@ def generate_stage_aim(
     path: str | None = None,
     names: Names | None = None,
 ) -> int | None:
-    """The stage-aim scene named by `names`, or None when no aimed fixture is patched."""
+    """The stage-aim scene named by `names`, or None when no measured mover is rigged."""
     vocabulary = default_names() if names is None else names
     path = vocabulary.display("path_movement") if path is None else path
     values: dict[int, list[tuple[int, int]]] = {}
-    for caps in capabilities_of(workspace.root, library):
-        aim = MEASURED_AIMS.get(caps.fixture.address)
-        if aim is None:
-            continue
-        pan, tilt = aim
+    hung = rigged_fixture_ids(workspace.root)
+    rigged = [
+        caps
+        for caps in capabilities_of(workspace.root, library)
+        if caps.fixture.fixture_id in hung
+        and caps.has_role(roles.PAN)
+        and caps.has_role(roles.TILT)
+    ]
+    # The look is the measured one: with no measured mover rigged there is no
+    # stage to aim at, only a guess.
+    if not any(caps.fixture.address in MEASURED_AIMS for caps in rigged):
+        return None
+    for caps in rigged:
+        centre = (
+            (BEAM_PAN_AIM, BEAM_TILT_AIM)
+            if caps.has_role(roles.GOBO)
+            else (WASH_PAN_AIM, WASH_TILT_AIM)
+        )
+        pan, tilt = MEASURED_AIMS.get(caps.fixture.address, centre)
         pairs: list[tuple[int, int]] = []
         for role, value in (
             (roles.PAN, pan),

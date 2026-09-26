@@ -6,10 +6,13 @@ heads *held* rather than merely not driven. A head with nothing driving its pan
 and tilt sits wherever the last effect abandoned it - often at one end of its
 travel, pointing at the ceiling - so "no movement" has to be a scene of its own.
 
-Mid-scale on both axes is the middle of the fixture's own travel, which for a
-head hanging from a truss is straight out over the room and for one standing on
-a flightcase is straight up. The fine channels go to zero so a 16-bit head lands
-on the coarse value rather than a quarter-step past it.
+The washes rest at the centre of their measured window (`movement_aim`), the
+middle of the audience. They used to rest at mid-scale, 127 on both axes, on
+the idea that mid-travel is straight out over the room; on the MAC WASH it is
+the wall behind the stage, and `Cabezas Centro` left the only two rigged
+washes lighting it (en-sala DMX audit, 2026-09-26; ruling D7). The fine
+channels go to zero so a 16-bit head lands on the coarse value rather than a
+quarter-step past it.
 """
 
 from .. import roles
@@ -20,13 +23,13 @@ from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
+from .movement_aim import WASH_PAN_AIM, WASH_TILT_AIM
 
-MID = 127
 # The hand-built `Cabezas Reposo` did not park the 7R beams mid-travel: it laid
 # them at pan 0, tilt 130, aimed by eye on the real rig (old-vs-new audit,
 # 2026-08-28 - a beam at pan 127 is not the same look as pan 0). The washes
-# stay at mid-scale; a beam is a fixture with a gobo wheel, the same line the
-# movement families draw.
+# rest in their window; a beam is a fixture with a gobo wheel, the same line
+# the movement families draw.
 BEAM_PAN = 0
 BEAM_TILT = 130
 
@@ -49,8 +52,8 @@ def generate_home_position(
         beam = caps.has_role(roles.GOBO)
         pairs: list[tuple[int, int]] = []
         for role, value in (
-            (roles.PAN, BEAM_PAN if beam else MID),
-            (roles.TILT, BEAM_TILT if beam else MID),
+            (roles.PAN, BEAM_PAN if beam else WASH_PAN_AIM),
+            (roles.TILT, BEAM_TILT if beam else WASH_TILT_AIM),
             (roles.PAN_FINE, 0),
             (roles.TILT_FINE, 0),
         ):
