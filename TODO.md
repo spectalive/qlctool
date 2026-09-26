@@ -163,6 +163,7 @@
   intensity path is a combined dimmer/strobe channel writes the dimmer range
   value for that level, with a `check` rule that compares its brightness to
   the level's.
+- [ ] **The first bank's wheels colour the ungrouped fixtures too (ruling D9, accepted cost, 2026-09-26):** `Colores`/`Mezcla` of that bank step its keyed solids and splits, which carry the CLB2.4 PARs and fog LED columns, so while a wheel runs over the room wheel the six sum HTP; next step if it bites: point those wheels at extra-free copies appended after the last function.
 - [ ] **A wheel's desk tile shows the max of all its steps (en-sala round 1,
   2026-09-26).** `desk_swatch.swatches` reads `reach`, which merges every step
   of a chaser by the highest value, so a colour wheel's tile is no colour it

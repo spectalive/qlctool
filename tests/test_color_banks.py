@@ -4,6 +4,7 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.generate.generate_color_banks import generate_color_banks
+from qlctool.key_split_pairs import KEY_SPLIT_PAIRS
 from qlctool.library import FixtureLibrary
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.split_pairs import SPLIT_PAIRS
@@ -84,3 +85,47 @@ def test_qlcplus_loads_the_banks(tmp_path):
     ws.save(out)
 
     assert validate_workspace(out).ok
+
+
+def _fixtures_of(function):
+    return {int(v.attrib["ID"]) for v in findall_local(function, "FixtureVal")}
+
+
+def test_the_ungrouped_fixtures_join_only_the_first_banks_key_scenes():
+    """2026-09-26, en-sala DMX audit (ruling D9): the two CLB2.4 PARs are in
+    no group, so they join the scenes the first bank's keys press - the first
+    eight solids and the two key splits - and nothing else of it.
+    """
+    ws = Workspace.load(SHOW)
+    extras = {4, 5}
+
+    first, *rest = generate_color_banks(ws, FixtureLibrary.load())
+
+    functions = _functions(ws.root)
+    carrying = {
+        i for i in first.scene_ids + first.split_ids if extras <= _fixtures_of(functions[str(i)])
+    }
+    assert carrying == set(first.key_ids)
+    for bank in rest:
+        for i in bank.scene_ids + bank.split_ids:
+            assert not extras & _fixtures_of(functions[str(i)])
+
+
+def test_a_one_fixture_first_bank_builds_no_split_on_the_extras():
+    """2026-09-26, en-sala DMX audit (ruling D9): a split needs two of the
+    group's own fixtures; the ungrouped ones added to a key split do not make
+    a lone fixture into one. Such a bank keeps plain solids on every key.
+    Only the key splits are asked for, so the guard meets a keyed split first.
+    """
+    ws = Workspace.load(SHOW)
+    group = next(g for g in findall_local(find_local(ws.root, "Engine"), "FixtureGroup"))
+    for head in findall_local(group, "Head")[1:]:
+        group.remove(head)
+
+    first = generate_color_banks(ws, FixtureLibrary.load(), split_pairs=KEY_SPLIT_PAIRS)[0]
+
+    assert first.split_ids == []
+    assert first.key_ids == first.scene_ids
+    functions = _functions(ws.root)
+    for i in first.scene_ids:
+        assert {4, 5} <= _fixtures_of(functions[str(i)])
