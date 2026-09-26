@@ -234,10 +234,18 @@
   refused (final review of Plan B, 2026-09-25; moved from vibra-lighting).**
   `hit_button_flash = "BANG · Space"` failed in the desk bursts with "burst
   duration must be positive: bang". Closed 2026-09-26 (round D1):
-  `reject_hit_button_heads` beside `reject_frame_head_renames` refuses a
-  `hit_button_*` whose name before " · " is not its `hit_*` caption (either
-  side overridden), naming the description; renaming both together is
-  accepted and builds. Tests in `tests/test_description_refusals.py`.
+  `reject_hit_button_heads` beside `reject_frame_head_renames` refuses an
+  override after which the desk's own lookup (`desk_burst_identifier` over
+  the show's names) no longer finds a `hit_button_*`'s own `hit_*`, naming
+  the description. After the D1 review it asks exactly the desk's question:
+  `hit_flash = "Red"` with its button refused (Red is also a colour), a
+  leading glyph accepted, and a hit renamed with its button builds its desk
+  burst. Tests `tests/test_hit_button_heads.py`.
+- [ ] **`qlctool check` still lives in `cli.py` (review of round D1,
+  2026-09-26).** `cli.py` is 940-odd lines and round D1 added `check
+  --description` there. Smallest next step: move `cmd_check` and its parser
+  into `cmd_check.py` and `add_check_parser.py`, the shape `deskmap` and
+  `pad-palette` use, with `cli.py` only wiring them.
 - [x] **Most of `function_references`' paths have no test (Task 2a review,
   2026-09-25; moved from vibra-lighting).** Closed 2026-09-26 (round D1):
   `tests/test_dangling_reference_paths.py` breaks a clock `<Schedule
