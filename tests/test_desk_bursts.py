@@ -17,7 +17,7 @@ from qlctool.desk_burst_buttons import desk_burst_buttons
 from qlctool.desk_burst_identifier import desk_burst_identifier
 from qlctool.desk_burst_sources import desk_burst_sources
 from qlctool.desk_policy import BURST_MS
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.names.load_catalogue import load_catalogue

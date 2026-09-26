@@ -12,7 +12,7 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.control_glyph import glyph
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.generate.live_console import (
     BIG_FONT,
     CANVAS_HEIGHT,

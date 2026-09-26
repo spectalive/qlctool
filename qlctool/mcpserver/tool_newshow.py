@@ -5,7 +5,7 @@ from typing import Any
 from ..description.described_files import described_files
 from ..description.description_names import description_names
 from ..description.load_show_description import load_show_description
-from ..generate.canonical_show import build_canonical_show
+from ..generate.build_canonical_show import build_canonical_show
 from ..library_for import library_for
 from ..newshow_refusal import newshow_refusal
 from ..validate import validate_workspace

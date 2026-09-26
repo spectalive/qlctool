@@ -28,7 +28,7 @@ class Moment:
     """One room state: everything that runs while it is the state."""
 
     name: str
-    members: Sequence[int]
+    members: Sequence[int | None]
 
 
 def generate_moments(

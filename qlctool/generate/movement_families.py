@@ -30,7 +30,7 @@ and sized so the whole figure fits inside that window.
 moments and the muscle memory survive the split.
 """
 
-from collections.abc import Sequence
+from collections.abc import Collection
 from dataclasses import dataclass, field
 
 from .. import roles
@@ -323,7 +323,7 @@ class GeneratedFamilies:
 def generate_movement_families(
     workspace: Workspace,
     library: FixtureLibrary,
-    mirrored_ids: Sequence[int] = (),
+    mirrored_ids: Collection[int] = (),
     names: Names | None = None,
 ) -> GeneratedFamilies:
     """Per-family movement, the fan, and the two rig-wide Collections, named by `names`."""

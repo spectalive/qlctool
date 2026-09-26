@@ -11,7 +11,7 @@ from rig_root import RIG_ROOT
 
 from qlctool.build_deskmap import build_deskmap
 from qlctool.desk_policy import split_caption
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.speed_multiplier import multiplier
 from qlctool.workspace import Workspace

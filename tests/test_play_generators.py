@@ -9,7 +9,7 @@ from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.color_wheel_match import color_wheel_pairs
 from qlctool.fog_offsets import fog_offsets
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.rgbw_split import rgbw_split

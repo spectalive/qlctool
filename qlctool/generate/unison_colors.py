@@ -16,7 +16,7 @@ is a wheel rather than three channels, are put on the nearest position that
 wheel carries instead of being left out.
 """
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
 from .. import roles
@@ -72,7 +72,7 @@ def generate_unison_colors(
     hold: int = WHEEL_HOLD,
     fade: int = WHEEL_FADE,
     exclude_fixture_ids: Sequence[int] = (),
-    step_extras: dict[str, Sequence[int]] | None = None,
+    step_extras: Mapping[str, Sequence[int]] | None = None,
     program_gated_ids: Sequence[int] = (),
     palette: dict[str, tuple[int, int, int]] | None = None,
     wheel_name: str | None = None,

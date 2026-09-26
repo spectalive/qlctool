@@ -13,7 +13,7 @@ from rig_root import RIG_ROOT
 from qlctool.build_deskmap import build_deskmap
 from qlctool.desk_burst_duration import desk_burst_duration
 from qlctool.desk_widgets import DeskWidget
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.names.load_catalogue import load_catalogue

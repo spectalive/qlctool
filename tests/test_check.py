@@ -37,7 +37,7 @@ from qlctool.checks.strobe_written import strobe_capable_offsets
 from qlctool.cli import main
 from qlctool.fixture_group import fixture_groups
 from qlctool.fog_offsets import fog_offsets
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname

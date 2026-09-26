@@ -11,7 +11,7 @@ back into a generated show and bite if the generator loses it again.
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.vibra.keys import KEYS
 from qlctool.wheel_palette import WHEEL_PALETTE

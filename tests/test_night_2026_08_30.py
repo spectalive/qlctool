@@ -26,7 +26,7 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.generate.smoke_auto import SMOKE_INTERVALS_MIN
 from qlctool.library import FixtureLibrary
 from qlctool.vibra.tuning import VIBRA_TUNING

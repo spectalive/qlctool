@@ -6,7 +6,7 @@ gone. Fixtures are selected by capability (they have pan and tilt), so a re-patc
 does not invalidate the generator.
 """
 
-from collections.abc import Sequence
+from collections.abc import Collection, Sequence
 from dataclasses import dataclass, field
 
 from .. import roles
@@ -65,7 +65,7 @@ def generate_movement_efx(
     chaser_run_order: str = "Loop",
     chaser_name: str | None = None,
     label_prefix: str | None = None,
-    mirrored_ids: Sequence[int] = (),
+    mirrored_ids: Collection[int] = (),
     rotation: int = 0,
     rotation_by_algorithm: dict[str, int] | None = None,
     names: dict[str, str] | None = None,

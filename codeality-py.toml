@@ -48,6 +48,11 @@ data = [
   "qlctool/checks/promise_words.py",
   # The complementary threshold, shared by a check and a generator.
   "qlctool/complementary_from.py",
+  # The show generator's fixed tables: where a new show is saved, and the
+  # matrix algorithms it offers and cycles.
+  "qlctool/generate/show_path.py",
+  "qlctool/generate/default_matrix_algorithms.py",
+  "qlctool/generate/cycle_algorithms.py",
   # One constant each, imported where it is needed: a tag list, the console
   # canvas of a workspace that states none, an invalid function id sentinel, a
   # folder name, a language, a pattern, the catalogue's sections and where the

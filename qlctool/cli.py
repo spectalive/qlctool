@@ -25,7 +25,7 @@ from .description.load_show_description import load_show_description
 from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_dirs import fixture_dirs
 from .fixture_group import fixture_groups
-from .generate.canonical_show import build_canonical_show
+from .generate.build_canonical_show import build_canonical_show
 from .generate.channel_probe import generate_channel_probe
 from .generate.color_palette import generate_color_palette
 from .generate.generate_matrix_effects import generate_matrix_effects

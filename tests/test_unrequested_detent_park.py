@@ -20,7 +20,7 @@ from qlctool.checks.rule_mode_owner import RULE_ID
 from qlctool.cli import main
 from qlctool.color_pair import ColorPair
 from qlctool.description.colour_settings import ColourSettings
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace

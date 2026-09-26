@@ -17,7 +17,7 @@ from rig_root import RIG_ROOT
 from qlctool.build_deskmap import build_deskmap
 from qlctool.description.description_names import description_names
 from qlctool.description.load_show_description import load_show_description
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace

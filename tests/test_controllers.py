@@ -18,7 +18,7 @@ from qlctool.checks.rule_provider import RuleProvider
 from qlctool.checks.rule_providers import rule_providers
 from qlctool.description.controller_settings import ControllerSettings
 from qlctool.desk_function_path import DESK_FUNCTION_PATH
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace

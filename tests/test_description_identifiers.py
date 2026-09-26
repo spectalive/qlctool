@@ -12,7 +12,7 @@ from rig_root import RIG_ROOT
 
 from qlctool.description.localize_description import localize_description
 from qlctool.description.matrices_by_group import matrices_by_group
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.matrix_algorithms import CURATED_MATRICES
 from qlctool.names.shipped_names import shipped_names

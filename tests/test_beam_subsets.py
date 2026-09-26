@@ -11,7 +11,7 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.generate.beam_subsets import generate_beam_subsets
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname

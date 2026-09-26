@@ -11,7 +11,7 @@ from dataclasses import replace
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.shipped_names import shipped_names
 from qlctool.vibra.vibra_description import vibra_description

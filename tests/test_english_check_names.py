@@ -25,7 +25,7 @@ from qlctool.checks.phrase import Phrase
 from qlctool.checks.rendered_value import rendered_value
 from qlctool.checks.rule_empty_frame import check_empty_frames
 from qlctool.cli import main
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.shipped_names import shipped_names

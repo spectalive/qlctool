@@ -16,7 +16,7 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.capability import FixtureCapabilities
 from qlctool.cli import main
 from qlctool.fog_offsets import fog_offsets
-from qlctool.generate.canonical_show import build_canonical_show
+from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.internal_program import internal_program
 from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
