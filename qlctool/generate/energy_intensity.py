@@ -32,6 +32,7 @@ from ..outside_color_looks import outside_color_looks
 from ..shutter_open import shutter_open_pairs
 from ..stepped_dimmer import stepped_dimmer_offsets
 from ..strobe_off import strobe_off_pairs
+from ..wheel_blade_offsets import wheel_blade_offsets
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
 
@@ -120,9 +121,17 @@ def _scene(
         # read below full: "si no pones el canal 2 a 255 no se ven" (owner,
         # 2026-08-29). The quiet level's 110 left four machines invisible.
         full = capability.is_lit_smoke
+        # A wheel-coloured head's blade opens with its colour, not here: a
+        # level holding it open left the beams lit in the last colour after a
+        # released colour pick (`wheel_blade_offsets`, 2026-09-27). A head no
+        # colour look reaches keeps it here, since nothing else would open it.
+        with_colour = set()
+        if capability.fixture.fixture_id not in outside:
+            with_colour = set(wheel_blade_offsets(capability))
         pairs = [
             (offset, FULL_LEVEL if full or offset in stepped else level)
             for offset in capability.offsets_for_role(roles.DIMMER)
+            if offset not in with_colour
         ]
         pairs += shutter_open_pairs(capability)
         pairs += zoom_wide_pairs(capability)

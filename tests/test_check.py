@@ -39,6 +39,7 @@ from qlctool.fixture_group import fixture_groups
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
+from qlctool.wheel_blade_offsets import wheel_blade_offsets
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname
 
@@ -2645,6 +2646,9 @@ def test_a_complete_renamed_pixel_frame_is_silent(library, deluxe_show):
 def test_luz_charla_keeps_momento_intensity_outside_the_color_hook(library, deluxe_show):
     """2026-09-02: a COLOR pick stops Luz Charla but leaves Momento Charla's
     dimmer source running, while the hook still restores the beams' wheel.
+
+    Ruling D8, 2026-09-27: the one dimmer a colour look does open is a
+    wheel-only head's blade, which goes with its colour (`wheel_blade_offsets`).
     """
     workspace = deluxe_show
     functions = _functions(workspace)
@@ -2672,6 +2676,7 @@ def test_luz_charla_keeps_momento_intensity_outside_the_color_hook(library, delu
     assert not any(
         graph.capabilities[fixture_id].roles_by_offset[offset] in (roles.DIMMER, roles.DIMMER_FINE)
         and lit(value)
+        and offset not in wheel_blade_offsets(graph.capabilities[fixture_id])
         for fixture_id, offsets in charla_writes.items()
         for offset, value in offsets.items()
     )
@@ -2683,6 +2688,7 @@ def test_luz_charla_keeps_momento_intensity_outside_the_color_hook(library, delu
     assert not any(
         graph.capabilities[fixture_id].roles_by_offset[offset] in (roles.DIMMER, roles.DIMMER_FINE)
         and lit(value)
+        and offset not in wheel_blade_offsets(graph.capabilities[fixture_id])
         for fixture_id, offsets in pick_writes.items()
         for offset, value in offsets.items()
     )

@@ -11163,10 +11163,10 @@
       <FixtureVal ID="30">2,0,3,255,4,0,6,0</FixtureVal>
       <FixtureVal ID="31">2,0,3,255,4,128,6,0</FixtureVal>
       <FixtureVal ID="32">2,0,3,255,4,255,6,0</FixtureVal>
-      <FixtureVal ID="20">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,43,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="647" Type="Scene" Name="Rig Multicolor 2" Path="Colores Rig">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -11195,10 +11195,10 @@
       <FixtureVal ID="30">2,0,3,200,4,255,6,0</FixtureVal>
       <FixtureVal ID="31">2,0,3,127,4,255,6,0</FixtureVal>
       <FixtureVal ID="32">2,0,3,0,4,255,6,0</FixtureVal>
-      <FixtureVal ID="20">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,51,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="648" Type="Scene" Name="Rig 4 Colores 1" Path="Colores Rig">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -11227,10 +11227,10 @@
       <FixtureVal ID="30">2,0,3,255,4,0,6,0</FixtureVal>
       <FixtureVal ID="31">2,255,3,255,4,0,6,0</FixtureVal>
       <FixtureVal ID="32">2,0,3,0,4,255,6,0</FixtureVal>
-      <FixtureVal ID="20">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,43,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="649" Type="Scene" Name="Rig 4 Colores 2" Path="Colores Rig">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -11259,10 +11259,10 @@
       <FixtureVal ID="30">2,255,3,255,4,0,6,0</FixtureVal>
       <FixtureVal ID="31">2,0,3,0,4,255,6,0</FixtureVal>
       <FixtureVal ID="32">2,255,3,0,4,0,6,0</FixtureVal>
-      <FixtureVal ID="20">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,12,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="650" Type="Scene" Name="Rig 4 Colores 3" Path="Colores Rig">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -11291,10 +11291,10 @@
       <FixtureVal ID="30">2,0,3,0,4,255,6,0</FixtureVal>
       <FixtureVal ID="31">2,255,3,0,4,0,6,0</FixtureVal>
       <FixtureVal ID="32">2,0,3,255,4,0,6,0</FixtureVal>
-      <FixtureVal ID="20">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,35,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="651" Type="Scene" Name="Rig 4 Colores 4" Path="Colores Rig">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -11323,10 +11323,10 @@
       <FixtureVal ID="30">2,255,3,0,4,0,6,0</FixtureVal>
       <FixtureVal ID="31">2,0,3,255,4,0,6,0</FixtureVal>
       <FixtureVal ID="32">2,255,3,255,4,0,6,0</FixtureVal>
-      <FixtureVal ID="20">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,27,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="652" Type="Collection" Name="Rig Multicolor 1 + Pixeles" Path="Show">
       <Step Number="0">646</Step>
@@ -11385,10 +11385,10 @@
       <FixtureVal ID="25">1,255,2,0,3,0</FixtureVal>
       <FixtureVal ID="27">1,255,2,0,3,0</FixtureVal>
       <FixtureVal ID="28">1,255,2,0,3,0</FixtureVal>
-      <FixtureVal ID="20">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,12,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="659" Type="Collection" Name="Rig Rojo + Pixeles" Path="Colores Rig">
       <Step Number="0">658</Step>
@@ -11422,10 +11422,10 @@
       <FixtureVal ID="25">1,255,2,20,3,0</FixtureVal>
       <FixtureVal ID="27">1,255,2,20,3,0</FixtureVal>
       <FixtureVal ID="28">1,255,2,20,3,0</FixtureVal>
-      <FixtureVal ID="20">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,12,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="661" Type="Collection" Name="Rig Rojo Fuego + Pixeles" Path="Colores Rig">
       <Step Number="0">660</Step>
@@ -11459,10 +11459,10 @@
       <FixtureVal ID="25">1,255,2,127,3,0</FixtureVal>
       <FixtureVal ID="27">1,255,2,127,3,0</FixtureVal>
       <FixtureVal ID="28">1,255,2,127,3,0</FixtureVal>
-      <FixtureVal ID="20">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,19,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="663" Type="Collection" Name="Rig Naranja + Pixeles" Path="Colores Rig">
       <Step Number="0">662</Step>
@@ -11496,10 +11496,10 @@
       <FixtureVal ID="25">1,255,2,183,3,0</FixtureVal>
       <FixtureVal ID="27">1,255,2,183,3,0</FixtureVal>
       <FixtureVal ID="28">1,255,2,183,3,0</FixtureVal>
-      <FixtureVal ID="20">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,19,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="665" Type="Collection" Name="Rig Ambar + Pixeles" Path="Colores Rig">
       <Step Number="0">664</Step>
@@ -11533,10 +11533,10 @@
       <FixtureVal ID="25">1,255,2,255,3,0</FixtureVal>
       <FixtureVal ID="27">1,255,2,255,3,0</FixtureVal>
       <FixtureVal ID="28">1,255,2,255,3,0</FixtureVal>
-      <FixtureVal ID="20">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,27,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="667" Type="Collection" Name="Rig Amarillo + Pixeles" Path="Colores Rig">
       <Step Number="0">666</Step>
@@ -11570,10 +11570,10 @@
       <FixtureVal ID="25">1,0,2,255,3,0</FixtureVal>
       <FixtureVal ID="27">1,0,2,255,3,0</FixtureVal>
       <FixtureVal ID="28">1,0,2,255,3,0</FixtureVal>
-      <FixtureVal ID="20">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,35,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="669" Type="Collection" Name="Rig Verde + Pixeles" Path="Colores Rig">
       <Step Number="0">668</Step>
@@ -11607,10 +11607,10 @@
       <FixtureVal ID="25">1,0,2,255,3,128</FixtureVal>
       <FixtureVal ID="27">1,0,2,255,3,128</FixtureVal>
       <FixtureVal ID="28">1,0,2,255,3,128</FixtureVal>
-      <FixtureVal ID="20">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,35,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="671" Type="Collection" Name="Rig Verde Menta + Pixeles" Path="Colores Rig">
       <Step Number="0">670</Step>
@@ -11644,10 +11644,10 @@
       <FixtureVal ID="25">1,0,2,255,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,255,3,255</FixtureVal>
       <FixtureVal ID="28">1,0,2,255,3,255</FixtureVal>
-      <FixtureVal ID="20">7,59,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,59,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,59,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,59,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="673" Type="Collection" Name="Rig Cyan + Pixeles" Path="Colores Rig">
       <Step Number="0">672</Step>
@@ -11681,10 +11681,10 @@
       <FixtureVal ID="25">1,0,2,200,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,200,3,255</FixtureVal>
       <FixtureVal ID="28">1,0,2,200,3,255</FixtureVal>
-      <FixtureVal ID="20">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,83,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="675" Type="Collection" Name="Rig Celeste + Pixeles" Path="Colores Rig">
       <Step Number="0">674</Step>
@@ -11718,10 +11718,10 @@
       <FixtureVal ID="25">1,0,2,127,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,127,3,255</FixtureVal>
       <FixtureVal ID="28">1,0,2,127,3,255</FixtureVal>
-      <FixtureVal ID="20">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,83,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="677" Type="Collection" Name="Rig Azul Cielo + Pixeles" Path="Colores Rig">
       <Step Number="0">676</Step>
@@ -11755,10 +11755,10 @@
       <FixtureVal ID="25">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="28">1,0,2,0,3,255</FixtureVal>
-      <FixtureVal ID="20">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,43,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="679" Type="Collection" Name="Rig Azul + Pixeles" Path="Colores Rig">
       <Step Number="0">678</Step>
@@ -11792,10 +11792,10 @@
       <FixtureVal ID="25">1,0,2,35,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,35,3,255</FixtureVal>
       <FixtureVal ID="28">1,0,2,35,3,255</FixtureVal>
-      <FixtureVal ID="20">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,43,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="681" Type="Collection" Name="Rig Azul Profundo + Pixeles" Path="Colores Rig">
       <Step Number="0">680</Step>
@@ -11829,10 +11829,10 @@
       <FixtureVal ID="25">1,85,2,0,3,255</FixtureVal>
       <FixtureVal ID="27">1,85,2,0,3,255</FixtureVal>
       <FixtureVal ID="28">1,85,2,0,3,255</FixtureVal>
-      <FixtureVal ID="20">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,99,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="683" Type="Collection" Name="Rig Morado + Pixeles" Path="Colores Rig">
       <Step Number="0">682</Step>
@@ -11866,10 +11866,10 @@
       <FixtureVal ID="25">1,160,2,0,3,255</FixtureVal>
       <FixtureVal ID="27">1,160,2,0,3,255</FixtureVal>
       <FixtureVal ID="28">1,160,2,0,3,255</FixtureVal>
-      <FixtureVal ID="20">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,99,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="685" Type="Collection" Name="Rig UltraVioleta + Pixeles" Path="Colores Rig">
       <Step Number="0">684</Step>
@@ -11903,10 +11903,10 @@
       <FixtureVal ID="25">1,255,2,0,3,255</FixtureVal>
       <FixtureVal ID="27">1,255,2,0,3,255</FixtureVal>
       <FixtureVal ID="28">1,255,2,0,3,255</FixtureVal>
-      <FixtureVal ID="20">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,51,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="687" Type="Collection" Name="Rig Magenta + Pixeles" Path="Colores Rig">
       <Step Number="0">686</Step>
@@ -11940,10 +11940,10 @@
       <FixtureVal ID="25">1,255,2,0,3,176</FixtureVal>
       <FixtureVal ID="27">1,255,2,0,3,176</FixtureVal>
       <FixtureVal ID="28">1,255,2,0,3,176</FixtureVal>
-      <FixtureVal ID="20">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,51,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="689" Type="Collection" Name="Rig Fucsia + Pixeles" Path="Colores Rig">
       <Step Number="0">688</Step>
@@ -11977,10 +11977,10 @@
       <FixtureVal ID="25">1,255,2,0,3,100</FixtureVal>
       <FixtureVal ID="27">1,255,2,0,3,100</FixtureVal>
       <FixtureVal ID="28">1,255,2,0,3,100</FixtureVal>
-      <FixtureVal ID="20">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,51,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="691" Type="Collection" Name="Rig Rosa + Pixeles" Path="Colores Rig">
       <Step Number="0">690</Step>
@@ -12010,10 +12010,10 @@
       <FixtureVal ID="30">2,0,3,0,4,255,6,0</FixtureVal>
       <FixtureVal ID="31">2,0,3,0,4,255,6,0</FixtureVal>
       <FixtureVal ID="32">2,0,3,0,4,255,6,0</FixtureVal>
-      <FixtureVal ID="20">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,19,8,0,11,0</FixtureVal>
       <FixtureVal ID="24">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="25">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,0,3,255</FixtureVal>
@@ -12047,10 +12047,10 @@
       <FixtureVal ID="30">2,0,3,0,4,255,6,0</FixtureVal>
       <FixtureVal ID="31">2,0,3,0,4,255,6,0</FixtureVal>
       <FixtureVal ID="32">2,0,3,0,4,255,6,0</FixtureVal>
-      <FixtureVal ID="20">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,27,8,0,11,0</FixtureVal>
       <FixtureVal ID="24">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="25">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,0,3,255</FixtureVal>
@@ -12084,10 +12084,10 @@
       <FixtureVal ID="30">2,0,3,255,4,255,6,0</FixtureVal>
       <FixtureVal ID="31">2,0,3,255,4,255,6,0</FixtureVal>
       <FixtureVal ID="32">2,0,3,255,4,255,6,0</FixtureVal>
-      <FixtureVal ID="20">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,12,8,0,11,0</FixtureVal>
       <FixtureVal ID="24">1,0,2,255,3,255</FixtureVal>
       <FixtureVal ID="25">1,0,2,255,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,255,3,255</FixtureVal>
@@ -12121,10 +12121,10 @@
       <FixtureVal ID="30">2,0,3,255,4,0,6,0</FixtureVal>
       <FixtureVal ID="31">2,0,3,255,4,0,6,0</FixtureVal>
       <FixtureVal ID="32">2,0,3,255,4,0,6,0</FixtureVal>
-      <FixtureVal ID="20">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,51,8,0,11,0</FixtureVal>
       <FixtureVal ID="24">1,0,2,255,3,0</FixtureVal>
       <FixtureVal ID="25">1,0,2,255,3,0</FixtureVal>
       <FixtureVal ID="27">1,0,2,255,3,0</FixtureVal>
@@ -12158,10 +12158,10 @@
       <FixtureVal ID="30">2,0,3,0,4,255,6,0</FixtureVal>
       <FixtureVal ID="31">2,0,3,0,4,255,6,0</FixtureVal>
       <FixtureVal ID="32">2,0,3,0,4,255,6,0</FixtureVal>
-      <FixtureVal ID="20">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,12,8,0,11,0</FixtureVal>
       <FixtureVal ID="24">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="25">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,0,3,255</FixtureVal>
@@ -12239,10 +12239,10 @@
       <FixtureVal ID="25">1,255,2,0,3,0</FixtureVal>
       <FixtureVal ID="27">1,255,2,0,3,0</FixtureVal>
       <FixtureVal ID="28">1,255,2,0,3,0</FixtureVal>
-      <FixtureVal ID="20">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,12,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="705" Type="Collection" Name="Rig Simple Rojo + Pixeles" Path="Colores Rig">
       <Step Number="0">704</Step>
@@ -12276,10 +12276,10 @@
       <FixtureVal ID="25">1,255,2,255,3,0</FixtureVal>
       <FixtureVal ID="27">1,255,2,255,3,0</FixtureVal>
       <FixtureVal ID="28">1,255,2,255,3,0</FixtureVal>
-      <FixtureVal ID="20">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,27,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="707" Type="Collection" Name="Rig Simple Amarillo + Pixeles" Path="Colores Rig">
       <Step Number="0">706</Step>
@@ -12313,10 +12313,10 @@
       <FixtureVal ID="25">1,0,2,255,3,0</FixtureVal>
       <FixtureVal ID="27">1,0,2,255,3,0</FixtureVal>
       <FixtureVal ID="28">1,0,2,255,3,0</FixtureVal>
-      <FixtureVal ID="20">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,35,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="709" Type="Collection" Name="Rig Simple Verde + Pixeles" Path="Colores Rig">
       <Step Number="0">708</Step>
@@ -12350,10 +12350,10 @@
       <FixtureVal ID="25">1,0,2,255,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,255,3,255</FixtureVal>
       <FixtureVal ID="28">1,0,2,255,3,255</FixtureVal>
-      <FixtureVal ID="20">7,59,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,59,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,59,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,59,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="711" Type="Collection" Name="Rig Simple Cyan + Pixeles" Path="Colores Rig">
       <Step Number="0">710</Step>
@@ -12387,10 +12387,10 @@
       <FixtureVal ID="25">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="27">1,0,2,0,3,255</FixtureVal>
       <FixtureVal ID="28">1,0,2,0,3,255</FixtureVal>
-      <FixtureVal ID="20">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,43,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="713" Type="Collection" Name="Rig Simple Azul + Pixeles" Path="Colores Rig">
       <Step Number="0">712</Step>
@@ -12424,10 +12424,10 @@
       <FixtureVal ID="25">1,255,2,0,3,255</FixtureVal>
       <FixtureVal ID="27">1,255,2,0,3,255</FixtureVal>
       <FixtureVal ID="28">1,255,2,0,3,255</FixtureVal>
-      <FixtureVal ID="20">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,51,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="715" Type="Collection" Name="Rig Simple Magenta + Pixeles" Path="Colores Rig">
       <Step Number="0">714</Step>
@@ -12473,10 +12473,10 @@
       <FixtureVal ID="25">1,255,2,140,3,140</FixtureVal>
       <FixtureVal ID="27">1,255,2,140,3,140</FixtureVal>
       <FixtureVal ID="28">1,255,2,140,3,140</FixtureVal>
-      <FixtureVal ID="20">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,12,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="718" Type="Collection" Name="Rig Pastel Rojo + Pixeles" Path="Colores Rig">
       <Step Number="0">717</Step>
@@ -12510,10 +12510,10 @@
       <FixtureVal ID="25">1,255,2,149,3,140</FixtureVal>
       <FixtureVal ID="27">1,255,2,149,3,140</FixtureVal>
       <FixtureVal ID="28">1,255,2,149,3,140</FixtureVal>
-      <FixtureVal ID="20">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,12,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,12,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,12,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="720" Type="Collection" Name="Rig Pastel Rojo Fuego + Pixeles" Path="Colores Rig">
       <Step Number="0">719</Step>
@@ -12547,10 +12547,10 @@
       <FixtureVal ID="25">1,255,2,197,3,140</FixtureVal>
       <FixtureVal ID="27">1,255,2,197,3,140</FixtureVal>
       <FixtureVal ID="28">1,255,2,197,3,140</FixtureVal>
-      <FixtureVal ID="20">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,19,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="722" Type="Collection" Name="Rig Pastel Naranja + Pixeles" Path="Colores Rig">
       <Step Number="0">721</Step>
@@ -12584,10 +12584,10 @@
       <FixtureVal ID="25">1,255,2,223,3,140</FixtureVal>
       <FixtureVal ID="27">1,255,2,223,3,140</FixtureVal>
       <FixtureVal ID="28">1,255,2,223,3,140</FixtureVal>
-      <FixtureVal ID="20">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,19,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,19,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,19,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="724" Type="Collection" Name="Rig Pastel Ambar + Pixeles" Path="Colores Rig">
       <Step Number="0">723</Step>
@@ -12621,10 +12621,10 @@
       <FixtureVal ID="25">1,255,2,255,3,140</FixtureVal>
       <FixtureVal ID="27">1,255,2,255,3,140</FixtureVal>
       <FixtureVal ID="28">1,255,2,255,3,140</FixtureVal>
-      <FixtureVal ID="20">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,27,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,27,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,27,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="726" Type="Collection" Name="Rig Pastel Amarillo + Pixeles" Path="Colores Rig">
       <Step Number="0">725</Step>
@@ -12658,10 +12658,10 @@
       <FixtureVal ID="25">1,140,2,255,3,140</FixtureVal>
       <FixtureVal ID="27">1,140,2,255,3,140</FixtureVal>
       <FixtureVal ID="28">1,140,2,255,3,140</FixtureVal>
-      <FixtureVal ID="20">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,35,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="728" Type="Collection" Name="Rig Pastel Verde + Pixeles" Path="Colores Rig">
       <Step Number="0">727</Step>
@@ -12695,10 +12695,10 @@
       <FixtureVal ID="25">1,140,2,255,3,198</FixtureVal>
       <FixtureVal ID="27">1,140,2,255,3,198</FixtureVal>
       <FixtureVal ID="28">1,140,2,255,3,198</FixtureVal>
-      <FixtureVal ID="20">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,35,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,35,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,35,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="730" Type="Collection" Name="Rig Pastel Verde Menta + Pixeles" Path="Colores Rig">
       <Step Number="0">729</Step>
@@ -12732,10 +12732,10 @@
       <FixtureVal ID="25">1,140,2,255,3,255</FixtureVal>
       <FixtureVal ID="27">1,140,2,255,3,255</FixtureVal>
       <FixtureVal ID="28">1,140,2,255,3,255</FixtureVal>
-      <FixtureVal ID="20">7,59,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,59,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,59,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,59,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,59,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="732" Type="Collection" Name="Rig Pastel Cyan + Pixeles" Path="Colores Rig">
       <Step Number="0">731</Step>
@@ -12769,10 +12769,10 @@
       <FixtureVal ID="25">1,140,2,230,3,255</FixtureVal>
       <FixtureVal ID="27">1,140,2,230,3,255</FixtureVal>
       <FixtureVal ID="28">1,140,2,230,3,255</FixtureVal>
-      <FixtureVal ID="20">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,83,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="734" Type="Collection" Name="Rig Pastel Celeste + Pixeles" Path="Colores Rig">
       <Step Number="0">733</Step>
@@ -12806,10 +12806,10 @@
       <FixtureVal ID="25">1,140,2,197,3,255</FixtureVal>
       <FixtureVal ID="27">1,140,2,197,3,255</FixtureVal>
       <FixtureVal ID="28">1,140,2,197,3,255</FixtureVal>
-      <FixtureVal ID="20">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,83,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,83,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,83,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="736" Type="Collection" Name="Rig Pastel Azul Cielo + Pixeles" Path="Colores Rig">
       <Step Number="0">735</Step>
@@ -12843,10 +12843,10 @@
       <FixtureVal ID="25">1,140,2,140,3,255</FixtureVal>
       <FixtureVal ID="27">1,140,2,140,3,255</FixtureVal>
       <FixtureVal ID="28">1,140,2,140,3,255</FixtureVal>
-      <FixtureVal ID="20">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,43,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="738" Type="Collection" Name="Rig Pastel Azul + Pixeles" Path="Colores Rig">
       <Step Number="0">737</Step>
@@ -12880,10 +12880,10 @@
       <FixtureVal ID="25">1,140,2,156,3,255</FixtureVal>
       <FixtureVal ID="27">1,140,2,156,3,255</FixtureVal>
       <FixtureVal ID="28">1,140,2,156,3,255</FixtureVal>
-      <FixtureVal ID="20">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,43,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,43,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,43,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="740" Type="Collection" Name="Rig Pastel Azul Profundo + Pixeles" Path="Colores Rig">
       <Step Number="0">739</Step>
@@ -12917,10 +12917,10 @@
       <FixtureVal ID="25">1,178,2,140,3,255</FixtureVal>
       <FixtureVal ID="27">1,178,2,140,3,255</FixtureVal>
       <FixtureVal ID="28">1,178,2,140,3,255</FixtureVal>
-      <FixtureVal ID="20">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,99,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="742" Type="Collection" Name="Rig Pastel Morado + Pixeles" Path="Colores Rig">
       <Step Number="0">741</Step>
@@ -12954,10 +12954,10 @@
       <FixtureVal ID="25">1,212,2,140,3,255</FixtureVal>
       <FixtureVal ID="27">1,212,2,140,3,255</FixtureVal>
       <FixtureVal ID="28">1,212,2,140,3,255</FixtureVal>
-      <FixtureVal ID="20">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,99,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,99,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,99,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="744" Type="Collection" Name="Rig Pastel UltraVioleta + Pixeles" Path="Colores Rig">
       <Step Number="0">743</Step>
@@ -12991,10 +12991,10 @@
       <FixtureVal ID="25">1,255,2,140,3,255</FixtureVal>
       <FixtureVal ID="27">1,255,2,140,3,255</FixtureVal>
       <FixtureVal ID="28">1,255,2,140,3,255</FixtureVal>
-      <FixtureVal ID="20">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,51,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="746" Type="Collection" Name="Rig Pastel Magenta + Pixeles" Path="Colores Rig">
       <Step Number="0">745</Step>
@@ -13028,10 +13028,10 @@
       <FixtureVal ID="25">1,255,2,140,3,219</FixtureVal>
       <FixtureVal ID="27">1,255,2,140,3,219</FixtureVal>
       <FixtureVal ID="28">1,255,2,140,3,219</FixtureVal>
-      <FixtureVal ID="20">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,51,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="748" Type="Collection" Name="Rig Pastel Fucsia + Pixeles" Path="Colores Rig">
       <Step Number="0">747</Step>
@@ -13065,10 +13065,10 @@
       <FixtureVal ID="25">1,255,2,140,3,185</FixtureVal>
       <FixtureVal ID="27">1,255,2,140,3,185</FixtureVal>
       <FixtureVal ID="28">1,255,2,140,3,185</FixtureVal>
-      <FixtureVal ID="20">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="21">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="22">7,51,8,0,11,0</FixtureVal>
-      <FixtureVal ID="23">7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="20">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="21">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="22">6,255,7,51,8,0,11,0</FixtureVal>
+      <FixtureVal ID="23">6,255,7,51,8,0,11,0</FixtureVal>
     </Function>
     <Function ID="750" Type="Collection" Name="Rig Pastel Rosa + Pixeles" Path="Colores Rig">
       <Step Number="0">749</Step>
@@ -13807,10 +13807,10 @@
       <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="18">2,110,7,0</FixtureVal>
       <FixtureVal ID="19">2,110,7,0</FixtureVal>
-      <FixtureVal ID="20">5,255,6,255</FixtureVal>
-      <FixtureVal ID="21">5,255,6,255</FixtureVal>
-      <FixtureVal ID="22">5,255,6,255</FixtureVal>
-      <FixtureVal ID="23">5,255,6,255</FixtureVal>
+      <FixtureVal ID="20">5,255</FixtureVal>
+      <FixtureVal ID="21">5,255</FixtureVal>
+      <FixtureVal ID="22">5,255</FixtureVal>
+      <FixtureVal ID="23">5,255</FixtureVal>
       <FixtureVal ID="29">0,0,1,255,5,0</FixtureVal>
       <FixtureVal ID="30">0,0,1,255,5,0</FixtureVal>
       <FixtureVal ID="31">0,0,1,255,5,0</FixtureVal>
@@ -13836,10 +13836,10 @@
       <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="18">2,255,7,0</FixtureVal>
       <FixtureVal ID="19">2,255,7,0</FixtureVal>
-      <FixtureVal ID="20">5,255,6,255</FixtureVal>
-      <FixtureVal ID="21">5,255,6,255</FixtureVal>
-      <FixtureVal ID="22">5,255,6,255</FixtureVal>
-      <FixtureVal ID="23">5,255,6,255</FixtureVal>
+      <FixtureVal ID="20">5,255</FixtureVal>
+      <FixtureVal ID="21">5,255</FixtureVal>
+      <FixtureVal ID="22">5,255</FixtureVal>
+      <FixtureVal ID="23">5,255</FixtureVal>
       <FixtureVal ID="29">0,0,1,255,5,0</FixtureVal>
       <FixtureVal ID="30">0,0,1,255,5,0</FixtureVal>
       <FixtureVal ID="31">0,0,1,255,5,0</FixtureVal>
@@ -13877,10 +13877,10 @@
       <FixtureVal ID="17">0,0</FixtureVal>
       <FixtureVal ID="18">7,0</FixtureVal>
       <FixtureVal ID="19">7,0</FixtureVal>
-      <FixtureVal ID="20">5,255,6,255</FixtureVal>
-      <FixtureVal ID="21">5,255,6,255</FixtureVal>
-      <FixtureVal ID="22">5,255,6,255</FixtureVal>
-      <FixtureVal ID="23">5,255,6,255</FixtureVal>
+      <FixtureVal ID="20">5,255</FixtureVal>
+      <FixtureVal ID="21">5,255</FixtureVal>
+      <FixtureVal ID="22">5,255</FixtureVal>
+      <FixtureVal ID="23">5,255</FixtureVal>
       <FixtureVal ID="29">0,0,1,255,5,0</FixtureVal>
       <FixtureVal ID="30">0,0,1,255,5,0</FixtureVal>
       <FixtureVal ID="31">0,0,1,255,5,0</FixtureVal>
@@ -13969,6 +13969,10 @@
       <FixtureVal ID="33">5,0,8,85,9,44,10,0,11,170,12,85,13,44,14,0,15,170,16,85,17,44,18,0,19,170,20,0</FixtureVal>
       <FixtureVal ID="34">5,0,8,85,9,44,10,0,11,170,12,85,13,44,14,0,15,170,16,85,17,44,18,0,19,170,20,0</FixtureVal>
       <FixtureVal ID="17">0,0</FixtureVal>
+      <FixtureVal ID="20">6,255</FixtureVal>
+      <FixtureVal ID="21">6,255</FixtureVal>
+      <FixtureVal ID="22">6,255</FixtureVal>
+      <FixtureVal ID="23">6,255</FixtureVal>
     </Function>
     <Function ID="769" Type="Collection" Name="Luz Charla" Path="Show">
       <Step Number="0">768</Step>

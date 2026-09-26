@@ -14,6 +14,7 @@ that promises light and does not deliver it.
 from .. import roles
 from ..shutter_open import shutter_open_ranges
 from ..strobe_range import strobe_range
+from ..wheel_blade_offsets import wheel_blade_offsets
 from .color_roles import COLOUR
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
@@ -95,7 +96,11 @@ def _dark(graph: ShowGraph, driven, layer: bool = False) -> set[str]:
 
 
 def _touches_intensity_path(capability, written: dict[int, int | None]) -> bool:
-    if any(offset in written for offset in capability.offsets_for_role(roles.DIMMER)):
+    # A wheel-only head's blade opens with its colour (ruling D8, 2026-09-27):
+    # a colour look writing it states colour, not the intensity of the rig.
+    blades = set(wheel_blade_offsets(capability))
+    dimmers = [o for o in capability.offsets_for_role(roles.DIMMER) if o not in blades]
+    if any(offset in written for offset in dimmers):
         return True
     return any(offset in written for offset, _ in shutter_open_ranges(capability))
 

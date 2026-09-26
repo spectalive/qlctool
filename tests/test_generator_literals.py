@@ -38,6 +38,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/fan_position.py",
     "generate/stage_aim.py",
     "generate/wheel_scenes.py",
+    "generate/without_wheel_blades.py",
     "generate/page_control_title.py",
     "generate/tempo_help_line.py",
     "generate/matrices_frame_caption.py",

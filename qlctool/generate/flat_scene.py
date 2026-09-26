@@ -8,6 +8,7 @@ from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..names.names import Names
 from ..strobe_speed import strobe_speed_pairs
+from ..wheel_blade_offsets import wheel_blade_offsets
 from ..workspace import Workspace
 from .color_scene import color_scene_values
 from .show_path import SHOW_PATH
@@ -27,6 +28,7 @@ def flat_scene(
     exclude_effect_mode_fixture_ids: Sequence[int] = (),
     wheel_fixture_ids: Sequence[int] | None = None,
     pump_off: bool = True,
+    blade_fixture_ids: Sequence[int] = (),
 ) -> int:
     """One colour on every colour-capable fixture; smoke machines excluded.
 
@@ -38,7 +40,9 @@ def flat_scene(
     `wheel_color` is spelled in; `wheel_fixture_ids`, when given, limits the
     wheel colour to those fixtures. `pump_off` writes every smoke pump 0: a
     latched look is a room state and owns the pump; a held flash, forced LTP,
-    must leave it alone (`rule_flash_forced_zero`).
+    must leave it alone (`rule_flash_forced_zero`). `blade_fixture_ids` are
+    wheel-only heads whose colour a sibling scene of this look states: the
+    look opens their blade, which goes with the colour (`wheel_blade_offsets`).
     """
     values = color_scene_values(
         caps,
@@ -62,6 +66,14 @@ def flat_scene(
                 caps, wheel_color, fixture_ids=wheel_fixture_ids, dimmer=wheel_dimmer, names=names
             )
         )
+    blades = set(blade_fixture_ids)
+    for capability in caps:
+        opened = [(o, 255) for o in wheel_blade_offsets(capability)]
+        if capability.fixture.fixture_id not in blades or not opened:
+            continue
+        merged = dict(values.get(capability.fixture.fixture_id, []))
+        merged.update(opened)
+        values[capability.fixture.fixture_id] = sorted(merged.items())
     if strobe is not None:
         for capability in caps:
             # The lit columns strobe with the rig; their pump is no strobe

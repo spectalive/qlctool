@@ -19,6 +19,7 @@ from ..mode_park import mode_park_pairs
 from ..multicolor_off import multicolor_off_pairs
 from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
+from ..wheel_blade_offsets import wheel_blade_offsets
 from ..zoom_wide import zoom_wide_pairs
 
 
@@ -34,9 +35,11 @@ def wheel_color_values(
     A colour the wheel does not carry leaves that fixture out rather than
     parking it on a position that means something else. Smoke is never touched.
 
-    `dimmer=None` writes the wheel position alone - no dimmer, no shutter -
+    `dimmer=None` writes the wheel position - no fader dimmer, no shutter -
     for callers that only *state a colour* and leave intensity to whatever
-    state owns it (2026-08-27: colour and intensity are separate owners).
+    state owns it (2026-08-27: colour and intensity are separate owners). A
+    blade dimmer on a wheel-only head is the exception: it opens with the
+    colour (`wheel_blade_offsets`, 2026-09-27).
     `names` is the show's vocabulary `color_name` is spelled in.
     """
     wanted = None if fixture_ids is None else set(fixture_ids)
@@ -60,5 +63,10 @@ def wheel_color_values(
             pairs += [(o, dimmer) for o in capability.offsets_for_role(roles.DIMMER)]
             pairs += shutter_open_pairs(capability)
             pairs += zoom_wide_pairs(capability)
+        else:
+            # A blade opens with the wheel colour, not with the level: when the
+            # colour writers stop, the head goes dark with the RGB of the rig
+            # instead of staying lit in the last colour (`wheel_blade_offsets`).
+            pairs += [(o, 255) for o in wheel_blade_offsets(capability)]
         values[capability.fixture.fixture_id] = pairs
     return values

@@ -40,6 +40,7 @@ from ..outside_color_looks import outside_color_looks
 from ..shutter_open import shutter_open_pairs
 from ..stepped_dimmer import stepped_dimmer_offsets
 from ..strobe_off import strobe_off_pairs
+from ..wheel_blade_offsets import wheel_blade_offsets
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
 
@@ -81,14 +82,22 @@ def generate_dimmerless_intensity(
             # bajar con los niveles").
             pairs += [(offset, 255) for offset in capability.offsets_for_role(roles.DIMMER)]
         # A blade dimmer is out of the chase (`stepped_dimmer`), so this level
-        # is the only thing that can own it - at full, the one value it has.
-        pairs += [(offset, 255) for offset in stepped_dimmer_offsets(capability)]
+        # owns it - at full, the one value it has - unless the head's colour is
+        # a wheel a colour look reaches: then the blade opens with that colour
+        # (`wheel_blade_offsets`, 2026-09-27).
+        outside = outside_color_looks(capability, look_colours, names)
+        with_colour = set() if outside else set(wheel_blade_offsets(capability))
+        pairs += [
+            (offset, 255)
+            for offset in stepped_dimmer_offsets(capability)
+            if offset not in with_colour
+        ]
         pairs += shutter_open_pairs(capability)
         pairs += zoom_wide_pairs(capability)
         pairs += strobe_off_pairs(capability)
         # A head no colour look reaches is parked by nothing else: this level
         # lights it, so this level states its self-running channel (2026-09-25).
-        if outside_color_looks(capability, look_colours, names):
+        if outside:
             pairs += mode_park_pairs(capability)
         if pairs:
             fixture_id = capability.fixture.fixture_id

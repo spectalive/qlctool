@@ -4,6 +4,8 @@ Moved verbatim out of `build_canonical_show` (2026-09-26, round G); the
 functions are created in the order they always were.
 """
 
+from .. import roles
+from ..wheel_blade_offsets import wheel_blade_offsets
 from .first_of import first_of
 from .flat_scene import flat_scene
 from .moments import Moment, generate_moments
@@ -41,6 +43,11 @@ def add_moments(build: ShowBuild) -> None:
     # the talk light wrote nothing on a rig of them and the talk moment was
     # dark (round G review, 2026-09-26: the CLB2.4 in its 2 channel mode).
     wheel_only = wheel_only_fixture_ids(caps)
+    beam_blade_ids = [
+        c.fixture.fixture_id
+        for c in caps
+        if beam_colors.scene_ids and c.has_role(roles.GOBO) and wheel_blade_offsets(c)
+    ]
     charla_scene_id = flat_scene(
         workspace,
         caps,
@@ -52,6 +59,10 @@ def add_moments(build: ShowBuild) -> None:
         dimmer_full=False,
         exclude_effect_mode_fixture_ids=builtins.fixture_ids,
         wheel_fixture_ids=wheel_only,
+        # The beams take the talk white from their own wheel scene below, a
+        # held pick that opens nothing; their blade opens with this look, the
+        # talk moment's colour (ruling D8, 2026-09-27).
+        blade_fixture_ids=beam_blade_ids,
     )
     beam_white_id = first_of(beam_colors.scene_ids)
     master[vocabulary.display("talk_light")] = show_collection(

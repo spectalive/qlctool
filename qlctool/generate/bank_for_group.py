@@ -14,6 +14,7 @@ from .color_scene import color_scene_values
 from .generated_bank import GeneratedBank
 from .split_color_scene import split_color_scene_values
 from .wheel_color_values import wheel_color_values
+from .without_wheel_blades import without_wheel_blades
 
 
 def bank_for_group(
@@ -58,7 +59,7 @@ def bank_for_group(
         # A single fixture cannot show a split; the extras do not make one.
         if len(split.keys() & set(group.fixture_ids)) < 2:
             break
-        split_values.append(((first, second), split))
+        split_values.append(((first, second), without_wheel_blades(caps, split)))
     built = {pair for pair, _ in split_values}
     keyed_solids = len(colors)
     if all(pair in built for pair in key_split_pairs):
@@ -85,8 +86,11 @@ def bank_for_group(
         # all. Colouring the group and skipping it is how the beams sat on last
         # night's colour while everything around them changed.
         values.update(
-            wheel_color_values(
-                caps, name, fixture_ids=group.fixture_ids, dimmer=None, names=vocabulary
+            without_wheel_blades(
+                caps,
+                wheel_color_values(
+                    caps, name, fixture_ids=group.fixture_ids, dimmer=None, names=vocabulary
+                ),
             )
         )
         if not values.keys() & set(group.fixture_ids):
