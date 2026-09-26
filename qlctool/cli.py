@@ -520,8 +520,11 @@ def cmd_check(args: argparse.Namespace) -> int:
     workspace = Workspace.load(args.workspace)
     library = library_for(args.fixtures, Path(args.workspace))
     warn_unresolved(workspace.root, library)
-    findings = check_workspace(workspace, library)
-    return print_check_report(args.workspace, workspace.root, findings, args.limit)
+    names = None
+    if args.description:
+        names = description_names(load_show_description(args.description, workspace.root))
+    findings = check_workspace(workspace, library, names=names)
+    return print_check_report(args.workspace, workspace.root, findings, args.limit, names)
 
 
 def cmd_install(args: argparse.Namespace) -> int:
@@ -883,6 +886,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_chk.add_argument("workspace")
     p_chk.add_argument(
         "--limit", type=int, default=20, help="findings printed per rule (default 20)"
+    )
+    p_chk.add_argument(
+        "--description",
+        help="the show description whose language and names the findings use "
+        "(default: the language the workspace was generated in)",
     )
     p_chk.set_defaults(func=cmd_check)
 

@@ -15,6 +15,7 @@ from collections.abc import Sequence
 
 from ..capabilities_of import capabilities_of
 from ..library import FixtureLibrary
+from ..names.names import Names
 from ..workspace import Workspace
 from .applying_providers import applying_providers
 from .canvas_of import canvas_of
@@ -90,8 +91,13 @@ def check_workspace(
     library: FixtureLibrary,
     canvas: tuple[int, int] | None = None,
     providers: Sequence[RuleProvider] | None = None,
+    names: Names | None = None,
 ) -> list[Finding]:
-    """Every finding, worst first, in the order a person would fix them."""
+    """Every finding, worst first, in the order a person would fix them.
+
+    With `names` (a description's vocabulary) the findings are worded in it;
+    without, in the language the workspace was generated in.
+    """
     root = workspace.root
     capabilities = capabilities_of(root, library)
     graph = build_show_graph(root, capabilities)
@@ -161,4 +167,4 @@ def check_workspace(
     findings += console_caption_findings(graph, root)
     findings += check_audio_triggers(graph, groups, root)
     findings += [finding for provider in applying for finding in provider.check(context)]
-    return fixing_order(named_findings(findings, root))
+    return fixing_order(named_findings(findings, root, names))

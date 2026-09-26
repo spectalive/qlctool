@@ -10,15 +10,20 @@ from lxml import etree
 
 from .checks.entry_points import entry_points
 from .checks.finding import Finding
+from .names.names import Names
 from .names.shipped_names import shipped_names
 from .names.workspace_language import workspace_language
 
 
 def print_check_report(
-    where: str, root: etree._Element, findings: list[Finding], limit: int
+    where: str,
+    root: etree._Element,
+    findings: list[Finding],
+    limit: int,
+    names: Names | None = None,
 ) -> int:
     """Print the findings grouped by rule, at most `limit` each; the exit code."""
-    names = shipped_names(workspace_language(root))
+    names = shipped_names(workspace_language(root)) if names is None else names
     if not findings:
         print(f"{where}: {names.render('check_clean', count=len(entry_points(root)))}")
         return 0
