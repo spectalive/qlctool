@@ -69,3 +69,18 @@ def test_2026_09_26_a_qml_load_with_no_end_of_load_marker_fails(home, monkeypatc
     assert not result.ok
     assert result.errors[0].startswith("QLC+ never finished loading")
     assert "stand-in" in result.log, "the banner was printed: this used to pass"
+
+
+def test_2026_09_26_a_qml_build_that_exits_before_its_marker_is_not_called_a_timeout(
+    home, monkeypatch
+):
+    """Round G review: an early exit read "no end-of-load marker within 30 s"."""
+    monkeypatch.setenv("FAKE_QLC_NO_MARKER", "1")
+    monkeypatch.setenv("FAKE_QLC_EXIT", "3")
+    started = time.monotonic()
+    result = validate_workspace(
+        VIBRA, binary=str(stand_in_qlcplus(home, "qlcplus-qml")), timeout=30
+    )
+    assert time.monotonic() - started < 10
+    assert not result.ok
+    assert result.errors[0] == "QLC+ exited before its end-of-load marker (exit code 3)"

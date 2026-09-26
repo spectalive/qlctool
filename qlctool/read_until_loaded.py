@@ -44,10 +44,12 @@ def read_until_loaded(
     last_output_at = time.monotonic()
     loaded_at: float | None = None
     received = bytearray()
+    exit_code: int | None = None
     longest = max(len(marker) for marker in QML_LOADED_MARKERS)
     while True:
         now = time.monotonic()
         if process.poll() is not None:
+            exit_code = process.returncode
             break
         settled = (
             loaded_at is not None and now - loaded_at > quiet_period
@@ -71,4 +73,4 @@ def read_until_loaded(
     stdout.close()
     text = received.decode(errors="replace")
     seen = not qml or any(marker in text for marker in QML_LOADED_MARKERS)
-    return LoadedLog(text=text, marker_seen=seen)
+    return LoadedLog(text=text, marker_seen=seen, exit_code=exit_code)

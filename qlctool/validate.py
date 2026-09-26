@@ -147,7 +147,11 @@ def validate_workspace(
     # A QML load that never logged its end-of-load marker did not finish:
     # whatever it printed before the timeout is not a verdict on the file
     # (2026-09-26, second review of round D6).
-    unfinished = f"QLC+ never finished loading: no end-of-load marker within {timeout:g} s"
+    unfinished = (
+        f"QLC+ exited before its end-of-load marker (exit code {log.exit_code})"
+        if log.exit_code is not None
+        else f"QLC+ never finished loading: no end-of-load marker within {timeout:g} s"
+    )
     return ValidationResult(ok=False, errors=[unfinished, *verdict.errors], log=verdict.log)
 
 

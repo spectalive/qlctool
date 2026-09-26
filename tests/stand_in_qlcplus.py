@@ -11,7 +11,8 @@ Three more modes, 2026-09-26 (round G): `$FAKE_QLC_ORPHAN` names a file
 where it writes the pid of a `sleep` it leaves behind, detached (its parent
 shell has exited), holding the log pipe open; `$FAKE_QLC_PARTIAL` makes it
 end its log on a line with no newline; `$FAKE_QLC_NO_MARKER` keeps the QML
-build from logging its end-of-load marker.
+build from logging its end-of-load marker. And `$FAKE_QLC_EXIT` makes it
+exit with that status once its log is written (round G review).
 """
 
 import sys
@@ -38,6 +39,8 @@ if sys.argv[0].endswith("-qml") and not os.environ.get("FAKE_QLC_NO_MARKER"):
 if os.environ.get("FAKE_QLC_PARTIAL"):
     sys.stdout.write("a line that never ends")
     sys.stdout.flush()
+if os.environ.get("FAKE_QLC_EXIT"):
+    sys.exit(int(os.environ["FAKE_QLC_EXIT"]))
 time.sleep(60)
 """
 
