@@ -4926,7 +4926,7 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Asymmetric</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="28000"/>
@@ -8490,21 +8490,21 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
         <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
-        <StartOffset>270</StartOffset>
+        <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Asymmetric</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="8000"/>
@@ -8539,8 +8539,8 @@
         <ID>34</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>180</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Asymmetric</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -8576,21 +8576,21 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>180</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
         <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>270</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Asymmetric</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="8000"/>

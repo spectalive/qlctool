@@ -421,6 +421,7 @@ def generate_movement_families(
         soft_path,
         make_chaser=False,
         overrides={"Line": display("soft_wave")},
+        spread_phase=False,
     )
     wash = _family(washes, WASH, None, "Wash", movement_path, make_chaser=False)
     beam = _family(beams, BEAM, None, "Beam", movement_path, make_chaser=False)
@@ -493,8 +494,12 @@ def generate_movement_families(
         movement_path,
         make_chaser=False,
         overrides={"Circle": display("cascade_beams")},
+        spread_phase=False,
     )
-    # The tilt wave and the synced push, per family like every figure.
+    # The tilt wave and the synced push, per family like every figure. A
+    # cascade's phase is its propagation: a spread on top of it, or a reversed
+    # side on a tilt that has no left and right, turned the two MACs' wave into
+    # a see-saw (Round 2 review of the en-sala audit, 2026-09-27).
     ola_wash = _family(
         rigged_washes,
         WASH_TILT_WAVE,
@@ -503,6 +508,8 @@ def generate_movement_families(
         movement_path,
         make_chaser=False,
         overrides={"Line": display("vertical_wave_washes")},
+        spread_phase=False,
+        mirrored=(),
     )
     ola_beam = _family(
         rigged_beams,
@@ -512,6 +519,8 @@ def generate_movement_families(
         movement_path,
         make_chaser=False,
         overrides={"Line": display("vertical_wave_beams")},
+        spread_phase=False,
+        mirrored=(),
     )
     unison_wash = _family(
         washes,
