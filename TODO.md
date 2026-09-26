@@ -151,6 +151,14 @@
   0.74-0.76 s. Suite: summed 480.9 s -> 393.9 s, `test_check.py` 259.9 s ->
   184.3 s, wall 69-73 s -> 55 s. Smallest next step: read the next CI runs'
   3.11 leg; close below 50% (300 s).
+- [ ] **No rule sees two patched fixtures sharing an ID (round G review,
+  2026-09-26).** The show graph keys capabilities by fixture ID, so a second
+  fixture with the same ID is silently one entry; `caption_promise` used to
+  go quiet on such a patch (fixed: it now looks each ID up, and
+  `tests/test_caption_promise_unresolved.py` holds it). QLC+ itself would
+  address both through one ID. Smallest next step: a `check` rule that
+  reports every fixture ID patched more than once, with a regression test
+  that duplicates one in a generated show.
 - [ ] **The ruff ratchet in `ruff.toml` (moved from vibra-lighting,
   2026-09-26).** `ruff check` and `ruff format --check` are clean, so what is
   left is the ignore list, counted with `ruff check . --select <codes>

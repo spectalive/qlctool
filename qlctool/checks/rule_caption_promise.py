@@ -21,7 +21,9 @@ A patch with a fixture whose definition was not found proves no absence:
 that fixture may be the one with the gobo, the head or the dimmer. Until
 every patched fixture is read the rule says nothing, and
 `missing_fixture_definition` says why (2026-09-26, round G: the club checked
-with no definitions was told its title promised heads it has).
+with no definitions was told its title promised heads it has). Each
+fixture's ID is looked up, not the two counts compared: two fixtures sharing
+an ID are one entry in the graph and silenced the rule (round G review).
 """
 
 from lxml import etree
@@ -42,7 +44,9 @@ RULE_ID = "caption_promise"
 
 def check_caption_promise(graph: ShowGraph, root: etree._Element) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
-    if console is None or len(patched_fixtures(root)) > len(graph.capabilities):
+    if console is None or any(
+        fixture.fixture_id not in graph.capabilities for fixture in patched_fixtures(root)
+    ):
         return []
     findings: list[Finding] = []
     for widget in console.iter():
