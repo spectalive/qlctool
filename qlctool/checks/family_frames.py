@@ -1,11 +1,13 @@
 """Find incomplete solo frames that let an operator play one channel family."""
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 
 from lxml import etree
 
 from .. import roles
 from ..capability import FixtureCapabilities
+from ..internal_program import internal_program
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, localname
 from .phrase import Phrase
@@ -319,14 +321,21 @@ def _is_pixel_fixture(capability: FixtureCapabilities) -> bool:
         not capability.is_smoke
         and bool(capability.roles & FAMILIES["color"])
         and not bool(capability.roles & moving_roles)
-        and roles.EFFECT in capability.roles
+        and internal_program(capability) is not None
     )
 
 
-def _sets_pixel_mode(capability: FixtureCapabilities, written: dict[int, int | None]) -> bool:
-    return _is_pixel_fixture(capability) and any(
-        capability.roles_by_offset[offset] == roles.EFFECT for offset in written
-    )
+def _sets_pixel_mode(capability: FixtureCapabilities, written: Mapping[int, int | None]) -> bool:
+    """The look writes the mode channel of a fixture's named internal programme.
+
+    Not any Effect channel: every colour look parks a stray self-running
+    channel at zero (`mode_park_pairs`), and on an RGB par with one "auto
+    show" channel that made every colour scene a pixel-mode owner, so a
+    single-model rig's colour frame could never be complete (round G review,
+    2026-09-26: the CLB2.4 in its 2 and 7 channel modes).
+    """
+    program = internal_program(capability) if _is_pixel_fixture(capability) else None
+    return program is not None and program.mode_offset in written
 
 
 def _solo_frame_of(widget: etree._Element | None) -> etree._Element | None:
