@@ -104,7 +104,7 @@ def test_the_qlcplus_it_started_is_stopped_when_reading_its_log_fails(tmp_path, 
         _report(ready)
         raise OSError("the log pipe broke")
 
-    monkeypatch.setattr(validate, "_read_until_loaded", broken)
+    monkeypatch.setattr(validate, "read_until_loaded", broken)
     with pytest.raises(OSError, match="log pipe"):
         validate_workspace(VIBRA, binary=str(stand_in_qlcplus(tmp_path)))
     assert _gone(int(_report(ready)[0]))

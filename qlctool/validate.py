@@ -34,17 +34,17 @@ this CPU cannot run is skipped (`qlcplus_candidates`).
 """
 
 import os
-import select
 import shutil
 import subprocess
-import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from lxml import etree
 
+from .loaded_log import LoadedLog
 from .qlcplus_candidates import qlcplus_candidates
 from .quiet_launch_environment import quiet_launch_environment
+from .read_until_loaded import read_until_loaded
 from .refuse_saved_io import refuse_saved_io
 from .stop_own_process import stop_own_process
 from .validation_copy import validation_copy
@@ -59,10 +59,6 @@ DEFAULT_BINARIES = (
     "/usr/bin/qlcplus-qml",
     "/usr/local/bin/qlcplus-qml",
 )
-
-# The QML build logs these once the workspace is on screen; it never goes quiet
-# on its own, so they are what "loading finished" means there.
-QML_LOADED_MARKERS = ("renderPage", "MasterTimer", "Time is late")
 
 # Lines that mean the workspace itself is wrong.
 ERROR_MARKERS = (
@@ -140,15 +136,22 @@ def validate_workspace(
     refuse_saved_io(allow_saved_io)
     try:
         with validation_copy(path) as copy:
-            output = _load(executable, copy, qml, timeout, quiet_period)
+            log = _load(executable, copy, qml, timeout, quiet_period)
     except etree.XMLSyntaxError as error:
         # QLC+ reads a broken file up to the break, I/O patches included, so it
         # is never handed one: the syntax error is the verdict.
         return ValidationResult(ok=False, errors=[f"not well-formed XML: {error}"])
-    return _verdict(output)
+    verdict = _verdict(log.text)
+    if log.marker_seen:
+        return verdict
+    # A QML load that never logged its end-of-load marker did not finish:
+    # whatever it printed before the timeout is not a verdict on the file
+    # (2026-09-26, second review of round D6).
+    unfinished = f"QLC+ never finished loading: no end-of-load marker within {timeout:g} s"
+    return ValidationResult(ok=False, errors=[unfinished, *verdict.errors], log=verdict.log)
 
 
-def _load(executable: str, copy: Path, qml: bool, timeout: float, quiet_period: float) -> str:
+def _load(executable: str, copy: Path, qml: bool, timeout: float, quiet_period: float) -> LoadedLog:
     """Start QLC+ on `copy`, read its log until loading is done, and stop it."""
     # The QML build has no --nogui and takes -d without a level.
     arguments = (
@@ -167,7 +170,7 @@ def _load(executable: str, copy: Path, qml: bool, timeout: float, quiet_period: 
         env=quiet_launch_environment(),
     )
     try:
-        return _read_until_loaded(process, timeout, quiet_period, qml)
+        return read_until_loaded(process, timeout, quiet_period, qml)
     finally:
         # Reaped already when loading finished; a reaped pid is not asked
         # about again, since the system may have handed it to someone else.
@@ -188,45 +191,3 @@ def _verdict(output: str) -> ValidationResult:
         and not any(marker in line for marker in IGNORED_MARKERS)
     ]
     return ValidationResult(ok=not errors, errors=errors, log=output or "")
-
-
-def _read_until_loaded(
-    process: "subprocess.Popen[bytes]", timeout: float, quiet_period: float, qml: bool
-) -> str:
-    """Collect output until QLC+ has finished loading, then kill it.
-
-    For the 4.x build that means the log going quiet. The QML build keeps
-    logging as it renders, so it is stopped a moment after its first
-    end-of-load marker; waiting the full timeout on every file would make
-    validation useless in a test suite.
-    """
-    stdout = process.stdout
-    assert stdout is not None, "QLC+ is started with its stdout piped"
-    deadline = time.monotonic() + timeout
-    last_line_at = time.monotonic()
-    loaded_at: float | None = None
-    lines: list[str] = []
-    while True:
-        if process.poll() is not None:
-            lines.extend(line.decode(errors="replace") for line in stdout.readlines())
-            break
-        now = time.monotonic()
-        settled = (
-            loaded_at is not None and now - loaded_at > quiet_period
-            if qml
-            else now - last_line_at > quiet_period
-        )
-        if now > deadline or settled:
-            stop_own_process(process)
-            lines.extend(line.decode(errors="replace") for line in stdout.readlines())
-            break
-        ready, _, _ = select.select([stdout], [], [], 0.2)
-        if ready:
-            line = stdout.readline().decode(errors="replace")
-            if line:
-                lines.append(line)
-                last_line_at = time.monotonic()
-                if loaded_at is None and any(marker in line for marker in QML_LOADED_MARKERS):
-                    loaded_at = last_line_at
-    stdout.close()
-    return "".join(lines)

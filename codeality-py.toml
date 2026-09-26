@@ -63,6 +63,8 @@ data = [
   "qlctool/names/sections.py",
   # How long a live MCP write waits before reading back what it changed.
   "qlctool/mcpserver/settle_seconds.py",
+  # The lines QLC+ 5 logs once a workspace is loaded, which validation waits for.
+  "qlctool/qml_loaded_markers.py",
   # The widget type names QLC+ 5 answers in each language it ships.
   "qlctool/mcpserver/pressable_widget_types.py",
   "qlctool/mcpserver/unknown_widget_types.py",
