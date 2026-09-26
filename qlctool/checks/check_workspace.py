@@ -141,7 +141,7 @@ def check_workspace(
     findings += check_strobe_rate(graph, groups, entries)
     findings += check_latched_strobe(graph, groups, entries)
     findings += check_strobe_black(graph, groups, root, states)
-    findings += flash_button_findings(graph, groups, root)
+    findings += flash_button_findings(graph, groups, root, states, entries)
     findings += check_strobe_coverage(graph, groups)
     findings += check_shadowed_intensity(graph, groups, entries)
     findings += check_shutter_endpoint(graph, groups)

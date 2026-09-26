@@ -3349,3 +3349,71 @@ def test_2026_09_26_a_pastel_that_loses_its_white_on_rgb_only_fixtures(library):
     assert set(findings) == set(broken)
     for scene_name, fixture in broken.items():
         assert findings[scene_name] == (fixture,)
+
+
+def test_2026_09_26_a_strobe_the_level_outbids(library):
+    """2026-09-26, en-sala DMX audit (items 7 and 16): holding STROBO, STROBO
+    SUAVE or any of the three flashes left both MiN Wash at 255 "Open". Their
+    Dimmer/Strobe channel is in the Intensity group, merged HTP, and the level
+    under every state holds it at 255: max(255, 236) is 255. Override only
+    orders the faders; ForceLTP is what lets the lower strobe value through.
+    Take ForceLTP back off the STROBO button and the rule must bite.
+    """
+    from qlctool.checks.rule_strobe_masked_by_htp import RULE_ID, check_strobe_masked_by_htp
+
+    for name in SHOWS:
+        workspace = _show(name)
+        graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+        groups = group_fixtures(workspace.root)
+        states = room_states(workspace.root, graph, groups)
+        entries = {f: str(f) for f in states}
+        assert check_strobe_masked_by_htp(graph, groups, workspace.root, states, entries) == []
+
+    workspace = _show()
+    strobe = _functions(workspace)["Strobo Rapido"].attrib["ID"]
+    buttons = [
+        b
+        for b in iter_local(workspace.root, "Button")
+        if find_local(b, "Function") is not None
+        and find_local(b, "Function").get("ID") == strobe
+        and (find_local(b, "Action").text or "") == "Flash"
+    ]
+    assert buttons, "no STROBO button"
+    for button in buttons:
+        action = find_local(button, "Action")
+        assert action.get("ForceLTP") == "1"
+        del action.attrib["ForceLTP"]
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert [f.function for f in findings] == ["Strobo Rapido"]
+    assert findings[0].fixtures == ("MiN Wash #1", "MiN Wash #2")
+
+
+def test_2026_09_26_a_forced_flash_that_cuts_the_smoke(library):
+    """2026-09-26, ruling D1 of the en-sala fix plan: once the flashes force
+    LTP so the MiN Wash strobe, every value they write wins, zeros included.
+    `Flash 100%` wrote the smoke pumps 0, which would cut a smoke burst while
+    FLASH is held - and the colour hits, forced since 2026-09-02, already did.
+    A held flash neither starts nor stops smoke. Put the pump zeros back into
+    `Flash 100%` and the rule must name the smoke machines.
+    """
+    from qlctool.checks.rule_flash_forced_zero import RULE_ID
+
+    workspace = _show()
+    scene = _functions(workspace)["Flash 100%"]
+    caps = capabilities_of(workspace.root, library)
+    smoke = {c.fixture.fixture_id: c for c in caps if c.is_smoke}
+    written = {int(v.attrib["ID"]): v for v in findall_local(scene, "FixtureVal")}
+    for fixture_id, capability in smoke.items():
+        value = written.get(fixture_id)
+        if value is None:
+            tag = next(iter(written.values())).tag
+            value = etree.SubElement(scene, tag, ID=str(fixture_id))
+        pairs = _pairs_of(value)
+        for offset in fog_offsets(capability):
+            pairs[offset] = 0
+        _write_pairs(value, pairs)
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert [f.function for f in findings] == ["Flash 100%"]
+    assert set(findings[0].fixtures) == {c.fixture.name for c in smoke.values()}
