@@ -41,6 +41,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/without_wheel_blades.py",
     "generate/add_family_floors.py",
     "generate/prepend_collection_steps.py",
+    "generate/written_channels.py",
     "generate/page_control_title.py",
     "generate/tempo_help_line.py",
     "generate/matrices_frame_caption.py",

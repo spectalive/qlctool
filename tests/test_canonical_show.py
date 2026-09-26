@@ -81,6 +81,7 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
         "Cabezas Suelo",
         "Gobo Suelo",
         "Prisma Suelo",
+        "Paneles Suelo",
     }
 
     cycle = functions[str(show.master_ids["Ciclo Energia"])]

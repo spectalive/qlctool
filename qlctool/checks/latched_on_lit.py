@@ -12,6 +12,7 @@ shows on a fixture that is still lit, so a dark one is left alone.
 from collections.abc import Collection, Mapping
 
 from .driven_channels import Driven
+from .family_offsets import family_offsets
 from .lit_in import lit_in
 from .merged_htp import merged_htp
 from .show_graph import ShowGraph, reach
@@ -21,7 +22,7 @@ def latched_on_lit(
     graph: ShowGraph,
     groups: dict[int, tuple[int, ...]],
     pick_id: int,
-    family_roles: Collection[str],
+    families: Collection[str],
     rigged: Collection[int],
     released: Mapping[int, Mapping[int, int | None]],
 ) -> Driven:
@@ -33,12 +34,11 @@ def latched_on_lit(
             continue
         still = released.get(fixture_id, {})
         htp = merged_htp(graph, fixture_id)
+        family = family_offsets(capability, families)
         left = {
             offset: value
             for offset, value in written.items()
-            if capability.roles_by_offset[offset] in family_roles
-            and offset not in htp
-            and offset not in still
+            if offset in family and offset not in htp and offset not in still
         }
         if left and lit_in(capability, still, htp):
             latched[fixture_id] = left

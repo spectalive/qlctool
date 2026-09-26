@@ -2442,7 +2442,7 @@ def test_a_nonmoving_rgb_effect_fixture_is_a_pixel_mode_owner(library, deluxe_sh
     from dataclasses import replace
     from types import SimpleNamespace
 
-    from qlctool.checks.family_frames import _is_pixel_fixture
+    from qlctool.checks.is_pixel_fixture import is_pixel_fixture as _is_pixel_fixture
 
     workspace = deluxe_show
     capability = next(
@@ -4048,4 +4048,14 @@ def test_2026_09_26_releasing_a_pick_leaves_the_beams_red(library):
     assert (shake.severity, shake.fixtures) == (WARNING, names)
     assert "Momento Fiesta" in shake.fields["states"]
     figure = found["Jugar · Movimiento Circulo"]
+    assert figure.severity == WARNING
     assert figure.fixtures == (*names, "MAC WASH 1915Z #1", "MAC WASH 1915Z #2")
+    # Audit item 16: the prism rotation stayed latched at 224 after Giro Inverso.
+    spin = found["Jugar · Prisma Giro Inverso"]
+    assert (spin.severity, spin.fixtures) == (WARNING, names)
+    assert "Momento Fiesta" in spin.fields["states"]
+    # The panels kept a released pick's programme under CHARLA (review I-1).
+    panels = found["Jugar · Paneles - Effect 1"]
+    assert panels.severity == WARNING
+    assert all(name.startswith("WX-60WPS-48PARTITION") for name in panels.fixtures)
+    assert "Momento Charla" in panels.fields["states"]

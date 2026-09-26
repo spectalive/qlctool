@@ -5,33 +5,16 @@ from dataclasses import dataclass
 
 from lxml import etree
 
-from .. import roles
 from ..capability import FixtureCapabilities
-from ..internal_program import internal_program
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, localname
+from .families import FAMILIES
 from .phrase import Phrase
+from .pixel_mode_offset import pixel_mode_offset
 from .show_graph import ShowGraph, reach
 from .static_floors import static_floors
 from .steps_are_levels import steps_are_levels
 
-FAMILIES = {
-    "color": frozenset(
-        (
-            roles.RED,
-            roles.GREEN,
-            roles.BLUE,
-            roles.WHITE,
-            roles.CYAN,
-            roles.MAGENTA,
-            roles.YELLOW,
-            roles.COLOR_MACRO,
-        )
-    ),
-    "position": frozenset((roles.PAN, roles.PAN_FINE, roles.TILT, roles.TILT_FINE)),
-    "gobo": frozenset((roles.GOBO, roles.GOBO_SHAKE, roles.FOCUS)),
-    "prism": frozenset((roles.PRISM, roles.PRISM_ROTATION)),
-}
 _OWNER_CACHE: list[
     tuple[ShowGraph, dict[int, tuple[int, ...]], frozenset[int], dict[str, set[int]]]
 ] = []
@@ -321,28 +304,10 @@ def _function_families(
     return found
 
 
-def _is_pixel_fixture(capability: FixtureCapabilities) -> bool:
-    moving_roles = FAMILIES["position"]
-    return (
-        not capability.is_smoke
-        and bool(capability.roles & FAMILIES["color"])
-        and not bool(capability.roles & moving_roles)
-        and roles.EFFECT in capability.roles
-        and internal_program(capability) is not None
-    )
-
-
 def _sets_pixel_mode(capability: FixtureCapabilities, written: Mapping[int, int | None]) -> bool:
-    """The look writes the mode channel of a fixture's named internal programme.
-
-    Not any Effect channel: every colour look parks a stray self-running
-    channel at zero (`mode_park_pairs`), and on an RGB par with one "auto
-    show" channel that made every colour scene a pixel-mode owner, so a
-    single-model rig's colour frame could never be complete (round G review,
-    2026-09-26: the CLB2.4 in its 2 and 7 channel modes).
-    """
-    program = internal_program(capability) if _is_pixel_fixture(capability) else None
-    return program is not None and program.mode_offset in written
+    """The look writes the mode channel of a fixture's named internal programme."""
+    mode = pixel_mode_offset(capability)
+    return mode is not None and mode in written
 
 
 def _solo_frame_of(widget: etree._Element | None) -> etree._Element | None:

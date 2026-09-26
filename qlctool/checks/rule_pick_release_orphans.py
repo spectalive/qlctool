@@ -16,7 +16,11 @@ map); the pad and the keyboard do not, so the generator owes a release that
 leaves nothing half-owned: a lit, rigged fixture holding an LTP channel of the
 pick's family that nothing the state still runs writes is reported - an error
 for a colour, since that is a beam in one colour over a rig in none, and a
-warning for a wheel or a position. Graph, roles and channel groups only.
+warning for a wheel, a position or a panel's programme mode (the pixel-mode
+family, `family_offsets`). The HTP half of a family - no writer left at all
+on the RGB rig after a released colour pick - is deliberately not reported:
+it goes dark, which is the accepted cost of ruling D8, and the tablet's
+`releaseTo` is its answer. Graph, roles and the patch's HTP channels only.
 """
 
 from lxml import etree
@@ -24,7 +28,8 @@ from lxml import etree
 from .. import roles
 from ..rigged_fixture_ids import rigged_fixture_ids
 from ..xmlutil import find_local, iter_local
-from .family_frames import FAMILIES, family_frame_handoff
+from .families import FAMILIES
+from .family_frames import family_frame_handoff
 from .finding import ERROR, WARNING, Finding
 from .latched_on_lit import latched_on_lit
 from .released_reach import released_reach
@@ -48,8 +53,6 @@ def check_pick_release_orphans(
             continue
         _, toggles, hooks, families, _ = handoff
         family_roles = {role for family in families for role in FAMILIES.get(family, ())}
-        if not family_roles:
-            continue
         stopped = frozenset(toggles)
         released = {
             state_id: released_reach(graph, groups, state_id, stopped)
@@ -62,7 +65,7 @@ def check_pick_release_orphans(
             fixtures: set[str] = set()
             left_in: list[str] = []
             for state_id, still in released.items():
-                latched = latched_on_lit(graph, groups, pick_id, family_roles, rigged, still)
+                latched = latched_on_lit(graph, groups, pick_id, families, rigged, still)
                 if latched:
                     left_in.append(graph.name(state_id))
                     fixtures |= {graph.capabilities[f].fixture.name for f in latched}

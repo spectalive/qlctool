@@ -134,8 +134,11 @@ def test_no_spanish_word_reaches_a_finding_from_code():
 
 
 # Literals in `qlctool/checks/` that spell a Spanish-only word and never reach
-# a finding: the family key `family_frames` reads roles by.
-NEVER_SAID = {("family_frames.py", "color")}
+# a finding: the family key `families` defines and the frames read roles by.
+NEVER_SAID = {
+    ("families.py", "color"),
+    ("is_pixel_fixture.py", "color"),
+}
 
 
 def _docstrings(tree: ast.Module) -> set[int]:

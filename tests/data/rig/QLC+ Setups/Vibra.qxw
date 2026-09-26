@@ -13934,11 +13934,12 @@
       <Step Number="0">903</Step>
       <Step Number="1">904</Step>
       <Step Number="2">905</Step>
-      <Step Number="3">702</Step>
-      <Step Number="4">624</Step>
-      <Step Number="5">320</Step>
-      <Step Number="6">200</Step>
-      <Step Number="7">766</Step>
+      <Step Number="3">906</Step>
+      <Step Number="4">702</Step>
+      <Step Number="5">624</Step>
+      <Step Number="6">320</Step>
+      <Step Number="7">200</Step>
+      <Step Number="8">766</Step>
     </Function>
     <Function ID="768" Type="Scene" Name="Luz Charla Base" Path="Show">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -13985,50 +13986,54 @@
       <Step Number="0">903</Step>
       <Step Number="1">904</Step>
       <Step Number="2">905</Step>
-      <Step Number="3">550</Step>
-      <Step Number="4">769</Step>
-      <Step Number="5">620</Step>
-      <Step Number="6">621</Step>
-      <Step Number="7">758</Step>
-      <Step Number="8">321</Step>
-      <Step Number="9">322</Step>
+      <Step Number="3">906</Step>
+      <Step Number="4">550</Step>
+      <Step Number="5">769</Step>
+      <Step Number="6">620</Step>
+      <Step Number="7">621</Step>
+      <Step Number="8">758</Step>
+      <Step Number="9">321</Step>
+      <Step Number="10">322</Step>
     </Function>
     <Function ID="771" Type="Collection" Name="Momento Tranquilo" Path="Momentos">
       <Step Number="0">903</Step>
       <Step Number="1">904</Step>
       <Step Number="2">905</Step>
-      <Step Number="3">702</Step>
-      <Step Number="4">320</Step>
-      <Step Number="5">200</Step>
-      <Step Number="6">522</Step>
-      <Step Number="7">620</Step>
-      <Step Number="8">621</Step>
-      <Step Number="9">757</Step>
+      <Step Number="3">906</Step>
+      <Step Number="4">702</Step>
+      <Step Number="5">320</Step>
+      <Step Number="6">200</Step>
+      <Step Number="7">522</Step>
+      <Step Number="8">620</Step>
+      <Step Number="9">621</Step>
+      <Step Number="10">757</Step>
     </Function>
     <Function ID="772" Type="Collection" Name="Momento Fiesta" Path="Momentos">
       <Step Number="0">903</Step>
       <Step Number="1">904</Step>
       <Step Number="2">905</Step>
-      <Step Number="3">702</Step>
-      <Step Number="4">320</Step>
-      <Step Number="5">200</Step>
-      <Step Number="6">548</Step>
-      <Step Number="7">583</Step>
-      <Step Number="8">619</Step>
-      <Step Number="9">758</Step>
+      <Step Number="3">906</Step>
+      <Step Number="4">702</Step>
+      <Step Number="5">320</Step>
+      <Step Number="6">200</Step>
+      <Step Number="7">548</Step>
+      <Step Number="8">583</Step>
+      <Step Number="9">619</Step>
+      <Step Number="10">758</Step>
     </Function>
     <Function ID="773" Type="Collection" Name="Momento Locura" Path="Momentos">
       <Step Number="0">903</Step>
       <Step Number="1">904</Step>
       <Step Number="2">905</Step>
-      <Step Number="3">702</Step>
-      <Step Number="4">320</Step>
-      <Step Number="5">200</Step>
-      <Step Number="6">549</Step>
-      <Step Number="7">583</Step>
-      <Step Number="8">619</Step>
-      <Step Number="9">633</Step>
-      <Step Number="10">760</Step>
+      <Step Number="3">906</Step>
+      <Step Number="4">702</Step>
+      <Step Number="5">320</Step>
+      <Step Number="6">200</Step>
+      <Step Number="7">549</Step>
+      <Step Number="8">583</Step>
+      <Step Number="9">619</Step>
+      <Step Number="10">633</Step>
+      <Step Number="11">760</Step>
     </Function>
     <Function ID="774" Type="Collection" Name="Jugar · Rig Rojo + Pixeles" Path="Jugar/Color">
       <Step Number="0">659</Step>
@@ -15011,6 +15016,13 @@
       <FixtureVal ID="21">13,63,14,0</FixtureVal>
       <FixtureVal ID="22">13,63,14,0</FixtureVal>
       <FixtureVal ID="23">13,63,14,0</FixtureVal>
+    </Function>
+    <Function ID="906" Type="Scene" Name="Paneles Suelo" Path="Momentos">
+      <Speed FadeIn="0" FadeOut="0" Duration="0"/>
+      <FixtureVal ID="24">5,0</FixtureVal>
+      <FixtureVal ID="25">5,0</FixtureVal>
+      <FixtureVal ID="27">5,0</FixtureVal>
+      <FixtureVal ID="28">5,0</FixtureVal>
     </Function>
   </Engine>
   <VirtualConsole>
