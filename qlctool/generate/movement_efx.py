@@ -73,6 +73,7 @@ def generate_movement_efx(
     pan_offset: int = 127,
     tilt_offset: int = 127,
     vocabulary: Names | None = None,
+    rigged_ids: Collection[int] | None = None,
 ) -> GeneratedMovements:
     """Create one EFX per algorithm over the moving heads.
 
@@ -102,6 +103,12 @@ def generate_movement_efx(
     whose point is that nobody is desynchronised (mirroring still applies, so
     the two sides push toward each other rather than in parallel).
 
+    rigged_ids, when given, are the heads the room can see: the phase is
+    spread over them alone, and the others - spares in a flight case - share
+    a spread of their own, so they never take a visible head's slot. Two
+    rigged MACs among six spares sat 45 degrees apart instead of opposite
+    (en-sala DMX audit, 2026-09-26). None counts every head as rigged.
+
     `path`, `chaser_name` and `label_prefix` default to the generated movement
     folder, the head-movements chaser and the movement prefix of `vocabulary`,
     the show's vocabulary (`names` keeps its older meaning: per-shape names).
@@ -127,14 +134,19 @@ def generate_movement_efx(
     mirrored = set(mirrored_ids)
 
     def _members(fixture_ids: list[int]) -> list[EFXFixture]:
-        offsets = spread_offsets(len(fixture_ids)) if spread_phase else [0] * len(fixture_ids)
+        seen = [fid for fid in fixture_ids if rigged_ids is None or fid in rigged_ids]
+        spares = [fid for fid in fixture_ids if fid not in seen]
+        phase = {
+            **dict(zip(seen, spread_offsets(len(seen)), strict=True)),
+            **dict(zip(spares, spread_offsets(len(spares)), strict=True)),
+        }
         return [
             EFXFixture(
                 fixture_id=fid,
-                start_offset=offset,
+                start_offset=phase[fid] if spread_phase else 0,
                 direction="Backward" if fid in mirrored else "Forward",
             )
-            for fid, offset in zip(fixture_ids, offsets, strict=True)
+            for fid in fixture_ids
         ]
 
     efx_ids: list[int] = []

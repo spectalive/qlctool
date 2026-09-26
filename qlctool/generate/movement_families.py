@@ -36,14 +36,16 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..efx_shape_identifiers import EFX_SHAPE_IDENTIFIERS
-from ..every_other import every_other
 from ..functions.chaser import build_chaser
 from ..functions.collection import build_collection
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..rigged_fixture_ids import rigged_fixture_ids
+from ..stage_ordered import stage_ordered
 from ..workspace import Workspace
+from .alternate_mirror import alternate_mirror
 from .cross_position import generate_cross_position
 from .fan_position import generate_fan_position
 from .movement_aim import (
@@ -347,6 +349,12 @@ def generate_movement_families(
         # A rig with nothing that moves (2026-09-26, round G): no movement at
         # all, which every caller reads as "absent" from the empty families.
         return GeneratedFamilies()
+    # Every figure takes the heads as the room sees them - rigged left to
+    # right, spares after - so a spare never takes a phase slot or an
+    # every-other place (en-sala DMX audit, 2026-09-26).
+    rigged = rigged_fixture_ids(workspace.root)
+    washes = stage_ordered(workspace.root, washes)
+    beams = stage_ordered(workspace.root, beams)
 
     def _family(
         ids,
@@ -384,6 +392,7 @@ def generate_movement_families(
             pan_offset=envelope.pan_offset,
             tilt_offset=envelope.tilt_offset,
             vocabulary=vocabulary,
+            rigged_ids=rigged,
         )
 
     slow = _family(washes, WASH_SLOW, None, display("prefix_soft"), soft_path, make_chaser=False)
@@ -432,9 +441,9 @@ def generate_movement_families(
         beams, BEAM_ROTATED_SHAPES, None, "Beam", movement_path, make_chaser=False
     )
     beam_wide = _family(beams, BEAM_WIDE_SHAPES, None, "Beam", movement_path, make_chaser=False)
-    # Each head against its neighbour: the same figure with every other fixture
-    # running it backwards, which is the "cada cabeza para un lado" the owner
-    # missed.
+    # Each head against its neighbour: the same figure with every other rigged
+    # head across the stage running it backwards, which is the "cada cabeza
+    # para un lado" the owner missed (`alternate_mirror`, ruling D5).
     wash_alt = _family(
         washes,
         WASH_ALTERNATE,
@@ -446,7 +455,7 @@ def generate_movement_families(
             shape: f"Wash {label_of(shape)} {display('mode_alternating')}"
             for shape in WASH_ALTERNATE.algorithms
         },
-        mirrored=every_other(washes),
+        mirrored=alternate_mirror([i for i in washes if i in rigged], mirrored_ids),
     )
     beam_alt = _family(
         beams,
@@ -459,7 +468,7 @@ def generate_movement_families(
             shape: f"Beam {label_of(shape)} {display('mode_alternating')}"
             for shape in BEAM_ALTERNATE.algorithms
         },
-        mirrored=every_other(beams),
+        mirrored=alternate_mirror([i for i in beams if i in rigged], mirrored_ids),
     )
     cascada_beams = _family(
         beams,
@@ -693,7 +702,12 @@ def generate_movement_families(
         play_pick_ids.append(collection_id)
 
     _figure(display("vertical_wave"), ola_wash, ola_beam)
-    _figure(display("unison_sweep"), unison_wash, unison_beam)
+    # On the beams alone the push is `Linea Simultaneo` under another name -
+    # same line, size, speed and phase - which is a second button for one
+    # look (`twin_movement`, 2026-09-26): only the washes' slow push makes it
+    # a figure of its own.
+    if unison_wash is not None:
+        _figure(display("unison_sweep"), unison_wash, unison_beam)
     play_pick_ids += [function_id for function_id in (fan_id, cross_id) if function_id is not None]
 
     def _both(name, first, second, path):

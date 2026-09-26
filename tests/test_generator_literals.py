@@ -146,6 +146,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/tempo_close_line.py",
     # 2026-09-26, en-sala round 1: the colour fixtures a bank key would skip.
     "generate/ungrouped_colour_fixture_ids.py",
+    # 2026-09-26, en-sala round 2: the heads `Alternado` reverses.
+    "generate/alternate_mirror.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

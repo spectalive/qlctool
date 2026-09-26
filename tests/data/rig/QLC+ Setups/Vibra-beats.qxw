@@ -4940,6 +4940,20 @@
     </Function>
     <Function ID="428" Type="EFX" Name="Suave Circulo (16 bit)" Path="Movimiento Suave/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -4951,49 +4965,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="28000"/>
@@ -5058,6 +5058,20 @@
     </Function>
     <Function ID="431" Type="EFX" Name="Suave Linea (16 bit)" Path="Movimiento Suave/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -5069,49 +5083,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="28000"/>
@@ -5183,21 +5183,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -5233,21 +5233,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -5284,6 +5284,20 @@
     </Function>
     <Function ID="437" Type="EFX" Name="Ola Suave (16 bit)" Path="Movimiento Suave/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -5295,49 +5309,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Serial</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="28000"/>
@@ -5402,6 +5402,20 @@
     </Function>
     <Function ID="440" Type="EFX" Name="Wash Circulo (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -5413,49 +5427,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -5520,6 +5520,20 @@
     </Function>
     <Function ID="443" Type="EFX" Name="Wash Ocho (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -5531,49 +5545,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -5638,6 +5638,20 @@
     </Function>
     <Function ID="446" Type="EFX" Name="Wash Linea (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -5649,49 +5663,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -5756,6 +5756,20 @@
     </Function>
     <Function ID="449" Type="EFX" Name="Wash Diamante (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -5767,49 +5781,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -5874,6 +5874,20 @@
     </Function>
     <Function ID="452" Type="EFX" Name="Wash Cuadrado (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -5885,49 +5899,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -5992,6 +5992,20 @@
     </Function>
     <Function ID="455" Type="EFX" Name="Wash Hoja (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -6003,49 +6017,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -6110,6 +6110,20 @@
     </Function>
     <Function ID="458" Type="EFX" Name="Wash Lissajous (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -6121,49 +6135,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -6235,21 +6235,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -6285,21 +6285,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -6335,21 +6335,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -6377,6 +6377,20 @@
       </Axis>
     </Function>
     <Function ID="464" Type="EFX" Name="Wash Circulo Simultaneo (16 bit)" Path="Movimiento/Partes">
+      <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
       <Fixture>
         <ID>0</ID>
         <Head>0</Head>
@@ -6417,20 +6431,6 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
         <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -6496,6 +6496,20 @@
     </Function>
     <Function ID="467" Type="EFX" Name="Wash Ocho Simultaneo (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -6535,20 +6549,6 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
         <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -6614,6 +6614,20 @@
     </Function>
     <Function ID="470" Type="EFX" Name="Wash Linea Simultaneo (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -6653,20 +6667,6 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
         <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -6732,6 +6732,20 @@
     </Function>
     <Function ID="473" Type="EFX" Name="Wash Diamante Simultaneo (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -6771,20 +6785,6 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
         <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -6850,6 +6850,20 @@
     </Function>
     <Function ID="476" Type="EFX" Name="Wash Cuadrado Simultaneo (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -6889,20 +6903,6 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
         <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -6968,6 +6968,20 @@
     </Function>
     <Function ID="479" Type="EFX" Name="Wash Hoja Simultaneo (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7007,20 +7021,6 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
         <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -7086,6 +7086,20 @@
     </Function>
     <Function ID="482" Type="EFX" Name="Wash Lissajous Simultaneo (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7125,20 +7139,6 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
         <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -7211,13 +7211,6 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7226,6 +7219,13 @@
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7261,13 +7261,6 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7276,6 +7269,13 @@
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7311,13 +7311,6 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7326,6 +7319,13 @@
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7361,13 +7361,6 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7376,6 +7369,13 @@
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7411,13 +7411,6 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7426,6 +7419,13 @@
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7461,13 +7461,6 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7476,6 +7469,13 @@
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7511,13 +7511,6 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7526,6 +7519,13 @@
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7561,21 +7561,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7611,21 +7611,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7661,21 +7661,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7711,21 +7711,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -7754,6 +7754,20 @@
     </Function>
     <Function ID="496" Type="EFX" Name="Wash Circulo Alternado (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7764,50 +7778,36 @@
         <ID>1</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>45</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>135</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>16</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
+        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>34</ID>
+        <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -7842,7 +7842,7 @@
         <ID>19</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
+        <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -7872,6 +7872,20 @@
     </Function>
     <Function ID="499" Type="EFX" Name="Wash Ocho Alternado (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -7882,50 +7896,36 @@
         <ID>1</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>45</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>135</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>16</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
+        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>34</ID>
+        <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -7960,7 +7960,7 @@
         <ID>19</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
+        <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -7990,6 +7990,20 @@
     </Function>
     <Function ID="502" Type="EFX" Name="Wash Linea Alternado (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -8000,50 +8014,36 @@
         <ID>1</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>45</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>135</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>16</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
+        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>34</ID>
+        <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -8078,7 +8078,7 @@
         <ID>19</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
+        <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -8108,6 +8108,20 @@
     </Function>
     <Function ID="505" Type="EFX" Name="Wash Diamante Alternado (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -8118,50 +8132,36 @@
         <ID>1</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>45</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>135</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>16</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
+        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>34</ID>
+        <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -8196,7 +8196,7 @@
         <ID>19</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
+        <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -8226,6 +8226,20 @@
     </Function>
     <Function ID="508" Type="EFX" Name="Wash Cuadrado Alternado (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -8236,50 +8250,36 @@
         <ID>1</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>45</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>135</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>16</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
+        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>34</ID>
+        <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -8314,7 +8314,7 @@
         <ID>19</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
+        <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -8344,6 +8344,20 @@
     </Function>
     <Function ID="511" Type="EFX" Name="Wash Hoja Alternado (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -8354,50 +8368,36 @@
         <ID>1</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>45</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>135</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>16</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
+        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>34</ID>
+        <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -8432,7 +8432,7 @@
         <ID>19</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
+        <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -8462,6 +8462,20 @@
     </Function>
     <Function ID="514" Type="EFX" Name="Wash Lissajous Alternado (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -8472,50 +8486,36 @@
         <ID>1</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>45</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>135</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>16</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
+        <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>34</ID>
+        <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <Direction>Forward</Direction>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -8550,7 +8550,7 @@
         <ID>19</ID>
         <Head>0</Head>
         <Mode>0</Mode>
-        <Direction>Backward</Direction>
+        <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -8587,21 +8587,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
+        <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
         <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>22</ID>
+        <ID>23</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>23</ID>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -8637,21 +8637,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
+        <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
         <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>22</ID>
+        <ID>23</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>23</ID>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -8687,21 +8687,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
+        <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
         <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>22</ID>
+        <ID>23</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>23</ID>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -8737,21 +8737,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
+        <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
         <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>22</ID>
+        <ID>23</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>23</ID>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -8787,21 +8787,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
+        <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
         <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>22</ID>
+        <ID>23</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>23</ID>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -8837,21 +8837,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
+        <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
         <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>22</ID>
+        <ID>23</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>23</ID>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -8887,21 +8887,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
+        <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
         <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>22</ID>
+        <ID>23</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
         <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>23</ID>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -8937,21 +8937,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -8980,6 +8980,20 @@
     </Function>
     <Function ID="525" Type="EFX" Name="Ola Vertical Washes (16 bit)" Path="Movimiento/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -8991,49 +9005,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Serial</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="16000"/>
@@ -9105,21 +9105,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -9147,6 +9147,20 @@
       </Axis>
     </Function>
     <Function ID="529" Type="EFX" Name="Barrido Unison Washes (16 bit)" Path="Movimiento/Partes">
+      <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
       <Fixture>
         <ID>0</ID>
         <Head>0</Head>
@@ -9187,20 +9201,6 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
         <StartOffset>0</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
@@ -9273,13 +9273,6 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>0</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -9288,6 +9281,13 @@
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -9316,6 +9316,20 @@
     </Function>
     <Function ID="533" Type="EFX" Name="Wash Rapido Circulo (16 bit)" Path="Movimiento Rapido/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -9327,49 +9341,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="5000"/>
@@ -9434,6 +9434,20 @@
     </Function>
     <Function ID="536" Type="EFX" Name="Wash Rapido Ocho (16 bit)" Path="Movimiento Rapido/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -9445,49 +9459,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="5000"/>
@@ -9552,6 +9552,20 @@
     </Function>
     <Function ID="539" Type="EFX" Name="Wash Rapido Linea (16 bit)" Path="Movimiento Rapido/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -9563,49 +9577,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="5000"/>
@@ -9670,6 +9670,20 @@
     </Function>
     <Function ID="542" Type="EFX" Name="Wash Rapido Diamante (16 bit)" Path="Movimiento Rapido/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -9681,49 +9695,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="5000"/>
@@ -9788,6 +9788,20 @@
     </Function>
     <Function ID="545" Type="EFX" Name="Wash Rapido Cuadrado (16 bit)" Path="Movimiento Rapido/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -9799,49 +9813,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="5000"/>
@@ -9906,6 +9906,20 @@
     </Function>
     <Function ID="548" Type="EFX" Name="Wash Rapido Hoja (16 bit)" Path="Movimiento Rapido/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -9917,49 +9931,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="5000"/>
@@ -10024,6 +10024,20 @@
     </Function>
     <Function ID="551" Type="EFX" Name="Wash Rapido Lissajous (16 bit)" Path="Movimiento Rapido/Partes">
       <Fixture>
+        <ID>33</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Forward</Direction>
+        <StartOffset>0</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>34</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
         <ID>0</ID>
         <Head>0</Head>
         <Mode>0</Mode>
@@ -10035,49 +10049,35 @@
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>45</StartOffset>
+        <StartOffset>60</StartOffset>
       </Fixture>
       <Fixture>
         <ID>13</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>90</StartOffset>
+        <StartOffset>120</StartOffset>
       </Fixture>
       <Fixture>
         <ID>14</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>135</StartOffset>
+        <StartOffset>180</StartOffset>
       </Fixture>
       <Fixture>
         <ID>15</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>240</StartOffset>
       </Fixture>
       <Fixture>
         <ID>16</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>225</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>33</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Forward</Direction>
-        <StartOffset>270</StartOffset>
-      </Fixture>
-      <Fixture>
-        <ID>34</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>315</StartOffset>
+        <StartOffset>300</StartOffset>
       </Fixture>
       <PropagationMode>Parallel</PropagationMode>
       <Speed FadeIn="0" FadeOut="0" Duration="5000"/>
@@ -10162,21 +10162,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -10212,21 +10212,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
@@ -10262,21 +10262,21 @@
         <StartOffset>0</StartOffset>
       </Fixture>
       <Fixture>
-        <ID>21</ID>
-        <Head>0</Head>
-        <Mode>0</Mode>
-        <Direction>Backward</Direction>
-        <StartOffset>90</StartOffset>
-      </Fixture>
-      <Fixture>
         <ID>22</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Forward</Direction>
-        <StartOffset>180</StartOffset>
+        <StartOffset>90</StartOffset>
       </Fixture>
       <Fixture>
         <ID>23</ID>
+        <Head>0</Head>
+        <Mode>0</Mode>
+        <Direction>Backward</Direction>
+        <StartOffset>180</StartOffset>
+      </Fixture>
+      <Fixture>
+        <ID>21</ID>
         <Head>0</Head>
         <Mode>0</Mode>
         <Direction>Backward</Direction>
