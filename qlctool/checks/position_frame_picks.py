@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from .family_frames import _family_frame_handoff
+from .family_frames import family_frame_handoff
 from .show_graph import ShowGraph
 
 
@@ -13,7 +13,7 @@ def position_frame_picks(
     frame: etree._Element,
 ) -> tuple[tuple[int, frozenset[int]], ...]:
     """Each pick of a position family frame, with the state hooks it stops."""
-    handoff = _family_frame_handoff(graph, groups, states, frame)
+    handoff = family_frame_handoff(graph, groups, states, frame)
     if handoff is None or "position" not in handoff[3]:
         return ()
     _, toggles, hooks, _, _ = handoff

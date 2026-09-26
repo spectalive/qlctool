@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from .family_frames import _family_frame_handoff
+from .family_frames import family_frame_handoff
 from .show_graph import ShowGraph
 
 
@@ -13,7 +13,7 @@ def family_frame_picks(
     widget: etree._Element | None,
 ) -> tuple[tuple[int, frozenset[int]], ...]:
     """Latched picks and the state hooks their SoloFrame stops for each pick."""
-    handoff = _family_frame_handoff(graph, groups, states, widget)
+    handoff = family_frame_handoff(graph, groups, states, widget)
     if handoff is None:
         return ()
     _, toggles, hooks, _, _ = handoff

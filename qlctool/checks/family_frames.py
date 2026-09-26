@@ -83,7 +83,7 @@ def family_frame_problems(
 def _frame_problems(
     graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int], frame: etree._Element
 ) -> tuple[_Problem, ...] | None:
-    handoff = _family_frame_handoff(graph, groups, states, frame)
+    handoff = family_frame_handoff(graph, groups, states, frame)
     if handoff is None:
         return None
     buttons, toggles, hooks, hook_families, owners = handoff
@@ -112,7 +112,7 @@ def _frame_problems(
     return tuple(problems)
 
 
-def _family_frame_handoff(
+def family_frame_handoff(
     graph: ShowGraph,
     groups: dict[int, tuple[int, ...]],
     states: set[int],
