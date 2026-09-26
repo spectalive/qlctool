@@ -4,9 +4,9 @@ Plan C final review: pars only stopped at "no fixture in this workspace has
 both pan and tilt" (`movement_families.py`), washes only at "no fixture in
 this workspace has a dimmer" (`dimmer_chases.py`), both as tracebacks, and a
 patch with no fixture group built a show `check` then flagged. The README's
-minimum - a pan/tilt fixture, a fixture with a fader dimmer, one fixture
-group - is now asked before any generator runs. Each case is one small patch;
-no show is built.
+minimum was then asked before any generator ran; since round G (2026-09-26)
+it is one fixture group, and the pars and the washes get a show. Each case is
+one small patch; no show is built.
 """
 
 import os
@@ -20,7 +20,6 @@ import pytest
 from qlctool.cli import main
 from qlctool.description.description_names import description_names
 from qlctool.generate.rig_below_minimum import rig_below_minimum
-from qlctool.library import FixtureLibrary
 from qlctool.library_for import library_for
 from qlctool.names.default_names import default_names
 from qlctool.searched_folders import searched_folders
@@ -67,14 +66,13 @@ def _expected(*missing: str) -> str:
     return names.render("rig_below_minimum", missing=words)
 
 
-def test_2026_09_25_pars_only_is_refused(tmp_path, capsys):
-    patch = _patch(tmp_path, [(PAR, 6, 5)], grouped=True)
-    assert _refusal(patch, capsys) == _expected("rig_needs_pan_tilt")
-
-
-def test_2026_09_25_washes_only_is_refused(tmp_path, capsys):
-    patch = _patch(tmp_path, [(WASH, 2, 13)], grouped=True)
-    assert _refusal(patch, capsys) == _expected("rig_needs_dimmer")
+@pytest.mark.parametrize("rows", [[(PAR, 6, 5)], [(WASH, 2, 13)]], ids=["pars", "washes"])
+def test_2026_09_26_pars_only_and_washes_only_meet_the_minimum(tmp_path, rows):
+    """Refused from 2026-09-25 until round G made movement and the dimmer
+    chases optional; `tests/test_small_rig.py` builds both shows.
+    """
+    patch = _patch(tmp_path, rows, grouped=True)
+    assert rig_below_minimum(Workspace.load(patch).root, default_names()) == []
 
 
 def test_2026_09_25_heads_with_no_group_are_refused(tmp_path, capsys):
@@ -93,7 +91,7 @@ def test_2026_09_25_the_process_exits_non_zero_without_a_traceback(tmp_path):
     )
     assert run.returncode == 1
     assert "Traceback" not in run.stderr
-    assert _expected("rig_needs_pan_tilt", "rig_needs_fixture_group") in run.stderr
+    assert _expected("rig_needs_fixture_group") in run.stderr
 
 
 def test_2026_09_25_pars_beside_dimmerless_heads_are_not_refused(tmp_path):
@@ -103,7 +101,7 @@ def test_2026_09_25_pars_beside_dimmerless_heads_are_not_refused(tmp_path):
     """
     patch = _patch(tmp_path, [(PAR, 6, 5), (WASH, 2, 13)], grouped=True)
     root = Workspace.load(patch).root
-    assert rig_below_minimum(root, FixtureLibrary.load(), default_names()) == []
+    assert rig_below_minimum(root, default_names()) == []
 
 
 def test_2026_09_25_no_definition_found_is_said_not_blamed_on_the_rig(

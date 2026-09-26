@@ -491,6 +491,12 @@ def _build_movement_family(
     small_font: str,
     vocabulary: Names,
 ) -> None:
+    # A rig with nothing that pans and tilts has no hook and no pick here.
+    moving = ("soft_movements", "head_movements", "fast_movements", "heads_centre")
+    if not wrappers.movement_ids and not any(
+        ids_by_name.get(vocabulary.display(h)) is not None for h in moving
+    ):
+        return
     family = frame(
         outer,
         vocabulary.display("family_heads"),

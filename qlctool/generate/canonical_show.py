@@ -583,9 +583,10 @@ def build_canonical_show(
         exclude_fixture_ids=sorted(matrix_lit_ids | set(builtins.fixture_ids)),
         names=vocabulary,
     )
-    master[vocabulary.display("dimmer_chase")] = dimmers.chase_id
-    master[vocabulary.display("dimmer_chase_2")] = dimmers.chase2_id
-    master[vocabulary.display("dimmer_pingpong")] = dimmers.pingpong_id
+    if dimmers is not None:
+        master[vocabulary.display("dimmer_chase")] = dimmers.chase_id
+        master[vocabulary.display("dimmer_chase_2")] = dimmers.chase2_id
+        master[vocabulary.display("dimmer_pingpong")] = dimmers.pingpong_id
 
     # The console strobes are held scenes on the shutters, not chasers: a
     # chaser's black step is all Intensity channels, and Intensity is HTP, so
@@ -796,6 +797,7 @@ def build_canonical_show(
         master[vocabulary.display("ambient_intensity")] = intensity.ambient_id
     if intensity.full_id is not None:
         master[vocabulary.display("full_intensity")] = intensity.full_id
+    if intensity.full_id is not None and dimmers is not None:
         master[vocabulary.display("dimmer_sequence")] = generate_dimmer_sequence(
             workspace,
             breath_id=intensity.full_id,
@@ -823,14 +825,16 @@ def build_canonical_show(
     # The dynamic level's intensity: the running chase and the odd/even
     # ping-pong taking turns in one chaser - steps are alternatives, so the
     # dimmers always have exactly one owner.
-    dimmer_programs_id = _chaser(
-        workspace,
-        vocabulary.display("dimmer_programmes"),
-        [dimmers.chase2_id, dimmers.pingpong_id],
-        holds=[described.timing.dynamic_chase_ms, described.timing.dynamic_pingpong_ms],
-        path="Dimmers",
-    )
-    master[vocabulary.display("dimmer_programmes")] = dimmer_programs_id
+    dimmer_programs_id = None
+    if dimmers is not None:
+        dimmer_programs_id = _chaser(
+            workspace,
+            vocabulary.display("dimmer_programmes"),
+            [dimmers.chase2_id, dimmers.pingpong_id],
+            holds=[described.timing.dynamic_chase_ms, described.timing.dynamic_pingpong_ms],
+            path="Dimmers",
+        )
+        master[vocabulary.display("dimmer_programmes")] = dimmer_programs_id
     energy = generate_energy_levels(
         workspace,
         levels=[

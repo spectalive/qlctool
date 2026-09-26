@@ -11,7 +11,9 @@ what its text promises.
 A promise is a channel role where one exists (a gobo wheel, a prism) and
 otherwise a fact about the patch: a haze machine, a beam with a colour wheel
 (the fixtures the beam wheel frame is built from), a bar, a panel, a fixture
-with built-in effects. `promise_kept` says how each is seen. The library's
+with built-in effects, a head that pans and tilts, a fader dimmer the chases
+sweep (the last two since 2026-09-26, round G: a pars-only and a washes-only
+rig). `promise_kept` says how each is seen. The library's
 first two lines and its sixth and seventh are one sentence each about the
 built-in effects, so each line of it carries the promise, and the lines that
 call them the panels' promise a panel (2026-09-25); the
@@ -29,12 +31,20 @@ BEAM_WHEEL = "beam_wheel"
 BAR = "bar"
 PANEL = "panel"
 BUILTIN_EFFECTS = "builtin_effects"
+HEADS = "heads"
+DIMMER = "dimmer"
 
 CAPTION_PROMISES: dict[str, tuple[str, ...]] = {
-    "tempo_2": (GOBO, PRISM),
-    "tempo_2_no_prism": (GOBO,),
-    "tempo_2_no_gobo": (PRISM,),
-    "tempo_2_no_gobo_no_prism": (),
+    "tempo_2": (GOBO, PRISM, DIMMER),
+    "tempo_2_no_prism": (GOBO, DIMMER),
+    "tempo_2_no_gobo": (PRISM, DIMMER),
+    "tempo_2_no_gobo_no_prism": (DIMMER,),
+    "tempo_2_no_dimmer": (GOBO, PRISM),
+    "tempo_2_no_prism_no_dimmer": (GOBO,),
+    "tempo_2_no_gobo_no_dimmer": (PRISM,),
+    "tempo_2_no_gobo_no_prism_no_dimmer": (),
+    "tempo_3": (HEADS,),
+    "tempo_3_no_heads": (),
     "matrices_frame": (BAR, PANEL),
     "matrices_frame_bars": (BAR,),
     "matrices_frame_panels": (PANEL,),
@@ -54,8 +64,10 @@ CAPTION_PROMISES: dict[str, tuple[str, ...]] = {
     "library_5": (),
     "library_8": (),
     "library_9": (),
-    "page_control": (HAZE, BEAM_WHEEL),
-    "page_control_no_haze": (BEAM_WHEEL,),
-    "page_control_no_beam_wheel": (HAZE,),
-    "page_control_no_haze_no_beam_wheel": (),
+    "page_control": (HAZE, BEAM_WHEEL, HEADS),
+    "page_control_no_haze": (BEAM_WHEEL, HEADS),
+    "page_control_no_beam_wheel": (HAZE, HEADS),
+    "page_control_no_haze_no_beam_wheel": (HEADS,),
+    "page_control_no_heads": (HAZE,),
+    "page_control_no_haze_no_heads": (),
 }

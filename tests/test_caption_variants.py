@@ -46,6 +46,12 @@ def test_2026_09_25_the_tempo_help_names_only_the_animations_the_show_built(
         line = shipped_names(language).display(key)
         assert ("gobo" in line) == has_gobo
         assert ("prism" in line) == has_prism
+        assert "dimmer" in line
+        # 2026-09-26, round G: a rig with no dimmer chase is told of none.
+        bare = shipped_names(language).display(tempo_help_line(has_gobo, has_prism, False))
+        assert ("gobo" in bare) == has_gobo
+        assert ("prism" in bare) == has_prism
+        assert "dimmer" not in bare
 
 
 @pytest.mark.parametrize(
@@ -101,12 +107,15 @@ def test_2026_09_25_every_selectable_caption_has_a_promise_entry():
 
     from qlctool.checks.caption_promises import CAPTION_PROMISES
     from qlctool.generate.page_control_title import page_control_title
+    from qlctool.generate.tempo_close_line import tempo_close_line
 
     chosen: set[str] = set()
     for first, second in product((False, True), repeat=2):
-        chosen.add(tempo_help_line(first, second))
+        for third in (False, True):
+            chosen.add(tempo_help_line(first, second, third))
+            chosen.add(page_control_title(first, second, third))
+            chosen.add(tempo_close_line(third))
         chosen.add(matrices_frame_caption(first, second))
-        chosen.add(page_control_title(first, second))
         chosen.add(panels_frame_caption(first))
         chosen.update(line for line in library_help_lines(first, second) if line is not None)
     assert chosen - set(CAPTION_PROMISES) == set()

@@ -10,13 +10,19 @@ from pathlib import Path
 import pytest
 from console_captions import console_captions
 from gobo_spot_rig import build_gobo_spot_patch
+from single_shape_rig import build_single_shape_patch
 from small_rig import build_small_rig_patch
 
+from qlctool.capabilities_of import capabilities_of
+from qlctool.checks.rule_caption_promise import check_caption_promise
 from qlctool.checks.rule_dangling_reference import check_dangling_references
 from qlctool.checks.rule_empty_frame import check_empty_frames
 from qlctool.checks.show_graph import build_show_graph
 from qlctool.cli import main
+from qlctool.generate.tempo_help_line import tempo_help_line
+from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
+from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import iter_local
 
@@ -135,3 +141,69 @@ def test_2026_09_25_a_gobo_spot_with_no_colour_wheel_gets_a_show(tmp_path, monke
     out = tmp_path / "spots.qxw"
     assert main(["newshow", str(patch), "--out", str(out)]) == 0
     assert main(["check", str(out)]) == 0
+
+
+# 2026-09-26, round G: the rigs `newshow` refused since 2026-09-25 as below
+# its minimum. (spec, count, channel width) of one model, in one row group.
+SHAPES = {
+    # Pars only: nothing pans or tilts, so no movement at all.
+    "pars": ("Vortex|PC-64 LED S|Default|0|{address}|Par {index}", 6, 5),
+    # Washes only: the MiN Wash has no dimmer channel, so no dimmer chase.
+    "washes": ("Chauvet|MiN Wash|13 Channel|0|{address}|Wash {index}", 2, 13),
+    # RGB heads: neither movement nor a dimmer, nor a strobe.
+    "rgb": ("Stairville|CLB2.4 PAR head (split)|PAR|0|{address}|Head {index}", 4, 3),
+}
+
+
+@pytest.fixture(scope="module", params=sorted(SHAPES))
+def shape(request, tmp_path_factory) -> tuple[str, Path]:
+    folder = tmp_path_factory.mktemp(request.param)
+    patch = build_single_shape_patch(folder, *SHAPES[request.param])
+    out = folder / "show.qxw"
+    assert main(["newshow", str(patch), "--out", str(out)]) == 0
+    return request.param, out
+
+
+def test_2026_09_26_a_pars_washes_or_rgb_only_rig_gets_a_show_check_passes(shape):
+    """Pars only stopped at "no fixture in this workspace has both pan and
+    tilt", washes only at "no fixture in this workspace has a dimmer"; since
+    2026-09-25 both were refused up front. Now each builds and checks clean.
+    """
+    _, show = shape
+    assert main(["check", str(show)]) == 0
+
+
+def test_2026_09_26_the_console_promises_no_heads_or_dimmer_the_rig_lacks(shape):
+    name, show = shape
+    names = default_names()
+    captions = console_captions(show)
+    functions = {f.get("Name") for f in iter_local(Workspace.load(show).root, "Function")}
+    moves = name == "washes"
+    dims = name == "pars"
+    assert (names.display("xy_pad") in captions) == moves
+    assert (names.display("tempo_3") in captions) == moves
+    assert (names.display("family_heads") in captions) == moves
+    assert (names.display("dimmer_chase") in functions) == dims
+    # No shape has a gobo or a prism; the tempo line names the dimmer or not.
+    assert names.display(tempo_help_line(False, False, dims)) in captions
+    assert (names.display("intensity_chases") in captions) == (name != "rgb")
+
+
+def test_2026_09_26_the_caption_rule_bites_on_a_heads_promise(shape):
+    """The page 3 title that names heads, put back on a rig without them."""
+    name, show = shape
+    if name == "washes":
+        pytest.skip("the washes pan and tilt")
+    names = default_names()
+    root = Workspace.load(show).root
+    title = names.display("page_control_no_haze_no_heads")
+    widget = next(e for e in root.iter() if isinstance(e.tag, str) and e.get("Caption") == title)
+    widget.set("Caption", names.display("page_control_no_haze_no_beam_wheel"))
+    graph = build_show_graph(root, capabilities_of(root, FixtureLibrary.load()))
+    findings = check_caption_promise(graph, root)
+    assert [f.fields["identifier"] for f in findings] == ["page_control_no_haze_no_beam_wheel"]
+
+
+@pytest.mark.skipif(qlcplus_binary() is None, reason="QLC+ is not installed on this machine")
+def test_2026_09_26_qlcplus_loads_the_pars_washes_and_rgb_shows(shape):
+    assert validate_workspace(shape[1]).errors == []

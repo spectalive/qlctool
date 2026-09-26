@@ -344,7 +344,9 @@ def generate_movement_families(
         family = beams if caps.has_role(roles.GOBO) else washes
         family.append(caps.fixture.fixture_id)
     if not washes and not beams:
-        raise ValueError("no fixture in this workspace has both pan and tilt")
+        # A rig with nothing that moves (2026-09-26, round G): no movement at
+        # all, which every caller reads as "absent" from the empty families.
+        return GeneratedFamilies()
 
     def _family(
         ids,

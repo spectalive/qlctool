@@ -1,11 +1,10 @@
 # qlctool
 
-Programmatic editing of QLC+ workspaces (`.qxw`). A whole show is built today
-for a rig with at least one pan/tilt fixture, one fixture with a fader dimmer
-(outside a pixel group and not running its own programmes) and one fixture
-group; `newshow` refuses a patch below that with a message naming what it
-lacks, and pars-only and washes-only rigs are not built yet (tracked in
-[`TODO.md`](TODO.md)). Generates
+Programmatic editing of QLC+ workspaces (`.qxw`). A whole show is built for
+any rig with at least one fixture group; `newshow` refuses a patch without one
+with a message saying so. Movement is built only where some fixture pans and
+tilts, and the dimmer chases only where some fixture has a fader dimmer, so a
+pars-only or a washes-only rig gets a show too. Generates
 scenes, chasers, RGBMatrix effects, movement EFX and the Virtual Console buttons
 for them, in bulk instead of clicking them one by one in QLC+, then checks and
 validates the result. The Vibra show it was built for is at

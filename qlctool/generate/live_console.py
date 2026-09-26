@@ -68,6 +68,7 @@ from .page_control_title import page_control_title
 from .panels_frame_caption import panels_frame_caption
 from .play_page import build_play_page
 from .smc_pad_colors import readable_foreground
+from .tempo_close_line import tempo_close_line
 from .tempo_help_line import tempo_help_line
 
 CANVAS_WIDTH = 1440
@@ -778,8 +779,9 @@ def _page_show(
         tempo_help_line(
             master.get(vocabulary.display("gobo_animation")) is not None,
             master.get(vocabulary.display("prism_animation")) is not None,
+            master.get(vocabulary.display("dimmer_chase")) is not None,
         ),
-        "tempo_3",
+        tempo_close_line(master.get(vocabulary.display("head_movements")) is not None),
     )
     for index, line in enumerate(tempo_lines):
         label(
@@ -827,7 +829,11 @@ def _page_control(
     )
     label(
         outer,
-        vocabulary.display(page_control_title(has_haze_light, bool(beam_colors.scene_ids))),
+        vocabulary.display(
+            page_control_title(
+                has_haze_light, bool(beam_colors.scene_ids), has_heads=bool(mover_fixture_ids)
+            )
+        ),
         LEFT_X,
         30,
         OUTER_WIDTH - 16,
@@ -889,27 +895,30 @@ def _page_control(
             )
         y += bank_pitch
 
-    dimmers = frame(
-        outer,
-        vocabulary.display("intensity_chases"),
-        LEFT_X,
-        y,
-        LEFT_WIDTH,
-        DIMMER_FRAME_HEIGHT,
-        page=PAGE_CONTROL,
-        font=TITLE_FONT,
-    )
-    for index, (function_id, caption_id) in enumerate(DIMMER_CHASES):
-        column, row = index % 3, index // 3
-        master_button(
-            dimmers,
-            vocabulary.display(function_id),
-            vocabulary.display(caption_id),
-            GAP + column * 170,
-            HEADER + row * 52,
-            166,
-            46,
+    # A rig with no fader dimmer and no fixture strobe has nothing for this
+    # frame to hold (2026-09-26, round G), so it is not drawn empty.
+    if any(master.get(vocabulary.display(f)) is not None for f, _ in DIMMER_CHASES):
+        dimmers = frame(
+            outer,
+            vocabulary.display("intensity_chases"),
+            LEFT_X,
+            y,
+            LEFT_WIDTH,
+            DIMMER_FRAME_HEIGHT,
+            page=PAGE_CONTROL,
+            font=TITLE_FONT,
         )
+        for index, (function_id, caption_id) in enumerate(DIMMER_CHASES):
+            column, row = index % 3, index // 3
+            master_button(
+                dimmers,
+                vocabulary.display(function_id),
+                vocabulary.display(caption_id),
+                GAP + column * 170,
+                HEADER + row * 52,
+                166,
+                46,
+            )
 
     # Below the audio triggers (they end at y=440): the left column is full,
     # four colour banks deep.
@@ -998,30 +1007,32 @@ def _page_control(
 
     # Keep the aiming controls directly below the beam wheel. The outer frame
     # is 892px tall, so the pad leaves the same 6px inset at its bottom after
-    # taking the space released by moving the wheel up (2026-09-03).
-    label(
-        outer,
-        vocabulary.display("aim_frame"),
-        MIDDLE_X,
-        224,
-        MIDDLE_WIDTH,
-        20,
-        page=PAGE_CONTROL,
-        font=HELP_FONT,
-    )
-    pad_id = ids.take()
-    pad = build_xy_pad(
-        outer,
-        pad_id,
-        vocabulary.display("xy_pad"),
-        MIDDLE_X,
-        250,
-        MIDDLE_WIDTH,
-        636,
-        fixture_ids=list(mover_fixture_ids),
-    )
-    _on_page(pad, PAGE_CONTROL)
-    console.widget_ids.append(pad_id)
+    # taking the space released by moving the wheel up (2026-09-03). A rig
+    # with nothing that pans and tilts gets no pad to aim nothing with.
+    if mover_fixture_ids:
+        label(
+            outer,
+            vocabulary.display("aim_frame"),
+            MIDDLE_X,
+            224,
+            MIDDLE_WIDTH,
+            20,
+            page=PAGE_CONTROL,
+            font=HELP_FONT,
+        )
+        pad_id = ids.take()
+        pad = build_xy_pad(
+            outer,
+            pad_id,
+            vocabulary.display("xy_pad"),
+            MIDDLE_X,
+            250,
+            MIDDLE_WIDTH,
+            636,
+            fixture_ids=list(mover_fixture_ids),
+        )
+        _on_page(pad, PAGE_CONTROL)
+        console.widget_ids.append(pad_id)
 
     # The movement dial stays with the direct controls and on the same tap key
     # as page 1's tempo. It re-times each rotation AND the EFX

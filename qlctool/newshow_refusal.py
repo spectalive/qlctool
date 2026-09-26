@@ -28,7 +28,7 @@ def newshow_refusal(root: etree._Element, library: FixtureLibrary, names: Names)
         if any(definition_outcome_of(fixture, library).model_known for fixture in patched):
             return names.display("rig_without_modes")
         return names.render("rig_without_definitions", searched=searched_folders(library, names))
-    missing = rig_below_minimum(root, library, names)
+    missing = rig_below_minimum(root, names)
     if not missing:
         return None
     return names.render("rig_below_minimum", missing=", ".join(missing))

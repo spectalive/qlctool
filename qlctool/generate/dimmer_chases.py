@@ -61,8 +61,12 @@ def generate_dimmer_chases(
     path: str = "Dimmers",
     exclude_fixture_ids: Sequence[int] = (),
     names: Names | None = None,
-) -> GeneratedDimmers:
-    """Build both dimmer chases and the ping-pong; raise when nothing dims."""
+) -> GeneratedDimmers | None:
+    """Build both dimmer chases and the ping-pong; None when nothing dims.
+
+    A washes-only rig has no fader dimmer to chase (2026-09-26, round G): it
+    gets no dimmer chase and every caller leaves the chase out.
+    """
     vocabulary = default_names() if names is None else names
     excluded = set(exclude_fixture_ids)
     # A blade dimmer is not a fader: an EFX sweeping it does not dip the beam,
@@ -75,7 +79,7 @@ def generate_dimmer_chases(
         if capability.fixture.fixture_id not in excluded and fader_dimmed(capability)
     ]
     if not dimmable:
-        raise ValueError("no fixture in this workspace has a dimmer")
+        return None
 
     # The hand-built show did not run one intensity path over the whole rig: it
     # ran a *cascade per fixture family* - `Dimmer Chase CromoWash`, `... PC

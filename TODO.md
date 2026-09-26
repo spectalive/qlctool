@@ -68,19 +68,18 @@
   `rule_missing_definition` and the refusal. Closed by `fix(newshow): the
   refusal asks for a repatch when only the modes are missing`, test
   `tests/test_rig_minimum.py` (fails without the fix).
-- [ ] **`newshow` builds no show for a rig without movement or a dimmer
-  (Plan C final review, 2026-09-25).** Pars only stopped at a traceback `no
-  fixture in this workspace has both pan and tilt` (`movement_families.py`),
-  washes only at `no fixture in this workspace has a dimmer`
-  (`dimmer_chases.py`), and a rig with no fixture group built but flagged
-  empty frames and strobe findings. Since 2026-09-25 `newshow` refuses a patch
-  below the README's minimum (a pan/tilt fixture, a fixture with a fader
-  dimmer outside a pixel group and not self-animating, one fixture group) up
-  front, with a catalogue message and exit 1
-  (`generate/rig_below_minimum.py`, `tests/test_rig_minimum.py`). Still open:
-  building a show for a pars-only or washes-only rig. Smallest next step: make
-  the movement and dimmer generators optional when the rig lacks them, one
-  shape at a time, each with a dated test in `tests/test_small_rig.py`.
+- [x] **`newshow` builds no show for a rig without movement or a dimmer
+  (Plan C final review, 2026-09-25).** Closed in round G (2026-09-26):
+  `generate_movement_families` returns empty families and
+  `generate_dimmer_chases` returns None when the rig has nothing to move or
+  chase, and every caller leaves them out; the heads frame, the aiming pad
+  and the intensity frame are not drawn empty; the tempo lines and page 3's
+  title choose a variant without heads or dimmer, and `rule_caption_promise`
+  now holds those captions to a head (pan and tilt) and a fader dimmer.
+  `rig_below_minimum` asks only for a fixture group (README, docs and both
+  catalogues follow). Tests `tests/test_small_rig.py` (pars only, washes
+  only, RGB-only heads: build, `check` clean, QLC+ loads, and the rule bites
+  on a heads title put back); Vibra x3 and the club identical.
 - [x] **A head with no colour keeps its Effect channel unowned (2026-09-25).**
   Seen building the gobo-spot regression rig: a BEAM 230W 7R with only its
   colour wheel channels stripped keeps `Atomization` (Effect group), and
