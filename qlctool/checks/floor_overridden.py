@@ -5,6 +5,11 @@ channels only while nothing listed after it writes them. So its aim on a head
 counts for nothing while a later member that still runs places that head: the
 later member's value is the one on the wire. A home scene parking the washes
 at mid-travel is not rescued by the floor under it (2026-09-27).
+
+Conservative on purpose: a later Chaser that writes the head at any one of its
+steps counts as overriding the floor at every instant, although the floor
+does show during the steps that leave the head alone. That can only report a
+head unaimed that is aimed some of the time - never hide one that is not.
 """
 
 from .. import roles

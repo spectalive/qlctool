@@ -21,21 +21,27 @@
   (a strobe that no running level can outbid); (b) bursts that reach a
   forced-LTP flash some other way (a widget press of the console's
   ForceLTP flash button). The MiN are spares today (ruling D2), so nothing
-  on the rig shows it yet.
-- [ ] **`releaseTo` is one hook per frame (2026-09-27).** The desk map names
-  the hook the most room states start (ties: first in the frame). Released
-  under CHARLA (gobo, prism, heads) or TRANQUILO (gobo, prism), a pick then
-  returns to the AUTO animation rather than to the state's own hook (`Gobo
-  Reposo`, `Prisma Reposo`, `Cabezas Centro`). The floors already leave those
-  families at rest without any press. Smallest next step, if the tablet should follow
-  the running state: an optional per-state map beside `releaseTo`
-  ({state widget: hook widget}) for the states that start exactly one of the
-  frame's hooks, and dmxdesk choosing by the state it last pressed.
-- [ ] **`pick_release_orphans` does not judge the pixel frame (2026-09-27).**
-  `FAMILIES` has no pixel-mode roles, so a released PIXELES pick is not
-  asked what it leaves behind. The panels' mode channel is LTP like a gobo;
-  smallest next step: give the rule the pixel-mode family
-  (`_sets_pixel_mode`) and a floor for it if the check bites.
+  on the rig shows it yet. Caveats of (a), to measure before adopting it
+  (round 3 review, M-7): the MiN channel is inverted (0-7 Closed, 8-134 =
+  100-0%), so under HTP two concurrent level writers give the darker dim,
+  not the brighter; a grand master in Intensity mode scales 8 down into
+  0-7 "Closed" instead of dimming; and a fade passes through "Closed" on
+  its way to 100%.
+- [x] **`releaseTo` is one hook per frame (2026-09-27).** One hook per
+  frame pressed the wrong one in most states (CHARLA's colour, FIESTA's and
+  LOCURA's heads, CHARLA's and TRANQUILO's gobo and prism, CHARLA's
+  panels). Closed by `c4b45c6 feat(deskmap): releaseTo names the hook per
+  room state` (ruling R3a): an object keyed by the state control's widget,
+  one entry per state that starts exactly one of the frame's hooks; the
+  contract for dmxdesk is in `docs/desk-map.md`. Tests in
+  `tests/test_deskmap.py` (2026-09-27), including the re-injection that takes
+  Luz Charla out of Momento Charla.
+- [x] **`pick_release_orphans` does not judge the pixel frame (2026-09-27).**
+  Closed by `30a72c4 fix: a released panel pick is judged and falls back on
+  a panels floor`: the rule reads the panel's programme mode channel as the
+  pixel-mode family (`family_offsets`); it bit 13 panel picks under CHARLA
+  until every state that plays the panels started `Paneles Suelo`.
+  Re-injected in `test_2026_09_26_releasing_a_pick_leaves_the_beams_red`.
 - [x] **Flash Color leaves the lit smoke columns out (owner decision,
   2026-09-26).** `Flash Color` (and its desk burst's private copy) skipped
   every smoke fixture, so while held the four vertical LED fog machines kept

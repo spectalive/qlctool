@@ -15,6 +15,14 @@ On a wheel-coloured head it goes with the colour instead: every colour look
 that puts the wheel somewhere opens it, the levels leave it alone, and when
 the colour writers stop the blade drops with the RGB of the rest of the rig
 (ruling D8, 2026-09-27).
+
+What that changes, checked in the round 3 review: after PARAR TODO a colour
+pick pressed on its own now opens the beams at full, while the fixtures a
+level dims (the MACs) stay dark until a level runs. A crossfade between two
+colour looks does not dip the blade - the incoming fade starts from the value
+the outgoing step still holds, and HTP keeps the higher - but the first fade
+in from dark walks it through its partial range, as it did when the levels
+held it.
 """
 
 from . import roles
