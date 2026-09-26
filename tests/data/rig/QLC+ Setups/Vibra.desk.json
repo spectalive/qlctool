@@ -5,7 +5,7 @@
  "show": {
   "key": "vibra",
   "workspace": "Vibra.qxw",
-  "sha256": "f1c9b1bff0f16143e56352ca75c755d8fdb3d769e871d74cffef7cea7bd70511"
+  "sha256": "12a75704c7096c3d2c3940799e88925008817313d50428e1de0cfc2c2cc301aa"
  },
  "grandMaster": {
   "widget": 258
@@ -485,7 +485,9 @@
    "role": "burst",
    "solo": null,
    "key": null,
-   "swatches": [],
+   "swatches": [
+    "#ffffff"
+   ],
    "enabled": true,
    "reason": "",
    "burstMs": 8000,

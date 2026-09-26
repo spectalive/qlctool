@@ -5,6 +5,10 @@ strobes in whatever colour is already running, because the scene raises every
 dimmer and drives every strobe channel without writing a single colour value.
 A Scene only touches the channels it lists, so everything not listed - the
 colour bed, the wheel position, the panels' programme - carries on underneath.
+
+The one exception is the lit smoke machines: they go white, exactly as
+`Flash 100%` writes them, and their pump is left alone. "Si, el flash enciende
+las maquinas de humo en blanco" (owner, 2026-09-26; `rule_flash_lit_smoke`).
 """
 
 from .. import roles
@@ -16,6 +20,7 @@ from ..names.names import Names
 from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
+from .color_scene import color_scene_values
 
 
 def generate_flash_color(
@@ -27,7 +32,13 @@ def generate_flash_color(
 ) -> int:
     """The strobe over the running colour, named in `names`, the show's vocabulary."""
     vocabulary = default_names() if names is None else names
-    values: dict[int, list[tuple[int, int]]] = {}
+    # The lit smoke machines in `Flash 100%`'s own white, minus the pump that
+    # scene shuts: a held colour flash neither starts nor stops the smoke.
+    values = color_scene_values(
+        capabilities,
+        (255, 255, 255),
+        fixture_ids=[c.fixture.fixture_id for c in capabilities if c.is_lit_smoke],
+    )
     for capability in capabilities:
         if capability.is_smoke:
             continue

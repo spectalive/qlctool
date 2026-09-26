@@ -23,6 +23,7 @@ from .console_states import room_states
 from .entry_points import entry_points
 from .finding import Finding
 from .fixing_order import fixing_order
+from .flash_button_findings import flash_button_findings
 from .named_findings import named_findings
 from .rule_accent_restore import check_accent_restore
 from .rule_audio_triggers import check_audio_triggers
@@ -33,9 +34,6 @@ from .rule_console import check_console
 from .rule_context import RuleContext
 from .rule_dangling_reference import check_dangling_references
 from .rule_family_owner import check_family_owner
-from .rule_flash_scene import check_flash_scene
-from .rule_flash_speed import check_flash_speed
-from .rule_flash_strobe import check_flash_strobe
 from .rule_grid_order import check_grid_order
 from .rule_group_grid import check_group_grids
 from .rule_held_column import check_held_column
@@ -135,9 +133,7 @@ def check_workspace(
     findings += check_strobe_rate(graph, groups, entries)
     findings += check_latched_strobe(graph, groups, entries)
     findings += check_strobe_black(graph, groups, root, states)
-    findings += check_flash_scene(graph, root)
-    findings += check_flash_strobe(graph, groups, root)
-    findings += check_flash_speed(graph, groups, root)
+    findings += flash_button_findings(graph, groups, root)
     findings += check_strobe_coverage(graph, groups)
     findings += check_shadowed_intensity(graph, groups, entries)
     findings += check_shutter_endpoint(graph, groups)
