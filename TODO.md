@@ -172,14 +172,32 @@
   next step: for a Chaser, take the swatches of its first step (or of each
   step, deduplicated) instead of the merged reach, and rebuild
   `Vibra.desk.json`.
-- [ ] **`tests/test_validate.py` passes a broken workspace on the show Mac
+- [x] **`tests/test_validate.py` passes a broken workspace on the show Mac
   (2026-09-26).** `test_a_workspace_qlcplus_cannot_build_is_rejected` and
-  `test_two_validations_at_once_keep_their_own_verdicts` fail at v0.1.8 as
-  well as after en-sala round 1: headless QLC+ 5.2.2 loads a fixture renamed
-  to "No Such Model" and its log carries no complaint, so `ok` is True. The
-  operator's QLC+ (port 9998) was running each time. Smallest next step: run
-  the two tests with no other QLC+ up and read the child's full log for the
-  missing-definition line; if it is gone, match what 5.2.2 prints now.
+  `test_two_validations_at_once_keep_their_own_verdicts` failed at v0.1.8 and
+  at HEAD. The operator's QLC+ (port 9998) was never the cause: with it left
+  untouched, a standalone run of `validate_workspace` on the renamed-model
+  workspace correctly rejected it every time, but the same call under
+  `pytest -n auto` (or inside the test's own `ThreadPoolExecutor`) was flaky.
+  Cause: `QML_LOADED_MARKERS` in `qlctool/qml_loaded_markers.py` treated
+  `MasterTimer`/`Time is late` as end-of-load signals. Both come from the DMX
+  output thread, which starts ticking as soon as the engine starts and prints
+  "running late" the moment the CPU is even slightly contended - independent
+  of whether the document (and its fixtures) has finished loading. Measured in
+  one unhurried, full log: the timer's first "running late" line was at output
+  line 134, the "No fixture definition"/`failed:` line for the renamed model
+  at line 138 - a few lines that fit inside the 1 s quiet period when the
+  machine is idle, but not when several QLC+ instances launch at once (four
+  xdist workers, or two threads in one test), so `read_until_loaded` stopped
+  reading before the error ever printed and `ok` came back True. `renderPage`
+  (Virtual Console page rendered) still fires reliably only once the whole
+  document is loaded, so it is now the sole marker. Fixed by dropping the two
+  timer lines: `QML_LOADED_MARKERS = ("renderPage",)`. Verified
+  with the whole document loaded: `tests/test_validate.py`,
+  `test_validate_reads.py`, `test_validate_ownership.py`,
+  `test_qlcplus_discovery.py`, `test_saved_io_patches.py` (29 tests) green
+  three times in a row under `-n auto`, and the full suite (951 passed, 1
+  skipped) once.
 - [ ] **No rule sees two patched fixtures sharing an ID (round G review,
   2026-09-26).** The show graph keys capabilities by fixture ID, so a second
   fixture with the same ID is silently one entry; `caption_promise` used to
