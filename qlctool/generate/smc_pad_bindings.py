@@ -20,10 +20,11 @@ PAD BANK does leave the device: it moves every pad up 16 notes, so the manual
 layer now sits on the same physical pads as the hits, one bank up.
 
 The five small buttons on the right edge: `<` CC 25, `>` CC 26, play CC 27,
-pause CC 28, record CC 29. The arrows page the console like PgUp/PgDown - and
-they were measured not to change the pad's bank, so paging cannot silently move
-the hits. Pause is PARAR TODO and record is APAGON, the panic pair, physically
-apart from the pads and on a control change, so they answer on either bank.
+stop CC 28 (the manual's STOP, which the show calls Pausa), record CC 29. The
+arrows page the console like PgUp/PgDown - and they were measured not to change
+the pad's bank, so paging cannot silently move the hits. Pausa is PARAR TODO
+and record is APAGON, the panic pair, physically apart from the pads and on a
+control change, so they answer on either bank.
 Play stays free: a button can carry one external source per control, and AUTO's
 is pad 5's.
 """
@@ -67,6 +68,6 @@ SMC_PAD_BINDINGS: dict[str, int] = {
     # The small buttons on the right edge (CC on channel 1, 127/0).
     "page_previous": control_channel(25),  # "<" - the console's PgUp
     "page_next": control_channel(26),  # ">" - the console's PgDown
-    "stop_all": control_channel(28),  # pause - stop every running function
+    "stop_all": control_channel(28),  # STOP (the show's Pausa) - stop every running function
     "blackout": control_channel(29),  # record - the blackout latch
 }

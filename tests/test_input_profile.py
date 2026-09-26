@@ -123,3 +123,16 @@ def test_patching_twice_leaves_one_input():
     )
     inputs = [child for child in universe if localname(child) == "Input"]
     assert len(inputs) == 1
+
+
+def test_2026_09_26_the_profile_declares_only_what_was_measured():
+    """Round F's upstream PR fixed these by hand; the generator writes them now.
+
+    The 2026-08-29 capture never recorded channel aftertouch, so the profile
+    declares no channel for it (QLC+ numbers it 37376 in omni), and the
+    manual names CC 28 STOP - the show's console still calls its button Pausa.
+    """
+    declared = _channels(build_input_profile())
+    assert 37376 not in declared
+    assert all(number < 37376 for number in declared)
+    assert declared[28].startswith("Stop ")

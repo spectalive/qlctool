@@ -28,14 +28,17 @@
   `Vibra.desk.json` re-baselined (diff: the four columns in `Flash Color` and
   its desk copy; the desk tile gains a `#ffffff` swatch). Test
   `tests/test_flash_colour_lit_smoke.py`.
-- [ ] **The SMC-PAD notes still point at `tools/smc-pad/` (2026-09-26).**
-  The bridge and its capture tools moved to spectalive/smc-pad (vibra-lighting
-  `9495f85`), but `generate/input_profile.py:54` (and so the generated
-  `M-VAVE-SMC-PAD.qxi`), `generate/smc_pad_device.py:18` and
-  `generate/smc_pad_colors.py:6` still name the old paths. Smallest next step:
-  name `spectalive/smc-pad` (`midicap.swift`, `qlc_led_bridge.swift`) in all
-  three, rebaseline the rig copy of the `.qxi`, and release with the next
-  toolkit round so vibra-lighting's shipped profile follows.
+- [x] **The SMC-PAD notes still point at `tools/smc-pad/` (2026-09-26).**
+  Closed in round G: `generate/input_profile.py` (and so the generated
+  `M-VAVE-SMC-PAD.qxi`), `generate/smc_pad_device.py` and
+  `generate/smc_pad_colors.py` name `spectalive/smc-pad` (`midicap.swift`,
+  `qlc_led_bridge.swift`). The profile now writes only what was measured, as
+  QLC+ PR #2168 did by hand: the channel-aftertouch channel 37376 (never in
+  the 2026-08-29 capture, bound by no show) is gone, and CC 28 carries the
+  manual's name, `Stop (PARAR TODO)`; the console caption stays Pausa. The
+  rig copy is rebaselined; Vibra x3 identical (the workspaces carry only the
+  profile's name). Test
+  `test_2026_09_26_the_profile_declares_only_what_was_measured`.
 - [ ] **Verify desk bursts on the rig (2026-09-13).** Normal API priority
   cannot guarantee the Mac Flash's colour or shutter override. The generated
   map marks 15 cues with `burstNote`; durations are provisional. Over AUTO and

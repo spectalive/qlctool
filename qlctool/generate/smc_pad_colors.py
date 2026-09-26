@@ -2,9 +2,9 @@
 button, so the two read as the same surface.
 
 One RGB per master function, keyed by its catalogue identifier. The live
-console paints the button this colour; the LED bridge
-(`tools/smc-pad/qlc_led_bridge.swift`) paints the pad the same colour, dimmed
-while the function is idle and full-bright while it is active. Keep the two
+console paints the button this colour; the LED bridge (`qlc_led_bridge.swift`
+in spectalive/smc-pad) paints the pad the same colour, dimmed while the
+function is idle and full-bright while it is active. Keep the two
 palettes in step: the bridge hard-codes the matching values by physical pad.
 
 Physical pad layout the colours follow (bank 1, as the owner arranged it):

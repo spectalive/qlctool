@@ -15,7 +15,7 @@ reconfiguring it control by control. (An earlier capture that day read notes
 4-19 and got written into the shipped input profile; that was the pad sitting
 in some non-factory preset, not the default.)
 
-Measured 2026-08-29 with `tools/smc-pad/midicap.swift`, owner pressing:
+Measured 2026-08-29 with `midicap.swift` (spectalive/smc-pad), owner pressing:
 
 - The pads speak on MIDI channel 10 and are numbered as the panel silkscreens
   them - PAD1 bottom-left, PAD13 top-left, like a Launchpad. PAD13 sent note
@@ -32,7 +32,8 @@ Measured 2026-08-29 with `tools/smc-pad/midicap.swift`, owner pressing:
   pressed between three hits of the same pad, the note never moved. So they are
   safe as the console's page arrows.
 - The knobs send CC 30-37 absolute, and the five buttons under the arrows
-  CC 27 (play), 28 (pause), 29 (record), all on MIDI channel 1.
+  CC 27 (play), 28 (stop, which the show calls Pausa), 29 (record), all on
+  MIDI channel 1.
 
 Because the device splits its controls over two MIDI channels, the QLC+ MIDI
 input must run in omni mode (`midichannel="16"`, `MAX_MIDI_CHANNELS` in
