@@ -3937,3 +3937,60 @@ def test_2026_09_27_a_floor_under_the_gobo_hook_is_not_a_collision(library):
     found = {(f.rule_id, f.function) for f in check_workspace(workspace, library)}
     assert ("collision", "Momento Fiesta") in found
     assert ("family_owner", "Gobo Suelo") in found
+
+
+def test_2026_09_26_releasing_a_pick_leaves_the_beams_red(library):
+    """2026-09-26, en-sala DMX audit (item 5 and concern C3): with AUTO running,
+    `Rig Rojo` on and off left every RGB fixture black and the four 7R lit and
+    red - their wheel is LTP, their blade was held open by the level, and
+    QLC+ 5 restarts no hook when a Toggle goes off. Gobo Shake kept shaking
+    under FIESTA, and a released figure left the heads with nothing aiming
+    them. Ruling D8: picks stay latched and the release is clean. Hold the
+    blade open from the levels again, or take the states' floors away, and
+    the rule must name the beams (and the MACs for a figure).
+    """
+    from qlctool.checks.finding import ERROR, WARNING
+    from qlctool.checks.rule_pick_release_orphans import check_pick_release_orphans
+    from qlctool.checks.static_floors import static_floors
+
+    def findings(workspace):
+        graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+        groups = group_fixtures(workspace.root)
+        states = room_states(workspace.root, graph, groups)
+        found = check_pick_release_orphans(graph, groups, workspace.root, states)
+        return {f.function: f for f in found}, graph, groups, states
+
+    for name in SHOWS:
+        assert findings(_show(name))[0] == {}
+
+    workspace = _show()
+    capabilities = capabilities_of(workspace.root, library)
+    beams = {c.fixture.fixture_id: c for c in capabilities if c.has_role(roles.GOBO)}
+    names = tuple(sorted(c.fixture.name for c in beams.values()))
+    functions = _functions(workspace)
+    for level in ("Intensidad Ambiente", "Intensidad Total", "Intensidad Peak"):
+        for value in findall_local(functions[level], "FixtureVal"):
+            capability = beams.get(int(value.attrib["ID"]))
+            if capability is not None:
+                pairs = _pairs_of(value)
+                pairs.update(dict.fromkeys(capability.offsets_for_role(roles.DIMMER), 255))
+                _write_pairs(value, pairs)
+    found = findings(workspace)[0]
+    rojo = found["Jugar · Rig Rojo + Pixeles"]
+    assert (rojo.severity, rojo.fixtures) == (ERROR, names)
+    assert "AUTO" in rojo.fields["states"]
+
+    workspace = _show()
+    _, graph, groups, states = findings(workspace)
+    by_id = {int(f.attrib["ID"]): f for f in _functions(workspace).values()}
+    for state_id in states:
+        floors = static_floors(graph, groups, state_id)
+        if floors:
+            kept = [m for m in graph.members[state_id] if m not in floors]
+            _set_steps(by_id[state_id], kept)
+    found = findings(workspace)[0]
+    shake = found["Jugar · Gobo Shake - Gobo 1"]
+    assert (shake.severity, shake.fixtures) == (WARNING, names)
+    assert "Momento Fiesta" in shake.fields["states"]
+    figure = found["Jugar · Movimiento Circulo"]
+    assert figure.fixtures == (*names, "MAC WASH 1915Z #1", "MAC WASH 1915Z #2")

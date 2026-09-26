@@ -22,6 +22,7 @@ from .canvas_of import canvas_of
 from .console_caption_findings import console_caption_findings
 from .console_states import room_states
 from .entry_points import entry_points
+from .family_frame_findings import family_frame_findings
 from .finding import Finding
 from .fixing_order import fixing_order
 from .flash_button_findings import flash_button_findings
@@ -35,7 +36,6 @@ from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
 from .rule_context import RuleContext
 from .rule_dangling_reference import check_dangling_references
-from .rule_family_owner import check_family_owner
 from .rule_grid_order import check_grid_order
 from .rule_group_grid import check_group_grids
 from .rule_held_column import check_held_column
@@ -50,7 +50,6 @@ from .rule_masked_dimmer_efx import check_masked_dimmer_efx
 from .rule_missing_definition import check_missing_definitions
 from .rule_mode_owner import check_mode_owner
 from .rule_movement_figure_coverage import check_movement_figure_coverage
-from .rule_pick_darkens import check_pick_darkens
 from .rule_pick_overridden import check_pick_overridden
 from .rule_provider import RuleProvider
 from .rule_shadowed_intensity import check_shadowed_intensity
@@ -126,9 +125,8 @@ def check_workspace(
     findings += check_layer_adds(graph, groups, root, states)
     findings += check_layer_trace(graph, groups, root, states)
     findings += check_pick_overridden(graph, groups, root, states)
-    findings += check_family_owner(graph, groups, root, states)
+    findings += family_frame_findings(graph, groups, root, states)
     findings += check_solo_handoff(graph, root, states)
-    findings += check_pick_darkens(graph, groups, root, states)
     findings += check_state_handover(graph, groups, states)
     findings += check_colour_clocks(graph, groups, entries, states)
     findings += check_wheel_white(graph, groups, entries)
