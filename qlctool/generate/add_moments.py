@@ -9,6 +9,7 @@ from .flat_scene import flat_scene
 from .moments import Moment, generate_moments
 from .show_build import ShowBuild
 from .show_collection import show_collection
+from .wheel_only_fixture_ids import wheel_only_fixture_ids
 
 
 def add_moments(build: ShowBuild) -> None:
@@ -35,13 +36,22 @@ def add_moments(build: ShowBuild) -> None:
     # a lull, the last track - and they are the reason the energy levels are no
     # longer buttons: pressing two of those at once is what put the room on
     # every colour at once.
+    # A fixture whose only colour is a wheel and that is not a beam (no gobo,
+    # so no beam white below) gets the talk white from its wheel; without it
+    # the talk light wrote nothing on a rig of them and the talk moment was
+    # dark (round G review, 2026-09-26: the CLB2.4 in its 2 channel mode).
+    wheel_only = wheel_only_fixture_ids(caps)
     charla_scene_id = flat_scene(
         workspace,
         caps,
         vocabulary.display("talk_light_base"),
         described.tuning.talk_white,
+        names=vocabulary,
+        wheel_color="white" if wheel_only else None,
+        wheel_dimmer=None,
         dimmer_full=False,
         exclude_effect_mode_fixture_ids=builtins.fixture_ids,
+        wheel_fixture_ids=wheel_only,
     )
     beam_white_id = first_of(beam_colors.scene_ids)
     master[vocabulary.display("talk_light")] = show_collection(

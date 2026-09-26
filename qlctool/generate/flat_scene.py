@@ -21,10 +21,11 @@ def flat_scene(
     rgb: tuple[int, int, int],
     names: Names | None = None,
     wheel_color: str | None = None,
-    wheel_dimmer: int = 255,
+    wheel_dimmer: int | None = 255,
     strobe: float | None = None,
     dimmer_full: bool = True,
     exclude_effect_mode_fixture_ids: Sequence[int] = (),
+    wheel_fixture_ids: Sequence[int] | None = None,
 ) -> int:
     """One colour on every colour-capable fixture; smoke machines excluded.
 
@@ -33,7 +34,8 @@ def flat_scene(
     additionally drives every strobe channel at that point of its slow-to-fast
     run, overriding the open-shutter values a plain look carries - which is
     what turns the work light into a flash. `names` is the vocabulary
-    `wheel_color` is spelled in.
+    `wheel_color` is spelled in; `wheel_fixture_ids`, when given, limits the
+    wheel colour to those fixtures.
     """
     values = color_scene_values(
         caps,
@@ -50,7 +52,11 @@ def flat_scene(
             merged.update(off)
             values[capability.fixture.fixture_id] = sorted(merged.items())
     if wheel_color is not None:
-        values.update(wheel_color_values(caps, wheel_color, dimmer=wheel_dimmer, names=names))
+        values.update(
+            wheel_color_values(
+                caps, wheel_color, fixture_ids=wheel_fixture_ids, dimmer=wheel_dimmer, names=names
+            )
+        )
     if strobe is not None:
         for capability in caps:
             if capability.is_smoke:
