@@ -58,6 +58,11 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 
 The suite reads a frozen copy of the Vibra rig in `tests/data/rig/`.
 
+`pip install "qlctool[mcp]"` adds `qlctool mcp`, an MCP server over stdio that
+lets an agent build, check and validate shows and read a running QLC+ through
+its web API - read-only unless started with `--allow-live-writes`. See
+[`docs/mcp.md`](docs/mcp.md).
+
 ## Example
 
 `examples/small-club/` is a small rig described in English: the fixture
@@ -215,6 +220,7 @@ A workspace given on the command line as well must be the one `[rig]` names.
 - `generate/` - the mass generators (colour scene, colour palette, matrix
   effects, movement EFX, Virtual Console layout, channel probe)
 - `palette.py`, `ids.py`, `cli.py` - palette data, ID allocation, command line
+- `mcpserver/` - `qlctool mcp`: the file tools and the live QLC+ tools an agent calls ([`docs/mcp.md`](docs/mcp.md))
 - `description/`, `names/`, `locales/`, `vibra/`, `controllers/` - the show description, its name catalogues, Vibra's values, and the optional controller profiles with their rule providers
 - `library/system/` - QLC+ system fixture defs the patch needs, bundled from the Mac
 
