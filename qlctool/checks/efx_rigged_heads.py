@@ -4,14 +4,12 @@ from lxml import etree
 
 from ..xmlutil import find_local, findall_local
 from .driven_channels import EFX_PAN_TILT
-
-# (fixture id, direction, start offset, EFX mode) for one head of the figure.
-Head = tuple[int, str, int, int]
+from .efx_head import EfxHead
 
 
-def efx_rigged_heads(efx: etree._Element, rigged: set[int]) -> tuple[Head, ...]:
+def efx_rigged_heads(efx: etree._Element, rigged: set[int]) -> tuple[EfxHead, ...]:
     """The EFX's per-fixture settings for the `rigged` fixtures, sorted."""
-    heads: list[Head] = []
+    heads: list[EfxHead] = []
     for element in findall_local(efx, "Fixture"):
         identifier = find_local(element, "ID")
         if identifier is None or not (identifier.text or "").strip().isdigit():

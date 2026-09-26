@@ -19,7 +19,8 @@ from lxml import etree
 from ..rigged_fixture_ids import rigged_fixture_ids
 from ..xmlutil import find_local, iter_local
 from .finding import WARNING, Finding
-from .movement_signature import Figure, movement_signature
+from .movement_figure import MovementFigure
+from .movement_signature import movement_signature
 from .show_graph import ShowGraph
 from .solo_frame_function_ids import solo_frame_function_ids
 
@@ -34,7 +35,7 @@ def check_twin_movement(graph: ShowGraph, root: etree._Element) -> list[Finding]
     rigged = rigged_fixture_ids(root)
     findings: list[Finding] = []
     for frame in iter_local(console, "SoloFrame"):
-        first: dict[frozenset[Figure], int] = {}
+        first: dict[frozenset[MovementFigure], int] = {}
         for function_id in solo_frame_function_ids(frame):
             signature = movement_signature(graph, function_id, rigged)
             if not signature:

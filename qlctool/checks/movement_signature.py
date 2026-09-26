@@ -10,16 +10,16 @@ defaults only on the spares).
 
 from lxml import etree
 
-from .efx_rigged_heads import Head, efx_rigged_heads
+from .efx_rigged_heads import efx_rigged_heads
+from .movement_figure import MovementFigure
 from .show_graph import ShowGraph
 
-# One EFX as the room sees it: its figure's settings and its rigged heads.
-Figure = tuple[tuple[bytes, ...], tuple[Head, ...]]
 
-
-def movement_signature(graph: ShowGraph, function_id: int, rigged: set[int]) -> frozenset[Figure]:
+def movement_signature(
+    graph: ShowGraph, function_id: int, rigged: set[int]
+) -> frozenset[MovementFigure]:
     """Every EFX `function_id` can start, as it moves the `rigged` heads."""
-    figures: set[Figure] = set()
+    figures: set[MovementFigure] = set()
     for member in graph.descendants(function_id):
         function = graph.functions.get(member)
         if function is None or function.attrib.get("Type") != "EFX":

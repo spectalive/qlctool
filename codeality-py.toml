@@ -73,6 +73,10 @@ data = [
   # The widget type names QLC+ 5 answers in each language it ships.
   "qlctool/mcpserver/pressable_widget_types.py",
   "qlctool/mcpserver/unknown_widget_types.py",
+  # The shapes two movement checks compare: one rigged head of an EFX, and one
+  # EFX as the room sees it.
+  "qlctool/checks/efx_head.py",
+  "qlctool/checks/movement_figure.py",
 ]
 # Instances other code finds by name: the MIDI pads a description can ask for,
 # the SMC-PAD's profile, and the two rule providers the `qlctool.rules` entry
