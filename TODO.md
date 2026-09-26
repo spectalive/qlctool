@@ -151,6 +151,42 @@
   0.74-0.76 s. Suite: summed 480.9 s -> 393.9 s, `test_check.py` 259.9 s ->
   184.3 s, wall 69-73 s -> 55 s. Smallest next step: read the next CI runs'
   3.11 leg; close below 50% (300 s).
+- [ ] **The ruff ratchet in `ruff.toml` (moved from vibra-lighting,
+  2026-09-26).** `ruff check` and `ruff format --check` are clean, so what is
+  left is the ignore list, counted with `ruff check . --select <codes>
+  --preview --statistics`: D1 (public symbols without a docstring) 244,
+  D205/D210 16, PLR0913/PLR0917 (too many parameters) 163, PLR0911/0912/0915
+  19, PLR2004 (magic values: DMX channel numbers and QLC+ constants) 43,
+  ARG001 9, RUF005/RUF059 13, E402 1. Smallest next step: take one code whose
+  count is small (E402, ARG001), clear it and drop it from `ignore`, so the
+  list can only shrink.
+- [x] **Every `zip()` without `strict=` (B905), moved from vibra-lighting
+  (2026-09-26).** 29 sites (12 in `qlctool/`, 17 in `tests/`), not the 13 the
+  note counted. Every one pairs two lists built from the same source, so a
+  length mismatch is a bug, not an intended cut: all 29 are `strict=True`
+  and B905 left the `ignore` list (5965909). Vibra x3 identical.
+- [ ] **The mypy ratchet in `mypy.ini` (moved from vibra-lighting,
+  2026-09-26).** 70 modules carry `ignore_errors`; with every one of them
+  switched off mypy finds 226 errors in 70 files, nearly all missing
+  annotations (`lxml-stubs` is installed). Round G took
+  `generate/canonical_show` off the list (from 71 modules and 260 errors).
+  Smallest next step: annotate the smallest listed module and delete its
+  section; a section is never added.
+- [ ] **The codeality structural baseline (moved from vibra-lighting,
+  2026-09-26).** `codeality-py check` gives 198 findings, all in the baseline
+  (`baseline check`: 0 new, 198 known): BPY001 116, BPY002 72, BPY004 10. The
+  ten oversize files, in code lines (cap 150, tests 300):
+  `generate/live_console.py` 1159, `cli.py` 794, `generate/play_page.py` 785,
+  `generate/movement_families.py` 574, `checks/family_frames.py` 272,
+  `checks/rule_console.py` 177, `generate/unison_colors.py` 163,
+  `tests/test_check.py` 2129, `tests/test_live_console.py` 677,
+  `tests/test_canonical_show.py` 504. Round G split `canonical_show.py`
+  (1061 code lines) into its stages (d555b53), Vibra x3 identical. Most of
+  the BPY001 mass is the rules in `checks/` keeping their private helpers
+  beside them. Smallest next step: split `live_console.py` the same way, one
+  file per commit with the three Vibra hashes unchanged, then
+  `codeality-py baseline update`. Constant tables are declared `[roles]
+  data` in `codeality-py.toml`, which is the convention, not debt.
 - [x] **A wheel whose only nameable detent is one no look asks for is not
   parked (2026-09-25).** `outside_color_looks` asked over every colour in
   `WHEEL_NAMES`; it now asks over the colours the looks request, the show's
