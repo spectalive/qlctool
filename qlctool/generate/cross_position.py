@@ -16,13 +16,13 @@ the movement families exist to prevent.
 from collections.abc import Sequence
 
 from .. import roles
-from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
+from .fan_heads import fan_heads
 from .fan_position import MID, SPREAD, TILT
 
 
@@ -34,17 +34,14 @@ def generate_cross_position(
     path: str | None = None,
     names: Names | None = None,
 ) -> int | None:
-    """One scene crossing `fixture_ids` over the centre. None when under two."""
+    """One scene crossing the rigged `fixture_ids`, in the given order. None when under two.
+
+    Pass them across the stage (`stage_ordered`): the pans fall in that order.
+    """
     vocabulary = default_names() if names is None else names
     name = vocabulary.display("beams_cross") if name is None else name
     path = vocabulary.display("path_movement") if path is None else path
-    wanted = [
-        caps
-        for caps in capabilities_of(workspace.root, library)
-        if caps.fixture.fixture_id in set(fixture_ids)
-        and caps.has_role(roles.PAN)
-        and caps.has_role(roles.TILT)
-    ]
+    wanted = fan_heads(workspace, library, fixture_ids)
     if len(wanted) < 2:
         return None
 

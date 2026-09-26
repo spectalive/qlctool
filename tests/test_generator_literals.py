@@ -152,6 +152,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/build_refusal_error.py",
     # 2026-09-26, en-sala round 2: the MACs held on a beam-only look.
     "generate/generate_wash_hold.py",
+    # 2026-09-27, en-sala round 2 review: the heads a fan spreads.
+    "generate/fan_heads.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

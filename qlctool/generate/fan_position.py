@@ -16,13 +16,13 @@ Fine channels go to zero so a 16-bit head lands on the coarse value.
 from collections.abc import Sequence
 
 from .. import roles
-from ..capabilities_of import capabilities_of
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
+from .fan_heads import fan_heads
 from .movement_aim import BEAM_PAN_AIM, BEAM_PAN_SPAN, BEAM_TILT_AIM
 
 # The centre of the audience window in pan, and half its width.
@@ -43,17 +43,14 @@ def generate_fan_position(
     path: str | None = None,
     names: Names | None = None,
 ) -> int | None:
-    """One scene fanning `fixture_ids` symmetrically. None when under two."""
+    """One scene fanning the rigged `fixture_ids`, in the given order. None when under two.
+
+    Pass them across the stage (`stage_ordered`): the pans rise in that order.
+    """
     vocabulary = default_names() if names is None else names
     name = vocabulary.display("beams_fan") if name is None else name
     path = vocabulary.display("path_movement") if path is None else path
-    wanted = [
-        caps
-        for caps in capabilities_of(workspace.root, library)
-        if caps.fixture.fixture_id in set(fixture_ids)
-        and caps.has_role(roles.PAN)
-        and caps.has_role(roles.TILT)
-    ]
+    wanted = fan_heads(workspace, library, fixture_ids)
     if len(wanted) < 2:
         return None
 
