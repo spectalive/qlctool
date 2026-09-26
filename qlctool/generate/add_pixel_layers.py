@@ -5,8 +5,11 @@ functions are created in the order they always were.
 """
 
 from ..fixture_group import fixture_groups
+from ..rgb_cells import rgb_cells
+from ..rigged_fixture_ids import rigged_fixture_ids
 from .all_self_animating import all_self_animating
 from .beam_rainbow_spin import generate_beam_rainbow_spin
+from .build_refusal_error import BuildRefusalError
 from .cycle_algorithms import CYCLE_ALGORITHMS
 from .generate_matrix_effects import generate_matrix_effects
 from .generated_matrices import GeneratedMatrices
@@ -57,11 +60,21 @@ def add_pixel_layers(build: ShowBuild) -> None:
         name: colours.palette[name]
         for name in (colours.matrix_colors if matrix_colors is None else matrix_colors)
     }
+    by_id = {capability.fixture.fixture_id: capability for capability in caps}
+    rigged = rigged_fixture_ids(workspace.root)
     for group in fixture_groups(workspace.root):
         # A fixture with forty-two animations of its own does not need a
         # four-cell chase drawn over it, and could not show one anyway: in its
         # automatic mode it ignores the red, green and blue a matrix writes.
         if all_self_animating(caps, group.fixture_ids):
+            continue
+        # Nor is a matrix drawn where no rigged cell has red, green and blue:
+        # `Cabezas` was 7R beams on a colour wheel and spares in a flight
+        # case, and its matrices lit nothing anybody saw (ruling D6,
+        # 2026-09-26). A matrix the description asks for there is refused.
+        if not rigged.intersection(rgb_cells(by_id, group.fixture_ids)):
+            if described.matrices.get(group.name):
+                raise BuildRefusalError(vocabulary.render("invisible_matrices", group=group.name))
             continue
         generated = generate_matrix_effects(
             workspace,

@@ -3694,7 +3694,7 @@ def test_2026_09_26_a_matrix_nobody_can_see(library):
         and find_local(f, "FixtureGroup").text == str(groups["PAR"].group_id)
     )
     matrix = copy.deepcopy(source)
-    matrix.set("ID", str(1 + max(int(f.get("ID")) for f in iter_local(workspace.root, "Function"))))
+    matrix.set("ID", str(1 + max(int(i) for i in _functions_by_id(workspace))))
     matrix.set("Name", "Cabezas - Fill Rojo")
     find_local(matrix, "FixtureGroup").text = str(groups["Cabezas"].group_id)
     source.addnext(matrix)

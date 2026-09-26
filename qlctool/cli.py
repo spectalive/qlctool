@@ -26,6 +26,7 @@ from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_dirs import fixture_dirs
 from .fixture_group import fixture_groups
 from .generate.build_canonical_show import build_canonical_show
+from .generate.build_refusal_error import BuildRefusalError
 from .generate.channel_probe import generate_channel_probe
 from .generate.color_palette import generate_color_palette
 from .generate.generate_matrix_effects import generate_matrix_effects
@@ -367,15 +368,18 @@ def cmd_newshow(args: argparse.Namespace) -> int:
     refusal = newshow_refusal(ws.root, library, vocabulary)
     if refusal is not None:
         raise SystemExit(refusal)
-    show = build_canonical_show(
-        ws,
-        library,
-        with_layout=not args.no_buttons,
-        plot_path=plot,
-        beats=args.beats,
-        bpm_tap=args.bpm_tap,
-        description=description,
-    )
+    try:
+        show = build_canonical_show(
+            ws,
+            library,
+            with_layout=not args.no_buttons,
+            plot_path=plot,
+            beats=args.beats,
+            bpm_tap=args.bpm_tap,
+            description=description,
+        )
+    except BuildRefusalError as refused:
+        raise SystemExit(str(refused)) from refused
     ws.save(out)
 
     colors = sum(len(b.scene_ids) + len(b.split_ids) for b in show.banks)

@@ -319,6 +319,8 @@ def test_curated_matrices_are_filtered_into_their_own_group_only():
         by_group.setdefault(entry.group_name, []).append(entry.algorithm)
     # 2026-08-28: the hand-built bar cycle's algorithm families came back as
     # curated entries, carrying the seven palette colours nothing emitted.
+    # Ruling D6 (2026-09-26) took Cabezas' six out: no rigged cell of it has
+    # red, green and blue, so nobody saw them.
     assert by_group == {
         "BarrasLed": [
             "Sine Wave",
@@ -334,14 +336,6 @@ def test_curated_matrices_are_filtered_into_their_own_group_only():
             "Random Column",
             "Fill Unfill",
             "One By One",
-        ],
-        "Cabezas": [
-            "One By One",
-            "Fill Unfill",
-            "Noise",
-            "Alternate",
-            "Opposite",
-            "Random Column",
         ],
         "PAR": [
             "Circular",

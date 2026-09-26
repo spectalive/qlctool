@@ -49,7 +49,7 @@ class CuratedScript:
 # Read against `~/p/qlcplus/resources/rgbscripts/*.js` (QLC+ 5.2.2 line), one
 # script per file, `algo.name` for the exact `<Algorithm>` text and
 # `algo.acceptColors` for how many colours it actually reads. Grid shapes are
-# `BarrasLed` 8x2, `Cabezas` 12x1, `PAR` 15x1 (`fixture_group.py`).
+# `BarrasLed` 8x2, `PAR` 15x1 (`fixture_group.py`).
 CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # sinewave.js: apiVersion 2, acceptColors 2 - one colour fades into the
     # other across the sweep. Orientation is load-bearing for the step count
@@ -86,20 +86,10 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # white, because the checker reads the file, not the script, and a white
     # matrix on a rotation is what `rule_wheel_white` exists to catch.
     CuratedScript("BarrasLed", "Plasma", {"presetIndex": "Rainbow"}, ("Cyan",)),
-    # onebyone.js: declares no properties and no acceptColors at all - QLC+
-    # defaults an undeclared acceptColors to 2 (rgbscript.cpp), but the script
-    # only ever reads rgb[0], so one colour is what the light shows.
-    CuratedScript("Cabezas", "One By One", {}, ("Cyan",)),
-    # fillunfill.js: Vertical would read `height`, and Cabezas is 12x1 - a
-    # vertical fill on a one-row grid is a one-frame flash, not a sweep.
-    # Horizontal is not a preference here, it is the only orientation this
-    # grid can show at all.
-    CuratedScript("Cabezas", "Fill Unfill", {"orientation": "Horizontal"}, ("Naranja",)),
-    # noise.js: acceptColors 1, explicit - the script clamps random noise to
-    # one chosen colour's own channels. "High" (its default) redraws every
-    # pixel every frame; "Medium" backs that off so twelve moving heads read
-    # as a flicker, not a strobe.
-    CuratedScript("Cabezas", "Noise", {"noisePercentage": "Medium"}, ("Rosa",)),
+    # `Cabezas` carried six scripts here until ruling D6 (2026-09-26): its
+    # rigged cells are 7R beams on a colour wheel and every red-green-blue
+    # cell is a spare in a flight case, so nobody saw any of them
+    # (`rule_invisible_matrix`).
     # circular.js: acceptColors 1. Radar is both the brief's pick and the
     # script's own default (circularMode 0). Traced against the algorithm
     # (util.blindoutRadius = min(width, height) / 2 = 0.5 on a 15x1 row): the
@@ -174,8 +164,10 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
     ),
     # randomcolumn.js: declares nothing, step count 2, reads rgb[0] only.
     CuratedScript("BarrasLed", "Random Column", {}, ("Amarillo",)),
-    # fillunfill.js and onebyone.js: same recipes the Cabezas entries above
-    # use, on the bars' own grid, in colours the bars' base set lacks.
+    # fillunfill.js: Vertical would read `height`, so on a one-row sweep it is
+    # a one-frame flash; Horizontal is the sweep. onebyone.js declares no
+    # acceptColors - QLC+ defaults it to 2 (rgbscript.cpp) - and only reads
+    # rgb[0]. Both in colours the bars' base set lacks.
     CuratedScript(
         "BarrasLed",
         "Fill Unfill",
@@ -183,15 +175,7 @@ CURATED_MATRICES: tuple[CuratedScript, ...] = (
         ("Rosa",),
     ),
     CuratedScript("BarrasLed", "One By One", {}, ("Cyan",)),
-    # The heads and the PARs carry the rest of the missing palette.
-    CuratedScript(
-        "Cabezas",
-        "Alternate",
-        {"orientation": "Horizontal"},
-        ("Verde Menta", "Azul Profundo"),
-    ),
-    CuratedScript("Cabezas", "Opposite", {"orientation": "Horizontal"}, ("Celeste",)),
-    CuratedScript("Cabezas", "Random Column", {}, ("Fucsia",)),
+    # The PARs carry the rest of the missing palette.
     CuratedScript(
         "PAR",
         "Fill From Center",

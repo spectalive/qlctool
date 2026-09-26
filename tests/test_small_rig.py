@@ -242,8 +242,10 @@ def test_2026_09_26_a_beam_panels_or_bars_only_rig_passes_its_own_check(name, tm
         for bars in (False, True)
         for panels in (False, True)
     )
+    # Ruling D6 (2026-09-26): a matrix writes red, green and blue, which a
+    # 7R does not have, so a beam-only rig draws no matrices at all.
     assert (has_mixes, has_matrices) == {
-        "beam": (True, True),
+        "beam": (True, False),
         "panels": (True, False),
         "bars": (True, True),
     }[name]

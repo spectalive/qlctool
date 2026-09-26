@@ -46,14 +46,9 @@ def test_vibra_is_the_default_description():
     assert show.console.canvas == (1440, 900)
     assert show.console.keys["auto"] == "Q"
     assert "stage_aim" in show.console.flash_functions
-    assert [s.algorithm for s in show.matrices["Cabezas"]] == [
-        "One By One",
-        "Fill Unfill",
-        "Noise",
-        "Alternate",
-        "Opposite",
-        "Random Column",
-    ]
+    # Ruling D6 (2026-09-26): no matrix on Cabezas, whose rigged cells have
+    # no red, green and blue.
+    assert "Cabezas" not in show.matrices
 
 
 def test_the_description_sets_the_console_canvas_and_the_clock():

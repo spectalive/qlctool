@@ -108,34 +108,6 @@ properties = { orientation = "Horizontal" }
 script = "One By One"
 colors = ["cyan"]
 
-[[groups.Cabezas.matrices]]
-script = "One By One"
-colors = ["cyan"]
-
-[[groups.Cabezas.matrices]]
-script = "Fill Unfill"
-colors = ["orange"]
-properties = { orientation = "Horizontal" }
-
-[[groups.Cabezas.matrices]]
-script = "Noise"
-colors = ["pink"]
-properties = { noisePercentage = "Medium" }
-
-[[groups.Cabezas.matrices]]
-script = "Alternate"
-colors = ["mint_green", "deep_blue"]
-properties = { orientation = "Horizontal" }
-
-[[groups.Cabezas.matrices]]
-script = "Opposite"
-colors = ["light_blue"]
-properties = { orientation = "Horizontal" }
-
-[[groups.Cabezas.matrices]]
-script = "Random Column"
-colors = ["fuchsia"]
-
 [[groups.PAR.matrices]]
 script = "Circular"
 colors = ["red"]

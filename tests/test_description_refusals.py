@@ -8,6 +8,7 @@ wrote.
 import pytest
 from rig_root import RIG_ROOT
 
+from qlctool.cli import main
 from qlctool.description.load_show_description import load_show_description
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
@@ -79,8 +80,9 @@ def test_default_matrices_follow_the_patch(tmp_path):
     loaded = load_show_description(
         _write(tmp_path, _vibra_colours_without("fire_red", "sky_blue")), _patch_without("PAR")
     )
-    assert set(loaded.matrices) == {"BarrasLed", "Cabezas"}
-    assert loaded.matrices["Cabezas"] == vibra_description().matrices["Cabezas"]
+    # Ruling D6 (2026-09-26): Vibra's defaults no longer draw on Cabezas.
+    assert set(loaded.matrices) == {"BarrasLed"}
+    assert loaded.matrices["BarrasLed"] == vibra_description().matrices["BarrasLed"]
 
 
 def test_a_default_matrix_colour_the_palette_lacks_is_explained(tmp_path, patch_root):
@@ -135,3 +137,24 @@ def test_an_override_may_reword_a_frame_explanation(tmp_path, patch_root):
     text = '[names.en]\nhits = "Hits — they punch through"\n'
     loaded = load_show_description(_write(tmp_path, text), patch_root)
     assert loaded.names == {"en": {"hits": "Hits — they punch through"}}
+
+
+def test_2026_09_26_matrices_on_a_group_nobody_can_see_are_refused(tmp_path):
+    """Ruling D6 of the en-sala fix plan: a matrix writes red, green and blue,
+    and no rigged fixture of `Cabezas` has them - its six curated matrices lit
+    only spares in a flight case. Asked for again, newshow refuses in the
+    show's words instead of building a look nobody sees. Whether a cell is
+    rigged is the stage plot's to say, and the build applies the plot, so the
+    refusal comes from the build and names the group.
+    """
+    text = (SETUPS / "vibra.toml").read_text(encoding="utf-8")
+    for name in ("Vibra.qxw", "vibra-stage-plot.json"):
+        text = text.replace(f'= "{name}"', f'= "{SETUPS / name}"')
+    text += '\n[[groups.Cabezas.matrices]]\nscript = "One By One"\ncolors = ["cyan"]\n'
+    path = tmp_path / "show.toml"
+    path.write_text(text, encoding="utf-8")
+    out = tmp_path / "show.qxw"
+    with pytest.raises(SystemExit) as refused:
+        main(["newshow", "--description", str(path), "--out", str(out)])
+    assert str(refused.value.code).startswith("[groups.Cabezas] pide matrices")
+    assert not out.exists()
