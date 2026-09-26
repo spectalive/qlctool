@@ -8,13 +8,16 @@ held flash neither starts nor stops smoke, and its pump pairs go.
 
 The rule reads the wiring, the channel groups and the graph, never a name: a
 Flash button with `ForceLTP` whose Scene writes 0 on a channel QLC+ merges HTP
-(`htp_offsets`) that carries no colour - a colour's zeros are part of the
-colour a bank or a hit replaces - where some other console button reaches a
-lit value on the same channel, cuts that button's output while it is held.
+(`htp_offsets`) that is neither colour nor strobe - a colour's zeros are part
+of the colour a bank or a hit replaces, and a strobe channel's zero is the
+flash choosing not to strobe, as the plain bass hit does - where some other
+console button reaches a lit value on the same channel, cuts that button's
+output while it is held: a dimmer, or a smoke pump.
 """
 
 from lxml import etree
 
+from .. import roles
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .color_roles import COLOUR
@@ -59,7 +62,7 @@ def check_flash_forced_zero(
             for offset, value in written.items()
             if value == 0
             and offset in htp.get(fixture_id, frozenset())
-            and capability.roles_by_offset[offset] not in COLOUR
+            and capability.roles_by_offset[offset] not in (*COLOUR, roles.STROBE)
         }
         if not zeros:
             continue
