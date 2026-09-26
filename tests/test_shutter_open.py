@@ -93,6 +93,6 @@ def test_a_gobo_scene_opens_the_beams(rig):
     for scene_id in result.scene_ids:
         for values in findall_local(scenes[str(scene_id)], "FixtureVal"):
             nums = [int(v) for v in (values.text or "").split(",")]
-            pairs = dict(zip(nums[::2], nums[1::2]))
+            pairs = dict(zip(nums[::2], nums[1::2], strict=True))
             assert 6 in pairs and pairs[6] == 255, "dimmer still has to come up"
             assert 5 in pairs and pairs[5] >= 241, "and the shutter has to open"

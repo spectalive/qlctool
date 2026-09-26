@@ -33,7 +33,7 @@ def _scene_values(scene):
     values = {}
     for fixture in findall_local(scene, "FixtureVal"):
         pairs = [int(value) for value in (fixture.text or "").split(",") if value]
-        values[int(fixture.attrib["ID"])] = dict(zip(pairs[::2], pairs[1::2]))
+        values[int(fixture.attrib["ID"])] = dict(zip(pairs[::2], pairs[1::2], strict=True))
     return values
 
 

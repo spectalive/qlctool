@@ -55,7 +55,7 @@ def sort_group_by_stage(root: etree._Element, group_id: int) -> list[tuple[int, 
                 int(head.attrib["X"]),
             ),
         )
-        for cell, head in zip(cells, ordered):
+        for cell, head in zip(cells, ordered, strict=True):
             was = int(head.attrib["X"])
             if was != cell:
                 moved.append((was, cell))

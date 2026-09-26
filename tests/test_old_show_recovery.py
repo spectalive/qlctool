@@ -150,7 +150,7 @@ def test_the_beams_park_at_the_old_rest(built):
     ]
     assert len(beam_rows) == 4
     for fixture_val in beam_rows:
-        pairs = dict(zip(*[iter(map(int, fixture_val.text.split(",")))] * 2))
+        pairs = dict(zip(*[iter(map(int, fixture_val.text.split(",")))] * 2, strict=True))
         # 7R 16 channel: pan on offset 0, tilt on offset 1.
         assert pairs[0] == 0 and pairs[1] == 130, fixture_val.attrib["ID"]
 

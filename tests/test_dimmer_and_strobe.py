@@ -160,7 +160,7 @@ def test_the_ping_pong_scenes_are_complements(library):
         result = {}
         for element in findall_local(functions[scene_id], "FixtureVal"):
             numbers = [int(n) for n in (element.text or "").split(",") if n != ""]
-            result[int(element.attrib["ID"])] = dict(zip(numbers[::2], numbers[1::2]))
+            result[int(element.attrib["ID"])] = dict(zip(numbers[::2], numbers[1::2], strict=True))
         return result
 
     first, second = (values_of(i) for i in generated.scene_ids)
@@ -193,6 +193,7 @@ def test_the_lit_half_of_the_ping_pong_opens_its_shutter(library):
                 zip(
                     [int(n) for n in (v.text or "").split(",")][::2],
                     [int(n) for n in (v.text or "").split(",")][1::2],
+                    strict=True,
                 )
             )
             for v in findall_local(functions[scene_id], "FixtureVal")
@@ -236,7 +237,7 @@ def test_a_strobe_value_lands_where_the_definition_says_it_strobes(library):
     for element in findall_local(functions[generated.on_id], "FixtureVal"):
         fixture_id = int(element.attrib["ID"])
         numbers = [int(n) for n in (element.text or "").split(",") if n != ""]
-        for offset, value in zip(numbers[0::2], numbers[1::2]):
+        for offset, value in zip(numbers[0::2], numbers[1::2], strict=True):
             labels = ranges[(fixture_id, offset)]
             if not labels:
                 assert value > 0, (fixture_id, offset, value)
@@ -280,7 +281,9 @@ def test_the_console_strobes_are_held_shutter_scenes(library):
         written = {}
         for element in findall_local(scene, "FixtureVal"):
             numbers = [int(n) for n in (element.text or "").split(",") if n != ""]
-            written[int(element.attrib["ID"])] = dict(zip(numbers[0::2], numbers[1::2]))
+            written[int(element.attrib["ID"])] = dict(
+                zip(numbers[0::2], numbers[1::2], strict=True)
+            )
         assert written == {fixture_id: pair[which] for fixture_id, pair in expected.items()}
 
 

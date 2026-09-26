@@ -111,6 +111,7 @@ def generate_stage_layout(
         for fixture_id, x in zip(
             fixture_ids,
             spread(len(fixture_ids), width * 1000, width * 1000 * SIDE_MARGIN),
+            strict=True,
         ):
             positions[fixture_id] = (round(x), y, z)
 

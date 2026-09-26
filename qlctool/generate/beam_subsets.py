@@ -157,7 +157,7 @@ def _multicolor_scene(
     # honest off and full half-colour values rather than guessed positions.
     values = {
         beam.fixture.fixture_id: [(offset, 255 if index in selected else 0)]
-        for index, (beam, offset) in enumerate(zip(beams, offsets))
+        for index, (beam, offset) in enumerate(zip(beams, offsets, strict=True))
         if offset is not None
     }
     function_id = next_function_id(workspace.root)

@@ -147,9 +147,10 @@ def write_monitor(
         for attribute, value in zip(
             ("XPos", "YPos", "ZPos"),
             (c - PRIMITIVE_SIZE / 2 for c in prop.centre),
+            strict=True,
         ):
             element.set(attribute, str(round(value)))
-        for attribute, wanted in zip(("XScale", "YScale", "ZScale"), prop.size):
+        for attribute, wanted in zip(("XScale", "YScale", "ZScale"), prop.size, strict=True):
             element.set(attribute, f"{wanted / PRIMITIVE_SIZE:g}")
         for attribute, degrees in (
             ("XRot", prop.x_rot),

@@ -621,7 +621,7 @@ def test_a_fog_machine_fired_with_its_light_never_programmed(library):
             numbers = [int(n) for n in value.text.split(",")]
             kept = [
                 (offset, level)
-                for offset, level in zip(numbers[0::2], numbers[1::2])
+                for offset, level in zip(numbers[0::2], numbers[1::2], strict=True)
                 if offset in machines[fixture_id]
             ]
             if kept:

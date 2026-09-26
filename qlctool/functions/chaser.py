@@ -63,7 +63,7 @@ def build_chaser(
     modes.set("FadeOut", "Common")
     modes.set("Duration", "Common" if uniform else "PerStep")
 
-    for number, (func_id, step_hold) in enumerate(zip(step_function_ids, holds)):
+    for number, (func_id, step_hold) in enumerate(zip(step_function_ids, holds, strict=True)):
         step = etree.SubElement(function, f"{{{QLC_NS}}}Step")
         step.set("Number", str(number))
         step.set("FadeIn", str(fade_in))

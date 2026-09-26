@@ -89,9 +89,9 @@ def test_a_contrast_puts_the_movers_against_everything_else(tmp_path):
     for value in findall_local(scene, "FixtureVal"):
         fixture_id = int(value.attrib["ID"])
         pairs = [int(n) for n in (value.text or "").split(",")]
-        by_offset = dict(zip(pairs[::2], pairs[1::2]))
+        by_offset = dict(zip(pairs[::2], pairs[1::2], strict=True))
         expected = PALETTE["Rojo"] if fixture_id in movers else PALETTE["Azul"]
-        for role, level in zip((roles.RED, roles.GREEN, roles.BLUE), expected):
+        for role, level in zip((roles.RED, roles.GREEN, roles.BLUE), expected, strict=True):
             for offset in caps[fixture_id].offsets_for_role(role):
                 assert by_offset[offset] == level
 

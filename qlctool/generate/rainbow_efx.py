@@ -77,7 +77,7 @@ def generate_rainbow_efx(
                         mode=MODE_RGB,
                         start_offset=offset,
                     )
-                    for (fixture_id, head), offset in zip(heads, offsets)
+                    for (fixture_id, head), offset in zip(heads, offsets, strict=True)
                 ],
                 algorithm="Circle",
                 x_axis=X_AXIS,

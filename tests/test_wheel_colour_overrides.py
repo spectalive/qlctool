@@ -37,7 +37,7 @@ def _values(function):
     values: dict[int, dict[int, int]] = {}
     for fixture in findall_local(function, "FixtureVal"):
         numbers = [int(n) for n in (fixture.text or "").split(",") if n]
-        values[int(fixture.attrib["ID"])] = dict(zip(numbers[::2], numbers[1::2]))
+        values[int(fixture.attrib["ID"])] = dict(zip(numbers[::2], numbers[1::2], strict=True))
     return values
 
 

@@ -41,7 +41,9 @@ def _scenes(workspace: Workspace) -> dict[str, list[Values]]:
         values: Values = {}
         for fixture in findall_local(function, "FixtureVal"):
             numbers = [int(n) for n in (fixture.text or "").split(",") if n]
-            values[int(fixture.get("ID", "-1"))] = dict(zip(numbers[::2], numbers[1::2]))
+            values[int(fixture.get("ID", "-1"))] = dict(
+                zip(numbers[::2], numbers[1::2], strict=True)
+            )
         scenes.setdefault(function.get("Name", ""), []).append(values)
     return scenes
 

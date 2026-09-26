@@ -134,7 +134,7 @@ def generate_movement_efx(
                 start_offset=offset,
                 direction="Backward" if fid in mirrored else "Forward",
             )
-            for fid, offset in zip(fixture_ids, offsets)
+            for fid, offset in zip(fixture_ids, offsets, strict=True)
         ]
 
     efx_ids: list[int] = []

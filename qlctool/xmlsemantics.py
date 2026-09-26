@@ -56,7 +56,7 @@ def _first_difference(a: etree._Element, b: etree._Element, path: str) -> str | 
     if len(ac) != len(bc):
         return f"{here}: child count {len(ac)} != {len(bc)}"
 
-    for ca, cb in zip(ac, bc):
+    for ca, cb in zip(ac, bc, strict=True):
         diff = _first_difference(ca, cb, here)
         if diff is not None:
             return diff

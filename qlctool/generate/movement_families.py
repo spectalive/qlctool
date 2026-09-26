@@ -623,7 +623,7 @@ def generate_movement_families(
     ):
         if generated is None:
             continue
-        for shape, efx in zip(envelope.algorithms, generated.efx_ids):
+        for shape, efx in zip(envelope.algorithms, generated.efx_ids, strict=True):
             by_shape.setdefault(shape, []).append(efx)
     for shape in WASH.algorithms:
         members = by_shape.get(shape)
@@ -652,7 +652,7 @@ def generate_movement_families(
         for generated, envelope in parts:
             if generated is None:
                 continue
-            for shape, efx in zip(envelope.algorithms, generated.efx_ids):
+            for shape, efx in zip(envelope.algorithms, generated.efx_ids, strict=True):
                 twins.setdefault(shape, []).append(efx)
         for shape in WASH.algorithms:
             members = twins.get(shape)

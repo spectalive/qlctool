@@ -46,7 +46,7 @@ def _values(scene) -> dict[int, dict[int, int]]:
     values: dict[int, dict[int, int]] = {}
     for fixture in findall_local(scene, "FixtureVal"):
         numbers = [int(n) for n in (fixture.text or "").split(",") if n]
-        values[int(fixture.get("ID", "-1"))] = dict(zip(numbers[::2], numbers[1::2]))
+        values[int(fixture.get("ID", "-1"))] = dict(zip(numbers[::2], numbers[1::2], strict=True))
     return values
 
 

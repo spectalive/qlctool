@@ -374,7 +374,7 @@ def test_no_scene_but_the_smoke_ones_touches_the_smoke_pump(built):
             numbers = [int(n) for n in value.text.split(",")]
             fired = [
                 (offset, level)
-                for offset, level in zip(numbers[0::2], numbers[1::2])
+                for offset, level in zip(numbers[0::2], numbers[1::2], strict=True)
                 if offset in pumps[fixture_id] and level > 0
             ]
             assert not fired, (function.attrib.get("Name"), fired)

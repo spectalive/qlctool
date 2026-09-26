@@ -299,7 +299,7 @@ def test_curated_scripts_are_stepped_for_a_full_pass_each():
     assert set(steps) == set(result.matrix_ids)
     width, height = 8, 2  # BarrasLed
     matrices = {int(m.attrib["ID"]): m for m in _matrices(ws.root)}
-    for matrix_id, algorithm in zip(result.matrix_ids, ("Sine Wave", "Plasma")):
+    for matrix_id, algorithm in zip(result.matrix_ids, ("Sine Wave", "Plasma"), strict=True):
         # Read back the frame length the generator actually wrote: `_pace`
         # speeds up a pass longer than chaser_max_hold rather than cutting it
         # off, so "needed" is frame_ms * count for *that* frame_ms, not the

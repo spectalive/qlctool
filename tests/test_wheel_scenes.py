@@ -43,7 +43,7 @@ def test_gobo_scenes_come_from_the_definition(tmp_path):
     # All four beams, each with the gobo channel set and its dimmer opened.
     assert sorted(int(v.attrib["ID"]) for v in values) == list(BEAMS)
     pairs = [int(x) for x in values[0].text.split(",")]
-    assert dict(zip(pairs[0::2], pairs[1::2]))[9] == 10  # middle of 7-13
+    assert dict(zip(pairs[0::2], pairs[1::2], strict=True))[9] == 10  # middle of 7-13
 
 
 def test_prism_wheel_uses_the_prism_channel(tmp_path):

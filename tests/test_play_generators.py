@@ -44,7 +44,9 @@ def _members(function, functions):
 
 def _values(function):
     return {
-        int(value.attrib["ID"]): dict(zip(*[iter(map(int, value.text.split(",")))] * 2))
+        int(value.attrib["ID"]): dict(
+            zip(*[iter(map(int, value.text.split(",")))] * 2, strict=True)
+        )
         for value in findall_local(function, "FixtureVal")
         if value.text
     }

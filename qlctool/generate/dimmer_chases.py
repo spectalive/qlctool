@@ -111,7 +111,9 @@ def generate_dimmer_chases(
                         direction=direction,
                         start_offset=offset,
                     )
-                    for capability, offset in zip(members, spread_offsets(len(members)))
+                    for capability, offset in zip(
+                        members, spread_offsets(len(members)), strict=True
+                    )
                 ],
                 # The old family EFX, verbatim in shape: Line with the pan
                 # term killed (Width 0), full-height sweep, cascaded Serial
