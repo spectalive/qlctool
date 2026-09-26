@@ -3762,3 +3762,39 @@ def test_2026_09_26_the_macs_left_at_mid_travel(library):
     assert ("Jugar · Ola Vertical", ("MAC WASH 1915Z #2",)) in [
         (f.function, f.fixtures) for f in findings
     ]
+
+
+def test_2026_09_27_a_fan_folded_in_patch_order(library):
+    """2026-09-27, Round 2 review of the en-sala DMX audit: `Beams Abanico`
+    spread the four 7R evenly - 62, 75, 89, 102 - in patch order, so across
+    the stage (fixtures 20, 22, 23, 21) the pans read 62, 89, 102, 75 and the
+    house-right head folded back into the middle; `Beams Cruce` the same,
+    reversed. Controller ruling: the fan follows stage order, as `Alternado`
+    does (D5). Put the patch-order pans back and the rule must name the fan.
+    """
+    from qlctool.checks.rule_fan_order import RULE_ID, check_fan_order
+
+    for name, graph, groups in _shipped_graphs(library):
+        assert check_fan_order(graph, groups, _show(name).root) == [], name
+
+    workspace = _show("Vibra.qxw")
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(workspace.root, library)}
+    fan = _functions(workspace)["Beams Abanico"]
+    patch_order = {20: 62, 21: 75, 22: 89, 23: 102}
+    for value in findall_local(fan, "FixtureVal"):
+        fixture_id = int(value.attrib["ID"])
+        if fixture_id in patch_order:
+            pairs = _pairs_of(value)
+            for offset in caps[fixture_id].offsets_for_role(roles.PAN):
+                pairs[offset] = patch_order[fixture_id]
+            _write_pairs(value, pairs)
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert [(f.function, f.fields["pans"]) for f in findings] == [
+        ("Beams Abanico", "62, 89, 102, 75")
+    ]
+    assert findings[0].fixtures == (
+        "BEAM 230W 7R #1",
+        "BEAM 230W 7R #3",
+        "BEAM 230W 7R #4",
+        "BEAM 230W 7R #2",
+    )
