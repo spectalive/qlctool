@@ -1,5 +1,41 @@
 # qlctool follow-up
 
+- [ ] **Desk bursts on a combined HTP dimmer/strobe channel (C2b, measured
+  2026-09-27).** The tablet's bursts are Chasers started with
+  `setFunctionStatus`, so the button's ForceLTP never applies, and on the
+  MiN Wash (channel 5, dimmer and strobe in one HTP channel) the level's 255
+  outbids every strobe value. Marking that channel `ForcedLTP` in the
+  workspace `<Fixture>` is not sound. Measured on a :9995 copy of
+  Vibra-split: the burst read 236 while it ran and the level's 255 came back
+  when it ended, but toggling FIESTA off left the channel at 255 ("Open")
+  with nothing running while every other intensity, the 7R blade included,
+  went to 0. Read in `~/p/qlcplus/engine/src`: `setChannelCapability` gives
+  a ForcedLTP channel an LTP mask without the Intensity bit, so it is not
+  zeroed each tick, the grand master skips it (`applyGM`), a fade-out
+  targets 0 only for Intensity channels (`GenericFader::setFadeOut`), and
+  blackout outputs `m_blackoutValues`, which keep non-HTP values: the rig's
+  one channel that neither fades, dims, blacks out nor goes dark when its
+  state stops. Smallest alternatives: (a) the levels write that channel at
+  its "100%" dimmer value (8 on the MiN) instead of 255, so under HTP every
+  strobe value (135-239) outbids it - one generator change and one rule
+  (a strobe that no running level can outbid); (b) bursts that reach a
+  forced-LTP flash some other way (a widget press of the console's
+  ForceLTP flash button). The MiN are spares today (ruling D2), so nothing
+  on the rig shows it yet.
+- [ ] **`releaseTo` is one hook per frame (2026-09-27).** The desk map names
+  the hook the most room states start (ties: first in the frame). Released
+  under CHARLA (gobo, prism, heads) or TRANQUILO (gobo, prism), a pick then
+  returns to the AUTO animation rather than to the state's own hook (`Gobo
+  Reposo`, `Prisma Reposo`, `Cabezas Centro`). The floors already leave those
+  families at rest without any press. Smallest next step, if the tablet should follow
+  the running state: an optional per-state map beside `releaseTo`
+  ({state widget: hook widget}) for the states that start exactly one of the
+  frame's hooks, and dmxdesk choosing by the state it last pressed.
+- [ ] **`pick_release_orphans` does not judge the pixel frame (2026-09-27).**
+  `FAMILIES` has no pixel-mode roles, so a released PIXELES pick is not
+  asked what it leaves behind. The panels' mode channel is LTP like a gobo;
+  smallest next step: give the rule the pixel-mode family
+  (`_sets_pixel_mode`) and a floor for it if the check bites.
 - [x] **Flash Color leaves the lit smoke columns out (owner decision,
   2026-09-26).** `Flash Color` (and its desk burst's private copy) skipped
   every smoke fixture, so while held the four vertical LED fog machines kept
