@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from .capabilities_of import capabilities_of
+from .checks.console_states import room_states
 from .checks.rule_desk_bursts import check_desk_bursts
 from .checks.show_graph import build_show_graph, group_fixtures
 from .desk_burst_buttons import desk_burst_buttons
@@ -29,6 +30,7 @@ from .desk_policy import (
     place,
     split_caption,
 )
+from .desk_release_hooks import desk_release_hooks
 from .desk_swatch import swatches
 from .desk_unique_key import desk_unique_key
 from .desk_widgets import desk_widgets
@@ -60,6 +62,7 @@ def build_deskmap(
     if burst_findings:
         raise ValueError(desk_burst_refusal(burst_findings, vocabulary))
     bursts = desk_burst_buttons(root, vocabulary)
+    release = desk_release_hooks(graph, groups, root, room_states(root, graph, groups))
 
     controls: dict[str, dict[str, Any]] = {}
     sections: dict[tuple[str, str], list[str]] = {}
@@ -105,6 +108,10 @@ def build_deskmap(
             "enabled": placement.enabled,
             "reason": placement.reason,
         }
+        if widget.id in release:
+            # Optional, schema 2 unchanged: the desk ignores keys it does not
+            # know. The hook to press when this latched pick is released.
+            controls[key]["releaseTo"] = release[widget.id]
         if placement.role == "accent":
             burst = bursts[key][0]
             identifier = desk_burst_identifier(widget.caption, vocabulary)

@@ -225,3 +225,32 @@ def test_2026_09_26_the_colour_flash_tile_shows_no_swatch_of_the_smoke_columns(d
     colour a tile needs, so FLASH COLOR stays swatchless beside FLASH's white."""
     assert deskmap["controls"]["flash-color"]["swatches"] == []
     assert deskmap["controls"]["flash"]["swatches"] == ["#ffffff"]
+
+
+def test_2026_09_27_a_released_pick_names_the_hook_the_desk_presses(deskmap):
+    """Ruling D8: picks stay latched, and the tablet presses the frame's hook
+    when one is released, since QLC+ 5's solo frame restores nothing. The map
+    names that hook on every family-frame pick (`releaseTo`, optional, schema 2
+    unchanged): the hook the most room states start, first in the frame on a
+    tie - the one AUTO's looks use.
+    """
+    assert deskmap["schema"] == 2
+    controls = deskmap["controls"]
+    by_widget = {c["widget"]: c for c in controls.values()}
+    released = {k: c for k, c in controls.items() if "releaseTo" in c}
+    assert released
+    for control in released.values():
+        hook = by_widget[control["releaseTo"]]
+        assert hook["solo"] == control["solo"] and hook["role"] == "hook"
+        assert control["action"] == "toggle" and control["releaseTo"] != control["widget"]
+    assert not [c for c in controls.values() if c["role"] == "state" and "releaseTo" in c]
+    expected = {
+        "color": "Colores completos",
+        "heads": "AUTO lento",
+        "gobos": "AUTO gobos",
+        "prism": "AUTO prisma",
+    }
+    for page, caption in expected.items():
+        picks = _section(deskmap, page, "picks")["controls"]
+        targets = {by_widget[controls[k]["releaseTo"]]["caption"] for k in picks}
+        assert targets == {caption}, page
