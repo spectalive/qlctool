@@ -12,6 +12,7 @@ from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, localname
 from .phrase import Phrase
 from .show_graph import ShowGraph, reach
+from .static_floors import static_floors
 from .steps_are_levels import steps_are_levels
 
 FAMILIES = {
@@ -248,10 +249,15 @@ def _owner_frontier(
     Collection or Chaser such as `Movimientos Suaves` or `Gobo Animacion`
     remains the functional owner, never its leaf steps. A Chaser whose steps
     are all level Collections is structural too, even with one family
-    (`steps_are_levels`, 2026-09-25).
+    (`steps_are_levels`, 2026-09-25). A static floor the state starts under
+    its hooks (`static_floors`) owns nothing: it is what a released pick lands
+    on, and the frame's hooks still own the family (2026-09-27, ruling D8).
     """
     found: set[int] = set()
+    floors = static_floors(graph, groups, state_id)
     for function_id in graph.members.get(state_id, ()):
+        if function_id in floors:
+            continue
         found.update(_nested_owner_frontier(graph, groups, function_id, False, set()))
     return found
 

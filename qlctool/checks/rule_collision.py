@@ -16,6 +16,12 @@ A member's *reach* - every channel it can drive through anything it starts, at
 any step - is what gets compared. If two concurrent members reach the same
 contested channel, then at some step of some chaser both are writing it, and
 the room shows the sum.
+
+A static floor is the exception (`static_floors`): a Scene the Collection
+starts before every member that writes its channels, on LTP channels only, is
+overridden by each of them while they run and holds the channel when they
+stop. That order is QLC+ 5's, measured, so the pair is a floor under a look,
+not two looks fighting.
 """
 
 from itertools import combinations
@@ -23,6 +29,7 @@ from itertools import combinations
 from .color_roles import CONTESTED
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, reach
+from .static_floors import static_floors
 
 RULE_ID = "collision"
 
@@ -41,8 +48,11 @@ def _collection(graph: ShowGraph, groups, collection_id: int, reported) -> list[
     if len(members) < 2:
         return []
     contested = {member: _contested_channels(graph, groups, member) for member in members}
+    floors = static_floors(graph, groups, collection_id)
     findings: list[Finding] = []
     for first, second in combinations(members, 2):
+        if first in floors:
+            continue
         shared = contested[first].keys() & contested[second].keys()
         if not shared:
             continue

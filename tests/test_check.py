@@ -3892,3 +3892,48 @@ def test_2026_09_26_the_columns_do_not_strobe_on_strobo(library):
 
     found = {(f.function, f.fixtures) for f in findings(workspace)}
     assert found == {("Strobo Rapido", columns), ("Flash 100%", columns)}
+
+
+def _set_steps(collection, ids):
+    """Rewrite a Collection's members, in order."""
+    template = findall_local(collection, "Step")[0]
+    for step in findall_local(collection, "Step"):
+        collection.remove(step)
+    for number, function_id in enumerate(ids):
+        step = collection.makeelement(template.tag, {"Number": str(number)})
+        step.text = str(function_id)
+        collection.append(step)
+
+
+def test_2026_09_27_a_floor_under_the_gobo_hook_is_not_a_collision(library):
+    """2026-09-27, en-sala fix round 3 (ruling D8): a released Gobo Shake kept
+    shaking under FIESTA because nothing the state still ran wrote the gobo
+    channels. A Scene started before the hook is overridden by the hook while
+    it runs and writes again the tick a pick over it stops - measured on
+    :9995, gobo and shake back on the Scene's values the tick the pick was
+    released. Put first, it is a floor: no collision, and not an owner the
+    frame lacks. Put after the hook, it is two looks fighting, and both rules
+    must say so.
+    """
+    from qlctool.checks.static_floors import static_floors
+
+    workspace = _show()
+    functions = _functions(workspace)
+    fiesta = functions["Momento Fiesta"]
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    groups = group_fixtures(workspace.root)
+    floors = static_floors(graph, groups, int(fiesta.attrib["ID"]))
+    members = [int(s.text) for s in findall_local(fiesta, "Step") if int(s.text) not in floors]
+    floor = int(_twin_scene(workspace, functions, "Gobo Reposo", "Gobo Suelo").attrib["ID"])
+
+    _set_steps(fiesta, [floor, *members])
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    assert static_floors(graph, groups, int(fiesta.attrib["ID"])) == {floor}
+    found = {(f.rule_id, f.function) for f in check_workspace(workspace, library)}
+    assert ("collision", "Momento Fiesta") not in found
+    assert ("family_owner", "Gobo Suelo") not in found
+
+    _set_steps(fiesta, [*members, floor])
+    found = {(f.rule_id, f.function) for f in check_workspace(workspace, library)}
+    assert ("collision", "Momento Fiesta") in found
+    assert ("family_owner", "Gobo Suelo") in found
