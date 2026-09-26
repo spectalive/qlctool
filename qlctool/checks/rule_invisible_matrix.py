@@ -36,7 +36,9 @@ def check_invisible_matrix(graph: ShowGraph, root: etree._Element) -> list[Findi
         if function.attrib.get("Type") != "RGBMatrix" or element is None:
             continue
         group = groups.get(int((element.text or "-1").strip()))
-        if group is None:
+        # A cell with no definition is `missing_definition`'s to report: what
+        # it can show is unknown, so the matrix is not judged.
+        if group is None or any(i not in graph.capabilities for i in group.fixture_ids):
             continue
         painted = rgb_cells(graph.capabilities, group.fixture_ids)
         spares = [fixture_id for fixture_id in painted if fixture_id not in rigged]
