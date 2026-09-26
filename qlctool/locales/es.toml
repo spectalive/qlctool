@@ -490,6 +490,7 @@ wheel_rotation = "rueda de color girando"
 wheel_white = "blanco en la rueda"
 white_emitter = "blanco sin emisor blanco"
 white_twice = "blanco pagado dos veces"
+white_share_dropped = "blanco perdido sin emisor"
 zoom_narrow = "zoom sin declarar"
 
 # Lo que dice cada hallazgo de `qlctool check` (ruling B10, round 2): el
@@ -604,4 +605,6 @@ wheel_rotation_spinning = "da color a todo el rig pero deja la rueda de color de
 wheel_white_on_clock = "el paso «{step}» pone luz blanca en {count} aparatos por su cuenta, en el reloj de la rueda: en directo es la sala encendida; el blanco es de {full_white} y de nada que gire solo (boton: {button})"
 white_emitter_unused = "escribe rojo, verde y azul en {count} aparatos con emisor White y no escribe ese canal: el blanco sale mezclado de tres LED y el cuarto, el mas brillante, se queda a cero"
 white_twice_washed = "manda el emisor White y deja el blanco tambien dentro del RGB en {count} aparatos: la parte acromatica del color sale por cuatro LED en vez de uno y el tinte se lava"
+white_share_dropped_scene = "escribe en {count} aparatos sin emisor White el rojo, verde y azul que quedan tras dar la parte blanca a un emisor White: el tinte llega apagado y saturado, y su blanco no sale por ningun sitio"
+white_share_dropped_step = "en el paso {step}, escribe en {count} aparatos sin emisor White el rojo, verde y azul que quedan tras dar la parte blanca a un emisor White: el tinte llega apagado y saturado, y su blanco no sale por ningun sitio"
 zoom_narrow_unwritten = "enciende la cabeza pero no escribe su zoom: se queda con el que dejo el ultimo look, y sin nadie que lo escriba eso es 0, sea el extremo que sea en ese modelo"

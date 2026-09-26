@@ -488,6 +488,7 @@ wheel_rotation = "colour wheel spinning"
 wheel_white = "white on the wheel"
 white_emitter = "white without a white emitter"
 white_twice = "white paid twice"
+white_share_dropped = "white share dropped"
 zoom_narrow = "undeclared zoom"
 
 # What each `qlctool check` finding says (ruling B10, round 2): a Finding's
@@ -602,4 +603,6 @@ wheel_rotation_spinning = "colours the whole rig but leaves these fixtures' colo
 wheel_white_on_clock = "the step «{step}» puts white light on {count} fixtures on its own, on the wheel's clock: live, that is the room lit up; white belongs to {full_white} and to nothing that turns by itself (button: {button})"
 white_emitter_unused = "writes red, green and blue to {count} fixtures with a White emitter and does not write that channel: white comes out mixed from three LEDs and the fourth, the brightest, stays at zero"
 white_twice_washed = "drives the White emitter and also leaves the white inside the RGB on {count} fixtures: the achromatic part of the colour comes out of four LEDs instead of one and the tint washes out"
+white_share_dropped_scene = "writes {count} fixtures that have no White emitter the red, green and blue left over after the white share went to a White emitter: the tint arrives dim and saturated, and its white goes nowhere"
+white_share_dropped_step = "in step {step}, writes {count} fixtures that have no White emitter the red, green and blue left over after the white share went to a White emitter: the tint arrives dim and saturated, and its white goes nowhere"
 zoom_narrow_unwritten = "lights the head but does not write its zoom: it keeps whatever the last look left, and with nobody writing it that is 0, whichever end that is on this model"

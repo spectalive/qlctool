@@ -3288,3 +3288,64 @@ def test_2026_09_25_a_caption_that_promises_bars_panels_and_their_effects(librar
     assert "panel con efectos propios" in findings[matrices]
     assert "panel con efectos propios" in findings[effects]
     assert "barra de pixeles" not in findings[effects]
+
+
+def _shipped_graphs(library):
+    """(name, graph, groups) of every shipped show, built once per call."""
+    for name in SHOWS:
+        workspace = _show(name)
+        yield (
+            name,
+            build_show_graph(workspace.root, capabilities_of(workspace.root, library)),
+            group_fixtures(workspace.root),
+        )
+
+
+def test_2026_09_26_a_pastel_that_loses_its_white_on_rgb_only_fixtures(library):
+    """2026-09-26, en-sala DMX audit (items 1 and 9): `Rig Pastel Rojo` gave
+    twenty-three fixtures (115, 0, 0) and `Luz Charla` a brown (85, 44, 0).
+    `rgbw_split` ran once per scene, so the white share left red, green and
+    blue on every fixture and reached a White emitter only where there was
+    one. Put the remainder back on one RGB-only fixture of each scene - what
+    the old generator wrote - and the rule must name it.
+    """
+    from qlctool.checks.rule_white_share_dropped import RULE_ID, check_white_share_dropped
+
+    for name, graph, groups in _shipped_graphs(library):
+        assert check_white_share_dropped(graph, groups) == [], name
+
+    workspace = _show()
+    functions = _functions(workspace)
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(workspace.root, library)}
+    rgb = (roles.RED, roles.GREEN, roles.BLUE)
+    broken: dict[str, str] = {}
+    for scene_name in ("Rig Pastel Rojo", "Luz Charla Base"):
+        values = list(findall_local(functions[scene_name], "FixtureVal"))
+        emitter = next(v for v in values if caps[int(v.attrib["ID"])].offsets_for_role(roles.WHITE))
+        emitter_caps = caps[int(emitter.attrib["ID"])]
+        pairs = _pairs_of(emitter)
+        # The emitter's own RGB is the split's remainder: its white share went
+        # to its White channel.
+        remainder = [max(pairs[o] for o in emitter_caps.offsets_for_role(r)) for r in rgb]
+        assert max(pairs[o] for o in emitter_caps.offsets_for_role(roles.WHITE)) > 0
+        assert len(set(remainder)) > 1, "the scene has no tint left to split"
+        plain = next(
+            v
+            for v in values
+            if not caps[int(v.attrib["ID"])].offsets_for_role(roles.WHITE)
+            and caps[int(v.attrib["ID"])].offsets_for_role(roles.RED)
+        )
+        plain_caps = caps[int(plain.attrib["ID"])]
+        pairs = _pairs_of(plain)
+        for role, level in zip(rgb, remainder, strict=True):
+            for offset in plain_caps.offsets_for_role(role):
+                pairs[offset] = level
+        _write_pairs(plain, pairs)
+        broken[scene_name] = plain_caps.fixture.name
+
+    findings = {
+        f.function: f.fixtures for f in check_workspace(workspace, library) if f.rule_id == RULE_ID
+    }
+    assert set(findings) == set(broken)
+    for scene_name, fixture in broken.items():
+        assert findings[scene_name] == (fixture,)

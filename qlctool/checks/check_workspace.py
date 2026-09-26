@@ -81,6 +81,7 @@ from .rule_wheel_fade import check_wheel_fade
 from .rule_wheel_rotation import check_wheel_rotation
 from .rule_wheel_white import check_wheel_white
 from .rule_white_emitter import check_white_emitter
+from .rule_white_share_dropped import check_white_share_dropped
 from .rule_white_twice import check_white_twice
 from .rule_zoom_narrow import check_zoom_narrow
 from .show_graph import build_show_graph, group_fixtures
@@ -115,6 +116,7 @@ def check_workspace(
     findings += check_instant_dimmer(graph, groups, states)
     findings += check_white_emitter(graph, groups)
     findings += check_white_twice(graph, groups)
+    findings += check_white_share_dropped(graph, groups)
     findings += check_wheel_colour(graph, groups, entries)
     findings += check_colour_animation_wheel(graph, groups, entries)
     findings += check_movement_figure_coverage(graph, groups, entries)

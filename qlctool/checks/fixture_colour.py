@@ -1,8 +1,10 @@
 """The (r, g, b) a scene puts on one RGB fixture, with its white share folded back in.
 
 A MAC WASH has a white emitter, so `rgbw_split` hands it a pastel red as R115
-W140; a bar without one gets the same pastel as R255 G140 B140. The room sees
-one colour, and a rule that compares colours has to see one too. None when
+W140; a bar without one should get the same pastel as R255 G140 B140. The room
+then sees one colour, and a rule that compares colours has to see one too.
+Whether the generator really wrote the bar the whole pastel is not assumed
+here: `rule_white_share_dropped` asks it (2026-09-26). None when
 the fixture has no RGB or the scene leaves any of the three unwritten - a
 colour claim is all three channels or nothing.
 """
