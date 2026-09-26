@@ -215,18 +215,35 @@
   moved out verbatim (`desk_unique_key`, `desk_dial`, `desk_pages`), so it is
   under the cap (baseline 203 -> 201). Test
   `tests/test_english_desk_burst_refusal.py`.
-- [ ] **The deskmap refusal's frame stays English on a Spanish show (review
-  of round C, 2026-09-26).** Each finding renders in the show's language, but
-  the prefix "invalid desk bursts: " (`build_deskmap.py:113`) and the
-  "names no single accent" refusal (`desk_burst_refusal.py:19`) are fixed
-  English. Next step: two `[messages]` identifiers in both locales, rendered
-  with the vocabulary `build_deskmap` already holds.
-- [ ] **Show `[names]` overrides do not reach the finding text (review of B10
-  round 2, 2026-09-26).** `named_findings` renders with
-  `shipped_names(language)`, so a show that renamed `full_white` still reads
-  "Blanco Total" / "Full White" in `wheel_white`'s message. Smallest next
-  step: pass the show's overrides into the names `named_findings` renders
-  with, and test it on a show with a renamed function.
+- [x] **The deskmap refusal's frame stays English on a Spanish show (review
+  of round C, 2026-09-26).** Closed 2026-09-26 (round D1): the frame is
+  `[messages] desk_bursts_invalid` and the accent refusal
+  `desk_burst_no_accent`, both locales, rendered with `build_deskmap`'s
+  vocabulary. Test `test_2026_09_26_the_refusal_frame_reads_in_the_show_language_too`
+  (`tests/test_english_desk_burst_refusal.py`), Spanish and English.
+- [x] **Show `[names]` overrides do not reach the finding text (review of B10
+  round 2, 2026-09-26).** Closed 2026-09-26 (round D1). A saved workspace
+  records its language but not the words its description renamed, so the
+  description is handed in: `check_workspace(..., names=)`,
+  `named_findings(..., names)` and `qlctool check --description`, as
+  `deskmap` already did. Without it nothing changes (Vibra's check output is
+  identical). Test `tests/test_show_names_in_findings.py`: a renamed
+  `full_white` in `wheel_white`'s message, and the club checked end to end
+  with an override.
+- [x] **An override that breaks ruling B7 crashes the build instead of being
+  refused (final review of Plan B, 2026-09-25; moved from vibra-lighting).**
+  `hit_button_flash = "BANG · Space"` failed in the desk bursts with "burst
+  duration must be positive: bang". Closed 2026-09-26 (round D1):
+  `reject_hit_button_heads` beside `reject_frame_head_renames` refuses a
+  `hit_button_*` whose name before " · " is not its `hit_*` caption (either
+  side overridden), naming the description; renaming both together is
+  accepted and builds. Tests in `tests/test_description_refusals.py`.
+- [x] **Most of `function_references`' paths have no test (Task 2a review,
+  2026-09-25; moved from vibra-lighting).** Closed 2026-09-26 (round D1):
+  `tests/test_dangling_reference_paths.py` breaks a clock `<Schedule
+  Function>`, an XY pad `<FuncID>`, a cue list `<Chaser>`, a Show's
+  `ShowFunction` and `Track SceneID`, and a Sequence's `BoundScene` one at a
+  time; the rule bites on every one, so it needed no fix.
 - [x] **`is_panel` calls a plain PAR with a built-in programme a panel
   (review of 4b50144..655b97d, 2026-09-25).** Closed by f195b2a: a one-cell
   fixture is a panel only with a panel's body (`has_panel_face`: a
