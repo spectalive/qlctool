@@ -827,11 +827,18 @@ def _page_control(
     has_haze_light = (
         has_smoke_machine and master.get(vocabulary.display("vertical_smoke")) is not None
     )
+    # A rig with no fader dimmer and no fixture strobe has nothing for the
+    # intensity frame to hold (2026-09-26, round G), so it is not drawn empty
+    # and the title does not name it.
+    has_intensity = any(master.get(vocabulary.display(f)) is not None for f, _ in DIMMER_CHASES)
     label(
         outer,
         vocabulary.display(
             page_control_title(
-                has_haze_light, bool(beam_colors.scene_ids), has_heads=bool(mover_fixture_ids)
+                has_haze_light,
+                bool(beam_colors.scene_ids),
+                has_heads=bool(mover_fixture_ids),
+                has_intensity=has_intensity,
             )
         ),
         LEFT_X,
@@ -895,9 +902,7 @@ def _page_control(
             )
         y += bank_pitch
 
-    # A rig with no fader dimmer and no fixture strobe has nothing for this
-    # frame to hold (2026-09-26, round G), so it is not drawn empty.
-    if any(master.get(vocabulary.display(f)) is not None for f, _ in DIMMER_CHASES):
+    if has_intensity:
         dimmers = frame(
             outer,
             vocabulary.display("intensity_chases"),

@@ -132,7 +132,8 @@ def test_2026_09_25_every_selectable_caption_has_a_promise_entry():
     for first, second in product((False, True), repeat=2):
         for third in (False, True):
             chosen.add(tempo_help_line(first, second, third))
-            chosen.add(page_control_title(first, second, third))
+            for fourth in (False, True):
+                chosen.add(page_control_title(first, second, third, fourth))
             chosen.add(tempo_close_line(third))
         chosen.add(matrices_frame_caption(first, second))
         chosen.add(panels_frame_caption(first))

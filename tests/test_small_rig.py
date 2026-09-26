@@ -21,6 +21,7 @@ from qlctool.checks.show_graph import build_show_graph
 from qlctool.cli import main
 from qlctool.generate.library_help_lines import library_help_lines
 from qlctool.generate.matrices_frame_caption import matrices_frame_caption
+from qlctool.generate.page_control_title import page_control_title
 from qlctool.generate.tempo_help_line import tempo_help_line
 from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
@@ -189,6 +190,10 @@ def test_2026_09_26_the_console_promises_no_heads_or_dimmer_the_rig_lacks(shape)
     # No shape has a gobo or a prism; the tempo line names the dimmer or not.
     assert names.display(tempo_help_line(False, False, dims)) in captions
     assert (names.display("intensity_chases") in captions) == (name != "rgb")
+    # Round G review: page 3's title names intensity only where its frame is.
+    title = names.display(page_control_title(False, False, moves, name != "rgb"))
+    assert title in captions
+    assert ("intensi" in title.casefold()) == (name != "rgb")
 
 
 def test_2026_09_26_the_caption_rule_bites_on_a_heads_promise(shape):
@@ -198,7 +203,7 @@ def test_2026_09_26_the_caption_rule_bites_on_a_heads_promise(shape):
         pytest.skip("the washes pan and tilt")
     names = default_names()
     root = Workspace.load(show).root
-    title = names.display("page_control_no_haze_no_heads")
+    title = names.display(page_control_title(False, False, False, name != "rgb"))
     widget = next(e for e in root.iter() if isinstance(e.tag, str) and e.get("Caption") == title)
     widget.set("Caption", names.display("page_control_no_haze_no_beam_wheel"))
     graph = build_show_graph(root, capabilities_of(root, FixtureLibrary.load()))
