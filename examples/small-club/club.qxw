@@ -5389,8 +5389,9 @@
       <Step Number="3" FadeIn="0" Hold="240000" FadeOut="0">342</Step>
     </Function>
     <Function ID="344" Type="Collection" Name="AUTO" Path="Show">
-      <Step Number="0">304</Step>
-      <Step Number="1">343</Step>
+      <Step Number="0">393</Step>
+      <Step Number="1">304</Step>
+      <Step Number="2">343</Step>
     </Function>
     <Function ID="345" Type="Scene" Name="Talk Light Base" Path="Show">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -5409,25 +5410,29 @@
       <Step Number="0">345</Step>
     </Function>
     <Function ID="347" Type="Collection" Name="Talk Moment" Path="Moments">
-      <Step Number="0">262</Step>
-      <Step Number="1">346</Step>
-      <Step Number="2">335</Step>
+      <Step Number="0">393</Step>
+      <Step Number="1">262</Step>
+      <Step Number="2">346</Step>
+      <Step Number="3">335</Step>
     </Function>
     <Function ID="348" Type="Collection" Name="Calm Moment" Path="Moments">
-      <Step Number="0">304</Step>
-      <Step Number="1">235</Step>
-      <Step Number="2">334</Step>
+      <Step Number="0">393</Step>
+      <Step Number="1">304</Step>
+      <Step Number="2">235</Step>
+      <Step Number="3">334</Step>
     </Function>
     <Function ID="349" Type="Collection" Name="Party Moment" Path="Moments">
-      <Step Number="0">304</Step>
-      <Step Number="1">260</Step>
-      <Step Number="2">335</Step>
+      <Step Number="0">393</Step>
+      <Step Number="1">304</Step>
+      <Step Number="2">260</Step>
+      <Step Number="3">335</Step>
     </Function>
     <Function ID="350" Type="Collection" Name="Frenzy Moment" Path="Moments">
-      <Step Number="0">304</Step>
-      <Step Number="1">261</Step>
-      <Step Number="2">265</Step>
-      <Step Number="3">337</Step>
+      <Step Number="0">393</Step>
+      <Step Number="1">304</Step>
+      <Step Number="2">261</Step>
+      <Step Number="3">265</Step>
+      <Step Number="4">337</Step>
     </Function>
     <Function ID="351" Type="Collection" Name="Play · Rig Red" Path="Play/Colour">
       <Step Number="0">282</Step>
@@ -5554,6 +5559,13 @@
     </Function>
     <Function ID="392" Type="Collection" Name="Play · Unison Sweep" Path="Play/Heads">
       <Step Number="0">259</Step>
+    </Function>
+    <Function ID="393" Type="Scene" Name="Heads Floor" Path="Movement">
+      <Speed FadeIn="0" FadeOut="0" Duration="0"/>
+      <FixtureVal ID="6">0,92,1,221,13,0,14,0</FixtureVal>
+      <FixtureVal ID="7">0,92,1,221,13,0,14,0</FixtureVal>
+      <FixtureVal ID="8">0,92,1,0,2,221,3,0</FixtureVal>
+      <FixtureVal ID="9">0,92,1,0,2,221,3,0</FixtureVal>
     </Function>
   </Engine>
   <VirtualConsole>

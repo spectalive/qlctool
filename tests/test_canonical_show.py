@@ -73,9 +73,14 @@ def test_auto_is_a_colour_bed_a_haze_and_an_energy_cycle(built):
     # colour inside its own steps: the scene holding their intensity open,
     # and the panels' phase cycle - their own programmes most of the night,
     # a stretch in manual listening to the wheel's RGB (2026-08-28).
+    # And the family floors, started first, which a released pick falls back
+    # on (ruling D8, 2026-09-27).
     assert {functions[m].attrib["Name"] for m in members - named} == {
         "Pixeles ON",
         "Ciclo Paneles Mixto",
+        "Cabezas Suelo",
+        "Gobo Suelo",
+        "Prisma Suelo",
     }
 
     cycle = functions[str(show.master_ids["Ciclo Energia"])]

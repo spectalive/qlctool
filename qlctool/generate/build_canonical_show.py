@@ -22,6 +22,7 @@ from ..workspace import Workspace
 from .add_base_looks import add_base_looks
 from .add_colour_wheels import add_colour_wheels
 from .add_energy_levels import add_energy_levels
+from .add_family_floors import add_family_floors
 from .add_haze_dimmers_strobes import add_haze_dimmers_strobes
 from .add_intensity_bases import add_intensity_bases
 from .add_moments import add_moments
@@ -68,6 +69,7 @@ def build_canonical_show(
     add_play_wrappers(build)
     apply_show_tempo(build)
     button_ids = add_show_console(build) if with_layout else []
+    add_family_floors(build)
 
     functions = [f for f in workspace.engine if f.tag.endswith("}Function")]
     return CanonicalShow(

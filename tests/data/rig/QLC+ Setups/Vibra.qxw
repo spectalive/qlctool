@@ -13931,11 +13931,14 @@
       <Step Number="3" FadeIn="0" Hold="240000" FadeOut="0">765</Step>
     </Function>
     <Function ID="767" Type="Collection" Name="AUTO" Path="Show">
-      <Step Number="0">702</Step>
-      <Step Number="1">624</Step>
-      <Step Number="2">320</Step>
-      <Step Number="3">200</Step>
-      <Step Number="4">766</Step>
+      <Step Number="0">903</Step>
+      <Step Number="1">904</Step>
+      <Step Number="2">905</Step>
+      <Step Number="3">702</Step>
+      <Step Number="4">624</Step>
+      <Step Number="5">320</Step>
+      <Step Number="6">200</Step>
+      <Step Number="7">766</Step>
     </Function>
     <Function ID="768" Type="Scene" Name="Luz Charla Base" Path="Show">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -13979,41 +13982,53 @@
       <Step Number="1">584</Step>
     </Function>
     <Function ID="770" Type="Collection" Name="Momento Charla" Path="Momentos">
-      <Step Number="0">550</Step>
-      <Step Number="1">769</Step>
-      <Step Number="2">620</Step>
-      <Step Number="3">621</Step>
-      <Step Number="4">758</Step>
-      <Step Number="5">321</Step>
-      <Step Number="6">322</Step>
+      <Step Number="0">903</Step>
+      <Step Number="1">904</Step>
+      <Step Number="2">905</Step>
+      <Step Number="3">550</Step>
+      <Step Number="4">769</Step>
+      <Step Number="5">620</Step>
+      <Step Number="6">621</Step>
+      <Step Number="7">758</Step>
+      <Step Number="8">321</Step>
+      <Step Number="9">322</Step>
     </Function>
     <Function ID="771" Type="Collection" Name="Momento Tranquilo" Path="Momentos">
-      <Step Number="0">702</Step>
-      <Step Number="1">320</Step>
-      <Step Number="2">200</Step>
-      <Step Number="3">522</Step>
-      <Step Number="4">620</Step>
-      <Step Number="5">621</Step>
-      <Step Number="6">757</Step>
+      <Step Number="0">903</Step>
+      <Step Number="1">904</Step>
+      <Step Number="2">905</Step>
+      <Step Number="3">702</Step>
+      <Step Number="4">320</Step>
+      <Step Number="5">200</Step>
+      <Step Number="6">522</Step>
+      <Step Number="7">620</Step>
+      <Step Number="8">621</Step>
+      <Step Number="9">757</Step>
     </Function>
     <Function ID="772" Type="Collection" Name="Momento Fiesta" Path="Momentos">
-      <Step Number="0">702</Step>
-      <Step Number="1">320</Step>
-      <Step Number="2">200</Step>
-      <Step Number="3">548</Step>
-      <Step Number="4">583</Step>
-      <Step Number="5">619</Step>
-      <Step Number="6">758</Step>
+      <Step Number="0">903</Step>
+      <Step Number="1">904</Step>
+      <Step Number="2">905</Step>
+      <Step Number="3">702</Step>
+      <Step Number="4">320</Step>
+      <Step Number="5">200</Step>
+      <Step Number="6">548</Step>
+      <Step Number="7">583</Step>
+      <Step Number="8">619</Step>
+      <Step Number="9">758</Step>
     </Function>
     <Function ID="773" Type="Collection" Name="Momento Locura" Path="Momentos">
-      <Step Number="0">702</Step>
-      <Step Number="1">320</Step>
-      <Step Number="2">200</Step>
-      <Step Number="3">549</Step>
-      <Step Number="4">583</Step>
-      <Step Number="5">619</Step>
-      <Step Number="6">633</Step>
-      <Step Number="7">760</Step>
+      <Step Number="0">903</Step>
+      <Step Number="1">904</Step>
+      <Step Number="2">905</Step>
+      <Step Number="3">702</Step>
+      <Step Number="4">320</Step>
+      <Step Number="5">200</Step>
+      <Step Number="6">549</Step>
+      <Step Number="7">583</Step>
+      <Step Number="8">619</Step>
+      <Step Number="9">633</Step>
+      <Step Number="10">760</Step>
     </Function>
     <Function ID="774" Type="Collection" Name="Jugar · Rig Rojo + Pixeles" Path="Jugar/Color">
       <Step Number="0">659</Step>
@@ -14965,6 +14980,37 @@
       <RunOrder>SingleShot</RunOrder>
       <SpeedModes FadeIn="Common" FadeOut="Common" Duration="PerStep"/>
       <Step Number="0" FadeIn="0" Hold="8000" FadeOut="0">901</Step>
+    </Function>
+    <Function ID="903" Type="Scene" Name="Cabezas Suelo" Path="Movimiento">
+      <Speed FadeIn="0" FadeOut="0" Duration="0"/>
+      <FixtureVal ID="0">0,92,1,0,2,221,3,0</FixtureVal>
+      <FixtureVal ID="1">0,92,1,0,2,221,3,0</FixtureVal>
+      <FixtureVal ID="13">0,92,1,0,2,221,3,0</FixtureVal>
+      <FixtureVal ID="14">0,92,1,0,2,221,3,0</FixtureVal>
+      <FixtureVal ID="15">0,92,1,0,2,221,3,0</FixtureVal>
+      <FixtureVal ID="16">0,92,1,0,2,221,3,0</FixtureVal>
+      <FixtureVal ID="18">0,92,1,221,13,0,14,0</FixtureVal>
+      <FixtureVal ID="19">0,92,1,221,13,0,14,0</FixtureVal>
+      <FixtureVal ID="20">0,0,1,130,2,0,3,0</FixtureVal>
+      <FixtureVal ID="21">0,0,1,130,2,0,3,0</FixtureVal>
+      <FixtureVal ID="22">0,0,1,130,2,0,3,0</FixtureVal>
+      <FixtureVal ID="23">0,0,1,130,2,0,3,0</FixtureVal>
+      <FixtureVal ID="33">0,92,1,0,2,221,3,0</FixtureVal>
+      <FixtureVal ID="34">0,92,1,0,2,221,3,0</FixtureVal>
+    </Function>
+    <Function ID="904" Type="Scene" Name="Gobo Suelo" Path="Gobos">
+      <Speed FadeIn="0" FadeOut="0" Duration="0"/>
+      <FixtureVal ID="20">9,3,10,0,12,127</FixtureVal>
+      <FixtureVal ID="21">9,3,10,0,12,127</FixtureVal>
+      <FixtureVal ID="22">9,3,10,0,12,127</FixtureVal>
+      <FixtureVal ID="23">9,3,10,0,12,127</FixtureVal>
+    </Function>
+    <Function ID="905" Type="Scene" Name="Prisma Suelo" Path="Prisma">
+      <Speed FadeIn="0" FadeOut="0" Duration="0"/>
+      <FixtureVal ID="20">13,63,14,0</FixtureVal>
+      <FixtureVal ID="21">13,63,14,0</FixtureVal>
+      <FixtureVal ID="22">13,63,14,0</FixtureVal>
+      <FixtureVal ID="23">13,63,14,0</FixtureVal>
     </Function>
   </Engine>
   <VirtualConsole>
