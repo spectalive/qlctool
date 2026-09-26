@@ -9,12 +9,12 @@ import argparse
 from dataclasses import replace
 from pathlib import Path
 
+from .add_check_parser import add_check_parser
 from .add_mcp_parser import add_mcp_parser
 from .add_pad_palette_parser import add_pad_palette_parser
 from .apply_install import apply_install
 from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
-from .checks.check_workspace import check_workspace
 from .cmd_deskmap import add_deskmap_parser
 from .compose import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
@@ -41,7 +41,6 @@ from .monitor_node import POINTS_OF_VIEW
 from .mvr.write_mvr import write_mvr
 from .newshow_refusal import newshow_refusal
 from .patch_conflicts import patch_conflicts
-from .print_check_report import print_check_report
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
 from .repatch.add import add_fixture
@@ -516,18 +515,6 @@ def cmd_validate(args: argparse.Namespace) -> int:
     return 1
 
 
-def cmd_check(args: argparse.Namespace) -> int:
-    """Say what the room will do, which is not what QLC+ loading it says."""
-    workspace = Workspace.load(args.workspace)
-    library = library_for(args.fixtures, Path(args.workspace))
-    warn_unresolved(workspace.root, library)
-    names = None
-    if args.description:
-        names = description_names(load_show_description(args.description, workspace.root))
-    findings = check_workspace(workspace, library, names=names)
-    return print_check_report(args.workspace, workspace.root, findings, args.limit, names)
-
-
 def cmd_install(args: argparse.Namespace) -> int:
     """Hand QLC+ the configured definitions, profile and gobos - or say what it lacks.
 
@@ -878,22 +865,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_val.add_argument("workspace")
     p_val.set_defaults(func=cmd_validate)
 
-    p_chk = sub.add_parser(
-        "check",
-        help="check what the show will actually do: fixtures coloured but "
-        "never lit, colour a fixture can only take on a wheel, two "
-        "programmes writing the same channel, and the console's own traps",
-    )
-    p_chk.add_argument("workspace")
-    p_chk.add_argument(
-        "--limit", type=int, default=20, help="findings printed per rule (default 20)"
-    )
-    p_chk.add_argument(
-        "--description",
-        help="the show description whose language and names the findings use "
-        "(default: the language the workspace was generated in)",
-    )
-    p_chk.set_defaults(func=cmd_check)
+    add_check_parser(sub)
 
     p_inst = sub.add_parser(
         "install",

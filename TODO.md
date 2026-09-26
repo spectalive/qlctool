@@ -266,11 +266,10 @@
   `hit_flash = "Red"` with its button refused (Red is also a colour), a
   leading glyph accepted, and a hit renamed with its button builds its desk
   burst. Tests `tests/test_hit_button_heads.py`.
-- [ ] **`qlctool check` still lives in `cli.py` (review of round D1,
-  2026-09-26).** `cli.py` is 940-odd lines and round D1 added `check
-  --description` there. Smallest next step: move `cmd_check` and its parser
-  into `cmd_check.py` and `add_check_parser.py`, the shape `deskmap` and
-  `pad-palette` use, with `cli.py` only wiring them.
+- [x] **`qlctool check` still lives in `cli.py` (review of round D1,
+  2026-09-26).** Closed in round G: `cmd_check` and its parser moved to
+  `cmd_check.py` and `add_check_parser.py`, the `pad-palette` shape; `cli.py`
+  only wires them (945 -> 917 lines).
 - [x] **Most of `function_references`' paths have no test (Task 2a review,
   2026-09-25; moved from vibra-lighting).** Closed 2026-09-26 (round D1):
   `tests/test_dangling_reference_paths.py` breaks a clock `<Schedule
