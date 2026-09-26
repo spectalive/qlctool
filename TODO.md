@@ -153,15 +153,12 @@
     collection or input binding reaches would have seen this. Caveat: some
     functions are reached only through the input profile (the pad's
     bindings), so the rule must read the profile too, or it flags them.
-- [ ] **`Flash Color` leaves the lit smoke machines out of the strobe
-  (2026-09-25).** Found pinning the owner's rule that a smoke machine with RGB
-  is a wash even with no smoke (`tests/test_lit_smoke_wash.py`):
-  `generate_flash_color` skips every `is_smoke` fixture, the lit ones too, so
-  while `Flash Color` (and its desk burst) is held the four vertical columns
-  keep their colour and level but do not strobe with the room. No look skips
-  their RGB. Smallest next step: ask the owner whether the columns should
-  strobe with the room; if yes, skip only `is_smoke and not is_lit_smoke`
-  there, as `color_scene_values` does, and re-record Vibra's three hashes.
+- [-] **`Flash Color` leaves the lit smoke machines out of the strobe
+  (2026-09-25).** Superseded by the owner's answer on 2026-09-26 ("Si, el
+  flash enciende las maquinas de humo en blanco"): the columns go white, not
+  strobing. Done in `7740c73` and `a6c6647` (v0.1.5); releasing the flash
+  leaves nothing latched, measured in a live QLC+ 5.2.2 (vibra-lighting
+  `TODO_LOG.md`, 2026-09-26).
 - [x] **Page 4's matrices caption says "bars and panels" by proxy
   (2026-09-25).** `matrices_frame` was chosen for any rig with pixel groups
   and built-in effects, and the panels frame and library help said "panels"
