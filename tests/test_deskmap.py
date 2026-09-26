@@ -217,3 +217,11 @@ def test_sections_put_the_held_hits_last():
     from qlctool.desk_policy import SECTION_ORDER
 
     assert SECTION_ORDER[-1] == "accents" and SECTION_ORDER[0] == "state"
+
+
+def test_2026_09_26_the_colour_flash_tile_shows_no_swatch_of_the_smoke_columns(deskmap):
+    """Round D review: Flash Color lights the lit smoke machines white, but
+    its look is the running colour, not white - a smoke column never adds a
+    colour a tile needs, so FLASH COLOR stays swatchless beside FLASH's white."""
+    assert deskmap["controls"]["flash-color"]["swatches"] == []
+    assert deskmap["controls"]["flash"]["swatches"] == ["#ffffff"]

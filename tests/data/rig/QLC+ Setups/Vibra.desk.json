@@ -485,9 +485,7 @@
    "role": "burst",
    "solo": null,
    "key": null,
-   "swatches": [
-    "#ffffff"
-   ],
+   "swatches": [],
    "enabled": true,
    "reason": "",
    "burstMs": 8000,

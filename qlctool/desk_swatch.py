@@ -4,7 +4,7 @@ A button's background colour on the Mac is decoration and is wrong for most
 two-colour looks; the light itself is in the scene values. For every fixture
 with red, green and blue channels that the function's scenes reach, the
 triple written is one colour of the look; the distinct triples, in fixture
-order, are its swatches. A look made only of effects and matrices has none,
+order, are its swatches. Smoke machines are not read. A look made only of effects and matrices has none,
 and the desk draws none rather than guessing.
 """
 
@@ -19,7 +19,10 @@ def swatches(graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: 
     found: list[str] = []
     for fixture_id in sorted(driven):
         capability = graph.capabilities.get(fixture_id)
-        if capability is None:
+        # A lit smoke machine follows the colour bed or goes white on a flash:
+        # it never adds a colour the tile needs, and on FLASH COLOR it would
+        # paint the running-colour flash white (round D review, 2026-09-26).
+        if capability is None or capability.is_smoke:
             continue
         written = driven[fixture_id]
         triple: list[int] = []
