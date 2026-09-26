@@ -8,11 +8,10 @@ of the look; the distinct triples, in fixture order, are its swatches. Smoke mac
 and the desk draws none rather than guessing.
 """
 
-from . import roles
+from .checks.fixture_colour import fixture_colour
 from .checks.show_graph import ShowGraph, reach
 
 MAX_SWATCHES = 4
-FULL = 255
 
 
 def swatches(graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int) -> list[str]:
@@ -25,25 +24,13 @@ def swatches(graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: 
         # paint the running-colour flash white (round D review, 2026-09-26).
         if capability is None or capability.is_smoke:
             continue
-        written = driven[fixture_id]
-        triple: list[int] = []
-        for role in (roles.RED, roles.GREEN, roles.BLUE):
-            offsets = capability.offsets_for_role(role)
-            if not offsets:
-                triple = []
-                break
-            value = written.get(offsets[0])
-            if value is None:
-                triple = []
-                break
-            triple.append(value)
-        if len(triple) != 3:
+        # A White emitter carries the tint's white share (`rgbw_split`):
+        # `fixture_colour` folds it back, or a pastel's tile shows its
+        # remainder beside the whole pastel.
+        stated = fixture_colour(graph, fixture_id, driven[fixture_id])
+        if stated is None:
             continue
-        # A White emitter carries the tint's white share (`rgbw_split`): fold it
-        # back, or a pastel's tile shows its remainder beside the whole pastel.
-        whites = capability.offsets_for_role(roles.WHITE)
-        white = (written.get(whites[0]) or 0) if whites else 0
-        red, green, blue = (min(FULL, level + white) for level in triple)
+        red, green, blue = stated
         colour = f"#{red:02x}{green:02x}{blue:02x}"
         if colour not in found:
             found.append(colour)
