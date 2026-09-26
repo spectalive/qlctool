@@ -9,12 +9,12 @@ import argparse
 from dataclasses import replace
 from pathlib import Path
 
+from .add_pad_palette_parser import add_pad_palette_parser
 from .apply_install import apply_install
 from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
 from .checks.check_workspace import check_workspace
 from .cmd_deskmap import add_deskmap_parser
-from .cmd_pad_palette import add_pad_palette_parser
 from .compose import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
