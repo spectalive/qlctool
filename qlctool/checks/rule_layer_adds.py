@@ -19,6 +19,8 @@ and say so on their frame; this rule is about Scenes, the only kind of layer
 that has a fix.
 """
 
+from collections.abc import Mapping
+
 from lxml import etree
 
 from .. import roles
@@ -78,7 +80,9 @@ def _coloured_by_states(
     return coloured
 
 
-def _states_colour(capability: FixtureCapabilities | None, written: dict[int, int | None]) -> bool:
+def _states_colour(
+    capability: FixtureCapabilities | None, written: Mapping[int, int | None]
+) -> bool:
     if capability is None or (capability.is_smoke and not capability.is_lit_smoke):
         return False
     offsets = {offset for role in COLOUR for offset in capability.offsets_for_role(role)}

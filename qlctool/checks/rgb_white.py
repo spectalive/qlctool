@@ -1,10 +1,12 @@
 """Whether a scene writes a fixture white: red, green and blue all written, all equal, all lit."""
 
+from collections.abc import Mapping
+
 from .. import roles
 from ..capability import FixtureCapabilities
 
 
-def rgb_white(capability: FixtureCapabilities, written: dict[int, int | None]) -> bool:
+def rgb_white(capability: FixtureCapabilities, written: Mapping[int, int | None]) -> bool:
     stated: list[int] = []
     for role in (roles.RED, roles.GREEN, roles.BLUE):
         values = [

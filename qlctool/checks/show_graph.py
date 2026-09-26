@@ -26,6 +26,8 @@ from ..capability import FixtureCapabilities
 from ..fixture_group import fixture_groups
 from ..xmlutil import find_local, findall_local, localname
 from .driven_channels import Driven, driven_channels
+from .freeze_driven import freeze_driven
+from .read_only_driven import ReadOnlyDriven
 
 BRANCHING = ("Chaser", "Collection", "Sequence")
 CONCURRENT = "Collection"
@@ -47,7 +49,9 @@ class ShowGraph:
     # re-parsed the FixtureVal text 620 951 times and took 11,5 s, which made
     # the suite 19 minutes long (2026-09-22). Keyed by the groups the matrices
     # are read against, because a matrix drives nothing outside its group.
-    driven_cache: dict[tuple[object, ...], Driven] = field(
+    # Read-only (`freeze_driven`): 34 rules share these, and one that wrote
+    # into what it was handed would change every later rule's answer.
+    driven_cache: dict[tuple[object, ...], ReadOnlyDriven] = field(
         default_factory=dict, repr=False, compare=False
     )
     # And what each function reaches, for the same reason (`reach`).
@@ -95,23 +99,29 @@ class ShowGraph:
 
     def groups_key(self, groups: dict[int, tuple[int, ...]]) -> tuple[object, ...]:
         """A hashable stand-in for one `groups` mapping, built once per mapping."""
+        if not groups:
+            # Every `{}` a rule passes is a new object: keyed by identity, each
+            # call grew this table by one (round G review, 2026-09-26).
+            return ()
         entry = self.groups_keys.get(id(groups))
         if entry is None or entry[0] is not groups:
             entry = (groups, tuple(sorted(groups.items())))
             self.groups_keys[id(groups)] = entry
         return entry[1]
 
-    def driven(self, function_id: int, groups: dict[int, tuple[int, ...]]) -> Driven:
+    def driven(self, function_id: int, groups: dict[int, tuple[int, ...]]) -> ReadOnlyDriven:
         """Every channel one leaf drives, parsed once per graph."""
         key = (function_id, self.groups_key(groups))
         cached = self.driven_cache.get(key)
         if cached is None:
             function = self.functions[function_id]
-            cached = driven_channels(function, self.capabilities, groups)
+            cached = freeze_driven(driven_channels(function, self.capabilities, groups))
             self.driven_cache[key] = cached
         return cached
 
-    def driven_of(self, function: etree._Element, groups: dict[int, tuple[int, ...]]) -> Driven:
+    def driven_of(
+        self, function: etree._Element, groups: dict[int, tuple[int, ...]]
+    ) -> ReadOnlyDriven:
         """`driven` for a function element, parsed once when it is this graph's own.
 
         Most rules walk the graph's functions and asked `driven_channels`
@@ -119,7 +129,7 @@ class ShowGraph:
         """
         identifier = function.get("ID")
         if identifier is None or self.functions.get(int(identifier)) is not function:
-            return driven_channels(function, self.capabilities, groups)
+            return freeze_driven(driven_channels(function, self.capabilities, groups))
         return self.driven(int(identifier), groups)
 
     def collections(self, function_id: int) -> list[int]:

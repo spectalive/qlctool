@@ -7,12 +7,14 @@ above zero and, where the machine has a dimmer, that dimmer is lit too. A
 definition whose LEDs have no dimmer is judged by its colour alone.
 """
 
+from collections.abc import Mapping
+
 from .. import roles
 from ..capability import FixtureCapabilities
 from .show_graph import lit
 
 
-def smoke_column_lit(capability: FixtureCapabilities, written: dict[int, int | None]) -> bool:
+def smoke_column_lit(capability: FixtureCapabilities, written: Mapping[int, int | None]) -> bool:
     """Whether `written` puts this lit smoke machine's LEDs on."""
     coloured = any(
         lit(written[offset])

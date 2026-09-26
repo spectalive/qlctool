@@ -24,6 +24,8 @@ states positions rather than animating them, and asking a rest position to cover
 both families would be asking for a different look.
 """
 
+from collections.abc import Mapping
+
 from lxml import etree
 
 from .. import roles
@@ -90,7 +92,7 @@ def _moved_fixtures(
     return moved
 
 
-def _writes_pan_or_tilt(graph: ShowGraph, fixture_id: int, pairs: dict[int, int | None]) -> bool:
+def _writes_pan_or_tilt(graph: ShowGraph, fixture_id: int, pairs: Mapping[int, int | None]) -> bool:
     capability = graph.capabilities.get(fixture_id)
     if capability is None:
         return False

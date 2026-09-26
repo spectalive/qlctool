@@ -7,6 +7,8 @@ the fixture has no RGB or the scene leaves any of the three unwritten - a
 colour claim is all three channels or nothing.
 """
 
+from collections.abc import Mapping
+
 from .. import roles
 from .show_graph import ShowGraph
 
@@ -15,7 +17,7 @@ FULL = 255
 
 
 def fixture_colour(
-    graph: ShowGraph, fixture_id: int, written: dict[int, int | None]
+    graph: ShowGraph, fixture_id: int, written: Mapping[int, int | None]
 ) -> tuple[int, int, int] | None:
     capability = graph.capabilities.get(fixture_id)
     if capability is None:

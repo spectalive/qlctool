@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from .driven_channels import Driven
+from .read_only_driven import ReadOnlyDriven
 from .show_graph import ShowGraph, lit
 
 
@@ -137,7 +137,7 @@ class InstantEvaluator:
         self._states[key] = states
         return states
 
-    def _driven_channels(self, function_id: int) -> Driven:
+    def _driven_channels(self, function_id: int) -> ReadOnlyDriven:
         return self._graph.driven(function_id, self._groups)
 
 
