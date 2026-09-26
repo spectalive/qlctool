@@ -6,20 +6,21 @@ group, so while `1` was held the rig went red and those six stayed on the
 colour the state was showing (en-sala DMX audit, 2026-09-26, item 6).
 
 The rule reads bindings, capabilities and the graph, never a name: a key or
-pad channel that presses two or more Flash buttons forced LTP
-(`forced_flash_triggers`) whose scenes between them state one colour
-(`fixture_colour`) is a key that colours the room. Every rigged fixture with
-red, green and blue that some room state lights in colour must be among the
-fixtures those scenes colour; the ones missing keep the old colour while the
-key is down. A key that states two colours (a split) is not judged.
+pad channel whose Flash buttons forced LTP (`forced_flash_triggers`) are all
+pure colour takeovers (`colour_takeover_fixtures`: a whole colour on every RGB
+fixture written, no dimmer) is a key that recolours the room, whether it
+holds one colour or a split and whether it presses five banks or one. Every
+rigged fixture with red, green and blue that some room state lights in colour
+must be among the fixtures those scenes recolour; the ones missing keep the
+old colour while the key is down.
 """
 
 from lxml import etree
 
 from .. import roles
 from ..rigged_fixture_ids import rigged_fixture_ids
+from .colour_takeover_fixtures import colour_takeover_fixtures
 from .finding import ERROR, Finding
-from .fixture_colour import fixture_colour
 from .fixture_names_of import fixture_names_of
 from .forced_flash_triggers import forced_flash_triggers
 from .show_graph import ShowGraph, lit, reach
@@ -34,7 +35,7 @@ def check_bank_key_coverage(
     root: etree._Element,
     states: set[int],
 ) -> list[Finding]:
-    triggers = {t: f for t, f in forced_flash_triggers(root).items() if len(f) > 1}
+    triggers = forced_flash_triggers(root)
     if not triggers or not states:
         return []
     rigged = rigged_fixture_ids(root)
@@ -51,28 +52,34 @@ def check_bank_key_coverage(
                 coloured.add(fixture_id)
     findings: list[Finding] = []
     for (kind, trigger), functions in sorted(triggers.items()):
-        colours: set[tuple[int, int, int]] = set()
         covered: set[int] = set()
         for function_id in functions:
             function = graph.functions.get(function_id)
-            if function is None or function.attrib.get("Type") != "Scene":
-                continue
-            for fixture_id, pairs in graph.driven_of(function, groups).items():
-                colour = fixture_colour(graph, fixture_id, pairs)
-                if colour is not None:
-                    covered.add(fixture_id)
-                    colours.add(colour)
-        missing = coloured - covered
-        if len(colours) != 1 or not missing:
-            continue
-        findings.append(
-            Finding(
-                rule_id=RULE_ID,
-                severity=ERROR,
-                function=graph.name(min(functions)),
-                fixtures=fixture_names_of(graph, missing),
-                message_id=("bank_key_coverage_key" if kind == "key" else "bank_key_coverage_pad"),
-                fields={"trigger": trigger, "buttons": len(functions), "count": len(missing)},
+            recoloured = (
+                colour_takeover_fixtures(graph, groups, function)
+                if function is not None and function.attrib.get("Type") == "Scene"
+                else None
             )
-        )
+            if recoloured is None:
+                break
+            covered |= recoloured
+        else:
+            missing = coloured - covered
+            if missing:
+                findings.append(
+                    Finding(
+                        rule_id=RULE_ID,
+                        severity=ERROR,
+                        function=graph.name(min(functions)),
+                        fixtures=fixture_names_of(graph, missing),
+                        message_id=(
+                            "bank_key_coverage_key" if kind == "key" else "bank_key_coverage_pad"
+                        ),
+                        fields={
+                            "trigger": trigger,
+                            "buttons": len(functions),
+                            "count": len(missing),
+                        },
+                    )
+                )
     return findings

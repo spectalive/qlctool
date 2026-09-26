@@ -3424,15 +3424,35 @@ def test_2026_09_26_a_forced_flash_that_cuts_the_smoke(library):
     assert set(findings[0].fixtures) == {c.fixture.name for c in smoke.values()}
 
 
+def _drop_pars_from_key(workspace, key, pars):
+    """Take `pars` out of the one scene `key` presses that holds them."""
+    from qlctool.checks.forced_flash_triggers import forced_flash_triggers
+
+    by_id = _functions_by_id(workspace)
+    holders = [
+        by_id[str(function_id)]
+        for function_id in forced_flash_triggers(workspace.root)[("key", key)]
+        if pars
+        <= {int(v.attrib["ID"]) for v in findall_local(by_id[str(function_id)], "FixtureVal")}
+    ]
+    assert len(holders) == 1, f"the PARs belong in exactly one scene of key {key}"
+    for value in list(findall_local(holders[0], "FixtureVal")):
+        if int(value.attrib["ID"]) in pars:
+            holders[0].remove(value)
+    return holders[0]
+
+
 def test_2026_09_26_a_bank_key_that_skips_the_front_pars(library):
     """2026-09-26, en-sala DMX audit (item 6): with the rig cyan, holding `1`
     turned it red - except the two CLB2.4 PARs and the four fog LED columns,
     which stayed cyan. Keys 1-0 hold one colour in every bank, and a bank is
     one fixture group's; those six are in no group. Ruling D9 puts them in the
     first bank's key scenes. Take the two PARs back out of the scene of `1`
-    that holds them and the rule must name both.
+    that holds them and the rule must name both - and so for the split of
+    `9`, and for `1` bound to that one scene alone, as on a one-bank show:
+    the rule judges which fixtures a key recolours, not how many colours or
+    buttons it holds.
     """
-    from qlctool.checks.forced_flash_triggers import forced_flash_triggers
     from qlctool.checks.rule_bank_key_coverage import RULE_ID, check_bank_key_coverage
 
     for name, graph, groups in _shipped_graphs(library):
@@ -3440,28 +3460,25 @@ def test_2026_09_26_a_bank_key_that_skips_the_front_pars(library):
         states = room_states(workspace.root, graph, groups)
         assert check_bank_key_coverage(graph, groups, workspace.root, states) == [], name
 
-    workspace = _show("Vibra.qxw")
     pars = {4, 5}
-    by_id = _functions_by_id(workspace)
-    key_one = forced_flash_triggers(workspace.root)[("key", "1")]
-    holders = [
-        by_id[str(function_id)]
-        for function_id in key_one
-        if pars
-        <= {int(v.attrib["ID"]) for v in findall_local(by_id[str(function_id)], "FixtureVal")}
-    ]
-    assert len(holders) == 1, "the two PARs belong in exactly one scene of key 1"
-    for value in list(findall_local(holders[0], "FixtureVal")):
-        if int(value.attrib["ID"]) in pars:
-            holders[0].remove(value)
+    expected = ("CLB2.4 Compact LED PAR System #1", "CLB2.4 Compact LED PAR System #2")
+    for key in ("1", "9"):
+        workspace = _show("Vibra.qxw")
+        _drop_pars_from_key(workspace, key, pars)
+        findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+        assert [f.fields["trigger"] for f in findings] == [key]
+        assert findings[0].fixtures == expected
 
+    workspace = _show("Vibra.qxw")
+    holder = _drop_pars_from_key(workspace, "1", pars)
+    holder_id = holder.attrib["ID"]
+    for button in iter_local(workspace.root, "Button"):
+        function, key = find_local(button, "Function"), find_local(button, "Key")
+        if key is not None and key.text == "1" and function.attrib.get("ID") != holder_id:
+            button.remove(key)
     findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
-    assert len(findings) == 1
-    assert findings[0].fields["trigger"] == "1"
-    assert findings[0].fixtures == (
-        "CLB2.4 Compact LED PAR System #1",
-        "CLB2.4 Compact LED PAR System #2",
-    )
+    assert [(f.fields["trigger"], f.fields["buttons"]) for f in findings] == [("1", 1)]
+    assert set(expected) <= set(findings[0].fixtures)
 
 
 def _lower_in_flash(workspace, library, pick, level):
