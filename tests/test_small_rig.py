@@ -218,10 +218,11 @@ def test_2026_09_26_qlcplus_loads_the_pars_washes_and_rgb_shows(shape):
 
 # Round G review, 2026-09-26: the rig minimum admitted rigs whose show failed
 # its own check. One beam drew an empty two-colour-mix frame, two panels an
-# empty matrices frame "on the panels". The page now draws neither empty frame
+# empty matrices frame "on the panels". One beam is below the minimum since
+# (`tests/test_every_single_model_rig.py`); two beams have their mixes. The page now draws neither empty frame
 # and its help names neither; a rig newshow accepts must pass check.
 REVIEW_SHAPES = {
-    "beam": ("Generic|BEAM 230W 7R|16 channel|0|{address}|Beam {index}", 1, 16),
+    "beam": ("Generic|BEAM 230W 7R|16 channel|0|{address}|Beam {index}", 2, 16),
     "panels": ("HYULIGHTS|WX-60WPS-48PARTITION|A MODE - DMX 8 CH|0|{address}|Panel {index}", 2, 8),
     "bars": ("Stairville|CLB2.4 Compact LED PAR System|14 Channel|0|{address}|Bar {index}", 2, 14),
 }
@@ -242,7 +243,7 @@ def test_2026_09_26_a_beam_panels_or_bars_only_rig_passes_its_own_check(name, tm
         for panels in (False, True)
     )
     assert (has_mixes, has_matrices) == {
-        "beam": (False, True),
+        "beam": (True, True),
         "panels": (True, False),
         "bars": (True, True),
     }[name]

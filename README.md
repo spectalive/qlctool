@@ -1,8 +1,8 @@
 # qlctool
 
 Programmatic editing of QLC+ workspaces (`.qxw`). A whole show is built for
-any rig with at least one fixture group; `newshow` refuses a patch without one
-with a message saying so. Movement is built only where some fixture pans and
+any rig with at least one fixture group of two or more fixtures; `newshow`
+refuses a patch without one with a message saying so. Movement is built only where some fixture pans and
 tilts, and the dimmer chases only where some fixture has a fader dimmer, so a
 pars-only or a washes-only rig gets a show too. Generates
 scenes, chasers, RGBMatrix effects, movement EFX and the Virtual Console buttons

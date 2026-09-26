@@ -46,6 +46,10 @@ def _patch(folder: Path, rows: list[tuple[str, int, int]], grouped: bool) -> Pat
     groups = ["--group-new", f"Row={total}x1"] if grouped else []
     out = folder / "patch.qxw"
     assert main(["patch", str(empty), *adds, *groups, "--out", str(out)]) == 0
+    if grouped:
+        # Each fixture in its own cell: the minimum counts a group's fixtures.
+        cells = [arg for i in range(total) for arg in ("--group-add", f"0={i}@{i},0")]
+        assert main(["patch", str(out), *cells, "--out", str(out)]) == 0
     return out
 
 
@@ -77,6 +81,15 @@ def test_2026_09_26_pars_only_and_washes_only_meet_the_minimum(tmp_path, rows):
 
 def test_2026_09_25_heads_with_no_group_are_refused(tmp_path, capsys):
     patch = _patch(tmp_path, [(BEAM, 2, 16)], grouped=False)
+    assert _refusal(patch, capsys) == _expected("rig_needs_fixture_group")
+
+
+def test_2026_09_26_a_group_of_one_fixture_is_refused(tmp_path, capsys):
+    """Round G review: a lone fixture's show failed its own check (the odd/even
+    strobe had no odd half, the tap re-timed only the colour wheels at one
+    length); `tests/test_every_single_model_rig.py` sweeps every model.
+    """
+    patch = _patch(tmp_path, [(BEAM, 1, 16)], grouped=True)
     assert _refusal(patch, capsys) == _expected("rig_needs_fixture_group")
 
 

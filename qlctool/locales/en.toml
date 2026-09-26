@@ -395,8 +395,8 @@ pink_code = "Pk"
 ultraviolet_code = "UV"
 
 [messages]
-rig_below_minimum = "newshow builds a show for a rig with at least one fixture group; this patch has no {missing}"
-rig_needs_fixture_group = "fixture group"
+rig_below_minimum = "newshow builds a show for a rig with at least one fixture group of two or more fixtures; this patch has no {missing}"
+rig_needs_fixture_group = "fixture group of two or more fixtures"
 rig_without_definitions = "newshow found no fixture definition for any patched fixture (searched: {searched}), so it cannot read their channels; pass --fixtures, set QLCTOOL_FIXTURES, or add a qlctool.toml"
 rig_without_modes = "newshow cannot read the channels of any patched fixture: the lines above name each model and what to do; a fixture patched in a mode its definition does not have has to be repatched in a mode the definition has"
 searched_no_folder = "no folder"

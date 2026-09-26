@@ -397,8 +397,8 @@ pink_code = "Rs"
 ultraviolet_code = "UV"
 
 [messages]
-rig_below_minimum = "newshow construye un show para un rig con al menos un grupo de fixtures; este patch no tiene {missing}"
-rig_needs_fixture_group = "grupo de fixtures"
+rig_below_minimum = "newshow construye un show para un rig con al menos un grupo de dos o más fixtures; este patch no tiene {missing}"
+rig_needs_fixture_group = "grupo de dos o más fixtures"
 rig_without_definitions = "newshow no encontro definicion para ningun fixture del patch (buscado en {searched}), asi que no puede leer sus canales; usa --fixtures, QLCTOOL_FIXTURES o un qlctool.toml"
 rig_without_modes = "newshow no puede leer los canales de ningun fixture del patch: las lineas de arriba nombran cada modelo y que hacer; un fixture patcheado en un modo que su definicion no tiene hay que repatchearlo en un modo de la definicion"
 searched_no_folder = "ninguna carpeta"

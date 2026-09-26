@@ -159,6 +159,15 @@
   address both through one ID. Smallest next step: a `check` rule that
   reports every fixture ID patched more than once, with a regression test
   that duplicates one in a generated show.
+- [ ] **`check` cannot see whether page 4's help names the frames drawn
+  (round G review, 2026-09-26).** `library_help_lines` picks the lines that
+  name the two-colour mixes and the matrices from the frames `live_console`
+  draws (`has_mixes`, `has_matrices`), and their `CAPTION_PROMISES` entries
+  promise nothing, because no fixture capability shows either frame. A
+  hand-edited console that keeps "the mixes" in its help after deleting the
+  frame passes `check`. Smallest next step: a rule that reads the console
+  itself - a help line naming a frame whose caption is not on the same page
+  - with a regression test that deletes the mixes frame from a generated show.
 - [ ] **The ruff ratchet in `ruff.toml` (moved from vibra-lighting,
   2026-09-26).** `ruff check` and `ruff format --check` are clean, so what is
   left is the ignore list, counted with `ruff check . --select <codes>
