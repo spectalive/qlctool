@@ -74,7 +74,9 @@ def check_pick_release_orphans(
                         function=graph.name(pick_id),
                         fixtures=tuple(sorted(fixtures)),
                         message_id=(
-                            "pick_release_orphans_colour" if colour else "pick_release_orphans"
+                            "pick_release_orphans_colour"
+                            if colour
+                            else "pick_release_orphans_latched"
                         ),
                         fields={"count": len(fixtures), "states": ", ".join(left_in)},
                     )
