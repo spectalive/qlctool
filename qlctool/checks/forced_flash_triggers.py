@@ -20,7 +20,7 @@ def forced_flash_triggers(root: etree._Element) -> dict[tuple[str, str], frozens
     if console is None:
         return {}
     pressed: dict[tuple[str, str], set[int]] = {}
-    forced: dict[int, int] = {}
+    forced: dict[etree._Element, int] = {}
     for button in iter_local(console, "Button"):
         action = find_local(button, "Action")
         function = find_local(button, "Function")
@@ -29,13 +29,13 @@ def forced_flash_triggers(root: etree._Element) -> dict[tuple[str, str], frozens
         function_id = int(function.attrib.get("ID", NO_FUNCTION))
         if action.get("ForceLTP") != "1" or function_id == NO_FUNCTION:
             continue
-        forced[id(button)] = function_id
+        forced[button] = function_id
         key = find_local(button, "Key")
         if key is not None and key.text:
             pressed.setdefault(("key", key.text), set()).add(function_id)
     for channel, widget in bound_inputs(root, pad_input_universe(root)):
-        if id(widget) in forced:
-            pressed.setdefault(("pad", str(channel)), set()).add(forced[id(widget)])
+        if widget in forced:
+            pressed.setdefault(("pad", str(channel)), set()).add(forced[widget])
     found: dict[tuple[str, str], frozenset[int]] = {}
     for trigger, functions in pressed.items():
         if frozenset(functions) not in found.values():
