@@ -13,6 +13,7 @@ from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.rgbw_split import rgbw_split
+from qlctool.rigged_fixture_ids import rigged_fixture_ids
 from qlctool.shutter_open import shutter_open_pairs
 from qlctool.strobe_speed import strobe_speed_pairs
 from qlctool.vibra.tuning import VIBRA_TUNING
@@ -146,7 +147,17 @@ def test_play_wrappers_are_single_member_collections_in_their_families(built):
     """2026-09-02: manual picks monitor wrappers, never state-owned leaves."""
     show, workspace = built
     functions = _functions(workspace)
+    rigged = rigged_fixture_ids(workspace.root)
+    position = {
+        caps.fixture.fixture_id: {
+            offset
+            for role in (roles.PAN, roles.TILT, roles.PAN_FINE, roles.TILT_FINE)
+            for offset in caps.offsets_for_role(role)
+        }
+        for caps in capabilities_of(workspace.root, FixtureLibrary.load())
+    }
 
+    companions = 0
     expected = {
         # 17 since 2026-09-22: the multicolour picks went ("quitar
         # multicolores muy feos", owner), leaving the solid palette steps -
@@ -169,11 +180,22 @@ def test_play_wrappers_are_single_member_collections_in_their_families(built):
             assert wrapper.attrib["Type"] == "Collection"
             assert wrapper.attrib["Path"] == f"Jugar/{family}"
             # 2026-09-26, ruling D7: a beam-only look carries the scene that
-            # holds the rigged washes at their window, not at 127/127.
-            companions = [member.attrib["Name"] for member in members[1:]]
-            assert companions in ([], ["Washes Quietos"])
-            assert not companions or family == "Cabezas"
+            # holds the rigged washes at their window, not at 127/127. Read
+            # structurally (review of 2026-09-27): a Scene writing only the
+            # position of rigged heads the pick itself leaves alone.
+            companions += len(members) - 1
+            for companion in members[1:]:
+                assert family == "Cabezas"
+                assert companion.attrib["Type"] == "Scene"
+                held = _values(companion)
+                assert held
+                assert not held.keys() & _values(members[0]).keys()
+                for fixture_id, pairs in held.items():
+                    assert fixture_id in rigged
+                    assert set(pairs) <= position[fixture_id]
             assert wrapper.attrib["Name"] == f"Jugar · {members[0].attrib['Name']}"
+    # The fan and the cross, each holding the washes.
+    assert companions == 2
 
     assert len(show.play_wrappers.rainbow_ids) == 2
     assert all(

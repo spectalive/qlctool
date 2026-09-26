@@ -223,6 +223,10 @@ def _captions(widget):
     return [child.attrib.get("Caption", "") for child in widget if localname(child) == "Button"]
 
 
+def _fixture_ids(function):
+    return {value.attrib["ID"] for value in findall_local(function, "FixtureVal")}
+
+
 def _functions_by_id(root):
     return {
         int(function.attrib["ID"]): function
@@ -611,9 +615,14 @@ def test_every_play_pick_is_a_one_member_family_wrapper(console):
             function = functions[_function_id(pick)]
             assert function.attrib["Type"] == "Collection"
             assert function.attrib["Path"] == paths[caption]
-            # 2026-09-26, ruling D7: a beam-only look also holds the washes.
+            # 2026-09-26, ruling D7: a beam-only look also holds the washes -
+            # a Scene on heads the pick itself leaves alone (review, 2026-09-27).
             steps = [functions[int(step.text)] for step in findall_local(function, "Step")]
-            assert [step.attrib["Name"] for step in steps[1:]] in ([], ["Washes Quietos"])
+            for companion in steps[1:]:
+                assert caption == "CABEZAS"
+                assert companion.attrib["Type"] == "Scene"
+                held = _fixture_ids(companion)
+                assert held and not held & _fixture_ids(steps[0])
 
 
 def test_the_play_strip_is_keyless_binding_free_and_has_only_safe_actions(console):
