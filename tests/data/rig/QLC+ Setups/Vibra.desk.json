@@ -5,7 +5,7 @@
  "show": {
   "key": "vibra",
   "workspace": "Vibra.qxw",
-  "sha256": "a30d72e07b3bf7c93d54e2d00efba5d6a391dcf1a4f2a029aa2eea630acdc91f"
+  "sha256": "908f4831f0b23ff505882080829f7540aa4b1c4405cf05802514e684eaceb3da"
  },
  "grandMaster": {
   "widget": 258
@@ -317,7 +317,7 @@
  "controls": {
   "auto": {
    "widget": 4,
-   "function": 771,
+   "function": 767,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "AUTO",
@@ -334,7 +334,7 @@
   },
   "charla": {
    "widget": 5,
-   "function": 774,
+   "function": 770,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "CHARLA",
@@ -351,7 +351,7 @@
   },
   "tranquilo": {
    "widget": 6,
-   "function": 775,
+   "function": 771,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "TRANQUILO",
@@ -368,7 +368,7 @@
   },
   "fiesta": {
    "widget": 7,
-   "function": 776,
+   "function": 772,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "FIESTA",
@@ -385,7 +385,7 @@
   },
   "locura": {
    "widget": 8,
-   "function": 777,
+   "function": 773,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "LOCURA",
@@ -436,7 +436,7 @@
   },
   "flash": {
    "widget": 566,
-   "function": 874,
+   "function": 870,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "FLASH",
@@ -456,7 +456,7 @@
   },
   "flash-lento": {
    "widget": 567,
-   "function": 876,
+   "function": 872,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "FLASH LENTO",
@@ -476,7 +476,7 @@
   },
   "flash-color": {
    "widget": 568,
-   "function": 878,
+   "function": 874,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "FLASH COLOR",
@@ -494,7 +494,7 @@
   },
   "humo-ya": {
    "widget": 569,
-   "function": 880,
+   "function": 876,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "HUMO YA",
@@ -511,7 +511,7 @@
   },
   "humo-vert": {
    "widget": 570,
-   "function": 882,
+   "function": 878,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "HUMO VERT",
@@ -528,7 +528,7 @@
   },
   "strobo": {
    "widget": 571,
-   "function": 884,
+   "function": 880,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "STROBO",
@@ -546,7 +546,7 @@
   },
   "strobo-suave": {
    "widget": 572,
-   "function": 886,
+   "function": 882,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "STROBO SUAVE",
@@ -564,7 +564,7 @@
   },
   "cada-1-min": {
    "widget": 29,
-   "function": 628,
+   "function": 624,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "cada 1 min",
@@ -579,7 +579,7 @@
   },
   "cada-2-min": {
    "widget": 30,
-   "function": 629,
+   "function": 625,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "cada 2 min",
@@ -594,7 +594,7 @@
   },
   "cada-4-min": {
    "widget": 31,
-   "function": 630,
+   "function": 626,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "cada 4 min",
@@ -609,7 +609,7 @@
   },
   "cada-8-min": {
    "widget": 32,
-   "function": 631,
+   "function": 627,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "cada 8 min",
@@ -624,7 +624,7 @@
   },
   "rojo": {
    "widget": 573,
-   "function": 888,
+   "function": 884,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "ROJO",
@@ -644,7 +644,7 @@
   },
   "verde": {
    "widget": 574,
-   "function": 890,
+   "function": 886,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "VERDE",
@@ -664,7 +664,7 @@
   },
   "azul": {
    "widget": 575,
-   "function": 892,
+   "function": 888,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "AZUL",
@@ -684,7 +684,7 @@
   },
   "ultravioleta": {
    "widget": 576,
-   "function": 894,
+   "function": 890,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "ULTRAVIOLETA",
@@ -704,7 +704,7 @@
   },
   "amarillo": {
    "widget": 577,
-   "function": 896,
+   "function": 892,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "AMARILLO",
@@ -724,7 +724,7 @@
   },
   "cyan": {
    "widget": 578,
-   "function": 898,
+   "function": 894,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "CYAN",
@@ -744,7 +744,7 @@
   },
   "magenta": {
    "widget": 579,
-   "function": 900,
+   "function": 896,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "MAGENTA",
@@ -764,7 +764,7 @@
   },
   "blanco": {
    "widget": 580,
-   "function": 902,
+   "function": 898,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "BLANCO",
@@ -784,7 +784,7 @@
   },
   "naranja": {
    "widget": 581,
-   "function": 904,
+   "function": 900,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "NARANJA",
@@ -804,7 +804,7 @@
   },
   "rosa": {
    "widget": 582,
-   "function": 906,
+   "function": 902,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "ROSA",
@@ -824,7 +824,7 @@
   },
   "colores-completos": {
    "widget": 64,
-   "function": 706,
+   "function": 702,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "Colores completos",
@@ -841,7 +841,7 @@
   },
   "colores-simples": {
    "widget": 65,
-   "function": 720,
+   "function": 716,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "Colores simples",
@@ -858,7 +858,7 @@
   },
   "pastel-tenue": {
    "widget": 66,
-   "function": 755,
+   "function": 751,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "Pastel tenue",
@@ -875,7 +875,7 @@
   },
   "multicolor": {
    "widget": 67,
-   "function": 707,
+   "function": 703,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "Multicolor",
@@ -892,7 +892,7 @@
   },
   "mezcla": {
    "widget": 68,
-   "function": 756,
+   "function": 752,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Mezcla",
@@ -910,7 +910,7 @@
   },
   "luz-charla": {
    "widget": 69,
-   "function": 773,
+   "function": 769,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Luz Charla",
@@ -927,7 +927,7 @@
   },
   "rig-rojo": {
    "widget": 70,
-   "function": 778,
+   "function": 774,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Rojo",
@@ -944,7 +944,7 @@
   },
   "rig-rojo-fuego": {
    "widget": 71,
-   "function": 779,
+   "function": 775,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Rojo Fuego",
@@ -961,7 +961,7 @@
   },
   "rig-naranja": {
    "widget": 72,
-   "function": 780,
+   "function": 776,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Naranja",
@@ -978,7 +978,7 @@
   },
   "rig-ambar": {
    "widget": 73,
-   "function": 781,
+   "function": 777,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Ambar",
@@ -995,7 +995,7 @@
   },
   "rig-amarillo": {
    "widget": 74,
-   "function": 782,
+   "function": 778,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Amarillo",
@@ -1012,7 +1012,7 @@
   },
   "rig-verde": {
    "widget": 75,
-   "function": 783,
+   "function": 779,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Verde",
@@ -1029,7 +1029,7 @@
   },
   "rig-verde-menta": {
    "widget": 76,
-   "function": 784,
+   "function": 780,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Verde Menta",
@@ -1046,7 +1046,7 @@
   },
   "rig-cyan": {
    "widget": 77,
-   "function": 785,
+   "function": 781,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Cyan",
@@ -1063,7 +1063,7 @@
   },
   "rig-celeste": {
    "widget": 78,
-   "function": 786,
+   "function": 782,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Celeste",
@@ -1080,7 +1080,7 @@
   },
   "rig-azul-cielo": {
    "widget": 79,
-   "function": 787,
+   "function": 783,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Azul Cielo",
@@ -1097,7 +1097,7 @@
   },
   "rig-azul": {
    "widget": 80,
-   "function": 788,
+   "function": 784,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Azul",
@@ -1114,7 +1114,7 @@
   },
   "rig-azul-profundo": {
    "widget": 81,
-   "function": 789,
+   "function": 785,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Azul Profundo",
@@ -1131,7 +1131,7 @@
   },
   "rig-morado": {
    "widget": 82,
-   "function": 790,
+   "function": 786,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Morado",
@@ -1148,7 +1148,7 @@
   },
   "rig-ultravioleta": {
    "widget": 83,
-   "function": 791,
+   "function": 787,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig UltraVioleta",
@@ -1165,7 +1165,7 @@
   },
   "rig-magenta": {
    "widget": 84,
-   "function": 792,
+   "function": 788,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Magenta",
@@ -1182,7 +1182,7 @@
   },
   "rig-fucsia": {
    "widget": 85,
-   "function": 793,
+   "function": 789,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Fucsia",
@@ -1199,7 +1199,7 @@
   },
   "rig-rosa": {
    "widget": 86,
-   "function": 794,
+   "function": 790,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Rig Rosa",
@@ -1216,7 +1216,7 @@
   },
   "arcoiris-junto": {
    "widget": 87,
-   "function": 795,
+   "function": 791,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Arcoiris junto",
@@ -1231,7 +1231,7 @@
   },
   "arcoiris-fases": {
    "widget": 88,
-   "function": 796,
+   "function": 792,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Arcoiris fases",
@@ -1276,7 +1276,7 @@
   },
   "effect-1": {
    "widget": 93,
-   "function": 797,
+   "function": 793,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 1",
@@ -1291,7 +1291,7 @@
   },
   "effect-5": {
    "widget": 94,
-   "function": 798,
+   "function": 794,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 5",
@@ -1306,7 +1306,7 @@
   },
   "effect-8": {
    "widget": 95,
-   "function": 799,
+   "function": 795,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 8",
@@ -1321,7 +1321,7 @@
   },
   "effect-12": {
    "widget": 96,
-   "function": 800,
+   "function": 796,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 12",
@@ -1336,7 +1336,7 @@
   },
   "effect-16": {
    "widget": 97,
-   "function": 801,
+   "function": 797,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 16",
@@ -1351,7 +1351,7 @@
   },
   "effect-20": {
    "widget": 98,
-   "function": 802,
+   "function": 798,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 20",
@@ -1366,7 +1366,7 @@
   },
   "effect-23": {
    "widget": 99,
-   "function": 803,
+   "function": 799,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 23",
@@ -1381,7 +1381,7 @@
   },
   "effect-27": {
    "widget": 100,
-   "function": 804,
+   "function": 800,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 27",
@@ -1396,7 +1396,7 @@
   },
   "effect-31": {
    "widget": 101,
-   "function": 805,
+   "function": 801,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 31",
@@ -1411,7 +1411,7 @@
   },
   "effect-35": {
    "widget": 102,
-   "function": 806,
+   "function": 802,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 35",
@@ -1426,7 +1426,7 @@
   },
   "effect-38": {
    "widget": 103,
-   "function": 807,
+   "function": 803,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 38",
@@ -1441,7 +1441,7 @@
   },
   "effect-42": {
    "widget": 104,
-   "function": 808,
+   "function": 804,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Effect 42",
@@ -1456,7 +1456,7 @@
   },
   "paneles-manual": {
    "widget": 105,
-   "function": 809,
+   "function": 805,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Paneles Manual",
@@ -1471,7 +1471,7 @@
   },
   "auto-lento": {
    "widget": 108,
-   "function": 526,
+   "function": 522,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "AUTO lento",
@@ -1486,7 +1486,7 @@
   },
   "auto-normal": {
    "widget": 109,
-   "function": 552,
+   "function": 548,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "AUTO normal",
@@ -1501,7 +1501,7 @@
   },
   "auto-rapido": {
    "widget": 110,
-   "function": 553,
+   "function": 549,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "AUTO rapido",
@@ -1516,7 +1516,7 @@
   },
   "centro": {
    "widget": 111,
-   "function": 554,
+   "function": 550,
    "functionType": "Scene",
    "action": "toggle",
    "caption": "Centro",
@@ -1531,7 +1531,7 @@
   },
   "circulo": {
    "widget": 112,
-   "function": 810,
+   "function": 806,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Circulo",
@@ -1546,7 +1546,7 @@
   },
   "ocho": {
    "widget": 113,
-   "function": 811,
+   "function": 807,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Ocho",
@@ -1561,7 +1561,7 @@
   },
   "linea": {
    "widget": 114,
-   "function": 812,
+   "function": 808,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Linea",
@@ -1576,7 +1576,7 @@
   },
   "diamante": {
    "widget": 115,
-   "function": 813,
+   "function": 809,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Diamante",
@@ -1591,7 +1591,7 @@
   },
   "cuadrado": {
    "widget": 116,
-   "function": 814,
+   "function": 810,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Cuadrado",
@@ -1606,7 +1606,7 @@
   },
   "hoja": {
    "widget": 117,
-   "function": 815,
+   "function": 811,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Hoja",
@@ -1621,7 +1621,7 @@
   },
   "lissajous": {
    "widget": 118,
-   "function": 816,
+   "function": 812,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Lissajous",
@@ -1636,7 +1636,7 @@
   },
   "circulo-simultaneo": {
    "widget": 119,
-   "function": 817,
+   "function": 813,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Circulo Simultaneo",
@@ -1651,7 +1651,7 @@
   },
   "ocho-simultaneo": {
    "widget": 120,
-   "function": 818,
+   "function": 814,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Ocho Simultaneo",
@@ -1666,7 +1666,7 @@
   },
   "linea-simultaneo": {
    "widget": 121,
-   "function": 819,
+   "function": 815,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Linea Simultaneo",
@@ -1681,7 +1681,7 @@
   },
   "diamante-simultaneo": {
    "widget": 122,
-   "function": 820,
+   "function": 816,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Diamante Simultaneo",
@@ -1696,7 +1696,7 @@
   },
   "cuadrado-simultaneo": {
    "widget": 123,
-   "function": 821,
+   "function": 817,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Cuadrado Simultaneo",
@@ -1711,7 +1711,7 @@
   },
   "hoja-simultaneo": {
    "widget": 124,
-   "function": 822,
+   "function": 818,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Hoja Simultaneo",
@@ -1726,7 +1726,7 @@
   },
   "lissajous-simultaneo": {
    "widget": 125,
-   "function": 823,
+   "function": 819,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Lissajous Simultaneo",
@@ -1741,7 +1741,7 @@
   },
   "circulo-alternado": {
    "widget": 126,
-   "function": 824,
+   "function": 820,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Circulo Alternado",
@@ -1756,7 +1756,7 @@
   },
   "ocho-alternado": {
    "widget": 127,
-   "function": 825,
+   "function": 821,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Ocho Alternado",
@@ -1771,7 +1771,7 @@
   },
   "linea-alternado": {
    "widget": 128,
-   "function": 826,
+   "function": 822,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Linea Alternado",
@@ -1786,7 +1786,7 @@
   },
   "diamante-alternado": {
    "widget": 129,
-   "function": 827,
+   "function": 823,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Diamante Alternado",
@@ -1801,7 +1801,7 @@
   },
   "cuadrado-alternado": {
    "widget": 130,
-   "function": 828,
+   "function": 824,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Cuadrado Alternado",
@@ -1816,7 +1816,7 @@
   },
   "hoja-alternado": {
    "widget": 131,
-   "function": 829,
+   "function": 825,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Hoja Alternado",
@@ -1831,7 +1831,7 @@
   },
   "lissajous-alternado": {
    "widget": 132,
-   "function": 830,
+   "function": 826,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Lissajous Alternado",
@@ -1846,7 +1846,7 @@
   },
   "ola-vertical": {
    "widget": 133,
-   "function": 831,
+   "function": 827,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Ola Vertical",
@@ -1861,7 +1861,7 @@
   },
   "barrido-unison": {
    "widget": 134,
-   "function": 832,
+   "function": 828,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Barrido Unison",
@@ -1876,7 +1876,7 @@
   },
   "beams-abanico": {
    "widget": 135,
-   "function": 833,
+   "function": 829,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Beams Abanico",
@@ -1891,7 +1891,7 @@
   },
   "beams-cruce": {
    "widget": 136,
-   "function": 834,
+   "function": 830,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Beams Cruce",
@@ -1906,7 +1906,7 @@
   },
   "escenario": {
    "widget": 137,
-   "function": 835,
+   "function": 831,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Escenario",
@@ -1921,7 +1921,7 @@
   },
   "auto-gobos": {
    "widget": 139,
-   "function": 587,
+   "function": 583,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "AUTO gobos",
@@ -1936,7 +1936,7 @@
   },
   "reposo": {
    "widget": 140,
-   "function": 624,
+   "function": 620,
    "functionType": "Scene",
    "action": "toggle",
    "caption": "Reposo",
@@ -1951,7 +1951,7 @@
   },
   "gobo-1": {
    "widget": 143,
-   "function": 836,
+   "function": 832,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 1",
@@ -1966,7 +1966,7 @@
   },
   "gobo-2": {
    "widget": 144,
-   "function": 837,
+   "function": 833,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 2",
@@ -1981,7 +1981,7 @@
   },
   "gobo-3": {
    "widget": 145,
-   "function": 838,
+   "function": 834,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 3",
@@ -1996,7 +1996,7 @@
   },
   "gobo-4": {
    "widget": 146,
-   "function": 839,
+   "function": 835,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 4",
@@ -2011,7 +2011,7 @@
   },
   "gobo-5": {
    "widget": 147,
-   "function": 840,
+   "function": 836,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 5",
@@ -2026,7 +2026,7 @@
   },
   "gobo-6": {
    "widget": 148,
-   "function": 841,
+   "function": 837,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 6",
@@ -2041,7 +2041,7 @@
   },
   "gobo-7": {
    "widget": 149,
-   "function": 842,
+   "function": 838,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 7",
@@ -2056,7 +2056,7 @@
   },
   "gobo-8": {
    "widget": 150,
-   "function": 843,
+   "function": 839,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 8",
@@ -2071,7 +2071,7 @@
   },
   "gobo-9": {
    "widget": 151,
-   "function": 844,
+   "function": 840,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 9",
@@ -2086,7 +2086,7 @@
   },
   "gobo-10": {
    "widget": 152,
-   "function": 845,
+   "function": 841,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 10",
@@ -2101,7 +2101,7 @@
   },
   "gobo-11": {
    "widget": 153,
-   "function": 846,
+   "function": 842,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 11",
@@ -2116,7 +2116,7 @@
   },
   "gobo-12": {
    "widget": 154,
-   "function": 847,
+   "function": 843,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 12",
@@ -2131,7 +2131,7 @@
   },
   "gobo-13": {
    "widget": 155,
-   "function": 848,
+   "function": 844,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 13",
@@ -2146,7 +2146,7 @@
   },
   "gobo-14": {
    "widget": 156,
-   "function": 849,
+   "function": 845,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 14",
@@ -2161,7 +2161,7 @@
   },
   "gobo-15": {
    "widget": 157,
-   "function": 850,
+   "function": 846,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 15",
@@ -2176,7 +2176,7 @@
   },
   "gobo-16": {
    "widget": 158,
-   "function": 851,
+   "function": 847,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 16",
@@ -2191,7 +2191,7 @@
   },
   "gobo-17": {
    "widget": 159,
-   "function": 852,
+   "function": 848,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo 17",
@@ -2206,7 +2206,7 @@
   },
   "gobo-repartido-1": {
    "widget": 160,
-   "function": 853,
+   "function": 849,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Repartido 1",
@@ -2221,7 +2221,7 @@
   },
   "gobo-repartido-2": {
    "widget": 161,
-   "function": 854,
+   "function": 850,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Repartido 2",
@@ -2236,7 +2236,7 @@
   },
   "gobo-repartido-3": {
    "widget": 162,
-   "function": 855,
+   "function": 851,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Repartido 3",
@@ -2251,7 +2251,7 @@
   },
   "gobo-repartido-4": {
    "widget": 163,
-   "function": 856,
+   "function": 852,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Repartido 4",
@@ -2266,7 +2266,7 @@
   },
   "gobo-repartido-5": {
    "widget": 164,
-   "function": 857,
+   "function": 853,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Repartido 5",
@@ -2281,7 +2281,7 @@
   },
   "gobo-repartido-6": {
    "widget": 165,
-   "function": 858,
+   "function": 854,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Repartido 6",
@@ -2296,7 +2296,7 @@
   },
   "gobo-repartido-7": {
    "widget": 166,
-   "function": 859,
+   "function": 855,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Repartido 7",
@@ -2311,7 +2311,7 @@
   },
   "gobo-repartido-8": {
    "widget": 167,
-   "function": 860,
+   "function": 856,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Repartido 8",
@@ -2326,7 +2326,7 @@
   },
   "gobo-shake-gobo-1": {
    "widget": 168,
-   "function": 861,
+   "function": 857,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Shake - Gobo 1",
@@ -2341,7 +2341,7 @@
   },
   "gobo-shake-gobo-9": {
    "widget": 169,
-   "function": 862,
+   "function": 858,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Shake - Gobo 9",
@@ -2356,7 +2356,7 @@
   },
   "gobo-shake-gobo-17": {
    "widget": 170,
-   "function": 863,
+   "function": 859,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Gobo Shake - Gobo 17",
@@ -2371,7 +2371,7 @@
   },
   "auto-prisma": {
    "widget": 173,
-   "function": 623,
+   "function": 619,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "AUTO prisma",
@@ -2386,7 +2386,7 @@
   },
   "reposo-174": {
    "widget": 174,
-   "function": 625,
+   "function": 621,
    "functionType": "Scene",
    "action": "toggle",
    "caption": "Reposo",
@@ -2401,7 +2401,7 @@
   },
   "insert-prism": {
    "widget": 175,
-   "function": 864,
+   "function": 860,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Insert Prism",
@@ -2416,7 +2416,7 @@
   },
   "1": {
    "widget": 176,
-   "function": 865,
+   "function": 861,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "1",
@@ -2431,7 +2431,7 @@
   },
   "2": {
    "widget": 177,
-   "function": 866,
+   "function": 862,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "2",
@@ -2446,7 +2446,7 @@
   },
   "3": {
    "widget": 178,
-   "function": 867,
+   "function": 863,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "3",
@@ -2461,7 +2461,7 @@
   },
   "4": {
    "widget": 179,
-   "function": 868,
+   "function": 864,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "4",
@@ -2476,7 +2476,7 @@
   },
   "1-y-3": {
    "widget": 180,
-   "function": 869,
+   "function": 865,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "1 y 3",
@@ -2491,7 +2491,7 @@
   },
   "2-y-4": {
    "widget": 181,
-   "function": 870,
+   "function": 866,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "2 y 4",
@@ -2506,7 +2506,7 @@
   },
   "prisma-giro-rapido": {
    "widget": 182,
-   "function": 871,
+   "function": 867,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Prisma Giro Rapido",
@@ -2521,7 +2521,7 @@
   },
   "prisma-giro-inverso": {
    "widget": 183,
-   "function": 872,
+   "function": 868,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Prisma Giro Inverso",
@@ -2536,7 +2536,7 @@
   },
   "barrido-de-intensidad": {
    "widget": 251,
-   "function": 637,
+   "function": 633,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Barrido de intensidad",
@@ -2551,7 +2551,7 @@
   },
   "barrido-inverso": {
    "widget": 252,
-   "function": 642,
+   "function": 638,
    "functionType": "Collection",
    "action": "toggle",
    "caption": "Barrido inverso",
@@ -2566,7 +2566,7 @@
   },
   "pares": {
    "widget": 253,
-   "function": 645,
+   "function": 641,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "Pares / impares",
@@ -2581,7 +2581,7 @@
   },
   "rotacion-de-barridos": {
    "widget": 254,
-   "function": 763,
+   "function": 759,
    "functionType": "Chaser",
    "action": "toggle",
    "caption": "Rotación de barridos",
@@ -2618,7 +2618,7 @@
    "timeMs": 500,
    "members": [
     {
-     "function": 706,
+     "function": 702,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -2636,7 +2636,7 @@
      }
     },
     {
-     "function": 720,
+     "function": 716,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -2654,7 +2654,7 @@
      }
     },
     {
-     "function": 755,
+     "function": 751,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -2672,7 +2672,7 @@
      }
     },
     {
-     "function": 707,
+     "function": 703,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -2780,7 +2780,7 @@
      }
     },
     {
-     "function": 587,
+     "function": 583,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -2798,7 +2798,7 @@
      }
     },
     {
-     "function": 623,
+     "function": 619,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -2816,7 +2816,7 @@
      }
     },
     {
-     "function": 645,
+     "function": 641,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -2834,7 +2834,61 @@
      }
     },
     {
-     "function": 633,
+     "function": 629,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 630,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 631,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 632,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -2906,61 +2960,7 @@
      }
     },
     {
-     "function": 638,
-     "fadeIn": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "fadeOut": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "duration": {
-      "raw": 10,
-      "name": "16",
-      "factor": 16.0
-     }
-    },
-    {
-     "function": 639,
-     "fadeIn": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "fadeOut": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "duration": {
-      "raw": 10,
-      "name": "16",
-      "factor": 16.0
-     }
-    },
-    {
-     "function": 640,
-     "fadeIn": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "fadeOut": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "duration": {
-      "raw": 10,
-      "name": "16",
-      "factor": 16.0
-     }
-    },
-    {
-     "function": 641,
+     "function": 637,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -2986,6 +2986,42 @@
    "timeMs": 500,
    "members": [
     {
+     "function": 422,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
+     "function": 423,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 10,
+      "name": "16",
+      "factor": 16.0
+     }
+    },
+    {
      "function": 424,
      "fadeIn": {
       "raw": 0,
@@ -3004,7 +3040,7 @@
      }
     },
     {
-     "function": 425,
+     "function": 446,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -3022,7 +3058,7 @@
      }
     },
     {
-     "function": 426,
+     "function": 447,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -3166,7 +3202,7 @@
      }
     },
     {
-     "function": 455,
+     "function": 485,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -3184,7 +3220,7 @@
      }
     },
     {
-     "function": 456,
+     "function": 486,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -3238,7 +3274,7 @@
      }
     },
     {
-     "function": 495,
+     "function": 513,
      "fadeIn": {
       "raw": 0,
       "name": "None",
@@ -3253,6 +3289,60 @@
       "raw": 10,
       "name": "16",
       "factor": 16.0
+     }
+    },
+    {
+     "function": 514,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 515,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
+     }
+    },
+    {
+     "function": 516,
+     "fadeIn": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "fadeOut": {
+      "raw": 0,
+      "name": "None",
+      "factor": null
+     },
+     "duration": {
+      "raw": 9,
+      "name": "8",
+      "factor": 8.0
      }
     },
     {
@@ -3274,79 +3364,7 @@
      }
     },
     {
-     "function": 518,
-     "fadeIn": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "fadeOut": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "duration": {
-      "raw": 9,
-      "name": "8",
-      "factor": 8.0
-     }
-    },
-    {
-     "function": 519,
-     "fadeIn": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "fadeOut": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "duration": {
-      "raw": 9,
-      "name": "8",
-      "factor": 8.0
-     }
-    },
-    {
-     "function": 520,
-     "fadeIn": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "fadeOut": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "duration": {
-      "raw": 9,
-      "name": "8",
-      "factor": 8.0
-     }
-    },
-    {
-     "function": 521,
-     "fadeIn": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "fadeOut": {
-      "raw": 0,
-      "name": "None",
-      "factor": null
-     },
-     "duration": {
-      "raw": 10,
-      "name": "16",
-      "factor": 16.0
-     }
-    },
-    {
-     "function": 527,
+     "function": 523,
      "fadeIn": {
       "raw": 9,
       "name": "8",
@@ -3364,7 +3382,7 @@
      }
     },
     {
-     "function": 528,
+     "function": 524,
      "fadeIn": {
       "raw": 9,
       "name": "8",

@@ -363,6 +363,12 @@ def generate_movement_families(
     rigged = rigged_fixture_ids(workspace.root)
     washes = stage_ordered(workspace.root, washes)
     beams = stage_ordered(workspace.root, beams)
+    # A wave's offsets are loop/(heads+1) apart, so a spare in the row takes a
+    # slot of it: six hidden washes put the two MACs a ninth of a loop apart
+    # instead of a third (Round 2 review of the en-sala audit, 2026-09-27).
+    # The waves run over the rigged heads alone, or every head when none is.
+    rigged_washes = [i for i in washes if i in rigged] or washes
+    rigged_beams = [i for i in beams if i in rigged] or beams
 
     def _family(
         ids,
@@ -408,7 +414,7 @@ def generate_movement_families(
         beams, BEAM_SLOW, display("soft_beams"), display("prefix_soft_beam"), soft_path
     )
     ola_suave = _family(
-        washes,
+        rigged_washes,
         WASH_CASCADE,
         None,
         display("prefix_wave"),
@@ -479,7 +485,7 @@ def generate_movement_families(
         mirrored=alternate_mirror([i for i in beams if i in rigged], mirrored_ids),
     )
     cascada_beams = _family(
-        beams,
+        rigged_beams,
         BEAM_CASCADE,
         None,
         # No prefix: the envelope's one shape, Circle, is named by the override.
@@ -490,7 +496,7 @@ def generate_movement_families(
     )
     # The tilt wave and the synced push, per family like every figure.
     ola_wash = _family(
-        washes,
+        rigged_washes,
         WASH_TILT_WAVE,
         None,
         display("prefix_wave"),
@@ -499,7 +505,7 @@ def generate_movement_families(
         overrides={"Line": display("vertical_wave_washes")},
     )
     ola_beam = _family(
-        beams,
+        rigged_beams,
         BEAM_TILT_WAVE,
         None,
         display("prefix_wave"),
