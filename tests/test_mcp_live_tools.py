@@ -36,8 +36,9 @@ def _settings(qlc, writes=False):
 
 def test_status_reports_the_running_show(qlc):
     status = live_status(_settings(qlc))
-    assert status["reachable"] and status["project_loaded"]
-    assert (status["functions"], status["widgets"]) == (2, 3)
+    assert status["reachable"] and status["show_loaded"]
+    assert (status["functions"], status["widgets"]) == (2, 4)
+    assert not [m for m in qlc.received if "isProjectLoaded" in m]
     assert status["writes_allowed"] is False
 
 
@@ -118,7 +119,7 @@ def test_writes_are_refused_without_the_flag(qlc):
 
 def test_press_and_release_with_writes_allowed(qlc):
     pressed = live_press(_settings(qlc, writes=True), 3, 255)
-    assert pressed == {"widget": 3, "sent": 255, "before": "0", "state": "255"}
+    assert pressed == {"widget": 3, "type": "Button", "sent": 255, "before": "0", "state": "255"}
     assert "3|255" in qlc.received
     assert live_press(_settings(qlc, writes=True), 3, 0)["state"] == "0"
 
@@ -131,9 +132,26 @@ def test_press_refuses_a_widget_the_console_does_not_have(qlc):
         live_press(_settings(qlc, writes=True), 3, 256)
 
 
+def test_press_refuses_a_widget_that_is_not_a_button_or_slider(qlc):
+    """An Audio Triggers widget starts audio capture on the same `<id>|255`."""
+    with pytest.raises(ValueError, match="widget 9 is a Audio Triggers"):
+        live_press(_settings(qlc, writes=True), 9)
+    assert "9|255" not in qlc.received
+    assert live_press(_settings(qlc, writes=True), 7, 128)["state"] == "255"
+
+
+def test_a_name_holding_the_separator_cannot_aim_a_write(qlc):
+    """A caption with `|` shifts the list; the write asks the id's own type first."""
+    qlc.functions[21][0] = "Auto|99"
+    assert (99, "22") in [(f["id"], f["name"]) for f in live_functions(_settings(qlc))]
+    with pytest.raises(ValueError, match="no function 99"):
+        live_function(_settings(qlc, writes=True), 99, "on")
+    assert not [m for m in qlc.received if m.startswith("QLC+API|setFunctionStatus")]
+
+
 def test_function_on_and_off_with_writes_allowed(qlc):
     started = live_function(_settings(qlc, writes=True), 22, "on")
-    assert started == {"function": 22, "name": "Rojo", "running": True}
+    assert started == {"function": 22, "type": "Scene", "running": True}
     assert "QLC+API|setFunctionStatus|22|1" in qlc.received
     assert live_function(_settings(qlc, writes=True), 22, "off")["running"] is False
     with pytest.raises(ValueError, match="no function 5"):

@@ -38,9 +38,9 @@ qlctool = ["library/*.xsd", "library/system/*.qxf", "locales/*.toml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-# One worker per core. The QLC+ launches serialise on validate.LAUNCH_LOCK
-# whatever the worker count (2026-09-22: 138 s serial, 47 s on four workers,
-# 32 s on twelve). `-n 0` runs the suite in-process, for a debugger.
+# One worker per core (2026-09-22: 138 s serial, 47 s on four workers, 32 s
+# on twelve). Each validation reads its own QLC+'s stdout, so launches no
+# longer serialise (2026-09-26). `-n 0` runs the suite in-process, for a debugger.
 addopts = "-n auto"
 
 [tool.deptry]

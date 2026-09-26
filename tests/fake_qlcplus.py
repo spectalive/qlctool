@@ -15,6 +15,7 @@ WIDGETS = {
     3: ["AUTO", "Button", "0", 21],
     4: ["Blackout", "Button", "0", 0],
     7: ["Master", "Slider", "255", 0],
+    9: ["Audio", "Audio Triggers", "0", 0],
 }
 FUNCTIONS = {21: ["Auto chase", "Chaser", False], 22: ["Rojo", "Scene", False]}
 
@@ -56,8 +57,6 @@ class FakeQlcPlus:
             return None
         command, arguments = fields[1], fields[2:]
         head = f"QLC+API|{command}|"
-        if command == "isProjectLoaded":
-            return head + "true"
         if command == "getWidgetsList":
             return head + "|".join(f"{wid}|{row[0]}" for wid, row in self.widgets.items())
         if command == "getFunctionsList":

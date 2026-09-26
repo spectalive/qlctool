@@ -12,11 +12,7 @@ from rig_root import RIG_ROOT
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
 from qlctool.generate.movement_efx import generate_movement_efx
 from qlctool.library import FixtureLibrary
-from qlctool.validate import (
-    current_session,
-    qlcplus_binary,
-    validate_workspace,
-)
+from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT
@@ -35,13 +31,31 @@ def test_the_real_show_validates():
 
 @needs_qlcplus
 def test_a_truncated_workspace_is_rejected(tmp_path):
+    """QLC+ would load a truncated file up to the break, its I/O patches
+    included, so it is refused before QLC+ is started (2026-09-26)."""
     broken = tmp_path / "broken.qxw"
     broken.write_bytes(SHOW.read_bytes()[:4000])
 
     result = validate_workspace(broken)
 
     assert not result.ok
-    assert any("cannot be created" in error for error in result.errors)
+    assert any("not well-formed XML" in error for error in result.errors)
+
+
+@needs_qlcplus
+def test_a_workspace_qlcplus_cannot_build_is_rejected(tmp_path):
+    workspace = Workspace.load(SHOW)
+    fixture = next(
+        e for e in workspace.root.iter("{*}Fixture") if e.find("{*}Channels") is not None
+    )
+    fixture.find("{*}Model").text = "No Such Model"
+    broken = tmp_path / "unknown-model.qxw"
+    workspace.save(broken)
+
+    result = validate_workspace(broken)
+
+    assert not result.ok
+    assert any("Such-Model" in error for error in result.errors)
 
 
 @needs_qlcplus
@@ -64,72 +78,28 @@ def test_generated_functions_load_in_qlcplus(tmp_path):
 
 @needs_qlcplus
 def test_two_validations_at_once_keep_their_own_verdicts(tmp_path):
-    """2026-09-22, the suite goes parallel: QLC+'s -g log has one hard-coded
-    name, so two validations launched at the same moment - two pytest workers,
-    two shells - truncate each other's log, and whichever reads last sees the
-    other's session. A broken workspace then validates on the strength of its
-    neighbour's clean load, or the clean one inherits the complaint. Reproduced
-    by validating a truncated show and the real one from two threads.
+    """2026-09-22, the suite goes parallel: when validation read QLC+'s shared
+    -g log, two validations launched at the same moment truncated each other's
+    log and a broken workspace validated on its neighbour's clean load. Each
+    validation now reads its own child's stdout; this keeps it that way.
     """
-    broken = tmp_path / "broken.qxw"
-    broken.write_bytes(SHOW.read_bytes()[:4000])
+    workspace = Workspace.load(SHOW)
+    fixture = next(
+        e for e in workspace.root.iter("{*}Fixture") if e.find("{*}Channels") is not None
+    )
+    fixture.find("{*}Model").text = "No Such Model"
+    broken = tmp_path / "unknown-model.qxw"
+    workspace.save(broken)
 
     with ThreadPoolExecutor(max_workers=2) as pool:
         good, bad = pool.map(validate_workspace, [SHOW, broken])
 
     assert good.ok, good.describe()
     assert not bad.ok
-    assert any("cannot be created" in error for error in bad.errors)
+    assert any("Such-Model" in error for error in bad.errors)
 
 
 def test_missing_binary_raises_rather_than_passing(monkeypatch):
     monkeypatch.setenv("QLCTOOL_QLCPLUS", "/nonexistent/qlcplus")
     with pytest.raises(FileNotFoundError):
         validate_workspace(SHOW)
-
-
-def test_a_dying_qlcplus_does_not_hand_its_errors_to_the_next_workspace():
-    """2026-08-25: `test_qlcplus_loads_the_show` failed once under the full
-    suite with "fixture 13 overlapping with fixture ...", while passing in
-    isolation and on every re-run.
-
-    QLC+'s -g log has one hard-coded name and is opened in append mode, so
-    every validation shares it. Truncating before a launch does not help: the
-    previous test's QLC+, still shutting down, keeps writing - and the
-    neighbouring test that deliberately builds a broken workspace hands its
-    complaint to whoever reads the file next. The verdict must only ever see
-    the session this call started.
-    """
-    log = (
-        'bool QLCFixtureDefCache::load(const QDir &) "/x/Fixtures"\n'
-        "Fixture 13 overlapping with fixture 12\n"
-        'bool QLCFixtureDefCache::load(const QDir &) "/x/Fixtures"\n'
-        "1730 fixtures found in map\n"
-        "renderPage\n"
-    )
-
-    session = current_session(log)
-
-    assert "overlapping" not in session
-    assert session.startswith("bool QLCFixtureDefCache::load")
-    assert "renderPage" in session
-
-
-def test_a_log_without_the_start_marker_keeps_every_line():
-    """A build that logs something else must not silently drop a complaint."""
-    log = "Fixture 13 overlapping with fixture 12\n"
-
-    assert current_session(log) == log
-
-
-def test_the_session_marker_is_not_the_line_after_it():
-    """QLC+ logs `QLCFixtureDefCache::loadMap` immediately after
-    `QLCFixtureDefCache::load`, so a prefix match takes the second line as the
-    start of the session and drops the first (2026-08-31)."""
-    log = (
-        'bool QLCFixtureDefCache::load(const QDir &) "/x/Fixtures"\n'
-        'bool QLCFixtureDefCache::loadMap(const QDir &) "/y/Fixtures"\n'
-        "renderPage\n"
-    )
-
-    assert current_session(log) == log

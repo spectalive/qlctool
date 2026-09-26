@@ -18,7 +18,6 @@ def live_status(settings: McpSettings, workspace: str | None = None) -> dict[str
     """
     try:
         with QlcLink(settings) as link:
-            loaded = link.ask("isProjectLoaded")
             functions = dict(id_name_pairs(link.ask("getFunctionsList")))
             widgets = id_name_pairs(link.ask("getWidgetsList"))
     except ConnectionError as error:
@@ -26,7 +25,9 @@ def live_status(settings: McpSettings, workspace: str | None = None) -> dict[str
     status: dict[str, Any] = {
         "reachable": True,
         "url": settings.url,
-        "project_loaded": loaded[0] == "true",
+        # Not `isProjectLoaded`: QLC+ 5 answers a latch set by a web upload,
+        # and on QLC+ 4 asking clears it. A loaded show has functions.
+        "show_loaded": bool(functions),
         "functions": len(functions),
         "widgets": len(widgets),
         "writes_allowed": settings.allow_writes,

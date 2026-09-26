@@ -390,7 +390,7 @@ check_problems = "{count} problema(s) en {rules} regla(s)"
 check_more = "... y {count} mas"
 desk_bursts_invalid = "rafagas del desk no validas: {findings}"
 desk_burst_no_accent = "{control} no nombra un unico acento"
-mcp_extra_missing = "qlctool mcp necesita el extra opcional de MCP ({missing} no esta instalado): pip install \"qlctool[mcp]\""
+mcp_extra_missing = "qlctool mcp necesita el extra opcional de MCP ({missing} no esta instalado): pip install \"qlctool[mcp] @ git+https://github.com/spectalive/qlctool.git@<tag>\", desde v0.1.7"
 mcp_live_writes_off = "{tool} cambia el show en marcha, y este servidor se arranco en solo lectura; rearrancalo con qlctool mcp --allow-live-writes para permitirlo"
 mcp_path_missing = "{path} no existe"
 mcp_output_exists = "{path} ya existe; pasa overwrite=true para reemplazarlo"
@@ -400,6 +400,7 @@ mcp_live_unreachable = "no hay API web de QLC+ en {url} ({error}); arranca QLC+ 
 mcp_live_no_reply = "QLC+ en {url} no contesto {command} en {seconds} s; un acceso web con contrasena no contesta nada"
 mcp_live_no_widget = "la consola en marcha no tiene el widget {widget}"
 mcp_live_no_function = "el show en marcha no tiene la funcion {function}"
+mcp_live_not_pressable = "el widget {widget} es un {kind}; live_press solo manda un valor a botones y sliders"
 mcp_live_out_of_range = "{name} tiene que estar entre {low} y {high}, no {value}"
 
 [checks]

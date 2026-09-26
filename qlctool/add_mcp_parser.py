@@ -6,7 +6,7 @@ from .cmd_mcp import cmd_mcp
 
 SUMMARY = (
     "serve build, check, validate and live QLC+ tools to an agent over MCP (stdio); "
-    'needs pip install "qlctool[mcp]"'
+    "needs the optional qlctool[mcp] extra (docs/mcp.md)"
 )
 
 

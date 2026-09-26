@@ -12,7 +12,9 @@ from qlctool.cli import main
 def test_without_the_extra_the_command_names_it(monkeypatch, capsys):
     monkeypatch.setitem(sys.modules, "mcp", None)
     assert main(["mcp"]) == 1
-    assert 'pip install "qlctool[mcp]"' in capsys.readouterr().err
+    said = capsys.readouterr().err
+    assert 'pip install "qlctool[mcp] @ git+https://github.com/spectalive/qlctool.git@' in said
+    assert "v0.1.7" in said
 
 
 def test_the_help_names_the_extra_and_the_read_only_default(capsys):

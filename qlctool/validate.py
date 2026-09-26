@@ -2,64 +2,46 @@
 
 The toolkit's other guarantee is structural: a semantic round trip proves an
 edit changed only what it targeted, but it cannot prove QLC+ accepts the result.
-This runs the actual application headless (`--nowm --nogui`), which loads the
-workspace and logs every problem it finds - a fixture whose definition is
-missing, two fixtures overlapping, a function it could not build.
+This runs the actual application, which loads the workspace and logs every
+problem it finds - a fixture whose definition is missing, two fixtures
+overlapping, a function it could not build.
 
 QLC+ has no "load and exit" mode: it starts its engine and stays up. So it is
 launched, watched until loading is done, then killed, and the verdict comes from
-the log rather than the exit code.
+its log rather than the exit code.
+
+What QLC+ loads is an offline copy (`validation_copy`): every universe kept,
+its `<Input>`, `<Output>` and `<Feedback>` removed. A validation run during a
+show must never open the rig's DMX interface, Art-Net or MIDI again, and QLC+ 5
+has no flag to load without them - so validation no longer checks the I/O map
+the file names (2026-09-26, review of round D6). The only process it stops is
+the one it started, by that child's exact pid (`stop_own_process`).
 
 Two builds behave differently. The 4.x widgets build (`qlcplus`) takes
 `--nogui`, loads with no window at all, and then falls silent - that is the one
 to prefer. The 5.x QML build (`qlcplus-qml`) has no headless mode: it opens a
-window and keeps logging while it renders, so loading is considered finished once
-its end-of-load markers appear and the log settles.
+window, kept from taking the screen by `quiet_launch_environment`, and keeps
+logging while it renders, so loading is considered finished once its
+end-of-load markers appear and the log settles.
 
 Versioned bundles in /Applications are found too, newest first, and a binary
 this CPU cannot run is skipped (`qlcplus_candidates`).
 """
 
-import fcntl
 import os
 import select
 import shutil
 import subprocess
-import sys
-import tempfile
 import time
-from collections.abc import Iterator
-from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from lxml import etree
+
 from .qlcplus_candidates import qlcplus_candidates
-
-# The QML build's -g writes the debug log here instead of stdout, which is what
-# makes a background launch readable: `open -g` does not give us its stdout.
-QML_LOG_FILE = Path.home() / "QLC+.log"
-
-# QLC+ opens that file in *append* mode and its name is hard-coded in
-# `qmlui/main.cpp`, so every run of every process shares one file. Truncating it
-# before a launch is not enough: a QLC+ still shutting down from the previous
-# validation keeps writing into it, and its complaints then read as this
-# workspace's. This is the first line QLC+ logs, so the text after its last
-# occurrence is the session this call started - and nobody else's. It is what
-# made `test_qlcplus_loads_the_show` fail under the full suite with an
-# "overlapping with fixture" a neighbouring test had deliberately built
-# (2026-08-25, fixed 2026-08-31). The signature is spelled out because
-# `loadMap` is logged on the very next line and would win a prefix match.
-SESSION_START_MARKER = "QLCFixtureDefCache::load(const QDir &)"
-
-# QLC+ processes this module started that had not exited when the call gave up
-# waiting. The next launch waits for them first.
-_UNREAPED: set[int] = set()
-# One background launch at a time, across processes: two validations started
-# together - two pytest workers, two shells - truncate each other's copy of
-# that shared log, and whichever reads last inherits the other's session, so
-# the real show failed with a truncated neighbour's "cannot be created"
-# (2026-09-22, when the suite went parallel).
-LAUNCH_LOCK = Path(tempfile.gettempdir()) / "qlctool-qlcplus.lock"
+from .quiet_launch_environment import quiet_launch_environment
+from .stop_own_process import stop_own_process
+from .validation_copy import validation_copy
 
 DEFAULT_BINARIES = (
     # 4.x first: it is the only build that loads with no GUI at all.
@@ -125,7 +107,7 @@ def validate_workspace(
     timeout: float = 30.0,
     quiet_period: float = 1.0,
 ) -> ValidationResult:
-    """Load the workspace in headless QLC+ and collect its complaints.
+    """Load an offline copy of the workspace in QLC+ and collect its complaints.
 
     Raises FileNotFoundError when no QLC+ is installed - a missing validator must
     never read as a passing validation.
@@ -136,48 +118,44 @@ def validate_workspace(
     growing 0,2 s after it, so one second is a fivefold margin - and half of
     what every validation used to wait.
     """
-    # Absolute: a background launch goes through `open`, which does not
-    # inherit this process's working directory.
     path = Path(path).resolve()
     executable = binary or qlcplus_binary()
     if executable is None:
         raise FileNotFoundError("no QLC+ executable found; set QLCTOOL_QLCPLUS to its path")
 
     qml = Path(executable).name.endswith("-qml")
+    try:
+        with validation_copy(path) as copy:
+            output = _load(executable, copy, qml, timeout, quiet_period)
+    except etree.XMLSyntaxError as error:
+        # QLC+ reads a broken file up to the break, I/O patches included, so it
+        # is never handed one: the syntax error is the verdict.
+        return ValidationResult(ok=False, errors=[f"not well-formed XML: {error}"])
+    return _verdict(output)
+
+
+def _load(executable: str, copy: Path, qml: bool, timeout: float, quiet_period: float) -> str:
+    """Start QLC+ on `copy`, read its log until loading is done, and stop it."""
     # The QML build has no --nogui and takes -d without a level.
     arguments = (
-        [executable, "-d", "-m", "-o", str(path)]
+        [executable, "-d", "-m", "-o", str(copy)]
         if qml
-        else [executable, "--nowm", "--nogui", "-d", "1", "-o", str(path)]
+        else [executable, "--nowm", "--nogui", "-d", "1", "-o", str(copy)]
     )
-    bundle = _app_bundle(executable)
-    if qml and bundle is not None and not os.environ.get("QLCTOOL_FOREGROUND"):
-        with _launch_lock():
-            output = _run_in_background(bundle, executable, path, timeout, quiet_period)
-        if output is not None:
-            return _verdict(output)
-
     process = subprocess.Popen(
         arguments,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
+        env=quiet_launch_environment(),
     )
-    output = _read_until_loaded(process, timeout, quiet_period, qml)
-    return _verdict(output)
-
-
-def current_session(log: str) -> str:
-    """The part of the shared log file this call's QLC+ wrote.
-
-    Everything before the last `SESSION_START_MARKER` belongs to an earlier
-    process. Returns the whole text when the marker never appears, so a build
-    that logs something else cannot silently drop a real complaint.
-    """
-    index = log.rfind(SESSION_START_MARKER)
-    if index == -1:
-        return log
-    return log[log.rfind("\n", 0, index) + 1 :]
+    try:
+        return _read_until_loaded(process, timeout, quiet_period, qml)
+    finally:
+        # Reaped already when loading finished; a reaped pid is not asked
+        # about again, since the system may have handed it to someone else.
+        if process.returncode is None:
+            stop_own_process(process)
 
 
 def _verdict(output: str) -> ValidationResult:
@@ -195,120 +173,8 @@ def _verdict(output: str) -> ValidationResult:
     return ValidationResult(ok=not errors, errors=errors, log=output or "")
 
 
-def _app_bundle(executable: str) -> str | None:
-    """The .app this executable lives in, on macOS - None anywhere else."""
-    if sys.platform != "darwin":
-        return None
-    for parent in Path(executable).parents:
-        if parent.suffix == ".app":
-            return str(parent)
-    return None
-
-
-def _run_in_background(
-    bundle: str,
-    executable: str,
-    path: str | Path,
-    timeout: float,
-    quiet_period: float,
-) -> str | None:
-    """Load the workspace without QLC+ taking the screen, and return its log.
-
-    `open -g` launches the bundle without bringing it to the front, which is
-    what keeps a generate-and-validate run from stealing focus every time. The
-    cost is that `open` returns immediately and hands back no stdout, so QLC+ is
-    told to log to a file (-g) and only the processes this call started are
-    killed afterwards - a QLC+ the owner has open stays open.
-    """
-    # A previous call's QLC+ that outlived its five seconds is still appending
-    # to the shared log. Let it go before truncating, or its dying lines land
-    # inside this call's slice and read as this workspace's complaints.
-    _wait_for_exit(_UNREAPED & _running_pids(executable), executable)
-    before = _running_pids(executable)
-    QML_LOG_FILE.write_text("")
-    launched = subprocess.run(
-        ["open", "-g", "-a", bundle, "--args", "-d", "-g", "-m", "-o", str(path)],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if launched.returncode != 0:
-        # `open` refuses while a copy of the app is still going down (-600),
-        # among other things. Rather than guess, hand the run back to the
-        # foreground path, which owns its own process.
-        return None
-
-    deadline = time.monotonic() + timeout
-    loaded_at: float | None = None
-    while time.monotonic() < deadline:
-        # Only this launch's slice: a previous QLC+ going down keeps appending,
-        # and its end-of-load markers would otherwise stop the wait early.
-        text = current_session(QML_LOG_FILE.read_text(errors="replace"))
-        if loaded_at is None and any(m in text for m in QML_LOADED_MARKERS):
-            loaded_at = time.monotonic()
-        if loaded_at is not None and time.monotonic() - loaded_at > quiet_period:
-            break
-        time.sleep(0.2)
-
-    started = _running_pids(executable) - before
-    for pid in started:
-        _terminate(pid)
-    if loaded_at is None:
-        # Nothing ever reported a finished load. The usual reason is a QLC+ the
-        # owner already has open: `open -g` activates that instance instead of
-        # starting one, returns 0, and nothing is written to the log file. Hand
-        # the run to the foreground path, which owns its own process, rather
-        # than reading an empty log as a clean workspace.
-        _wait_for_exit(started, executable)
-        return None
-    _wait_for_exit(started, executable)
-    return current_session(QML_LOG_FILE.read_text(errors="replace"))
-
-
-@contextmanager
-def _launch_lock() -> Iterator[None]:
-    """Hold the shared log for one background launch, waiting for any other."""
-    with LAUNCH_LOCK.open("w") as handle:
-        fcntl.flock(handle, fcntl.LOCK_EX)
-        try:
-            yield
-        finally:
-            fcntl.flock(handle, fcntl.LOCK_UN)
-
-
-def _wait_for_exit(started: set[int], executable: str) -> None:
-    """Let the processes this call started actually go.
-
-    `open` answers -600 if asked to launch the bundle again while a copy is
-    still shutting down. Whatever has not gone by the deadline is remembered,
-    so the next launch waits for it instead of sharing the log file with it.
-    """
-    gone_by = time.monotonic() + 5.0
-    while started & _running_pids(executable) and time.monotonic() < gone_by:
-        time.sleep(0.1)
-    _UNREAPED.difference_update(started)
-    _UNREAPED.update(started & _running_pids(executable))
-
-
-def _running_pids(executable: str) -> set[int]:
-    result = subprocess.run(
-        ["pgrep", "-f", Path(executable).name],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    return {int(line) for line in result.stdout.split() if line.isdigit()}
-
-
-def _terminate(pid: int) -> None:
-    try:
-        os.kill(pid, 15)
-    except ProcessLookupError:
-        pass
-
-
 def _read_until_loaded(
-    process: subprocess.Popen, timeout: float, quiet_period: float, qml: bool
+    process: "subprocess.Popen[str]", timeout: float, quiet_period: float, qml: bool
 ) -> str:
     """Collect output until QLC+ has finished loading, then kill it.
 
@@ -317,13 +183,15 @@ def _read_until_loaded(
     end-of-load marker; waiting the full timeout on every file would make
     validation useless in a test suite.
     """
+    stdout = process.stdout
+    assert stdout is not None, "QLC+ is started with its stdout piped"
     deadline = time.monotonic() + timeout
     last_line_at = time.monotonic()
     loaded_at: float | None = None
     lines: list[str] = []
     while True:
         if process.poll() is not None:
-            lines.extend(process.stdout.readlines())
+            lines.extend(stdout.readlines())
             break
         now = time.monotonic()
         settled = (
@@ -332,17 +200,16 @@ def _read_until_loaded(
             else now - last_line_at > quiet_period
         )
         if now > deadline or settled:
-            process.kill()
-            process.wait()
-            lines.extend(process.stdout.readlines())
+            stop_own_process(process)
+            lines.extend(stdout.readlines())
             break
-        ready, _, _ = select.select([process.stdout], [], [], 0.2)
+        ready, _, _ = select.select([stdout], [], [], 0.2)
         if ready:
-            line = process.stdout.readline()
+            line = stdout.readline()
             if line:
                 lines.append(line)
                 last_line_at = time.monotonic()
                 if loaded_at is None and any(marker in line for marker in QML_LOADED_MARKERS):
                     loaded_at = last_line_at
-    process.stdout.close()
+    stdout.close()
     return "".join(lines)

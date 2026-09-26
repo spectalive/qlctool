@@ -3,11 +3,11 @@
 A QLC+ of the test's own (`live_qlcplus.py`) on a free port, never the
 operator's: it reads the console and the channels, is refused a press without
 `--allow-live-writes`, and with it presses AUTO on and off and starts and
-stops its function. Skipped where no QLC+ 5 bundle is installed (CI).
+stops its function. Skipped where no QLC+ 5 is installed (CI).
 """
 
 import pytest
-from live_qlcplus import qml_bundle, running_qlcplus
+from live_qlcplus import qml_binary, running_qlcplus
 from rig_root import RIG_ROOT
 
 pytest.importorskip("websockets")
@@ -19,11 +19,12 @@ from qlctool.mcpserver.live_press import live_press
 from qlctool.mcpserver.live_status import live_status
 from qlctool.mcpserver.live_widgets import live_widgets
 from qlctool.mcpserver.mcp_settings import McpSettings
+from qlctool.mcpserver.pressable_widget_types import PRESSABLE_WIDGET_TYPES
 
 VIBRA = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 
 
-@pytest.mark.skipif(qml_bundle() is None, reason="no QLC+ 5 bundle on this machine")
+@pytest.mark.skipif(qml_binary() is None, reason="no QLC+ 5 on this machine")
 def test_the_live_tools_read_and_drive_a_real_qlcplus(tmp_path):
     with running_qlcplus(VIBRA, tmp_path) as port:
         reads = McpSettings(port=port, timeout=5.0)
@@ -49,6 +50,12 @@ def test_the_live_tools_read_and_drive_a_real_qlcplus(tmp_path):
             live_widgets(reads, detail=True)[0]["state"]
             == widgets[live_widgets(reads, detail=False)[0]["id"]]["state"]
         )
+
+        other = next(w for w in widgets.values() if w["type"] not in PRESSABLE_WIDGET_TYPES)
+        with pytest.raises(ValueError, match="buttons and sliders"):
+            live_press(writes, other["id"])
+        with pytest.raises(ValueError, match="no widget"):
+            live_press(writes, 999999)
 
         pressed = live_press(writes, 4, 255)
         assert (pressed["before"], pressed["state"]) == ("0", "255")

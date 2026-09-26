@@ -11,12 +11,15 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 
 from mcp.server.mcpserver.exceptions import ToolError
+from websockets.exceptions import WebSocketException
 
 # OSError covers PermissionError (a live write refused), ConnectionError (no
 # QLC+ there), TimeoutError and FileNotFoundError (no QLC+ installed);
 # RuntimeError is a QLC+ that ran and logged nothing; ValueError also covers
-# a description or a name the catalogues refuse.
-TOLD = (ValueError, OSError, RuntimeError)
+# a description or a name the catalogues refuse; SyntaxError is lxml's
+# XMLSyntaxError, a workspace that is not XML; WebSocketException a QLC+ that
+# broke the conversation half-way.
+TOLD = (ValueError, OSError, RuntimeError, SyntaxError, WebSocketException)
 
 
 @contextmanager

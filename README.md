@@ -31,13 +31,16 @@ so a generator can only change the nodes it adds. The second is **headless
 validation**: `qlctool validate` (or `--validate` on any command that writes)
 loads the result in a real QLC+ with `--nowm --nogui` and fails on anything the
 application complains about - a missing fixture definition, overlapping
-addresses, a function it could not build. Commands never overwrite the input -
+addresses, a function it could not build. It loads a copy whose universes have
+no input, output or feedback patch, so a validation during a show never opens
+the rig's DMX, Art-Net or MIDI - which also means it does not check that I/O
+map - and it stops only the QLC+ it started, by that process's own pid. Commands never overwrite the input -
 they write a new `<name>-generado.qxw`.
 
 Validation needs QLC+ installed; it looks in `/Applications/QLC+.app` and on
 `PATH`, and `QLCTOOL_QLCPLUS` overrides both. The 4.x build (`qlcplus`) is
 preferred because `--nogui` loads with no window at all; with only the 5.x QML
-build (`qlcplus-qml`) validation still works but a window opens for a second. A missing QLC+ raises rather than
+build (`qlcplus-qml`) validation still works; its window opens without taking focus. A missing QLC+ raises rather than
 passing quietly. Custom fixture definitions must be installed in the QLC+ user
 folder or every fixture that uses them reports "No fixture definition found" -
 QLC+ 4 reads `~/Library/Application Support/QLC+/Fixtures` and QLC+ 5 reads
@@ -58,7 +61,8 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 
 The suite reads a frozen copy of the Vibra rig in `tests/data/rig/`.
 
-`pip install "qlctool[mcp]"` adds `qlctool mcp`, an MCP server over stdio that
+The `mcp` extra (`pip install "qlctool[mcp] @ git+https://github.com/spectalive/qlctool.git@<tag>"`,
+from `v0.1.7` on) adds `qlctool mcp`, an MCP server over stdio that
 lets an agent build, check and validate shows and read a running QLC+ through
 its web API - read-only unless started with `--allow-live-writes`. See
 [`docs/mcp.md`](docs/mcp.md).

@@ -1,7 +1,7 @@
 """Whether this Mac can execute a binary, before QLC+ is launched to find out.
 
 An x86_64-only QLC+ on an arm64 Mac without Rosetta fails with "Bad CPU type"
-from inside `open -g`, which the validator would read as a QLC+ that never
+before it logs anything, which the validator would read as a QLC+ that never
 finished loading.
 """
 

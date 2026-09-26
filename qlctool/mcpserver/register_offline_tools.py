@@ -15,7 +15,12 @@ from .tool_pad_palette import tool_pad_palette
 from .tool_validate import tool_validate
 
 READS = ToolAnnotations(read_only_hint=True, open_world_hint=False)
-WRITES_A_FILE = ToolAnnotations(read_only_hint=False, destructive_hint=False, open_world_hint=False)
+# overwrite=true replaces a file, so a write is destructive.
+WRITES_A_FILE = ToolAnnotations(read_only_hint=False, destructive_hint=True, open_world_hint=False)
+# Starts and stops a QLC+ of its own: not read-only, and outside this process.
+RUNS_QLCPLUS = ToolAnnotations(read_only_hint=False, destructive_hint=False, open_world_hint=True)
+# newshow writes a file and, with validate=true, runs QLC+ too.
+BUILDS = ToolAnnotations(read_only_hint=False, destructive_hint=True, open_world_hint=True)
 
 
 def register_offline_tools(server: MCPServer, settings: McpSettings) -> None:
@@ -28,7 +33,7 @@ def register_offline_tools(server: MCPServer, settings: McpSettings) -> None:
         with tool_errors():
             return tool_info(workspace, default)
 
-    @server.tool(name="newshow", annotations=WRITES_A_FILE)
+    @server.tool(name="newshow", annotations=BUILDS)
     def newshow(
         out: str,
         workspace: str | None = None,
@@ -50,9 +55,9 @@ def register_offline_tools(server: MCPServer, settings: McpSettings) -> None:
         with tool_errors():
             return tool_check(workspace, description, limit, default)
 
-    @server.tool(name="validate", annotations=READS)
+    @server.tool(name="validate", annotations=RUNS_QLCPLUS)
     def validate(workspace: str) -> dict[str, Any]:
-        """Load a workspace in a headless QLC+ of the server's own and report what it complained about."""
+        """Load an I/O-free copy of a workspace in a QLC+ of the server's own; report its complaints."""
         with tool_errors():
             return tool_validate(workspace)
 

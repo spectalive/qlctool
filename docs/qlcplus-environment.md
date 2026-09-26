@@ -80,27 +80,30 @@ static bool Fixture::loader(...) Fixture "CromoWash100 #3" cannot be created.
 <n> channels of fixture <name> are out of bounds
 ```
 
-### Without it taking the screen
+### Without it taking the screen, or the rig
 
-The QML build opens a window, and on macOS that pulls focus away from whatever
-you were doing - once per generated file, which makes a test run unusable. So on
-macOS `validate` launches the bundle with `open -g`, which starts it in the
-background, and tells QLC+ to write its debug log to a file (`-g`, always
-`~/QLC+.log`) because `open` hands back no stdout. Only the processes that call
-started are killed afterwards, so a QLC+ you have open yourself survives.
+The QML build opens a window, and on macOS a QLC+ started directly becomes the
+frontmost app about three seconds in - once per generated file, which makes a
+test run unusable. `validate` starts it as its own child process with two Qt
+switches set, `QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM=1` and
+`QT_MAC_SET_RAISE_PROCESS=0`: measured on QLC+ 5.2.2 (2026-09-26), it loads
+the same way, logs to the pipe validation reads, and focus never moves.
 
-`open` refuses (`-600`) while a copy is still shutting down; the run then falls
-back to the foreground launch rather than reporting a false pass. Set
-`QLCTOOL_FOREGROUND=1` to always use the foreground path.
+What it loads is an offline copy of the workspace, beside the original so
+media and definitions named relative to it still resolve, with every
+universe's `<Input>`, `<Output>` and `<Feedback>` removed. QLC+ 5 has no flag
+to load a workspace without opening those patches, and a validation run
+during a show must never take the DMX interface, Art-Net or the MIDI pad the
+show is using - so **validation no longer checks the I/O map a workspace
+names**. A file that is not well-formed XML is refused before QLC+ is started,
+since QLC+ would load it up to the break, patches included.
 
-**A QLC+ you already have open does the same thing more quietly.** `open -g`
-activates that instance instead of starting one, returns 0, and writes nothing
-to the log file - so the validator had a way to come back
-`ok=True, errors=[], log=''` from a run that never happened, which is the exact
-failure the whole net exists to prevent. Two guards now: the background path
-gives up and falls back when it never sees an end-of-load marker, and an empty
-log raises instead of passing. QLC+ prints its banner before it does anything,
-so a real run is never silent.
+The only process it stops is its own child, by that exact pid (and, should a
+wrapper script have started QLC+ under it, that child's children, by parent
+pid). Until 2026-09-26 it launched through `open -g` and killed every QLC+
+that appeared while it ran, found by name, so an operator's QLC+ (re)started
+in that window died with it. A QLC+ you have open is now never signalled, and
+two validations at once each read their own QLC+'s output.
 
 ### Reading the source
 

@@ -63,6 +63,9 @@ data = [
   "qlctool/names/sections.py",
   # How long a live MCP write waits before reading back what it changed.
   "qlctool/mcpserver/settle_seconds.py",
+  # The widget type names QLC+ 5 answers in each language it ships.
+  "qlctool/mcpserver/pressable_widget_types.py",
+  "qlctool/mcpserver/unknown_widget_types.py",
 ]
 # Instances other code finds by name: the MIDI pads a description can ask for,
 # the SMC-PAD's profile, and the two rule providers the `qlctool.rules` entry
