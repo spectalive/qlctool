@@ -5,15 +5,13 @@ it must be a Scene (`flash_scene`), it must strobe (`flash_strobe`) at the top
 of the strobe's run (`flash_speed`), and when it lights the whole rig it must
 light the smoke columns too (`flash_lit_smoke`). Its strobe must not be
 out-bid by the level beneath (`strobe_masked_by_htp`), and forced LTP it must
-not zero what another button gives (`flash_forced_zero`); a key that holds
-one colour in every bank must reach the whole room (`bank_key_coverage`). Run
-together, in that order.
+not zero what another button gives (`flash_forced_zero`). Run together, in
+that order.
 """
 
 from lxml import etree
 
 from .finding import Finding
-from .rule_bank_key_coverage import check_bank_key_coverage
 from .rule_flash_forced_zero import check_flash_forced_zero
 from .rule_flash_lit_smoke import check_flash_lit_smoke
 from .rule_flash_scene import check_flash_scene
@@ -38,5 +36,4 @@ def flash_button_findings(
         *check_flash_lit_smoke(graph, groups, root),
         *check_strobe_masked_by_htp(graph, groups, root, states, entries),
         *check_flash_forced_zero(graph, groups, root, entries),
-        *check_bank_key_coverage(graph, groups, root, states),
     ]

@@ -25,9 +25,9 @@ from .entry_points import entry_points
 from .finding import Finding
 from .fixing_order import fixing_order
 from .flash_button_findings import flash_button_findings
+from .key_binding_findings import key_binding_findings
 from .named_findings import named_findings
 from .rule_accent_restore import check_accent_restore
-from .rule_audio_triggers import check_audio_triggers
 from .rule_collision import check_collisions
 from .rule_colour_animation_wheel import check_colour_animation_wheel
 from .rule_colour_clocks import check_colour_clocks
@@ -167,6 +167,6 @@ def check_workspace(
     findings += check_undeclared_heads(graph, root)
     findings += check_console(graph, root, canvas or canvas_of(root))
     findings += console_caption_findings(graph, root)
-    findings += check_audio_triggers(graph, groups, root)
+    findings += key_binding_findings(graph, groups, root, states)
     findings += [finding for provider in applying for finding in provider.check(context)]
     return fixing_order(named_findings(findings, root, names))
