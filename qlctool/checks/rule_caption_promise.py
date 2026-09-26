@@ -16,10 +16,17 @@ the identifier (`CAPTION_PROMISES`) are then asked of the patch
 A caption a show description rewrote through `[names]` is not recoverable
 from the workspace, so it is matched only through the shipped catalogues and
 an overridden caption is not judged.
+
+A patch with a fixture whose definition was not found proves no absence:
+that fixture may be the one with the gobo, the head or the dimmer. Until
+every patched fixture is read the rule says nothing, and
+`missing_fixture_definition` says why (2026-09-26, round G: the club checked
+with no definitions was told its title promised heads it has).
 """
 
 from lxml import etree
 
+from ..fixture import patched_fixtures
 from ..xmlutil import find_local
 from .caption_promises import CAPTION_PROMISES
 from .finding import ERROR, Finding
@@ -35,7 +42,7 @@ RULE_ID = "caption_promise"
 
 def check_caption_promise(graph: ShowGraph, root: etree._Element) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
-    if console is None:
+    if console is None or len(patched_fixtures(root)) > len(graph.capabilities):
         return []
     findings: list[Finding] = []
     for widget in console.iter():

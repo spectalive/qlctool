@@ -109,6 +109,8 @@ CONVERTED: tuple[str, ...] = (
     # 2026-09-25: the four-colour deal's seats; no catalogue word in it.
     "generate/quad_seats.py",
     "generate/opposite_split.py",
+    # 2026-09-26, round G: which tempo line closes page 1's help; identifiers only.
+    "generate/tempo_close_line.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
