@@ -3417,3 +3417,43 @@ def test_2026_09_26_a_forced_flash_that_cuts_the_smoke(library):
     findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
     assert [f.function for f in findings] == ["Flash 100%"]
     assert set(findings[0].fixtures) == {c.fixture.name for c in smoke.values()}
+
+
+def test_2026_09_26_a_bank_key_that_skips_the_front_pars(library):
+    """2026-09-26, en-sala DMX audit (item 6): with the rig cyan, holding `1`
+    turned it red - except the two CLB2.4 PARs and the four fog LED columns,
+    which stayed cyan. Keys 1-0 hold one colour in every bank, and a bank is
+    one fixture group's; those six are in no group. Ruling D9 puts them in the
+    first bank's key scenes. Take the two PARs back out of the scene of `1`
+    that holds them and the rule must name both.
+    """
+    from qlctool.checks.forced_flash_triggers import forced_flash_triggers
+    from qlctool.checks.rule_bank_key_coverage import RULE_ID, check_bank_key_coverage
+
+    for name, graph, groups in _shipped_graphs(library):
+        workspace = _show(name)
+        states = room_states(workspace.root, graph, groups)
+        assert check_bank_key_coverage(graph, groups, workspace.root, states) == [], name
+
+    workspace = _show("Vibra.qxw")
+    pars = {4, 5}
+    by_id = _functions_by_id(workspace)
+    key_one = forced_flash_triggers(workspace.root)[("key", "1")]
+    holders = [
+        by_id[str(function_id)]
+        for function_id in key_one
+        if pars
+        <= {int(v.attrib["ID"]) for v in findall_local(by_id[str(function_id)], "FixtureVal")}
+    ]
+    assert len(holders) == 1, "the two PARs belong in exactly one scene of key 1"
+    for value in list(findall_local(holders[0], "FixtureVal")):
+        if int(value.attrib["ID"]) in pars:
+            holders[0].remove(value)
+
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert len(findings) == 1
+    assert findings[0].fields["trigger"] == "1"
+    assert findings[0].fixtures == (
+        "CLB2.4 Compact LED PAR System #1",
+        "CLB2.4 Compact LED PAR System #2",
+    )
