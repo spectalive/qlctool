@@ -3712,3 +3712,53 @@ def test_2026_09_26_a_matrix_nobody_can_see(library):
     assert {(f.severity, f.fields["group"], f.fields["spares"]) for f in findings} == {
         (WARNING, "PAR", 5)
     }
+
+
+def test_2026_09_26_the_macs_left_at_mid_travel(library):
+    """2026-09-26, en-sala DMX audit (items 2, 15, 16, concern C4): the two
+    MAC WASH sat at 127/127 - the wall behind the stage - through `Beams
+    Abanico`, `Beams Cruce`, `Escenario` and `Cabezas Centro`, and waited 10
+    and 11.6 s at the start of `Ola Vertical`. Ruling D7: they hold the wash
+    window's centre on the beam-only looks until the stage is measured for
+    them. Put each cause back - the MACs out of the fan pick, the home scene's
+    MAC tilt at mid-travel, the wave Serial again - and the rule must name
+    the heads left unaimed.
+    """
+    from qlctool.checks.rule_unaimed_rigged_mover import RULE_ID, check_unaimed_rigged_mover
+
+    for name, graph, groups in _shipped_graphs(library):
+        root = _show(name).root
+        states = room_states(root, graph, groups)
+        assert check_unaimed_rigged_mover(graph, groups, root, states) == [], name
+
+    macs = ("MAC WASH 1915Z #1", "MAC WASH 1915Z #2")
+    workspace = _show("Vibra.qxw")
+    by_id = _functions_by_id(workspace)
+    pick = _functions(workspace)["Jugar · Beams Abanico"]
+    for step in findall_local(pick, "Step"):
+        if by_id[step.text].get("Name") != "Beams Abanico":
+            pick.remove(step)
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert [(f.function, f.fixtures) for f in findings] == [("Jugar · Beams Abanico", macs)]
+
+    workspace = _show("Vibra.qxw")
+    caps = {c.fixture.fixture_id: c for c in capabilities_of(workspace.root, library)}
+    home = _functions(workspace)["Cabezas Centro"]
+    for value in findall_local(home, "FixtureVal"):
+        capability = caps[int(value.attrib["ID"])]
+        if capability.fixture.name in macs:
+            pairs = _pairs_of(value)
+            for offset in capability.offsets_for_role(roles.TILT):
+                pairs[offset] = 127
+            _write_pairs(value, pairs)
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert "Momento Charla" in {f.function for f in findings}
+    assert all(f.fixtures == macs for f in findings)
+
+    workspace = _show("Vibra.qxw")
+    wave = _efx_under(_functions_by_id(workspace), _functions(workspace)["Ola Vertical Washes"])
+    find_local(wave[0], "PropagationMode").text = "Serial"
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert ("Jugar · Ola Vertical", ("MAC WASH 1915Z #2",)) in [
+        (f.function, f.fixtures) for f in findings
+    ]

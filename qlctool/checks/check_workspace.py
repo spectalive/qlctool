@@ -152,7 +152,7 @@ def check_workspace(
     findings += check_tap_dial(root)
     findings += check_untempoed_rhythm(graph, groups, root, entries)
     findings += check_tempo_units(graph)
-    findings += movement_findings(graph, root)
+    findings += movement_findings(graph, groups, root, states)
     findings += check_smoke(graph, groups, entries)
     findings += check_smoke_light(graph, groups, entries)
     findings += check_smoke_restore(graph, groups, root, states)
