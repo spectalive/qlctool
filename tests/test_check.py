@@ -3668,3 +3668,47 @@ def test_2026_09_26_alternado_equals_the_default_on_the_rigged_heads(library):
         "MAC WASH 1915Z #1",
         "MAC WASH 1915Z #2",
     }
+
+
+def test_2026_09_26_a_matrix_nobody_can_see(library):
+    """2026-09-26, en-sala DMX audit (items 4 and 12): every `Cabezas` matrix
+    left the rigged rig as it was. The group is the four 7R beams - a colour
+    wheel, no red, green or blue for a matrix to write - and eight washes the
+    stage plot hides as spares, so every cell a matrix could paint was in a
+    flight case. Ruling D6: no matrix on such a group. Draw `Cabezas - Fill
+    Rojo` back on the group and the rule must name it; leave most of a group's
+    colour cells hidden and it warns.
+    """
+    from qlctool.checks.finding import ERROR, WARNING
+    from qlctool.checks.rule_invisible_matrix import RULE_ID, check_invisible_matrix
+
+    for name, graph, _ in _shipped_graphs(library):
+        assert check_invisible_matrix(graph, _show(name).root) == [], name
+
+    workspace = _show()
+    groups = {group.name: group for group in fixture_groups(workspace.root)}
+    source = next(
+        f
+        for f in iter_local(workspace.root, "Function")
+        if f.get("Type") == "RGBMatrix"
+        and find_local(f, "FixtureGroup").text == str(groups["PAR"].group_id)
+    )
+    matrix = copy.deepcopy(source)
+    matrix.set("ID", str(1 + max(int(f.get("ID")) for f in iter_local(workspace.root, "Function"))))
+    matrix.set("Name", "Cabezas - Fill Rojo")
+    find_local(matrix, "FixtureGroup").text = str(groups["Cabezas"].group_id)
+    source.addnext(matrix)
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert [(f.function, f.severity) for f in findings] == [("Cabezas - Fill Rojo", ERROR)]
+
+    workspace = _show("Vibra.qxw")
+    par = next(g for g in fixture_groups(workspace.root) if g.name == "PAR")
+    hidden = set(par.fixture_ids[:4])
+    for item in iter_local(workspace.root, "FxItem"):
+        if int(item.get("ID")) in hidden:
+            item.set("Hidden", "1")
+    findings = [f for f in check_workspace(workspace, library) if f.rule_id == RULE_ID]
+    assert findings
+    assert {(f.severity, f.fields["group"], f.fields["spares"]) for f in findings} == {
+        (WARNING, "PAR", 5)
+    }

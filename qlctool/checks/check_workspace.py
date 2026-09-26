@@ -42,6 +42,7 @@ from .rule_held_column import check_held_column
 from .rule_instant_dimmer import check_instant_dimmer
 from .rule_intensity import check_intensity
 from .rule_internal_program import check_internal_programs
+from .rule_invisible_matrix import check_invisible_matrix
 from .rule_latched_strobe import check_latched_strobe
 from .rule_layer_adds import check_layer_adds
 from .rule_layer_trace import check_layer_trace
@@ -158,6 +159,7 @@ def check_workspace(
     findings += check_held_column(graph, groups, root, bounded)
     findings += check_group_grids(graph, root)
     findings += check_grid_order(root)
+    findings += check_invisible_matrix(graph, root)
     findings += check_undeclared_heads(graph, root)
     findings += check_console(graph, root, canvas or canvas_of(root))
     findings += console_caption_findings(graph, root)
