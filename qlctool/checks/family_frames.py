@@ -321,6 +321,7 @@ def _is_pixel_fixture(capability: FixtureCapabilities) -> bool:
         not capability.is_smoke
         and bool(capability.roles & FAMILIES["color"])
         and not bool(capability.roles & moving_roles)
+        and roles.EFFECT in capability.roles
         and internal_program(capability) is not None
     )
 
