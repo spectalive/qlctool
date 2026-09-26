@@ -28,7 +28,6 @@ from lxml import etree
 
 from .. import roles
 from ..xmlutil import find_local, iter_local
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
@@ -85,7 +84,7 @@ def _moved_fixtures(
         function = graph.functions.get(member)
         if function is None or not _moves_pan_tilt(function):
             continue
-        for fixture_id, pairs in driven_channels(function, graph.capabilities, groups).items():
+        for fixture_id, pairs in graph.driven_of(function, groups).items():
             if _writes_pan_or_tilt(graph, fixture_id, pairs):
                 moved.add(fixture_id)
     return moved

@@ -20,7 +20,6 @@ from lxml import etree
 from .. import roles
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
-from .driven_channels import driven_channels
 from .finding import WARNING, Finding
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph
@@ -73,7 +72,7 @@ def _orphaned(
     evaluator: InstantEvaluator,
 ) -> list[Finding]:
     findings: list[Finding] = []
-    for fixture_id, written in driven_channels(scene, graph.capabilities, {}).items():
+    for fixture_id, written in graph.driven_of(scene, {}).items():
         capability = graph.capabilities.get(fixture_id)
         if capability is None:
             continue

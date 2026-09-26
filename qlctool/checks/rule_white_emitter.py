@@ -14,7 +14,6 @@ paints RGB by design.
 """
 
 from .. import roles
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
@@ -28,7 +27,7 @@ def check_white_emitter(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) ->
         if function.attrib.get("Type") != "Scene":
             continue
         skipped: list[str] = []
-        for fixture_id, written in driven_channels(function, graph.capabilities, groups).items():
+        for fixture_id, written in graph.driven_of(function, groups).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None:
                 continue

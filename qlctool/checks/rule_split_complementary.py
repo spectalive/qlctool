@@ -19,7 +19,6 @@ The rule reasons about the values and the groups, never about a name.
 
 from ..complementary_from import COMPLEMENTARY_FROM
 from ..hue_distance import hue_distance
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .fixture_colour import fixture_colour
 from .saturated import saturated
@@ -39,7 +38,7 @@ def check_split_complementary(
             if graph.kind(member) in STATES_COLOUR:
                 judged.setdefault(member, caption)
     for scene_id, caption in sorted(judged.items()):
-        written = driven_channels(graph.functions[scene_id], graph.capabilities, {})
+        written = graph.driven_of(graph.functions[scene_id], {})
         for _group_id, members in sorted(groups.items()):
             colours = {
                 colour

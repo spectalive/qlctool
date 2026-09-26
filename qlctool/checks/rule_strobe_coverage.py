@@ -17,7 +17,6 @@ so covering one covers the other.
 """
 
 from .. import roles
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .strobe_written import strobe_capable_offsets, value_strobes
@@ -36,7 +35,7 @@ def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
         function = graph.functions[function_id]
         if function.attrib.get("Type") != "Scene":
             continue
-        written = driven_channels(function, graph.capabilities, groups)
+        written = graph.driven_of(function, groups)
         if not written or not _all_strobe_writes(graph, written):
             continue
         if not _any_strobing_write(graph, written):

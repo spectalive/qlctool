@@ -3,13 +3,12 @@
 from lxml import etree
 
 from .. import roles
-from .driven_channels import driven_channels
 from .show_graph import ShowGraph
 
 
 def scene_colours(graph: ShowGraph, function: etree._Element) -> set[tuple[object, ...]]:
     items: set[tuple[object, ...]] = set()
-    for fixture_id, pairs in driven_channels(function, graph.capabilities, {}).items():
+    for fixture_id, pairs in graph.driven_of(function, {}).items():
         capability = graph.capabilities.get(fixture_id)
         if capability is None:
             continue

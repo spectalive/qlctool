@@ -25,7 +25,6 @@ design working.
 from .. import roles
 from ..internal_program import internal_program
 from .color_roles import COLOUR
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
@@ -42,7 +41,7 @@ def check_internal_programs(
     for function_id, function in sorted(graph.functions.items()):
         if function.attrib.get("Type") not in STATES_COLOUR:
             continue
-        driven = driven_channels(function, graph.capabilities, groups)
+        driven = graph.driven_of(function, groups)
         stranded = sorted(
             {
                 graph.capabilities[fixture_id].fixture.name

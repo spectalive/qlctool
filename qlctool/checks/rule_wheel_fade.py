@@ -22,7 +22,6 @@ from lxml import etree
 from ..excluded_fades import excluded_fades
 from ..wheel_fade_offsets import wheel_fade_offsets
 from ..xmlutil import find_local, findall_local
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
@@ -44,7 +43,7 @@ def check_wheel_fade(
             continue
         scene = graph.functions[scene_id]
         crossed: list[str] = []
-        for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
+        for fixture_id, written in graph.driven_of(scene, groups).items():
             hit = (set(written) & wheels.get(fixture_id, set())) - excluded.get(fixture_id, set())
             if hit:
                 name = graph.capabilities[fixture_id].fixture.name

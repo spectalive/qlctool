@@ -13,7 +13,6 @@ has not touched the fog.
 """
 
 from ..fog_offsets import fog_offsets
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit
 
@@ -23,7 +22,7 @@ RULE_ID = "smoke"
 def check_smoke(graph: ShowGraph, groups, entries) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, function in sorted(graph.functions.items()):
-        driven = driven_channels(function, graph.capabilities, groups)
+        driven = graph.driven_of(function, groups)
         smoke = [
             fixture_id
             for fixture_id, written in driven.items()

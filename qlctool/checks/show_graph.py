@@ -111,6 +111,17 @@ class ShowGraph:
             self.driven_cache[key] = cached
         return cached
 
+    def driven_of(self, function: etree._Element, groups: dict[int, tuple[int, ...]]) -> Driven:
+        """`driven` for a function element, parsed once when it is this graph's own.
+
+        Most rules walk the graph's functions and asked `driven_channels`
+        directly, re-parsing every scene once per rule (2026-09-26, round G).
+        """
+        identifier = function.get("ID")
+        if identifier is None or self.functions.get(int(identifier)) is not function:
+            return driven_channels(function, self.capabilities, groups)
+        return self.driven(int(identifier), groups)
+
     def collections(self, function_id: int) -> list[int]:
         """The Collections reachable from here - every point of simultaneity."""
         return [fid for fid in self.descendants(function_id) if self.kind(fid) == CONCURRENT]

@@ -27,7 +27,6 @@ from lxml import etree
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .audio_pressed_widgets import audio_pressed_widgets
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .raises_light import raises_light
 from .show_graph import ShowGraph
@@ -87,7 +86,7 @@ def _strobe_writes(graph: ShowGraph, groups, scene) -> tuple[list[str], bool]:
     """(fixtures written but not strobed, whether anything strobes at all)."""
     dark: list[str] = []
     strobing_anywhere = False
-    for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
+    for fixture_id, written in graph.driven_of(scene, groups).items():
         capability = graph.capabilities.get(fixture_id)
         if capability is None or capability.is_smoke:
             continue

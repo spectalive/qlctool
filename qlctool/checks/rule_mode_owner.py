@@ -24,7 +24,6 @@ WASH) is beyond any file's reach and stays a job for the display on its back.
 
 from .. import roles
 from ..internal_program import internal_program
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit
 
@@ -36,7 +35,7 @@ def check_mode_owner(graph: ShowGraph, groups, entries) -> list[Finding]:
     written: dict[int, set[int]] = {}
     lighted: set[int] = set()
     for function in graph.functions.values():
-        for fixture_id, values in driven_channels(function, graph.capabilities, groups).items():
+        for fixture_id, values in graph.driven_of(function, groups).items():
             written.setdefault(fixture_id, set()).update(values)
             capability = graph.capabilities.get(fixture_id)
             if capability is None:

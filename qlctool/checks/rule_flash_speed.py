@@ -28,7 +28,6 @@ from lxml import etree
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .audio_pressed_widgets import audio_pressed_widgets
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .strobe_written import strobe_capable_offsets, value_strobes
@@ -59,7 +58,7 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
     crawl_by_scene: dict[str, list[tuple[int, float]]] = {}
     for function_id in _hand_flash_scenes(graph, console):
         scene = graph.functions[function_id]
-        for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
+        for fixture_id, written in graph.driven_of(scene, groups).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None or capability.is_smoke:
                 continue

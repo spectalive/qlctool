@@ -18,7 +18,6 @@ on the same channel. Steps of one chaser are alternatives and never fight.
 """
 
 from .. import roles
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
@@ -86,7 +85,7 @@ def _efx_dimmers(graph: ShowGraph, function_id: int) -> set[tuple[int, int]]:
         function = graph.functions.get(member)
         if function is None or function.attrib.get("Type") != "EFX":
             continue
-        for fixture_id, pairs in driven_channels(function, graph.capabilities, {}).items():
+        for fixture_id, pairs in graph.driven_of(function, {}).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None or capability.is_smoke:
                 continue
@@ -102,7 +101,7 @@ def _full_writes(graph: ShowGraph, function_id: int) -> set[tuple[int, int]]:
         function = graph.functions.get(member)
         if function is None or function.attrib.get("Type") not in ("Scene", "Sequence"):
             continue
-        for fixture_id, pairs in driven_channels(function, graph.capabilities, {}).items():
+        for fixture_id, pairs in graph.driven_of(function, {}).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None or capability.is_smoke:
                 continue

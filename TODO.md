@@ -136,9 +136,21 @@
   160.0 s to 142.7 s; every finding is identical (Vibra x3, DeluxeEventos2's
   791, an injected-bug Vibra and the club, byte for byte). The v0.1.4 tag
   run 36197886956 after it: 454.0 s on 3.11 (76%) and 395.2 s on 3.13, so
-  the cache did not move CI beyond run-to-run noise. Smallest next step:
-  profile the whole suite by test file on 3.11 and cut the heaviest
-  `check_workspace` callers; close below 50% (300 s).
+  the cache did not move CI beyond run-to-run noise.
+  Round G (2026-09-26), local, `-n auto`, load 9-56 on 8 cores: the suite's
+  summed test time was 480.9 s, 259.9 s of it `tests/test_check.py` (54%),
+  whose ~100 `check_workspace` calls on edited workspaces cannot share a
+  build. Two cuts to the check itself, every finding identical (2471
+  findings, 1149 of them `pick_darkens`, over Vibra x3, DeluxeEventos,
+  DeluxeEventos2 as shipped and rebuilt, its v5 copy, Pantera and the club):
+  `pick_darkens` answers a pick that writes no colour, dimmer or strobe
+  channel (movement, gobo, prism) from the state alone, once per frame
+  (`pick_leaves_light_alone`), and every rule reads a scene's channels
+  through the graph's parse cache (`ShowGraph.driven_of`) instead of
+  re-parsing it once per rule. One check of Vibra-split: 1.16-1.22 s ->
+  0.74-0.76 s. Suite: summed 480.9 s -> 393.9 s, `test_check.py` 259.9 s ->
+  184.3 s, wall 69-73 s -> 55 s. Smallest next step: read the next CI runs'
+  3.11 leg; close below 50% (300 s).
 - [x] **A wheel whose only nameable detent is one no look asks for is not
   parked (2026-09-25).** `outside_color_looks` asked over every colour in
   `WHEEL_NAMES`; it now asks over the colours the looks request, the show's

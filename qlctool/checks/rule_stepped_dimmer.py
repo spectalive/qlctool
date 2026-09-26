@@ -19,7 +19,6 @@ too, since the value it writes is unknowable rather than an end.
 """
 
 from ..stepped_dimmer import stepped_dimmer_offsets
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
@@ -34,7 +33,7 @@ def check_stepped_dimmer(graph: ShowGraph, groups) -> list[Finding]:
         if function.attrib.get("Type") not in WRITES_VALUES:
             continue
         caught: set[str] = set()
-        driven = driven_channels(function, graph.capabilities, groups)
+        driven = graph.driven_of(function, groups)
         for fixture_id, written in driven.items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None:

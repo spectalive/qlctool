@@ -20,7 +20,6 @@ from lxml import etree
 from .. import roles
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .flash_lights import flash_lights
 from .show_graph import ShowGraph
@@ -57,7 +56,7 @@ def check_flash_lit_smoke(
         scene = graph.functions.get(function_id)
         if scene is None or scene.attrib.get("Type") != "Scene":
             continue  # rule_flash_scene already reports that wiring
-        written = driven_channels(scene, graph.capabilities, groups)
+        written = graph.driven_of(scene, groups)
         lights = {
             c.fixture.fixture_id
             for c in [*reachable, *columns]

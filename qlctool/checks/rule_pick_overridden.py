@@ -21,7 +21,6 @@ hand while the state runs.
 from lxml import etree
 
 from .. import roles
-from .driven_channels import driven_channels
 from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
@@ -60,7 +59,7 @@ def check_pick_overridden(
         overridden: dict[str, set[str]] = {}
         for scene_id in scenes:
             scene = graph.functions[scene_id]
-            for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
+            for fixture_id, written in graph.driven_of(scene, groups).items():
                 capability = graph.capabilities.get(fixture_id)
                 if capability is None:
                     continue
@@ -98,7 +97,7 @@ def _stepped_writes(
             leaf = graph.functions.get(leaf_id)
             if leaf is None:
                 continue
-            for fixture_id, written in driven_channels(leaf, graph.capabilities, groups).items():
+            for fixture_id, written in graph.driven_of(leaf, groups).items():
                 for offset in written:
                     found.setdefault((fixture_id, offset), set()).add(state_id)
     return found

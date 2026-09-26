@@ -42,7 +42,6 @@ from lxml import etree
 
 from .. import roles
 from ..xmlutil import find_local, findall_local, iter_local
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
@@ -121,7 +120,7 @@ def _efx_fixtures(
     function = graph.functions[function_id]
     return {
         graph.capabilities[fixture_id].fixture.name
-        for fixture_id in driven_channels(function, graph.capabilities, groups)
+        for fixture_id in graph.driven_of(function, groups)
         if fixture_id in graph.capabilities
     }
 
@@ -156,7 +155,7 @@ def _pulsed_fixtures(
             function = graph.functions.get(leaf)
             if function is None:
                 continue
-            for fixture_id, pairs in driven_channels(function, graph.capabilities, groups).items():
+            for fixture_id, pairs in graph.driven_of(function, groups).items():
                 capability = graph.capabilities.get(fixture_id)
                 if capability is None:
                     continue

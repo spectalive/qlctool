@@ -24,7 +24,6 @@ from lxml import etree
 from .. import roles
 from ..capability import FixtureCapabilities
 from .color_roles import COLOUR
-from .driven_channels import driven_channels
 from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
@@ -50,9 +49,7 @@ def check_layer_adds(
         clashing = {
             graph.capabilities[fixture_id].fixture.name
             for scene_id in scenes
-            for fixture_id, written in driven_channels(
-                graph.functions[scene_id], graph.capabilities, groups
-            ).items()
+            for fixture_id, written in graph.driven_of(graph.functions[scene_id], groups).items()
             if fixture_id in coloured_by_state
             and _states_colour(graph.capabilities.get(fixture_id), written)
         }

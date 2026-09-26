@@ -83,14 +83,12 @@ def _dimmer_writes(graph: ShowGraph, function_id: int) -> dict[tuple[int, int], 
     matrix never touches a dimmer at all. Zeroes are skipped - a member turning
     a fixture off is not a second opinion about how bright it should be.
     """
-    from .driven_channels import driven_channels
-
     writes: dict[tuple[int, int], set[int]] = {}
     for member in graph.descendants(function_id):
         function = graph.functions.get(member)
         if function is None or function.attrib.get("Type") not in LEAVES:
             continue
-        for fixture_id, pairs in driven_channels(function, graph.capabilities, {}).items():
+        for fixture_id, pairs in graph.driven_of(function, {}).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None or capability.is_smoke:
                 continue

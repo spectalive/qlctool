@@ -8,7 +8,6 @@ value as the wash beside it even when it is the same colour.
 """
 
 from ..argb import rgb_from_argb
-from .driven_channels import driven_channels
 from .fixture_colour import fixture_colour
 from .matrix_colour import matrix_colour
 from .show_graph import ShowGraph
@@ -25,7 +24,7 @@ def step_palette(
             continue
         kind = function.attrib.get("Type")
         if kind in ("Scene", "Sequence"):
-            for fixture_id, written in driven_channels(function, graph.capabilities, {}).items():
+            for fixture_id, written in graph.driven_of(function, {}).items():
                 colour = fixture_colour(graph, fixture_id, written)
                 if colour is not None and any(colour):
                     colours.add(colour)

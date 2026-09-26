@@ -14,7 +14,6 @@ shows light when both are.
 
 from .. import roles
 from ..fog_offsets import fog_offsets
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit
 
@@ -36,7 +35,7 @@ def check_smoke_light(graph: ShowGraph, groups, entries) -> list[Finding]:
         fired = False
         lit_somewhere = False
         for function in graph.functions.values():
-            written = driven_channels(function, graph.capabilities, groups).get(fixture_id)
+            written = graph.driven_of(function, groups).get(fixture_id)
             if not written:
                 continue
             if any(lit(v) for o, v in written.items() if o in pump):

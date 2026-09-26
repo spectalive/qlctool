@@ -26,7 +26,6 @@ from lxml import etree
 from ..fog_offsets import fog_offsets
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach
 
@@ -125,7 +124,7 @@ def _shuts(graph: ShowGraph, groups, step: int, held) -> bool:
     """Whether this one step writes zero to every pump offset that was raised."""
     if step not in graph.functions:
         return False
-    written = driven_channels(graph.functions[step], graph.capabilities, groups)
+    written = graph.driven_of(graph.functions[step], groups)
     return all(
         written.get(fixture_id, {}).get(offset) == 0
         for fixture_id, offsets in held.items()

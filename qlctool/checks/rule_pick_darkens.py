@@ -13,6 +13,7 @@ from .family_frame_picks import family_frame_picks
 from .finding import ERROR, Finding
 from .instant_dark_fixtures import instant_dark_fixtures
 from .instant_evaluator import InstantEvaluator
+from .pick_leaves_light_alone import pick_leaves_light_alone
 from .show_graph import ShowGraph
 
 RULE_ID = "pick_darkens"
@@ -26,18 +27,28 @@ def check_pick_darkens(
     if console is None:
         return []
     evaluator = InstantEvaluator(graph, groups)
+    # A pick that leaves light alone is answered by the state and the stopped
+    # hooks only (`pick_leaves_light_alone`), once per frame and state.
+    alone: dict[tuple[int, frozenset[int]], list[str]] = {}
     findings: list[Finding] = []
     for frame in iter_local(console, "SoloFrame"):
         for pick_id, stopped in family_frame_picks(graph, groups, states, frame):
+            neutral = pick_leaves_light_alone(graph, groups, pick_id)
             for state_id in sorted(states):
-                dark = instant_dark_fixtures(
-                    graph,
-                    groups,
-                    (state_id, pick_id),
-                    stopped,
-                    check_shutters=True,
-                    evaluator=evaluator,
-                )
+                key = (state_id, stopped)
+                if neutral and key in alone:
+                    dark = alone[key]
+                else:
+                    dark = instant_dark_fixtures(
+                        graph,
+                        groups,
+                        (state_id,) if neutral else (state_id, pick_id),
+                        stopped,
+                        check_shutters=True,
+                        evaluator=evaluator,
+                    )
+                    if neutral:
+                        alone[key] = dark
                 if not dark:
                     continue
                 findings.append(

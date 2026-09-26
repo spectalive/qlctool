@@ -32,7 +32,6 @@ from lxml import etree
 from .. import roles
 from ..vc.button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph
@@ -85,7 +84,7 @@ def _latched(
     evaluator: InstantEvaluator,
 ) -> list[Finding]:
     findings: list[Finding] = []
-    for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
+    for fixture_id, written in graph.driven_of(scene, groups).items():
         capability = graph.capabilities.get(fixture_id)
         if capability is None or capability.is_smoke:
             continue

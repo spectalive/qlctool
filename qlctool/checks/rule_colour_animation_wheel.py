@@ -30,7 +30,6 @@ from lxml import etree
 from .. import roles
 from ..capability import FixtureCapabilities
 from ..xmlutil import find_local, iter_local
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit
 
@@ -81,7 +80,7 @@ def _animated_rgb_fixtures(
         function = graph.functions.get(member)
         if function is None or not _animates_colour(function):
             continue
-        for fixture_id, pairs in driven_channels(function, graph.capabilities, groups).items():
+        for fixture_id, pairs in graph.driven_of(function, groups).items():
             capability = graph.capabilities.get(fixture_id)
             if capability is None:
                 continue
@@ -138,7 +137,7 @@ def _wheel_animated(
         function = graph.functions.get(member)
         if function is None:
             continue
-        pairs = driven_channels(function, graph.capabilities, groups).get(fixture_id, {})
+        pairs = graph.driven_of(function, groups).get(fixture_id, {})
         for offset in offsets & set(pairs):
             value = pairs[offset]
             if value is None:  # an effect on the wheel itself: unpredictable, so moving

@@ -19,7 +19,6 @@ black out are not lighting anything and are left alone.
 
 from .. import roles
 from ..zoom_wide import zoom_wide_pairs
-from .driven_channels import driven_channels
 from .finding import WARNING, Finding
 from .show_graph import ShowGraph, lit
 
@@ -49,7 +48,7 @@ def check_zoom_narrow(graph: ShowGraph, groups) -> list[Finding]:
 
 
 def _lit_without_zoom(graph: ShowGraph, groups, function_id: int) -> list[str]:
-    driven = driven_channels(graph.functions[function_id], graph.capabilities, groups)
+    driven = graph.driven_of(graph.functions[function_id], groups)
     names: list[str] = []
     for fixture_id, written in driven.items():
         capability = graph.capabilities.get(fixture_id)

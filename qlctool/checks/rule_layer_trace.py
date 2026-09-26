@@ -21,7 +21,6 @@ be released under any of them.
 
 from lxml import etree
 
-from .driven_channels import driven_channels
 from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
@@ -48,7 +47,7 @@ def check_layer_trace(
         stranded: list[str] = []
         for scene_id in scenes:
             scene = graph.functions[scene_id]
-            for fixture_id, written in driven_channels(scene, graph.capabilities, groups).items():
+            for fixture_id, written in graph.driven_of(scene, groups).items():
                 capability = graph.capabilities.get(fixture_id)
                 if capability is None:
                     continue

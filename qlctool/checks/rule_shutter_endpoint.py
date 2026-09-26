@@ -21,7 +21,6 @@ endpoint is reported.
 
 from ..shutter_open import shutter_open_ranges
 from ..shutter_open_value import shutter_open_value
-from .driven_channels import driven_channels
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
@@ -53,7 +52,7 @@ def _short_of_the_endpoint(
     graph: ShowGraph, groups, function_id: int
 ) -> list[tuple[str, int, int]]:
     """(fixture name, value written, the endpoint it should have written)."""
-    driven = driven_channels(graph.functions[function_id], graph.capabilities, groups)
+    driven = graph.driven_of(graph.functions[function_id], groups)
     short: list[tuple[str, int, int]] = []
     for fixture_id, written in driven.items():
         capability = graph.capabilities.get(fixture_id)
