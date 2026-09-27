@@ -29,7 +29,7 @@ from .. import roles
 from ..rigged_fixture_ids import rigged_fixture_ids
 from ..xmlutil import find_local, iter_local
 from .families import FAMILIES
-from .family_frames import family_frame_handoff
+from .family_frame_handoff import family_frame_handoff
 from .finding import ERROR, WARNING, Finding
 from .latched_on_lit import latched_on_lit
 from .released_reach import released_reach

@@ -32,7 +32,7 @@ from collections.abc import Mapping
 
 from lxml import etree
 
-from .checks.family_frames import family_frame_handoff
+from .checks.family_frame_handoff import family_frame_handoff
 from .checks.show_graph import ShowGraph
 from .xmlutil import find_local, iter_local
 

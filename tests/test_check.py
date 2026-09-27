@@ -2341,11 +2341,11 @@ def test_a_nested_family_frame_exempts_its_wrapper_pick(library, deluxe_show):
 
 def test_a_zero_panel_effect_is_still_pixel_mode_ownership(library, deluxe_show):
     """2026-09-02: mode zero is an intentional write, not an unowned channel."""
-    from qlctool.checks.family_frames import _function_families
+    from qlctool.checks.function_families import function_families
 
     workspace = deluxe_show
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
-    families = _function_families(
+    families = function_families(
         graph,
         group_fixtures(workspace.root),
         int(_functions(workspace)["Paneles Charla"].attrib["ID"]),
@@ -2517,14 +2517,14 @@ def test_a_multi_family_state_chaser_is_not_a_play_hook(library, deluxe_show):
     """
     from qlctool.capabilities_of import capabilities_of
     from qlctool.checks.console_states import room_states
-    from qlctool.checks.family_frames import _state_owners
     from qlctool.checks.show_graph import build_show_graph, group_fixtures
+    from qlctool.checks.state_owners import state_owners
 
     workspace = deluxe_show
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     groups = group_fixtures(workspace.root)
     states = room_states(workspace.root, graph, groups)
-    owners = _state_owners(graph, groups, states)
+    owners = state_owners(graph, groups, states)
     energy_id = int(_functions(workspace)["Ciclo Energia"].attrib["ID"])
 
     assert not any(energy_id in function_ids for function_ids in owners.values())
@@ -2558,14 +2558,14 @@ def test_the_talk_owners_have_one_family_each(library, deluxe_show):
     """
     from qlctool.capabilities_of import capabilities_of
     from qlctool.checks.console_states import room_states
-    from qlctool.checks.family_frames import _state_owners
     from qlctool.checks.show_graph import build_show_graph, group_fixtures
+    from qlctool.checks.state_owners import state_owners
 
     workspace = deluxe_show
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     groups = group_fixtures(workspace.root)
     states = room_states(workspace.root, graph, groups)
-    owners = _state_owners(graph, groups, states)
+    owners = state_owners(graph, groups, states)
     charla_id = int(_functions(workspace)["Luz Charla"].attrib["ID"])
     panels_id = int(_functions(workspace)["Paneles Charla"].attrib["ID"])
 
@@ -2579,13 +2579,13 @@ def test_color_hooks_do_not_take_the_panel_mode_contract(library, deluxe_show):
     """2026-09-02, re-review: graph-derived frame families keep COLOR from
     inheriting PIXELES ownership through a mode-resetting colour hook.
     """
-    from qlctool.checks.family_frames import _function_families
+    from qlctool.checks.function_families import function_families
 
     workspace = deluxe_show
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     groups = group_fixtures(workspace.root)
     for name in ("Rueda Colores", "Rueda Mezcla", "Luz Charla"):
-        families = _function_families(graph, groups, int(_functions(workspace)[name].attrib["ID"]))
+        families = function_families(graph, groups, int(_functions(workspace)[name].attrib["ID"]))
         assert not families["pixel-mode"], name
 
 

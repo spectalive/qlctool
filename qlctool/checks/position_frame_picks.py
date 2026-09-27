@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from .family_frames import family_frame_handoff
+from .family_frame_handoff import family_frame_handoff
 from .show_graph import ShowGraph
 
 
