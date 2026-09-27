@@ -26,12 +26,14 @@ the same night) - so a bound tap key needs functions to write into.
 from lxml import etree
 
 from ..xmlutil import find_local, findall_local, iter_local
+from .dial_controls_bpm import dial_controls_bpm
+from .dial_durations import dial_durations
 from .finding import ERROR, Finding
+from .has_tap_binding import has_tap_binding
 
 RULE_ID = "tap_dial"
 EMPTY_RULE_ID = "tap_dial_empty"
 
-TAP_CONTROL_ID = "1"
 # Below this many functions, one shared multiplier is a coincidence rather
 # than a flattened console.
 FLATTENING_FROM = 3
@@ -43,13 +45,13 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
         return []
     findings: list[Finding] = []
     for dial in iter_local(console, "SpeedDial"):
-        if not _has_tap_binding(dial):
+        if not has_tap_binding(dial):
             continue
         caption = dial.attrib.get("Caption", "SpeedDial")
         multipliers = [
             function.attrib.get("Duration", "0") for function in findall_local(dial, "Function")
         ]
-        if not multipliers and _controls_bpm(dial):
+        if not multipliers and dial_controls_bpm(dial):
             continue  # the `--bpm-tap` build: its tap drives the global BPM
         if not multipliers:
             findings.append(
@@ -64,7 +66,7 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
         if (
             len(multipliers) >= FLATTENING_FROM
             and len(set(multipliers)) == 1
-            and len(set(_durations(root, dial))) > 1
+            and len(set(dial_durations(root, dial))) > 1
         ):
             findings.append(
                 Finding(
@@ -76,34 +78,3 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
                 )
             )
     return findings
-
-
-def _durations(root: etree._Element, dial: etree._Element) -> list[str]:
-    """The engine duration of each function the dial lists, in the dial's order.
-
-    A function the engine does not carry, or one with no `<Speed>`, reads as a
-    length of its own, so a dial over dangling ids is still judged flattening.
-    """
-    engine = find_local(root, "Engine")
-    speeds: dict[str, str] = {}
-    for function in engine if engine is not None else ():
-        speed = find_local(function, "Speed")
-        if speed is not None:
-            speeds[function.get("ID", "")] = speed.get("Duration", "0")
-    # The dial writes the id as the element's text (`VCSpeedDial::saveXML`).
-    listed = [(function.text or "").strip() for function in findall_local(dial, "Function")]
-    return [speeds.get(function_id, f"?{function_id}") for function_id in listed]
-
-
-def _has_tap_binding(dial: etree._Element) -> bool:
-    return any(source.attrib.get("ID") == TAP_CONTROL_ID for source in findall_local(dial, "Input"))
-
-
-def _controls_bpm(dial: etree._Element) -> bool:
-    """The dial taps the global BPM rather than writing into functions.
-
-    Only a QLC+ newer than the 5.2.2 this show runs honours it, which is why
-    `qlctool newshow --bpm-tap` is a build of its own rather than the default.
-    """
-    control = find_local(dial, "ControlBPM")
-    return control is not None and (control.text or "").strip() == "True"
