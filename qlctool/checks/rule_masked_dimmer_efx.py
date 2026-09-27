@@ -17,98 +17,37 @@ that states 255 on a dimmer channel, the other reaching an EFX in Dimmer mode
 on the same channel. Steps of one chaser are alternatives and never fight.
 """
 
-from .. import roles
 from .finding import ERROR, Finding
+from .full_dimmer_writes import FULL
+from .masked_collection_pairs import masked_collection_pairs
 from .show_graph import ShowGraph
 
 RULE_ID = "masked_dimmer_efx"
-FULL = 255
 
 
-def check_masked_dimmer_efx(graph: ShowGraph, groups, entries) -> list[Finding]:
+def check_masked_dimmer_efx(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], entries: dict[int, str]
+) -> list[Finding]:
     del groups
     findings: list[Finding] = []
     reported: set[tuple[int, int, int]] = set()
     for entry_id in sorted(entries):
         for collection_id in graph.collections(entry_id):
-            findings += _collection(graph, collection_id, reported)
-    return findings
-
-
-def _collection(graph: ShowGraph, collection_id: int, reported) -> list[Finding]:
-    members = graph.members.get(collection_id, ())
-    if len(members) < 2:
-        return []
-    efx_channels = {member: _efx_dimmers(graph, member) for member in members}
-    full_channels = {member: _full_writes(graph, member) for member in members}
-
-    findings: list[Finding] = []
-    for efx_member, driven in efx_channels.items():
-        for full_member, held in full_channels.items():
-            if efx_member == full_member:
-                continue
-            masked = driven & held
-            if not masked:
-                continue
-            key = (collection_id, efx_member, full_member)
-            if key in reported:
-                continue
-            reported.add(key)
-            names = sorted(
-                {
-                    graph.capabilities[fixture].fixture.name
-                    for fixture, _ in masked
-                    if fixture in graph.capabilities
-                }
-            )
-            findings.append(
-                Finding(
-                    rule_id=RULE_ID,
-                    severity=ERROR,
-                    function=graph.name(collection_id),
-                    message_id="masked_dimmer_efx_hidden",
-                    fields={
-                        "full": graph.name(full_member),
-                        "level": FULL,
-                        "efx": graph.name(efx_member),
-                    },
-                    fixtures=tuple(names),
+            for efx_member, full_member, names in masked_collection_pairs(
+                graph, collection_id, reported
+            ):
+                findings.append(
+                    Finding(
+                        rule_id=RULE_ID,
+                        severity=ERROR,
+                        function=graph.name(collection_id),
+                        message_id="masked_dimmer_efx_hidden",
+                        fields={
+                            "full": graph.name(full_member),
+                            "level": FULL,
+                            "efx": graph.name(efx_member),
+                        },
+                        fixtures=names,
+                    )
                 )
-            )
     return findings
-
-
-def _efx_dimmers(graph: ShowGraph, function_id: int) -> set[tuple[int, int]]:
-    """(fixture, offset) dimmer channels an EFX under this branch drives."""
-    channels: set[tuple[int, int]] = set()
-    for member in graph.descendants(function_id):
-        function = graph.functions.get(member)
-        if function is None or function.attrib.get("Type") != "EFX":
-            continue
-        for fixture_id, pairs in graph.driven_of(function, {}).items():
-            capability = graph.capabilities.get(fixture_id)
-            if capability is None or capability.is_smoke:
-                continue
-            dimmers = set(capability.offsets_for_role(roles.DIMMER))
-            channels |= {(fixture_id, offset) for offset in pairs if offset in dimmers}
-    return channels
-
-
-def _full_writes(graph: ShowGraph, function_id: int) -> set[tuple[int, int]]:
-    """(fixture, offset) dimmer channels a Scene under this branch holds at 255."""
-    channels: set[tuple[int, int]] = set()
-    for member in graph.descendants(function_id):
-        function = graph.functions.get(member)
-        if function is None or function.attrib.get("Type") not in ("Scene", "Sequence"):
-            continue
-        for fixture_id, pairs in graph.driven_of(function, {}).items():
-            capability = graph.capabilities.get(fixture_id)
-            if capability is None or capability.is_smoke:
-                continue
-            dimmers = set(capability.offsets_for_role(roles.DIMMER))
-            channels |= {
-                (fixture_id, offset)
-                for offset, value in pairs.items()
-                if offset in dimmers and value == FULL
-            }
-    return channels
