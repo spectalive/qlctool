@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from ..monitor_node import MonitorItem
+from ..monitor_item import MonitorItem
 
 
 @dataclass(frozen=True)

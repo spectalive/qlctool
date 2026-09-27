@@ -26,7 +26,7 @@ from qlctool.channel import Channel
 from qlctool.dimensions import Dimensions
 from qlctool.fixture_definition import FixtureDefinition
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.monitor_node import MonitorItem
+from qlctool.monitor_item import MonitorItem
 from qlctool.mvr.beam_direction import beam_direction
 from qlctool.mvr.build_fixture_type import build_fixture_type
 from qlctool.mvr.cie_from_hex import cie_from_hex

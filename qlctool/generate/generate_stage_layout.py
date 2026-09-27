@@ -20,9 +20,10 @@ which silently rewrites a layout that was already right.
 from ..band_of import BANDS, PARS, band_of
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
-from ..monitor_node import MonitorItem, write_monitor
+from ..monitor_item import MonitorItem
 from ..patched_fixtures import patched_fixtures
 from ..workspace import Workspace
+from ..write_monitor import write_monitor
 from .generated_stage import GeneratedStage
 from .spread import spread
 

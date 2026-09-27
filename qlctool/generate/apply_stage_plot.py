@@ -7,9 +7,9 @@ not rigged are written with QLC+'s Hidden flag so the 2D and 3D views show the
 montage and not the whole patch.
 """
 
-from ..monitor_node import write_monitor
 from ..stage_plot import StagePlot
 from ..workspace import Workspace
+from ..write_monitor import write_monitor
 
 
 def apply_stage_plot(workspace: Workspace, plot: StagePlot) -> StagePlot:

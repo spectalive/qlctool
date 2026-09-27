@@ -5,7 +5,7 @@ import math
 from . import roles
 from .beam_landing import UPWARD_TYPES, Landing
 from .fixture_capabilities import FixtureCapabilities
-from .monitor_node import MonitorItem
+from .monitor_item import MonitorItem
 
 
 def beam_landing(item: MonitorItem, capabilities: FixtureCapabilities) -> Landing:

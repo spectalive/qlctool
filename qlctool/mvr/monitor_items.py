@@ -10,7 +10,7 @@ from lxml import etree
 
 from ..find_local import find_local
 from ..iter_local import iter_local
-from ..monitor_node import MonitorItem
+from ..monitor_item import MonitorItem
 from .monitor_stage import MonitorStage
 
 MM_PER_M = 1000.0

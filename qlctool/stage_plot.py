@@ -16,7 +16,8 @@ from pathlib import Path
 
 from lxml import etree
 
-from .monitor_node import MonitorItem, PropItem
+from .monitor_item import MonitorItem
+from .monitor_node import PropItem
 from .patched_fixtures import patched_fixtures
 
 
