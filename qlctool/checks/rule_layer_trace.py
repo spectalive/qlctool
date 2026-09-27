@@ -24,8 +24,9 @@ from lxml import etree
 from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
-from .show_graph import ShowGraph, reach
+from .show_graph import ShowGraph
 from .wrapper_scenes import wrapper_scenes
+from .written_by_states import written_by_states
 
 RULE_ID = "layer_trace"
 INTENSITY_GROUP = "Intensity"
@@ -36,7 +37,7 @@ def check_layer_trace(
 ) -> list[Finding]:
     if not states:
         return []
-    owned = _written_by_states(graph, groups, states)
+    owned = written_by_states(graph, groups, states)
     findings: list[Finding] = []
     for button in layer_buttons(root, states):
         if family_frame_problems(graph, groups, states, button.widget) == ():
@@ -70,13 +71,3 @@ def check_layer_trace(
             )
         )
     return findings
-
-
-def _written_by_states(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
-) -> set[tuple[int, int]]:
-    owned: set[tuple[int, int]] = set()
-    for state_id in states:
-        for fixture_id, written in reach(graph, groups, state_id).items():
-            owned.update((fixture_id, offset) for offset in written)
-    return owned
