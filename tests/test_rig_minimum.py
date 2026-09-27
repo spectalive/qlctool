@@ -84,13 +84,13 @@ def test_2026_09_25_heads_with_no_group_are_refused(tmp_path, capsys):
     assert _refusal(patch, capsys) == _expected("rig_needs_fixture_group")
 
 
-def test_2026_09_26_a_group_of_one_fixture_is_refused(tmp_path, capsys):
-    """Round G review: a lone fixture's show failed its own check (the odd/even
-    strobe had no odd half, the tap re-timed only the colour wheels at one
-    length); `tests/test_every_single_model_rig.py` sweeps every model.
-    """
-    patch = _patch(tmp_path, [(BEAM, 1, 16)], grouped=True)
-    assert _refusal(patch, capsys) == _expected("rig_needs_fixture_group")
+def test_2026_09_27_a_group_of_one_fixture_meets_the_minimum(tmp_path):
+    """Round G review refused it: a lone fixture's show failed its own check (the
+    odd/even ping-pong had no odd half, the together twins matched the plain
+    figures). Both were the generator's to fix (2026-09-27), and the sweep in
+    `test_every_single_model_rig.py` builds and checks one of every model."""
+    patch = _patch(tmp_path, [(PAR, 1, 5)], grouped=True)
+    assert rig_below_minimum(Workspace.load(patch).root, default_names()) == []
 
 
 def test_2026_09_25_the_process_exits_non_zero_without_a_traceback(tmp_path):

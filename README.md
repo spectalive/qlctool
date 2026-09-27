@@ -1,7 +1,7 @@
 # qlctool
 
 Programmatic editing of QLC+ workspaces (`.qxw`). A whole show is built for
-any rig with at least one fixture group of two or more fixtures; `newshow`
+any rig with at least one fixture group, a single fixture included; `newshow`
 refuses a patch without one with a message saying so. Movement is built only
 where some fixture pans and tilts, and the dimmer chases only where some
 fixture has a fader dimmer, so a pars-only or a washes-only rig gets a show

@@ -10,7 +10,11 @@ other - the show collapses to one length, which is what "locos" looked like.
 
 The rule reads the wiring: a dial that can be tapped and gives one multiplier
 to everything under it is flattening the show. Two functions may honestly share
-a multiplier; a whole console cannot.
+a multiplier; a whole console cannot - unless every layer under the dial
+already runs the same length, in which case one multiplier keeps them as they
+are and nothing collapses. A lone fixture's dial lists its four colour wheels
+and nothing else, all stepping at the one beat (2026-09-27); the generator
+derives each multiplier from that length and cannot honestly write another.
 
 The second half is the tap that does nothing at all. A dial with a tap key and
 no functions under it re-times nothing on this QLC+: the `ControlBPM` tap that
@@ -57,7 +61,11 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
                 )
             )
             continue
-        if len(multipliers) >= FLATTENING_FROM and len(set(multipliers)) == 1:
+        if (
+            len(multipliers) >= FLATTENING_FROM
+            and len(set(multipliers)) == 1
+            and len(set(_durations(root, dial))) > 1
+        ):
             findings.append(
                 Finding(
                     rule_id=RULE_ID,
@@ -68,6 +76,23 @@ def check_tap_dial(root: etree._Element) -> list[Finding]:
                 )
             )
     return findings
+
+
+def _durations(root: etree._Element, dial: etree._Element) -> list[str]:
+    """The engine duration of each function the dial lists, in the dial's order.
+
+    A function the engine does not carry, or one with no `<Speed>`, reads as a
+    length of its own, so a dial over dangling ids is still judged flattening.
+    """
+    engine = find_local(root, "Engine")
+    speeds: dict[str, str] = {}
+    for function in engine if engine is not None else ():
+        speed = find_local(function, "Speed")
+        if speed is not None:
+            speeds[function.get("ID", "")] = speed.get("Duration", "0")
+    # The dial writes the id as the element's text (`VCSpeedDial::saveXML`).
+    listed = [(function.text or "").strip() for function in findall_local(dial, "Function")]
+    return [speeds.get(function_id, f"?{function_id}") for function_id in listed]
 
 
 def _has_tap_binding(dial: etree._Element) -> bool:

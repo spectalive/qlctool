@@ -77,9 +77,9 @@ def add_intensity_bases(build: ShowBuild) -> None:
             workspace,
             breath_id=intensity.full_id,
             program_ids=[
-                dimmers.chase_id,
-                dimmers.pingpong_id,
-                dimmers.chase2_id,
+                function_id
+                for function_id in (dimmers.chase_id, dimmers.pingpong_id, dimmers.chase2_id)
+                if function_id is not None
             ],
             names=vocabulary,
         )
@@ -102,11 +102,19 @@ def add_intensity_bases(build: ShowBuild) -> None:
     # dimmers always have exactly one owner.
     dimmer_programs_id = None
     if dimmers is not None:
+        programmes = [
+            (function_id, hold)
+            for function_id, hold in (
+                (dimmers.chase2_id, described.timing.dynamic_chase_ms),
+                (dimmers.pingpong_id, described.timing.dynamic_pingpong_ms),
+            )
+            if function_id is not None
+        ]
         dimmer_programs_id = show_chaser(
             workspace,
             vocabulary.display("dimmer_programmes"),
-            [dimmers.chase2_id, dimmers.pingpong_id],
-            holds=[described.timing.dynamic_chase_ms, described.timing.dynamic_pingpong_ms],
+            [function_id for function_id, _ in programmes],
+            holds=[hold for _, hold in programmes],
             path="Dimmers",
         )
         master[vocabulary.display("dimmer_programmes")] = dimmer_programs_id

@@ -48,7 +48,9 @@ class GeneratedDimmers:
     # halves, and part_ids carries the parts for both directions.
     chase_id: int
     chase2_id: int
-    pingpong_id: int
+    # None when only one fixture dims: a ping-pong of one fixture has no odd
+    # half, so it is a looping strobe on a button (2026-09-27).
+    pingpong_id: int | None
     scene_ids: list[int]
     part_ids: list[int] = field(default_factory=list)
 
@@ -152,19 +154,25 @@ def generate_dimmer_chases(
     chase_id = _chase(vocabulary.display("dimmer_chase"), "Forward")
     chase2_id = _chase(vocabulary.display("dimmer_chase_2"), "Backward")
 
-    scene_ids = [
-        _half_lit(workspace, dimmable, remainder, path, vocabulary) for remainder in (0, 1)
-    ]
-    pingpong_id = next_function_id(workspace.root)
-    workspace.add_function(
-        build_chaser(
-            pingpong_id,
-            vocabulary.display("dimmer_pingpong"),
-            scene_ids,
-            hold=pingpong_hold,
-            path=path,
+    # The ping-pong needs an odd half: with one dimmable fixture its odd step
+    # lights nothing, and the chaser is a looping strobe hung from a button
+    # (`latched_strobe`, `strobe_black`; the lone fixture, 2026-09-27).
+    scene_ids: list[int] = []
+    pingpong_id: int | None = None
+    if len(dimmable) >= 2:
+        scene_ids = [
+            _half_lit(workspace, dimmable, remainder, path, vocabulary) for remainder in (0, 1)
+        ]
+        pingpong_id = next_function_id(workspace.root)
+        workspace.add_function(
+            build_chaser(
+                pingpong_id,
+                vocabulary.display("dimmer_pingpong"),
+                scene_ids,
+                hold=pingpong_hold,
+                path=path,
+            )
         )
-    )
     return GeneratedDimmers(
         chase_id=chase_id,
         chase2_id=chase2_id,

@@ -453,9 +453,11 @@ def generate_movement_families(
     wash = _family(washes, WASH, None, "Wash", movement_path, make_chaser=False)
     beam = _family(beams, BEAM, None, "Beam", movement_path, make_chaser=False)
     # The old "(Simultaneo)" twins: same shapes, same envelope, every head at
-    # phase 0 so the family traces one figure together.
+    # phase 0 so the family traces one figure together. One rigged head traces
+    # the same figure alone either way, so it gets no twin (`twin_movement`;
+    # the lone fixture, 2026-09-27).
     wash_sim = _family(
-        washes,
+        washes if len(rigged_washes) > 1 else [],
         WASH,
         None,
         "Wash",
@@ -467,7 +469,7 @@ def generate_movement_families(
         spread_phase=False,
     )
     beam_sim = _family(
-        beams,
+        beams if len(rigged_beams) > 1 else [],
         BEAM_TWIN_SHAPES,
         None,
         "Beam",

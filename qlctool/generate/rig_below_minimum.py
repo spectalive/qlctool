@@ -22,6 +22,11 @@ in two ways the generator cannot help - the odd/even strobe has no odd half,
 and with no two-fixture mix the tap dial re-timed only the colour wheels,
 all at one length - while every two- and four-fixture rig passes.
 
+2026-09-27: one fixture is enough. The two ways a lone fixture failed were the
+generator's to fix, and were: the odd/even ping-pong is built only where two
+fixtures dim, and the "together" movement twins only where two heads are
+rigged. The sweep now builds and checks one of every model and mode.
+
 The question is put to the patch, never to a model name.
 """
 
@@ -33,6 +38,6 @@ from ..names.names import Names
 
 def rig_below_minimum(root: etree._Element, names: Names) -> list[str]:
     """Each missing part of the minimum, in the show's words; empty when the rig meets it."""
-    if any(len(group.fixture_ids) >= 2 for group in fixture_groups(root)):
+    if any(len(group.fixture_ids) >= 1 for group in fixture_groups(root)):
         return []
     return [names.display("rig_needs_fixture_group")]

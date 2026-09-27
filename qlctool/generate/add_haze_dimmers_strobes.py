@@ -51,7 +51,8 @@ def add_haze_dimmers_strobes(build: ShowBuild) -> None:
     if dimmers is not None:
         master[vocabulary.display("dimmer_chase")] = dimmers.chase_id
         master[vocabulary.display("dimmer_chase_2")] = dimmers.chase2_id
-        master[vocabulary.display("dimmer_pingpong")] = dimmers.pingpong_id
+        if dimmers.pingpong_id is not None:
+            master[vocabulary.display("dimmer_pingpong")] = dimmers.pingpong_id
 
     # The console strobes are held scenes on the shutters, not chasers: a
     # chaser's black step is all Intensity channels, and Intensity is HTP, so
