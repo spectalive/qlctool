@@ -119,6 +119,7 @@ from .console_layout import (
 from .generated_console import GeneratedConsole
 from .library_help_lines import library_help_lines
 from .matrices_frame_caption import matrices_frame_caption
+from .on_page import on_page
 from .page_control_title import page_control_title
 from .panels_frame_caption import panels_frame_caption
 from .play_page import build_play_page
@@ -194,7 +195,7 @@ def generate_live_console(
             height=h,
             **kwargs,
         )
-        _on_page(element, page)
+        on_page(element, page)
         console.button_ids.append(widget_id)
         console.widget_ids.append(widget_id)
         if function_id is not None:
@@ -204,7 +205,7 @@ def generate_live_console(
     def frame(parent, caption, x, y, w, h, page=None, **kwargs):
         widget_id = ids.take()
         element = build_frame(parent, widget_id, caption, x, y, w, h, **kwargs)
-        _on_page(element, page)
+        on_page(element, page)
         console.frame_ids.append(widget_id)
         console.widget_ids.append(widget_id)
         return element
@@ -212,7 +213,7 @@ def generate_live_console(
     def label(parent, caption, x, y, w, h, page=None, font=DEFAULT):
         widget_id = ids.take()
         element = build_label(parent, widget_id, caption, x, y, w, h, font=font)
-        _on_page(element, page)
+        on_page(element, page)
         console.widget_ids.append(widget_id)
         return element
 
@@ -381,7 +382,7 @@ def generate_live_console(
             for band, target in AUDIO_BANDS
         ],
     )
-    _on_page(triggers, PAGE_CONTROL)
+    on_page(triggers, PAGE_CONTROL)
     console.widget_ids.append(triggers_id)
 
     _set_canvas(workspace.root, canvas)
@@ -607,7 +608,7 @@ def _page_show(
         control_bpm=bpm_tap,
     )
     bind_pad(dial, pad_bindings, vocabulary.display("tempo_dial"))
-    _on_page(dial, PAGE_SHOW)
+    on_page(dial, PAGE_SHOW)
     console.widget_ids.append(dial_id)
     # The middle line names the gobo and prism animations only when the show
     # built them: they are what the dial would re-time.
@@ -789,7 +790,7 @@ def _page_control(
         GRAND_MASTER_HEIGHT,
     )
     bind_pad(grand_master, pad_bindings, vocabulary.display("grand_master"))
-    _on_page(grand_master, PAGE_CONTROL)
+    on_page(grand_master, PAGE_CONTROL)
     console.widget_ids.append(grand_master_id)
     for index, line in enumerate(GRAND_MASTER_LINES):
         label(
@@ -873,7 +874,7 @@ def _page_control(
             636,
             fixture_ids=list(mover_fixture_ids),
         )
-        _on_page(pad, PAGE_CONTROL)
+        on_page(pad, PAGE_CONTROL)
         console.widget_ids.append(pad_id)
 
     # The movement dial stays with the direct controls and on the same tap key
@@ -895,7 +896,7 @@ def _page_control(
             tap_key=TEMPO_TAP_KEY,
         )
         bind_pad(dial, pad_bindings, vocabulary.display("movement_speed"))
-        _on_page(dial, PAGE_CONTROL)
+        on_page(dial, PAGE_CONTROL)
         console.widget_ids.append(dial_id)
         for index, line in enumerate(MOVEMENT_DIAL_LINES):
             label(
@@ -974,7 +975,7 @@ def _page_library(
             for index, function_id in enumerate(library_splits[page]):
                 column, row = index % 10, index // 10
                 name = names.get(function_id, "")
-                _on_page(
+                on_page(
                     button(
                         mixes,
                         function_id,
@@ -1040,7 +1041,7 @@ def _page_library(
             step = (MIDDLE_WIDTH - GAP * 2) // MATRIX_COLUMNS
             for index, function_id in enumerate(generated.matrix_ids):
                 column, row = index % MATRIX_COLUMNS, index // MATRIX_COLUMNS
-                _on_page(
+                on_page(
                     button(
                         matrix_frame,
                         function_id,
@@ -1151,7 +1152,7 @@ def _page_library(
             244,
             channels=list(builtins.speed_channels),
         )
-        _on_page(slider, PAGE_LIBRARY)
+        on_page(slider, PAGE_LIBRARY)
         console.widget_ids.append(slider_id)
         label(
             outer,
@@ -1191,7 +1192,7 @@ def _page_library(
             function_id=matrices[0].matrix_ids[0],
             algorithms=list(matrix_algorithms),
         )
-        _on_page(control, PAGE_LIBRARY)
+        on_page(control, PAGE_LIBRARY)
         console.widget_ids.append(matrix_widget_id)
 
     lines = library_help_lines(
@@ -1288,12 +1289,6 @@ def _function_names(workspace: Workspace) -> dict[int, str]:
         for f in workspace.engine
         if localname(f) == "Function" and f.attrib.get("ID")
     }
-
-
-def _on_page(widget: etree._Element, page: int | None) -> None:
-    """Which page of a multipage frame this widget belongs to; 0 is implicit."""
-    if page:
-        widget.set("Page", str(page))
 
 
 def _first(ids):
