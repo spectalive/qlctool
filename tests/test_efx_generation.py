@@ -11,11 +11,9 @@ from rig_root import RIG_ROOT
 from qlctool.efx_algorithms import EFX_ALGORITHMS
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.functions.efx import EFXAxis, EFXFixture, build_efx
-from qlctool.generate.movement_efx import (
-    generate_movement_efx,
-    moving_head_ids,
-    spread_offsets,
-)
+from qlctool.generate.movement_efx import generate_movement_efx
+from qlctool.generate.moving_head_ids import moving_head_ids
+from qlctool.generate.spread_offsets import spread_offsets
 from qlctool.ids import existing_function_ids
 from qlctool.workspace import Workspace
 from qlctool.xmlsemantics import first_difference

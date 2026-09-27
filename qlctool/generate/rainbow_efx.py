@@ -23,7 +23,7 @@ from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
 from .generated_rainbows import GeneratedRainbows
-from .movement_efx import spread_offsets
+from .spread_offsets import spread_offsets
 
 MODE_RGB = 2  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 

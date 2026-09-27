@@ -7,9 +7,7 @@ does not invalidate the generator.
 """
 
 from collections.abc import Collection, Sequence
-from dataclasses import dataclass, field
 
-from .. import roles
 from ..capabilities_of import capabilities_of
 from ..efx_algorithms import EFX_ALGORITHMS
 from ..efx_shape_identifiers import EFX_SHAPE_IDENTIFIERS
@@ -22,32 +20,9 @@ from ..keeps_16bit import PAN_TILT_PAIRS, keeps_16bit
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
-
-
-@dataclass(frozen=True)
-class GeneratedMovements:
-    # What the console and the chaser see: one function per shape. When the
-    # movers had to be split it is a Collection running both halves at once.
-    efx_ids: list[int]
-    chaser_id: int | None
-    # The EFX underneath, when a split happened. Empty when there was none.
-    part_ids: list[int] = field(default_factory=list)
-
-
-def moving_head_ids(workspace: Workspace, library: FixtureLibrary) -> list[int]:
-    """Fixture IDs that can be driven by an EFX: they have both pan and tilt."""
-    return [
-        caps.fixture.fixture_id
-        for caps in capabilities_of(workspace.root, library)
-        if caps.has_role(roles.PAN) and caps.has_role(roles.TILT)
-    ]
-
-
-def spread_offsets(count: int) -> list[int]:
-    """Phase offsets spreading `count` fixtures evenly around the path."""
-    if count <= 0:
-        return []
-    return [round(360 * index / count) % 360 for index in range(count)]
+from .generated_movements import GeneratedMovements
+from .moving_head_ids import moving_head_ids
+from .spread_offsets import spread_offsets
 
 
 def generate_movement_efx(

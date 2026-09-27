@@ -33,7 +33,7 @@ from ..workspace import Workspace
 from .fader_dimmed import fader_dimmed
 from .generated_dimmers import GeneratedDimmers
 from .half_lit import half_lit
-from .movement_efx import spread_offsets
+from .spread_offsets import spread_offsets
 
 MODE_DIMMER = 1  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 

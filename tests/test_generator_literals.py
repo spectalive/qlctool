@@ -243,6 +243,10 @@ CONVERTED: tuple[str, ...] = (
     "generate/pads_top_down.py",
     "generate/profile_channel.py",
     "generate/profile_ns.py",
+    # 2026-09-27, batch 5: split out of movement_efx.py, which was converted.
+    "generate/generated_movements.py",
+    "generate/moving_head_ids.py",
+    "generate/spread_offsets.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
