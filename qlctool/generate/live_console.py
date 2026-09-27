@@ -124,6 +124,7 @@ from .page_control_title import page_control_title
 from .panels_frame_caption import panels_frame_caption
 from .play_page import build_play_page
 from .smc_pad_colors import readable_foreground
+from .swatch import swatch
 from .tempo_close_line import tempo_close_line
 from .tempo_help_line import tempo_help_line
 
@@ -734,8 +735,8 @@ def _page_control(
                 action=FLASH,
                 flash_override=True,
                 flash_force_ltp=True,
-                background=_swatch(name, palette),
-                foreground=_swatch(name, palette, second=True) if split else DEFAULT,
+                background=swatch(name, palette),
+                foreground=swatch(name, palette, second=True) if split else DEFAULT,
                 font=TINY_FONT if split else SMALL_FONT,
             )
         y += bank_pitch
@@ -987,8 +988,8 @@ def _page_library(
                         action=FLASH,
                         flash_override=True,
                         flash_force_ltp=True,
-                        background=_swatch(name, palette),
-                        foreground=_swatch(name, palette, second=True),
+                        background=swatch(name, palette),
+                        foreground=swatch(name, palette, second=True),
                         font=TINY_FONT,
                     ),
                     page,
@@ -1293,16 +1294,6 @@ def _function_names(workspace: Workspace) -> dict[int, str]:
 
 def _first(ids):
     return ids[0] if ids else None
-
-
-def _swatch(name: str, palette: Mapping[str, tuple[int, int, int]], second: bool = False) -> str:
-    """The ARGB of the palette colour a scene is named after, or Default."""
-    parts = [p.strip() for p in name.split(" / ")]
-    text = parts[1] if second and len(parts) > 1 else parts[0]
-    for color_name in sorted(palette, key=len, reverse=True):
-        if text == color_name or text.startswith(f"{color_name} "):
-            return str(argb_from_rgb(palette[color_name]))
-    return DEFAULT
 
 
 def _bank_caption(name: str, short_colour: Mapping[str, str]) -> str:

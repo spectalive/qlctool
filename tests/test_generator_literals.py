@@ -165,6 +165,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/generated_console.py",
     "generate/console_ids.py",
     "generate/on_page.py",
+    "generate/swatch.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
