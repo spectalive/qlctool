@@ -14,10 +14,10 @@ any shipped language, a frame with that caption must sit on the same page.
 from lxml import etree
 
 from ..names.frame_caption_head import frame_caption_head
-from ..names.template_pattern import template_pattern
 from ..xmlutil import find_local, iter_local
 from .catalogue_spellings import catalogue_spellings
 from .finding import ERROR, Finding
+from .help_line import HELP_LINE_FRAMES, MIXES, help_line
 from .phrase import Phrase
 from .widget_page import widget_page
 
@@ -25,26 +25,6 @@ RULE_ID = "help_names_frame"
 
 # A plain frame or a solo frame: the matrices sit in a SoloFrame, the mixes in a Frame.
 FRAME_TAGS = ("Frame", "SoloFrame")
-MIXES = "mixes_frame"
-MATRICES = (
-    "matrices_frame",
-    "matrices_frame_bars",
-    "matrices_frame_panels",
-    "matrices_frame_groups",
-)
-
-# Each help line that names a frame, and the frame captions that keep its word.
-HELP_LINE_FRAMES: dict[str, tuple[tuple[str, ...], ...]] = {
-    "library_1": ((MIXES,), MATRICES),
-    "library_1_no_mixes": (MATRICES,),
-    "library_1_no_matrices": ((MIXES,),),
-    "library_1_no_builtins": ((MIXES,), MATRICES),
-    "library_1_no_builtins_no_mixes": (MATRICES,),
-    "library_1_no_builtins_no_matrices": ((MIXES,),),
-    "library_5": ((MIXES,), MATRICES),
-    "library_5_no_mixes": (MATRICES,),
-    "library_5_no_matrices": ((MIXES,),),
-}
 
 
 def check_help_names_frame(root: etree._Element) -> list[Finding]:
@@ -59,7 +39,7 @@ def check_help_names_frame(root: etree._Element) -> list[Finding]:
     findings: list[Finding] = []
     for label in iter_local(console, "Label"):
         caption = label.get("Caption", "")
-        identifier = _help_line(caption)
+        identifier = help_line(caption)
         if identifier is None:
             continue
         drawn = frames_by_page.get(widget_page(label), set())
@@ -82,12 +62,3 @@ def check_help_names_frame(root: etree._Element) -> list[Finding]:
                 )
             )
     return findings
-
-
-def _help_line(caption: str) -> str | None:
-    """The help-line identifier `caption` is the text of, in any shipped language."""
-    for identifier in HELP_LINE_FRAMES:
-        for text in catalogue_spellings(identifier):
-            if template_pattern(text).fullmatch(caption):
-                return identifier
-    return None

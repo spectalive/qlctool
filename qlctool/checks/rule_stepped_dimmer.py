@@ -20,13 +20,14 @@ too, since the value it writes is unknowable rather than an end.
 
 from ..stepped_dimmer_offsets import stepped_dimmer_offsets
 from .finding import ERROR, Finding
+from .is_a_step import is_a_step
 from .show_graph import ShowGraph
 
 RULE_ID = "stepped_dimmer"
 WRITES_VALUES = ("Scene", "Sequence", "EFX")
 
 
-def check_stepped_dimmer(graph: ShowGraph, groups) -> list[Finding]:
+def check_stepped_dimmer(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> list[Finding]:
     findings: list[Finding] = []
     for function_id in sorted(graph.functions):
         function = graph.functions[function_id]
@@ -41,7 +42,7 @@ def check_stepped_dimmer(graph: ShowGraph, groups) -> list[Finding]:
             for offset in stepped_dimmer_offsets(capability):
                 if offset not in written:
                     continue
-                if _is_a_step(capability, offset, written[offset]):
+                if is_a_step(capability, offset, written[offset]):
                     continue
                 caught.add(capability.fixture.name)
         if caught:
@@ -55,16 +56,3 @@ def check_stepped_dimmer(graph: ShowGraph, groups) -> list[Finding]:
                 )
             )
     return findings
-
-
-def _is_a_step(capability, offset: int, value: int | None) -> bool:
-    """Whether this value lands on one of the channel's own end positions.
-
-    None - an EFX driving the channel to a value nobody can predict - is never
-    a step: a swept blade is a crescent for most of its travel.
-    """
-    if value is None:
-        return False
-    ranges = capability.capabilities_by_offset[offset]
-    ends = (min(r.minimum for r in ranges), max(r.maximum for r in ranges))
-    return value in ends
