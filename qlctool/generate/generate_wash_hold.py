@@ -30,7 +30,13 @@ def generate_wash_hold(
     fixture_ids: Collection[int],
     names: Names | None = None,
 ) -> int | None:
-    """One scene holding the rigged `fixture_ids` at the washes' aim. None if none."""
+    """One scene holding the rigged `fixture_ids` at the washes' aim. None if none.
+
+    Redundant with `Cabezas Suelo` under AUTO and the four moments (Round 3
+    floors write the same aim from the same constant), but it is still the
+    only thing holding the MACs there under Blanco Total and Todo Negro,
+    which start no floors (M-3, 2026-09-27 final review). Do not remove it.
+    """
     vocabulary = default_names() if names is None else names
     rigged = rigged_fixture_ids(workspace.root)
     values: dict[int, list[tuple[int, int]]] = {}
