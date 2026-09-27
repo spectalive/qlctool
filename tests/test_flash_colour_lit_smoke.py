@@ -20,7 +20,8 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.flash_lights import flash_lights
 from qlctool.checks.rule_flash_lit_smoke import RULE_ID
-from qlctool.checks.strobe_written import strobe_capable_offsets, value_strobes
+from qlctool.checks.strobe_written import strobe_capable_offsets
+from qlctool.checks.value_strobes import value_strobes
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.names.default_names import default_names

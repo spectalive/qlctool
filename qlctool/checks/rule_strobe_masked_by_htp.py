@@ -23,7 +23,8 @@ from .finding import ERROR, Finding
 from .fixture_names_of import fixture_names_of
 from .htp_offsets import htp_offsets
 from .show_graph import ShowGraph, reach
-from .strobe_written import strobe_capable_offsets, value_strobes
+from .strobe_written import strobe_capable_offsets
+from .value_strobes import value_strobes
 
 RULE_ID = "strobe_masked_by_htp"
 

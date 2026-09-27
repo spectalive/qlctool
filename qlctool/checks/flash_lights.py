@@ -16,7 +16,8 @@ from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from .raises_light import raises_light
 from .smoke_column_lit import smoke_column_lit
-from .strobe_written import strobe_capable_offsets, value_strobes
+from .strobe_written import strobe_capable_offsets
+from .value_strobes import value_strobes
 
 
 def flash_lights(capability: FixtureCapabilities, written: Mapping[int, int | None]) -> bool:

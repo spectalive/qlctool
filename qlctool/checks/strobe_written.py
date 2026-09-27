@@ -31,9 +31,3 @@ def strobe_capable_offsets(
         if strobing is not None:
             found[offset] = strobing
     return found
-
-
-def value_strobes(strobing: Capability | None, value: int) -> bool:
-    if strobing is None:
-        return value > 0
-    return strobing.minimum <= value <= strobing.maximum

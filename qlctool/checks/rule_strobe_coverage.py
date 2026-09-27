@@ -22,7 +22,8 @@ so covering one covers the other.
 from .. import roles
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
-from .strobe_written import strobe_capable_offsets, value_strobes
+from .strobe_written import strobe_capable_offsets
+from .value_strobes import value_strobes
 
 RULE_ID = "strobe_coverage"
 
