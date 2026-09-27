@@ -68,6 +68,7 @@ def generate_movement_efx(
     mirrored_ids: Collection[int] = (),
     rotation: int = 0,
     rotation_by_algorithm: dict[str, int] | None = None,
+    size_by_algorithm: dict[str, tuple[int, int]] | None = None,
     names: dict[str, str] | None = None,
     spread_phase: bool = True,
     pan_offset: int = 127,
@@ -88,7 +89,10 @@ def generate_movement_efx(
 
     rotation applies to every algorithm in the batch; rotation_by_algorithm
     overrides it for individual shapes (e.g. Diamond and Leaf wanting
-    different angles in the same call). names overrides the generated
+    different angles in the same call). size_by_algorithm overrides width
+    and height the same way, as (width, height) per shape - a turned figure
+    reaches further than its size, so it is drawn at the size that fits
+    (`fit_rotated_figure`). names overrides the generated
     "{label_prefix} {label}" name for an algorithm with a literal one, for a
     figure whose name does not fit that pattern (e.g. "Ola Suave").
 
@@ -162,6 +166,7 @@ def generate_movement_efx(
         )
         name = (names or {}).get(algorithm, f"{label_prefix} {label}")
         shape_rotation = (rotation_by_algorithm or {}).get(algorithm, rotation)
+        shape_width, shape_height = (size_by_algorithm or {}).get(algorithm, (width, height))
         shape_parts: list[int] = []
         for paired, part_fixture_ids in parts:
             fid = next_function_id(workspace.root)
@@ -179,8 +184,8 @@ def generate_movement_efx(
                     propagation_mode=propagation_mode,
                     rotation=shape_rotation,
                     duration=duration,
-                    width=width,
-                    height=height,
+                    width=shape_width,
+                    height=shape_height,
                     path=part_path if split else path,
                 )
             )

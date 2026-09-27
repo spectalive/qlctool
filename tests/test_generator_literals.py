@@ -158,6 +158,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/generate_wash_hold.py",
     # 2026-09-27, en-sala round 2 review: the heads a fan spreads.
     "generate/fan_heads.py",
+    # 2026-09-27, en-sala DMX re-audit: the size a turned figure fits at.
+    "generate/fit_rotated_figure.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

@@ -48,6 +48,7 @@ from ..workspace import Workspace
 from .alternate_mirror import alternate_mirror
 from .cross_position import generate_cross_position
 from .fan_position import generate_fan_position
+from .fit_rotated_figure import fit_rotated_figure
 from .generate_wash_hold import generate_wash_hold
 from .movement_aim import (
     BEAM_PAN_AIM,
@@ -69,6 +70,13 @@ class Envelope:
     propagation and rotation apply to every algorithm in the envelope;
     rotation_by_algorithm overrides rotation per shape, for an envelope that
     mixes shapes wanting different angles (e.g. Diamond and Leaf).
+
+    width and height are the reach the envelope allows on pan and tilt. An
+    unturned shape reaches exactly its size; a turned one reaches further, so
+    fit_rotated redraws every turned shape at the largest size whose reach
+    stays inside them (`fit_rotated_figure`). Without it Diamante, turned 90
+    degrees at Width 20 Height 13, swung the 7R to tilt 200-240 over a 207-234
+    window (en-sala DMX re-audit, 2026-09-27).
     """
 
     algorithms: tuple[str, ...]
@@ -79,6 +87,7 @@ class Envelope:
     propagation: str = "Parallel"
     rotation: int = 0
     rotation_by_algorithm: dict[str, int] = field(default_factory=dict)
+    fit_rotated: bool = False
     # Where the figure is centred in raw pan and tilt. 127 is mid-travel, which
     # is what QLC+ writes when nobody says - not a place (`movement_aim`).
     pan_offset: int = 127
@@ -166,7 +175,9 @@ BEAM_FAST = Envelope(
 # was deliberately scoped down to Circle/Eight/Line (2026-08-27 review, see
 # module docstring). There is no pre-existing beam Diamond or Leaf to rotate,
 # so these are new beam figures rather than a rotation on old ones; sharing
-# BEAM's duration/width/height keeps them tuned for the same optics.
+# BEAM's duration keeps them tuned for the same optics. BEAM's width and height
+# are the window they must stay in, not their size: turned, each is drawn at
+# the size whose reach fits it (fit_rotated) - Diamante at W20 H13 left it.
 BEAM_ROTATED_SHAPES = Envelope(
     ("Diamond", "Leaf"),
     BEAM.duration,
@@ -176,6 +187,7 @@ BEAM_ROTATED_SHAPES = Envelope(
     rotation_by_algorithm={"Diamond": 90, "Leaf": 45},
     pan_offset=BEAM.pan_offset,
     tilt_offset=BEAM.tilt_offset,
+    fit_rotated=True,
 )
 # Square and Lissajous were wash-only, so their buttons left the four beams
 # standing still - "algunos movimientos de cabezas no incluyen las beam" (owner,
@@ -209,6 +221,7 @@ BEAM_CASCADE = Envelope(
     rotation=45,
     pan_offset=BEAM.pan_offset,
     tilt_offset=BEAM.tilt_offset,
+    fit_rotated=True,
 )
 
 # The classic club wave: tilt only. QLC+'s Line traces x=y - a diagonal, and
@@ -273,6 +286,7 @@ BEAM_TWIN_SHAPES = Envelope(
     rotation_by_algorithm={"Diamond": 90, "Leaf": 45},
     pan_offset=BEAM.pan_offset,
     tilt_offset=BEAM.tilt_offset,
+    fit_rotated=True,
 )
 # Same figure, alternate heads reversed: the contrast to the unison push. Every
 # shape gets the twin, so the tablet offers the same figure both ways round
@@ -295,6 +309,7 @@ BEAM_ALTERNATE = Envelope(
     rotation_by_algorithm=BEAM_TWIN_SHAPES.rotation_by_algorithm,
     pan_offset=BEAM_TWIN_SHAPES.pan_offset,
     tilt_offset=BEAM_TWIN_SHAPES.tilt_offset,
+    fit_rotated=True,
 )
 BEAM_UNISON = Envelope(
     ("Line",),
@@ -383,6 +398,17 @@ def generate_movement_families(
     ):
         if not ids:
             return None
+        sizes = {
+            algorithm: fit_rotated_figure(
+                algorithm,
+                envelope.rotation_by_algorithm.get(algorithm, envelope.rotation),
+                envelope.width,
+                envelope.height,
+            )
+            for algorithm in envelope.algorithms
+            if envelope.fit_rotated
+            and envelope.rotation_by_algorithm.get(algorithm, envelope.rotation) % 360
+        }
         return generate_movement_efx(
             workspace,
             library,
@@ -401,6 +427,7 @@ def generate_movement_families(
             propagation_mode=envelope.propagation,
             rotation=envelope.rotation,
             rotation_by_algorithm=envelope.rotation_by_algorithm or None,
+            size_by_algorithm=sizes or None,
             names=overrides,
             spread_phase=spread_phase,
             pan_offset=envelope.pan_offset,

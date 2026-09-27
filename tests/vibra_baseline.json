@@ -4,20 +4,20 @@
     "plot": "vibra-stage-plot.json",
     "beats": false,
     "description": "vibra.toml",
-    "sha256": "097d28d5255823fe6ff5bf1c3cb9f5750a52d5ef8552e03d3e70854d6b5d1f88"
+    "sha256": "1e90d411bc48438294ff71e6e36bb7e5b9367e6ce3153ba565c822323414fecb"
   },
   "Vibra-beats.qxw": {
     "source": "Vibra.qxw",
     "plot": "vibra-stage-plot.json",
     "beats": true,
     "description": "vibra-beats.toml",
-    "sha256": "a3e586abec0a9bc495325bac5b5cb47d57b982bdd77e372d14cff45d55bcd2ca"
+    "sha256": "1342fa7526920b97dece85740e9fcbbaefee36f0a16f56f85f66d6ea10c88e7d"
   },
   "Vibra-split.qxw": {
     "source": "Vibra-split.qxw",
     "plot": "vibra-stage-plot-split.json",
     "beats": false,
     "description": "vibra-split.toml",
-    "sha256": "42caf21ff2c02f746b295179a8afbe6123f2a30c66fa5a8e93087cd0601982c6"
+    "sha256": "3d19b270329ca9fba22687d77a4afc44699859a101f2510cd0bb77504b64a4a4"
   }
 }

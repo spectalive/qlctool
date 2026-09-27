@@ -6935,8 +6935,8 @@
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
       <Algorithm>Diamond</Algorithm>
-      <Width>20</Width>
-      <Height>13</Height>
+      <Width>13</Width>
+      <Height>20</Height>
       <Rotation>90</Rotation>
       <StartOffset>0</StartOffset>
       <IsRelative>0</IsRelative>
@@ -7035,8 +7035,8 @@
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
       <Algorithm>Leaf</Algorithm>
-      <Width>20</Width>
-      <Height>13</Height>
+      <Width>16</Width>
+      <Height>18</Height>
       <Rotation>45</Rotation>
       <StartOffset>0</StartOffset>
       <IsRelative>0</IsRelative>
@@ -7135,8 +7135,8 @@
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
       <Algorithm>Diamond</Algorithm>
-      <Width>20</Width>
-      <Height>13</Height>
+      <Width>13</Width>
+      <Height>20</Height>
       <Rotation>90</Rotation>
       <StartOffset>0</StartOffset>
       <IsRelative>0</IsRelative>
@@ -7185,8 +7185,8 @@
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
       <Algorithm>Leaf</Algorithm>
-      <Width>20</Width>
-      <Height>13</Height>
+      <Width>16</Width>
+      <Height>18</Height>
       <Rotation>45</Rotation>
       <StartOffset>0</StartOffset>
       <IsRelative>0</IsRelative>
@@ -8311,8 +8311,8 @@
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
       <Algorithm>Diamond</Algorithm>
-      <Width>20</Width>
-      <Height>13</Height>
+      <Width>13</Width>
+      <Height>20</Height>
       <Rotation>90</Rotation>
       <StartOffset>0</StartOffset>
       <IsRelative>0</IsRelative>
@@ -8411,8 +8411,8 @@
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
       <Algorithm>Leaf</Algorithm>
-      <Width>20</Width>
-      <Height>13</Height>
+      <Width>16</Width>
+      <Height>18</Height>
       <Rotation>45</Rotation>
       <StartOffset>0</StartOffset>
       <IsRelative>0</IsRelative>
@@ -8511,7 +8511,7 @@
       <Direction>Forward</Direction>
       <RunOrder>Loop</RunOrder>
       <Algorithm>Circle</Algorithm>
-      <Width>20</Width>
+      <Width>13</Width>
       <Height>13</Height>
       <Rotation>45</Rotation>
       <StartOffset>0</StartOffset>
