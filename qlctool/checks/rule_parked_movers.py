@@ -29,9 +29,9 @@ block the rule is about is the one that mixes a scene into the step.
 """
 
 from .. import roles
-from ..xmlutil import find_local, findall_local
-from .efx_driven import EFX_PAN_TILT
 from .finding import ERROR, Finding
+from .only_efx import only_efx
+from .pan_tilt_block_fixtures import pan_tilt_block_fixtures
 from .show_graph import CONCURRENT, ShowGraph
 
 RULE_ID = "parked_movers"
@@ -57,9 +57,9 @@ def check_parked_movers(graph: ShowGraph) -> list[Finding]:
             if graph.kind(step) != CONCURRENT or step in seen:
                 continue
             seen.add(step)
-            if _only_efx(graph, step):
+            if only_efx(graph, step):
                 continue
-            moved = _moved_heads(graph, step)
+            moved = pan_tilt_block_fixtures(graph, step)
             if not moved:
                 continue
             parked = movers - moved
@@ -77,30 +77,3 @@ def check_parked_movers(graph: ShowGraph) -> list[Finding]:
                 )
             )
     return findings
-
-
-def _only_efx(graph: ShowGraph, function_id: int) -> bool:
-    """A split movement: a Collection whose every member is an EFX."""
-    members = graph.members.get(function_id, ())
-    return bool(members) and all(graph.kind(member) == "EFX" for member in members)
-
-
-def _moved_heads(graph: ShowGraph, function_id: int) -> set[int]:
-    """The fixtures an EFX inside this block drives on pan and tilt."""
-    moved: set[int] = set()
-    for member in graph.descendants(function_id):
-        function = graph.functions.get(member)
-        if function is None or function.attrib.get("Type") != "EFX":
-            continue
-        for element in findall_local(function, "Fixture"):
-            identifier = find_local(element, "ID")
-            if identifier is None or not (identifier.text or "").strip().isdigit():
-                continue
-            mode = find_local(element, "Mode")
-            mode_value = int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
-            if mode_value != EFX_PAN_TILT:
-                continue
-            fixture_id = int(identifier.text)
-            if fixture_id in graph.capabilities:
-                moved.add(fixture_id)
-    return moved
