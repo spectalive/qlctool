@@ -14,9 +14,9 @@ from ..description.pastel_palette_of import pastel_palette_of
 from ..description.show_description import ShowDescription
 from ..description.wheel_palette_of import wheel_palette_of
 from ..fixture_library import FixtureLibrary
+from ..load_stage_plot import load_stage_plot
 from ..pin_generic_output import pin_generic_output
 from ..pin_wheel_fades import pin_wheel_fades
-from ..stage_plot import load_stage_plot
 from ..strip_to_skeleton import strip_to_skeleton
 from ..vibra.vibra_description import vibra_description
 from ..workspace import Workspace

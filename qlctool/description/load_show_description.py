@@ -1,7 +1,7 @@
 """Read a show description and check it against the patch it claims to describe.
 
 The patch stays in QLC+; the description says what to do with it. Like a stage
-plot (`stage_plot.load_stage_plot`), it is bound to a patch: a matrix tuned for
+plot (`load_stage_plot.load_stage_plot`), it is bound to a patch: a matrix tuned for
 a fixture group the workspace does not have is refused, loudly, rather than
 silently generating nothing. Every section is optional and falls back to the
 Vibra show's values, except [controllers], which falls back to none.

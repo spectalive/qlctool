@@ -37,6 +37,7 @@ from .generate.generate_vc_layout import generate_vc_layout
 from .generate.input_profile import build_input_profile
 from .install_plan import install_plan
 from .library_for import library_for
+from .load_stage_plot import load_stage_plot
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .monitor_node import POINTS_OF_VIEW
 from .mvr.write_mvr import write_mvr
@@ -55,7 +56,6 @@ from .repatch.group_sort import sort_group_by_stage
 from .repatch.remove_fixture import remove_fixture
 from .repatch.rename_fixture import rename_fixture
 from .repatch.set_fixture_address import set_fixture_address
-from .stage_plot import load_stage_plot
 from .toolkit_config_from import toolkit_config_from
 from .validate_workspace import validate_workspace
 from .vibra.vibra_description import vibra_description
