@@ -8,9 +8,16 @@ corners: pan 62 to 103, tilt 207 to 234, "todo lo fuera de eso ya apunta a
 fuera" (`audience_window`).
 
 With a window written down, the question stops being a matter of taste. An EFX
-draws a shape of a known half-size around a known centre - both are in the file
-- so whether the whole shape stays on the people is arithmetic:
-`offset - size` and `offset + size`, per axis, inside the window.
+draws a known shape of a known size, turned by a known angle, around a known
+centre - all of it is in the file - so whether the whole shape stays on the
+people is arithmetic: the figure's reach per axis (`efx_extent`, QLC+'s own
+`calculatePoint` and `rotateAndScale`), added to the offset, inside the window.
+
+The reach used to be read as `offset +- Width` on pan and `offset +- Height`
+on tilt, which is only true at Rotation 0. Turned 90 degrees, a Diamond of
+Width 20 and Height 13 swings tilt by 20, and every Diamante put the 7R at tilt
+200-240 about 30% of the time - past a window of 207-234 - while the rule
+passed it (en-sala DMX re-audit, 2026-09-27).
 
 Each family is asked about its own window: a raw pan or tilt value means
 nothing across models, and the washes were measured separately (pan 76-108,
@@ -21,14 +28,21 @@ hand-built `Escenario`, which sits just below the window at tilt 189-204
 because the stage is not the crowd - is a decision, not a figure.
 """
 
+import math
+
 from .. import roles
 from ..audience_window import BEAM_WINDOW, WASH_WINDOW
+from ..efx_extent import efx_extent
 from ..xmlutil import find_local, findall_local
 from .driven_channels import EFX_PAN_TILT
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
 RULE_ID = "movement_window"
+
+# Sampling lands on the exact extremes up to float noise; a figure drawn to the
+# window's edge is inside it.
+_TOLERANCE = 1e-6
 
 
 def check_movement_window(graph: ShowGraph) -> list[Finding]:
@@ -46,11 +60,28 @@ def check_movement_window(graph: ShowGraph) -> list[Finding]:
         tilt = _axis_offset(function, "Y")
         if None in (width, height, pan, tilt):
             continue
+        algorithm = find_local(function, "Algorithm")
+        rotation = _number(function, "Rotation")
+        x_frequency, x_phase = _axis_shape(function, "X", 2, 90)
+        y_frequency, y_phase = _axis_shape(function, "Y", 3, 0)
+        pan_reach, tilt_reach = efx_extent(
+            (algorithm.text or "").strip() if algorithm is not None else "Circle",
+            width,
+            height,
+            min(max(rotation or 0, 0), 359),
+            x_frequency,
+            y_frequency,
+            math.radians(x_phase),
+            math.radians(y_phase),
+        )
         for window, names in moved.items():
             outside = [
-                f"{axis} {centre - size}..{centre + size}"
-                for axis, centre, size in (("pan", pan, width), ("tilt", tilt, height))
-                if not window.holds(centre, size, axis)
+                f"{axis} {_count(centre + low)}..{_count(centre + high)}"
+                for axis, centre, (low, high), (window_min, window_max) in (
+                    ("pan", pan, pan_reach, (window.pan_min, window.pan_max)),
+                    ("tilt", tilt, tilt_reach, (window.tilt_min, window.tilt_max)),
+                )
+                if centre + low < window_min - _TOLERANCE or centre + high > window_max + _TOLERANCE
             ]
             if not outside:
                 continue
@@ -86,6 +117,28 @@ def _axis_offset(function, name: str) -> int | None:
             continue
         return _number(axis, "Offset")
     return None
+
+
+def _axis_shape(function, name: str, frequency: int, phase: int) -> tuple[int, int]:
+    """An axis's (Frequency, Phase in degrees), defaulted and clamped like QLC+.
+
+    An EFX with no `<Axis>` of that name keeps the constructor's values (the
+    arguments); an `<Axis>` that omits a tag reads it as 0, which is what
+    `EFX::loadXMLAxis` does (`efx.cpp` 1080-1110).
+    """
+    for axis in findall_local(function, "Axis"):
+        if axis.attrib.get("Name") != name:
+            continue
+        frequency = _number(axis, "Frequency") or 0
+        phase = _number(axis, "Phase") or 0
+        break
+    return min(max(frequency, 0), 32), min(max(phase, 0), 359)
+
+
+def _count(value: float) -> str:
+    """A reach as DMX counts: whole when it is, one decimal when it is not."""
+    rounded = round(value, 1)
+    return str(int(rounded)) if rounded == int(rounded) else str(rounded)
 
 
 def _heads_by_family(graph: ShowGraph, function) -> dict:
