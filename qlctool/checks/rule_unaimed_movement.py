@@ -18,8 +18,8 @@ Asked of anything an EFX moves on pan and tilt. A wash's wide cone is more
 forgiving than a 2-degree needle, but neither of them is aimed by a default.
 """
 
-from ..xmlutil import find_local, findall_local
-from .efx_driven import EFX_PAN_TILT
+from .efx_pan_tilt_fixture_names import efx_pan_tilt_fixture_names
+from .efx_tilt_offset import efx_tilt_offset
 from .finding import WARNING, Finding
 from .show_graph import ShowGraph
 
@@ -34,9 +34,9 @@ def check_unaimed_movement(graph: ShowGraph) -> list[Finding]:
         function = graph.functions[function_id]
         if function.attrib.get("Type") != "EFX":
             continue
-        if _tilt_offset(function) != MID_TRAVEL:
+        if efx_tilt_offset(function) != MID_TRAVEL:
             continue
-        heads = _heads_moved(graph, function)
+        heads = efx_pan_tilt_fixture_names(graph, function)
         if not heads:
             continue
         findings.append(
@@ -50,33 +50,3 @@ def check_unaimed_movement(graph: ShowGraph) -> list[Finding]:
             )
         )
     return findings
-
-
-def _tilt_offset(function) -> int | None:
-    """The centre of the EFX's Y axis, which is the tilt one."""
-    for axis in findall_local(function, "Axis"):
-        if axis.attrib.get("Name") != "Y":
-            continue
-        offset = find_local(axis, "Offset")
-        if offset is None or not (offset.text or "").strip().lstrip("-").isdigit():
-            return None
-        return int(offset.text)
-    return None
-
-
-def _heads_moved(graph: ShowGraph, function) -> set[str]:
-    """The fixtures this EFX drives on pan and tilt."""
-    heads: set[str] = set()
-    for element in findall_local(function, "Fixture"):
-        identifier = find_local(element, "ID")
-        if identifier is None or not (identifier.text or "").strip().isdigit():
-            continue
-        mode = find_local(element, "Mode")
-        mode_value = int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
-        if mode_value != EFX_PAN_TILT:
-            continue
-        capability = graph.capabilities.get(int(identifier.text))
-        if capability is None:
-            continue
-        heads.add(capability.fixture.name)
-    return heads
