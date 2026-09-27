@@ -30,18 +30,15 @@ states positions rather than animating them, and asking a rest position to cover
 both families would be asking for a different look.
 """
 
-from collections.abc import Mapping
-
 from lxml import etree
 
-from .. import roles
 from ..rigged_fixture_ids import rigged_fixture_ids
-from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
+from .fixture_can_move import fixture_can_move
+from .pan_tilt_moved_fixtures import pan_tilt_moved_fixtures
 from .show_graph import ShowGraph
 
 RULE_ID = "movement_figure_coverage"
-EFX_PANTILT_MODE = "0"  # EFXFixture::Mode - PanTilt, Dimmer, RGB
 
 
 def check_movement_figure_coverage(
@@ -53,7 +50,7 @@ def check_movement_figure_coverage(
     rigged = rigged_fixture_ids(root)
     findings: list[Finding] = []
     for function_id, caption in sorted(entries.items()):
-        moved = _moved_fixtures(graph, groups, function_id)
+        moved = pan_tilt_moved_fixtures(graph, groups, function_id)
         if not moved:
             continue
         still = sorted(
@@ -61,7 +58,9 @@ def check_movement_figure_coverage(
             for group_members in groups.values()
             if moved & set(group_members)
             for fixture_id in group_members
-            if fixture_id not in moved and fixture_id in rigged and _can_move(graph, fixture_id)
+            if fixture_id not in moved
+            and fixture_id in rigged
+            and fixture_can_move(graph, fixture_id)
         )
         if not still:
             continue
@@ -76,48 +75,3 @@ def check_movement_figure_coverage(
             )
         )
     return findings
-
-
-def _moves_pan_tilt(function: etree._Element) -> bool:
-    """An EFX running any of its fixtures in PanTilt mode."""
-    # An EFX names its members `<Fixture>`, not `<EFXFixture>` (efxfixture.cpp).
-    for fixture in iter_local(function, "Fixture"):
-        mode = find_local(fixture, "Mode")
-        if mode is not None and (mode.text or "").strip() == EFX_PANTILT_MODE:
-            return True
-    return False
-
-
-def _moved_fixtures(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int
-) -> set[int]:
-    """The fixtures whose pan or tilt this button animates through an EFX."""
-    moved: set[int] = set()
-    for member in graph.descendants(function_id):
-        function = graph.functions.get(member)
-        if function is None or not _moves_pan_tilt(function):
-            continue
-        for fixture_id, pairs in graph.driven_of(function, groups).items():
-            if _writes_pan_or_tilt(graph, fixture_id, pairs):
-                moved.add(fixture_id)
-    return moved
-
-
-def _writes_pan_or_tilt(graph: ShowGraph, fixture_id: int, pairs: Mapping[int, int | None]) -> bool:
-    capability = graph.capabilities.get(fixture_id)
-    if capability is None:
-        return False
-    return any(
-        offset in pairs
-        for role in (roles.PAN, roles.TILT)
-        for offset in capability.offsets_for_role(role)
-    )
-
-
-def _can_move(graph: ShowGraph, fixture_id: int) -> bool:
-    capability = graph.capabilities.get(fixture_id)
-    return (
-        capability is not None
-        and capability.has_role(roles.PAN)
-        and capability.has_role(roles.TILT)
-    )
