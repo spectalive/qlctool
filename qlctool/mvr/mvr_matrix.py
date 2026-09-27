@@ -62,4 +62,4 @@ def mvr_matrix(
     translation = tuple(c - h for c, h in zip(centre, half_up, strict=True))
 
     columns = [[clean_value(rotation[row][col]) for row in range(3)] + [0.0] for col in range(3)]
-    return Matrix(columns + [[clean_value(t) for t in translation] + [0.0]])
+    return Matrix([*columns, [clean_value(t) for t in translation] + [0.0]])

@@ -91,7 +91,7 @@ def test_blackout_owns_open_shutters_without_emitting_light_or_smoke(built):
 
 def test_energy_levels_and_moments_use_the_combined_slow_owner(built):
     """2026-09-02: collections keep both optics moving through every state."""
-    show, workspace = built
+    _show, workspace = built
     functions = _functions(workspace)
     names = {function.attrib["Name"]: function for function in functions.values()}
 

@@ -423,7 +423,7 @@ def cmd_probe(args: argparse.Namespace) -> int:
     result = generate_channel_probe(
         ws, args.fixture, value=args.value, base_values=base, hold=args.hold
     )
-    _lay_out(ws, result.scene_ids + [result.chaser_id], args.buttons)
+    _lay_out(ws, [*result.scene_ids, result.chaser_id], args.buttons)
     ws.save(out)
 
     print(

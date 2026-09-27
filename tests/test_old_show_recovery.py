@@ -237,7 +237,7 @@ def test_movement_keeps_the_simultaneo_twins_and_the_crossfade(built):
     """Audit finding (judgement call, restored): every shape had a
     "(Simultaneo)" twin - all heads at the same phase - and the movement
     rotation crossfaded 5 s between blocks (old Chaser 23)."""
-    show, out = built
+    _show, out = built
     root = Workspace.load(out).root
     functions = _functions(root)
 

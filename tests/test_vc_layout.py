@@ -42,7 +42,7 @@ def test_layout_gives_every_function_one_button(tmp_path):
 
     palette = generate_color_palette(ws, library)
     movement = generate_movement_efx(ws, library)
-    exposed = palette.scene_ids + [palette.chaser_id] + movement.efx_ids
+    exposed = [*palette.scene_ids, palette.chaser_id, *movement.efx_ids]
     layout = generate_vc_layout(ws, function_ids=exposed)
 
     # One frame per UI folder the functions were filed under.
@@ -111,7 +111,7 @@ def test_qlcplus_loads_a_generated_layout(tmp_path):
     ws = Workspace.load(SHOW)
     library = FixtureLibrary.load()
     palette = generate_color_palette(ws, library)
-    generate_vc_layout(ws, function_ids=palette.scene_ids + [palette.chaser_id])
+    generate_vc_layout(ws, function_ids=[*palette.scene_ids, palette.chaser_id])
     out = tmp_path / "out.qxw"
     ws.save(out)
 

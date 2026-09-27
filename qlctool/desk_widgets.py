@@ -59,7 +59,7 @@ def _walk(
         if tag in FRAME_TAGS:
             _walk(
                 element,
-                frames + (widget.id,),
+                (*frames, widget.id),
                 widget.id if tag == "SoloFrame" else solo,
                 widget_page,
                 found,

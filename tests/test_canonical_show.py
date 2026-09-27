@@ -351,7 +351,7 @@ def test_no_scene_but_the_smoke_ones_touches_the_smoke_pump(built):
     from qlctool.checks.show_graph import build_show_graph
     from qlctool.checks.valid_desk_bursts import valid_desk_bursts
 
-    show, out = built
+    _show, out = built
     root = Workspace.load(out).root
     functions = _functions(root)
     graph = build_show_graph(root, capabilities_of(root, FixtureLibrary.load()))

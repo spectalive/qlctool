@@ -24,10 +24,10 @@ def desk_burst_errors(
     if button.action != "Toggle" or button.page != PAGE_CONTROL or button.solo is not None:
         errors.append(Phrase("desk_burst_needs_toggle"))
     if button.function is None:
-        return errors + [Phrase("desk_burst_not_a_chaser")]
+        return [*errors, Phrase("desk_burst_not_a_chaser")]
     chaser = graph.functions.get(button.function)
     if chaser is None or graph.kind(button.function) != "Chaser":
-        return errors + [Phrase("desk_burst_not_a_chaser")]
+        return [*errors, Phrase("desk_burst_not_a_chaser")]
     for tag, expected in (("RunOrder", "SingleShot"), ("Direction", "Forward")):
         element = find_local(chaser, tag)
         if element is None or element.text != expected:
@@ -47,7 +47,7 @@ def desk_burst_errors(
         errors.append(Phrase("desk_burst_time_clock"))
     steps = findall_local(chaser, "Step")
     if len(steps) != 1:
-        return errors + [Phrase("desk_burst_one_step")]
+        return [*errors, Phrase("desk_burst_one_step")]
     step = steps[0]
     if duration <= 0 or any(
         step.get(k) != v
@@ -62,7 +62,7 @@ def desk_burst_errors(
     try:
         scene_id = int(step.text or "")
     except ValueError:
-        return errors + [Phrase("desk_burst_step_no_scene")]
+        return [*errors, Phrase("desk_burst_step_no_scene")]
     scene = graph.functions.get(scene_id)
     original = graph.functions.get(source.function) if source.function is not None else None
     if (
@@ -72,7 +72,7 @@ def desk_burst_errors(
         or graph.kind(scene_id) != "Scene"
         or graph.kind(source.function) != "Scene"
     ):
-        return errors + [Phrase("desk_burst_scenes")]
+        return [*errors, Phrase("desk_burst_scenes")]
     scene_values = sorted((v.get("ID"), v.text) for v in findall_local(scene, "FixtureVal"))
     original_values = sorted((v.get("ID"), v.text) for v in findall_local(original, "FixtureVal"))
     if scene_id == source.function or scene_values != original_values:
