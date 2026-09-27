@@ -16,28 +16,30 @@ pixels of a group and can say nothing about a fixture that has none, so it is
 not asked to.
 """
 
-from .. import roles
-from .color_roles import COLOUR
+from .colours_any import colours_any
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit, reach
+from .is_wheel_coloured import is_wheel_coloured
+from .show_graph import ShowGraph, reach
 
 RULE_ID = "wheel_colour"
 STATES_COLOUR = ("Scene", "Sequence")
 
 
-def check_wheel_colour(graph: ShowGraph, groups, entries: dict[int, str]) -> list[Finding]:
+def check_wheel_colour(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], entries: dict[int, str]
+) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, caption in sorted(entries.items()):
         stated = reach(graph, groups, function_id, kinds=STATES_COLOUR)
         everything = reach(graph, groups, function_id)
         missed: set[str] = set()
         for members in groups.values():
-            if not _colours_any(graph, stated, members):
+            if not colours_any(graph, stated, members):
                 continue
             missed |= {
                 graph.capabilities[fixture_id].fixture.name
                 for fixture_id in members
-                if _is_wheel_coloured(graph, fixture_id) and not everything.get(fixture_id)
+                if is_wheel_coloured(graph, fixture_id) and not everything.get(fixture_id)
             }
         if missed:
             findings.append(
@@ -51,24 +53,3 @@ def check_wheel_colour(graph: ShowGraph, groups, entries: dict[int, str]) -> lis
                 )
             )
     return findings
-
-
-def _is_wheel_coloured(graph: ShowGraph, fixture_id: int) -> bool:
-    capability = graph.capabilities.get(fixture_id)
-    if capability is None or capability.is_smoke:
-        return False
-    if any(capability.has_role(r) for r in (roles.RED, roles.GREEN, roles.BLUE)):
-        return False
-    return capability.wheel_for_role(roles.COLOR_MACRO) is not None
-
-
-def _colours_any(graph: ShowGraph, stated, members) -> bool:
-    for fixture_id in members:
-        capability = graph.capabilities.get(fixture_id)
-        written = stated.get(fixture_id)
-        if capability is None or not written:
-            continue
-        offsets = {o for role in COLOUR for o in capability.offsets_for_role(role)}
-        if any(lit(written[o]) for o in offsets if o in written):
-            return True
-    return False
