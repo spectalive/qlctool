@@ -19,14 +19,13 @@ dark. The honest strobe on a lit room is a held scene on the shutters.
 
 from lxml import etree
 
-from .. import roles
+from .all_dark_and_htp import all_dark_and_htp
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
-from .show_graph import ShowGraph, lit, reach
+from .show_graph import ShowGraph
 from .strobe_shape import strobe_flash_rate
 
 RULE_ID = "strobe_black"
-INTENSITY_GROUP = "Intensity"
 
 
 def check_strobe_black(
@@ -46,7 +45,7 @@ def check_strobe_black(
             dark_steps = [
                 step
                 for step in graph.members.get(function_id, ())
-                if _all_dark_and_htp(graph, groups, step)
+                if all_dark_and_htp(graph, groups, step)
             ]
             if not dark_steps:
                 continue
@@ -61,26 +60,3 @@ def check_strobe_black(
                 )
             )
     return findings
-
-
-def _all_dark_and_htp(graph: ShowGraph, groups: dict[int, tuple[int, ...]], step_id: int) -> bool:
-    """A step whose only claim to darkness is zeros on Intensity channels.
-
-    A shutter or strobe channel written is a way to go dark that HTP cannot
-    veto, so a step that drives one is not this shape. Any other LTP channel
-    it parks (a panel's mode, say) darkens nothing and is ignored.
-    """
-    wrote = False
-    for fixture_id, written in reach(graph, groups, step_id).items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None:
-            continue
-        for offset, value in written.items():
-            if capability.roles_by_offset[offset] == roles.STROBE:
-                return False
-            if capability.groups_by_offset[offset] != INTENSITY_GROUP:
-                continue
-            if lit(value):
-                return False
-            wrote = True
-    return wrote
