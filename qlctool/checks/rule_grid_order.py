@@ -35,8 +35,9 @@ from lxml import etree
 from ..fixture_group import fixture_groups
 from ..stage_x_positions import stage_x_positions
 from .finding import WARNING, Finding
+from .group_rows import group_rows
 from .joined import Joined
-from .phrase import Phrase
+from .row_jump import row_jump
 
 RULE_ID = "grid_order"
 
@@ -47,7 +48,7 @@ def check_grid_order(root: etree._Element) -> list[Finding]:
         return []
     findings: list[Finding] = []
     for group in fixture_groups(root):
-        for y, row in sorted(_rows(root, group.group_id).items()):
+        for y, row in sorted(group_rows(root, group.group_id).items()):
             # An unplaced fixture sorts after every placed one, which is what
             # `--group-sort` does with it, so the same key answers both
             # questions: is the row in stage order, and are the spares last.
@@ -67,35 +68,10 @@ def check_grid_order(root: etree._Element) -> list[Finding]:
                     fields={
                         "row": y,
                         "count": len(out),
-                        "jumps": Joined(tuple(_jump(a, b) for a, b in out[:3]), ", "),
+                        "jumps": Joined(tuple(row_jump(a, b) for a, b in out[:3]), ", "),
                         "more": ", ..." if len(out) > 3 else "",
                         "group": group.group_id,
                     },
                 )
             )
     return findings
-
-
-def _jump(before: tuple[bool, float], after: tuple[bool, float]) -> Joined:
-    """One step of the row, with the not-rigged fixtures named as such."""
-    return Joined((_where(before), _where(after)), "->")
-
-
-def _where(key: tuple[bool, float]) -> Phrase | str:
-    return Phrase("grid_order_not_rigged") if key[0] else f"{key[1]:.0f} mm"
-
-
-def _rows(root: etree._Element, group_id: int) -> dict[int, list[tuple[int, int]]]:
-    rows: dict[int, list[tuple[int, int]]] = {}
-    for group in root.iter():
-        if group.tag.rpartition("}")[2] != "FixtureGroup":
-            continue
-        if group.attrib.get("ID") != str(group_id):
-            continue
-        for head in group:
-            if head.tag.rpartition("}")[2] != "Head":
-                continue
-            rows.setdefault(int(head.attrib["Y"]), []).append(
-                (int(head.attrib["X"]), int(head.attrib["Fixture"]))
-            )
-    return rows
