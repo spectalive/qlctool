@@ -181,6 +181,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/room_states.py",
     "generate/hits.py",
     "generate/panic.py",
+    "generate/haze_row.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
