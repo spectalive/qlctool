@@ -40,14 +40,17 @@ it as a pulse.
 
 from lxml import etree
 
-from .. import roles
-from ..xmlutil import find_local, findall_local, iter_local
+from ..xmlutil import find_local, iter_local
+from .chaser_longest_hold import chaser_longest_hold
+from .dialled_functions import dialled_functions
+from .efx_fixture_names import efx_fixture_names
+from .efx_sweeps_dimmer import efx_sweeps_dimmer
 from .finding import ERROR, Finding
+from .pulsed_dimmer_fixtures import pulsed_dimmer_fixtures
 from .show_graph import ShowGraph
+from .tempo_type_is_beats import tempo_type_is_beats
 
 RULE_ID = "untempoed_rhythm"
-EFX_DIMMER_MODE = "1"  # EFXFixture::Mode - PanTilt, Dimmer, RGB
-BEATS = "Beats"  # Function::TempoType
 # Longest step a room still reads as a beat rather than as a section. Two bars
 # at 60 BPM; the dimmer sweeps sit far below it and the energy cycle far above.
 BEAT_CEILING_MS = 8000
@@ -62,7 +65,7 @@ def check_untempoed_rhythm(
     console = find_local(root, "VirtualConsole")
     if console is None or not list(iter_local(console, "SpeedDial")):
         return []
-    dialled = _dialled_functions(root)
+    dialled = dialled_functions(root)
     findings: list[Finding] = []
     reported: set[int] = set()
     for function_id, caption in sorted(entries.items()):
@@ -70,17 +73,17 @@ def check_untempoed_rhythm(
             if member in reported or member in dialled:
                 continue
             function = graph.functions.get(member)
-            if function is None or _on_beats(function):
+            if function is None or tempo_type_is_beats(function):
                 continue
             kind = function.attrib.get("Type")
             if kind == "EFX":
-                if not _sweeps_dimmer(function):
+                if not efx_sweeps_dimmer(function):
                     continue
-                pulsed = _efx_fixtures(graph, groups, member)
+                pulsed = efx_fixture_names(graph, groups, member)
             elif kind == "Chaser":
-                if _longest_hold(function) > BEAT_CEILING_MS:
+                if chaser_longest_hold(function) > BEAT_CEILING_MS:
                     continue
-                pulsed = _pulsed_fixtures(graph, groups, member)
+                pulsed = pulsed_dimmer_fixtures(graph, groups, member)
             else:
                 continue
             if not pulsed:
@@ -97,73 +100,3 @@ def check_untempoed_rhythm(
                 )
             )
     return findings
-
-
-def _on_beats(function: etree._Element) -> bool:
-    """Whether this function already counts in beats of the show's own BPM."""
-    tempo = find_local(function, "Tempo")
-    return tempo is not None and tempo.attrib.get("Type") == BEATS
-
-
-def _sweeps_dimmer(function: etree._Element) -> bool:
-    """An EFX running any of its fixtures in Dimmer mode."""
-    for fixture in iter_local(function, "Fixture"):
-        mode = find_local(fixture, "Mode")
-        if mode is not None and (mode.text or "").strip() == EFX_DIMMER_MODE:
-            return True
-    return False
-
-
-def _efx_fixtures(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int
-) -> set[str]:
-    function = graph.functions[function_id]
-    return {
-        graph.capabilities[fixture_id].fixture.name
-        for fixture_id in graph.driven_of(function, groups)
-        if fixture_id in graph.capabilities
-    }
-
-
-def _longest_hold(function: etree._Element) -> int:
-    """The longest a step of this chaser holds, in milliseconds."""
-    holds = [int(step.attrib.get("Hold", 0) or 0) for step in findall_local(function, "Step")]
-    return max(holds, default=0)
-
-
-def _dialled_functions(root: etree._Element) -> set[int]:
-    """Function ids some speed dial can re-time, and that can answer one."""
-    console = find_local(root, "VirtualConsole")
-    if console is None:
-        return set()
-    dialled: set[int] = set()
-    for dial in iter_local(console, "SpeedDial"):
-        for function in findall_local(dial, "Function"):
-            text = (function.text or "").strip()
-            if text.isdigit():
-                dialled.add(int(text))
-    return dialled
-
-
-def _pulsed_fixtures(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], chaser_id: int
-) -> set[str]:
-    """The fixtures whose dimmer this chaser's steps put at different levels."""
-    levels: dict[int, set[int | None]] = {}
-    for step in graph.members.get(chaser_id, ()):
-        for leaf in graph.descendants(step):
-            function = graph.functions.get(leaf)
-            if function is None:
-                continue
-            for fixture_id, pairs in graph.driven_of(function, groups).items():
-                capability = graph.capabilities.get(fixture_id)
-                if capability is None:
-                    continue
-                for offset in capability.offsets_for_role(roles.DIMMER):
-                    if offset in pairs:
-                        levels.setdefault(fixture_id, set()).add(pairs[offset])
-    return {
-        graph.capabilities[fixture_id].fixture.name
-        for fixture_id, seen in levels.items()
-        if len(seen) > 1
-    }
