@@ -25,11 +25,11 @@ fast or slow.
 
 from lxml import etree
 
-from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, iter_local
-from .audio_pressed_widgets import audio_pressed_widgets
+from ..xmlutil import find_local
 from .finding import ERROR, Finding
+from .hand_flash_scenes import hand_flash_scenes
 from .show_graph import ShowGraph
+from .speed_fraction import speed_fraction
 from .strobe_written import strobe_capable_offsets
 from .value_strobes import value_strobes
 
@@ -46,10 +46,10 @@ FAST_FLASH_FRACTION = 0.93
 # floor sits between them with margin to both.
 CRAWL_FLASH_FRACTION = 0.7
 
-FAST_TO_SLOW_PRESET = "StrobeFastToSlow"
 
-
-def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Finding]:
+def check_flash_speed(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element
+) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []
@@ -57,7 +57,7 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
     best: dict[tuple[int, int], tuple[float, str]] = {}
     # scene -> the writes that sit below the crawl line, fast flash or not.
     crawl_by_scene: dict[str, list[tuple[int, float]]] = {}
-    for function_id in _hand_flash_scenes(graph, console):
+    for function_id in hand_flash_scenes(graph, console):
         scene = graph.functions[function_id]
         for fixture_id, written in graph.driven_of(scene, groups).items():
             capability = graph.capabilities.get(fixture_id)
@@ -67,7 +67,7 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
                 value = written.get(offset)
                 if value is None or not value_strobes(strobing, value):
                     continue
-                fraction = _speed_fraction(strobing, value)
+                fraction = speed_fraction(strobing, value)
                 key = (fixture_id, offset)
                 if key not in best or fraction > best[key][0]:
                     best[key] = (fraction, graph.name(function_id))
@@ -117,39 +117,3 @@ def check_flash_speed(graph: ShowGraph, groups, root: etree._Element) -> list[Fi
             )
         )
     return findings
-
-
-def _hand_flash_scenes(graph: ShowGraph, console: etree._Element):
-    """Scenes behind Flash buttons a finger presses, not an audio bar."""
-    audio_pressed = audio_pressed_widgets(console)
-    seen: set[int] = set()
-    for button in iter_local(console, "Button"):
-        action = find_local(button, "Action")
-        if action is None or (action.text or "").strip() != "Flash":
-            continue
-        if button.attrib.get("ID", "") in audio_pressed:
-            continue
-        function = find_local(button, "Function")
-        if function is None:
-            continue
-        function_id = int(function.attrib.get("ID", NO_FUNCTION))
-        if function_id == NO_FUNCTION or function_id in seen:
-            continue
-        scene = graph.functions.get(function_id)
-        if scene is None or scene.attrib.get("Type") != "Scene":
-            continue  # rule_flash_scene already reports that wiring
-        seen.add(function_id)
-        yield function_id
-
-
-def _speed_fraction(strobing, value: int) -> float:
-    """Where a strobing value sits on its channel's slow-to-fast run."""
-    if strobing is None:
-        return value / 255
-    span = strobing.maximum - strobing.minimum
-    if span == 0:
-        return 1.0
-    fraction = (value - strobing.minimum) / span
-    if strobing.preset == FAST_TO_SLOW_PRESET:
-        return 1.0 - fraction
-    return fraction
