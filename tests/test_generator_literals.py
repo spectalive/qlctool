@@ -168,6 +168,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/swatch.py",
     "generate/bank_caption.py",
     "generate/mix_caption.py",
+    "generate/after_marker.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

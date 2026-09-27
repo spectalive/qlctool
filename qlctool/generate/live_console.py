@@ -58,6 +58,7 @@ from ..vc.speed_dial import build_speed_dial
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
+from .after_marker import after_marker
 from .bank_caption import bank_caption
 from .bind_pad import bind_pad
 from .console_ids import ConsoleIds
@@ -1048,7 +1049,7 @@ def _page_library(
                     button(
                         matrix_frame,
                         function_id,
-                        _after(names.get(function_id, ""), " - "),
+                        after_marker(names.get(function_id, ""), " - "),
                         x=GAP + column * step,
                         y=HEADER + 24 + row * MATRIX_ROW_HEIGHT,
                         w=step - 6,
@@ -1084,7 +1085,7 @@ def _page_library(
     ]
     cycle_marker = template_affixes(vocabulary, "cycle")[0]
     entries += [
-        (m.chaser_id, _after(names.get(m.chaser_id, ""), cycle_marker))
+        (m.chaser_id, after_marker(names.get(m.chaser_id, ""), cycle_marker))
         for m in matrices
         if m.chaser_id is not None
     ]
@@ -1094,7 +1095,7 @@ def _page_library(
         entries.append(
             (
                 builtins.chaser_id,
-                _after(names.get(builtins.chaser_id, ""), cycle_marker),
+                after_marker(names.get(builtins.chaser_id, ""), cycle_marker),
             )
         )
     for index, (function_id, caption) in enumerate(entries):
@@ -1127,7 +1128,7 @@ def _page_library(
             button(
                 panels,
                 function_id,
-                _after(names.get(function_id, ""), " - "),
+                after_marker(names.get(function_id, ""), " - "),
                 x=GAP + column * 51,
                 y=HEADER + row * 52,
                 w=47,
@@ -1260,7 +1261,7 @@ def _wheel_frame(
     step = (width - GAP * 2) // columns
     for index, function_id in enumerate(scene_ids):
         column, row = index % columns, index // columns
-        caption = _after(names.get(function_id, ""), marker)
+        caption = after_marker(names.get(function_id, ""), marker)
         long_name = LONG_WHEEL_NAME.get(caption)
         button(
             element,
@@ -1296,11 +1297,6 @@ def _function_names(workspace: Workspace) -> dict[int, str]:
 
 def _first(ids):
     return ids[0] if ids else None
-
-
-def _after(name: str, marker: str) -> str:
-    _, separator, tail = name.partition(marker)
-    return tail if separator else name
 
 
 def _before(name: str, marker: str) -> str:
