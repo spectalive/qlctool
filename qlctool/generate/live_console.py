@@ -30,7 +30,6 @@ rig, which is what turned the room white - impossible to press.
 """
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field
 
 from lxml import etree
 
@@ -117,6 +116,7 @@ from .console_layout import (
     TINY_FONT,
     TITLE_FONT,
 )
+from .generated_console import GeneratedConsole
 from .library_help_lines import library_help_lines
 from .matrices_frame_caption import matrices_frame_caption
 from .page_control_title import page_control_title
@@ -125,13 +125,6 @@ from .play_page import build_play_page
 from .smc_pad_colors import readable_foreground
 from .tempo_close_line import tempo_close_line
 from .tempo_help_line import tempo_help_line
-
-
-@dataclass(frozen=True)
-class GeneratedConsole:
-    frame_ids: list[int] = field(default_factory=list)
-    button_ids: list[int] = field(default_factory=list)
-    widget_ids: list[int] = field(default_factory=list)
 
 
 class _Ids:
