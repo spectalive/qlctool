@@ -13,20 +13,12 @@ from ..names.names import Names
 from .beam_subsets import GeneratedBeamSubsets
 from .builtin_effects import GeneratedBuiltins
 from .console_ids import ConsoleIds
-from .console_layout import (
-    HELP_FONT,
-    LEFT_WIDTH,
-    LEFT_X,
-    LIBRARY_SEPARATOR,
-    OUTER_WIDTH,
-    PAGE_LIBRARY,
-    TITLE_FONT,
-)
+from .console_layout import LEFT_WIDTH, LEFT_X, OUTER_WIDTH, PAGE_LIBRARY, TITLE_FONT
 from .cycles import cycles
 from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
 from .generated_matrices import GeneratedMatrices
-from .library_help_lines import library_help_lines
+from .library_help import library_help
 from .live_matrix import live_matrix
 from .matrix_frame import matrix_frame
 from .mixes import mixes
@@ -97,22 +89,12 @@ def page_library(
 
     live_matrix(outer, ids, console, matrices, matrix_algorithms, vocabulary)
 
-    lines = library_help_lines(
-        bool(builtins.scene_ids),
+    library_help(
+        outer,
+        label,
+        builtins,
         has_panels,
-        has_mixes=any(library_splits),
-        has_matrices=any(generated.matrix_ids for generated in matrices),
+        any(library_splits),
+        any(generated.matrix_ids for generated in matrices),
+        vocabulary,
     )
-    for index, line in enumerate(lines):
-        label(
-            outer,
-            LIBRARY_SEPARATOR
-            if line is None
-            else vocabulary.render(line, count=len(builtins.scene_ids)),
-            LEFT_X,
-            410 + index * 26,
-            LEFT_WIDTH,
-            24,
-            page=PAGE_LIBRARY,
-            font=HELP_FONT,
-        )

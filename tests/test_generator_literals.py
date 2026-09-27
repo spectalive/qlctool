@@ -196,6 +196,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/panels.py",
     "generate/speed_fader.py",
     "generate/live_matrix.py",
+    "generate/library_help.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
