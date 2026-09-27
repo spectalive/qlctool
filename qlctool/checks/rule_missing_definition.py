@@ -16,8 +16,8 @@ is asked of the library, never of a model's name.
 from lxml import etree
 
 from ..definition_outcome_of import definition_outcome_of
-from ..fixture import patched_fixtures
 from ..fixture_library import FixtureLibrary
+from ..patched_fixtures import patched_fixtures
 from .finding import ERROR, Finding
 from .phrase import Phrase
 from .searched_folders_said import searched_folders_said

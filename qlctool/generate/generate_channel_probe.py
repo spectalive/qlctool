@@ -8,10 +8,10 @@ check is "press play and write down what moves" instead of an evening of
 clicking.
 """
 
-from ..fixture import patched_fixtures
 from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..next_function_id import next_function_id
+from ..patched_fixtures import patched_fixtures
 from ..workspace import Workspace
 from .generated_probe import GeneratedProbe
 

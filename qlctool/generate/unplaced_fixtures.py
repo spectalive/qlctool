@@ -5,7 +5,7 @@ QLC+ draws these at the origin, on top of each other.
 
 from ..find_local import find_local
 from ..findall_local import findall_local
-from ..fixture import patched_fixtures
+from ..patched_fixtures import patched_fixtures
 from ..workspace import Workspace
 
 

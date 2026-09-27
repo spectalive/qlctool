@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from lxml import etree
 
 from .find_local import find_local
-from .iter_local import iter_local
+from .text_of import text_of
 
 
 @dataclass(frozen=True)
@@ -28,31 +28,12 @@ class PatchedFixture:
     @classmethod
     def from_element(cls, element: etree._Element) -> "PatchedFixture":
         return cls(
-            fixture_id=int(_text(find_local(element, "ID"))),
-            manufacturer=_text(find_local(element, "Manufacturer")),
-            model=_text(find_local(element, "Model")),
-            mode=_text(find_local(element, "Mode")),
-            universe=int(_text(find_local(element, "Universe")) or "0"),
-            address=int(_text(find_local(element, "Address")) or "0"),
-            channels=int(_text(find_local(element, "Channels")) or "0"),
-            name=_text(find_local(element, "Name")),
+            fixture_id=int(text_of(find_local(element, "ID"))),
+            manufacturer=text_of(find_local(element, "Manufacturer")),
+            model=text_of(find_local(element, "Model")),
+            mode=text_of(find_local(element, "Mode")),
+            universe=int(text_of(find_local(element, "Universe")) or "0"),
+            address=int(text_of(find_local(element, "Address")) or "0"),
+            channels=int(text_of(find_local(element, "Channels")) or "0"),
+            name=text_of(find_local(element, "Name")),
         )
-
-
-def patched_fixtures(root: etree._Element) -> list[PatchedFixture]:
-    """All patched fixtures in a workspace, in document order.
-
-    Filters to <Fixture> nodes that carry a <Channels> child, so the fixture-ID
-    references QLC+ writes inside scenes and groups are not mistaken for patched
-    fixtures.
-    """
-    result = []
-    for element in iter_local(root, "Fixture"):
-        if find_local(element, "Channels") is None:
-            continue
-        result.append(PatchedFixture.from_element(element))
-    return result
-
-
-def _text(element: etree._Element | None) -> str:
-    return (element.text or "").strip() if element is not None else ""

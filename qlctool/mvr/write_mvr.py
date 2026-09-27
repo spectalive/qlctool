@@ -16,8 +16,8 @@ from pathlib import Path
 
 import pymvr
 
-from ..fixture import patched_fixtures
 from ..fixture_library import FixtureLibrary
+from ..patched_fixtures import patched_fixtures
 from ..workspace import Workspace
 from .gdtf_file_name import gdtf_file_name
 from .gdtf_name import gdtf_name

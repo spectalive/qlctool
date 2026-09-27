@@ -16,8 +16,8 @@ from pathlib import Path
 
 from lxml import etree
 
-from .fixture import patched_fixtures
 from .monitor_node import MonitorItem, PropItem
+from .patched_fixtures import patched_fixtures
 
 
 @dataclass(frozen=True)

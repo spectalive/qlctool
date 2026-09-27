@@ -9,9 +9,9 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool import roles
-from qlctool.fixture import patched_fixtures
 from qlctool.fixture_capabilities import FixtureCapabilities
 from qlctool.fixture_library import FixtureLibrary
+from qlctool.patched_fixtures import patched_fixtures
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT

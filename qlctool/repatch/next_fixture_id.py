@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..fixture import patched_fixtures
+from ..patched_fixtures import patched_fixtures
 
 
 def next_fixture_id(root: etree._Element) -> int:

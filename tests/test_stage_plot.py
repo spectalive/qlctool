@@ -13,10 +13,10 @@ from rig_root import RIG_ROOT
 
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
-from qlctool.fixture import patched_fixtures
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.apply_stage_plot import apply_stage_plot
 from qlctool.monitor_node import POINTS_OF_VIEW
+from qlctool.patched_fixtures import patched_fixtures
 from qlctool.stage_plot import load_stage_plot
 from qlctool.workspace import Workspace
 

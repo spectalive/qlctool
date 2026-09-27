@@ -11,7 +11,7 @@ from lxml import etree
 from ..constants import QLC_NS
 from ..find_local import find_local
 from ..findall_local import findall_local
-from ..fixture import patched_fixtures
+from ..patched_fixtures import patched_fixtures
 from .group_of import group_of
 
 

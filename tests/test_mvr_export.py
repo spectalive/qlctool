@@ -24,7 +24,6 @@ from rig_root import RIG_ROOT
 
 from qlctool.channel import Channel
 from qlctool.dimensions import Dimensions
-from qlctool.fixture import patched_fixtures
 from qlctool.fixture_definition import FixtureDefinition
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.monitor_node import MonitorItem
@@ -38,6 +37,7 @@ from qlctool.mvr.monitor_items import monitor_items
 from qlctool.mvr.mvr_matrix import mvr_matrix
 from qlctool.mvr.write_gdtf import write_gdtf
 from qlctool.mvr.write_mvr import write_mvr
+from qlctool.patched_fixtures import patched_fixtures
 from qlctool.role_of import role_of
 from qlctool.workspace import Workspace
 

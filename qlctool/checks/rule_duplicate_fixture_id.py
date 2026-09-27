@@ -14,7 +14,7 @@ that share it.
 
 from lxml import etree
 
-from ..fixture import patched_fixtures
+from ..patched_fixtures import patched_fixtures
 from .finding import ERROR, Finding
 
 RULE_ID = "duplicate_fixture_id"

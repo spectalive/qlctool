@@ -14,8 +14,8 @@ does is the point of this repo.
 from lxml import etree
 
 from .find_local import find_local
-from .fixture import patched_fixtures
 from .iter_local import iter_local
+from .patched_fixtures import patched_fixtures
 
 GENERIC_UID = "None"
 OUTPUT_PLUGIN = "DMX USB"

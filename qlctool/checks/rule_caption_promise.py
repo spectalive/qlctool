@@ -29,7 +29,7 @@ an ID are one entry in the graph and silenced the rule (round G review).
 from lxml import etree
 
 from ..find_local import find_local
-from ..fixture import patched_fixtures
+from ..patched_fixtures import patched_fixtures
 from .caption_promises import CAPTION_PROMISES
 from .finding import ERROR, Finding
 from .joined import Joined
