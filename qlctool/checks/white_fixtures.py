@@ -4,7 +4,7 @@ White by RGB, white by wheel detent, or white by a matrix painting its group
 pure white - the three ways the file can say it.
 """
 
-from ..argb import rgb_from_argb
+from ..rgb_from_argb import rgb_from_argb
 from .detent_white import detent_white
 from .matrix_colour import matrix_colour
 from .rgb_white import rgb_white

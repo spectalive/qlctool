@@ -36,18 +36,3 @@ def cmd_deskmap(args: argparse.Namespace) -> int:
         parts = ", ".join(f"{s['key']} {len(s['controls'])}" for s in page["sections"])
         print(f"  {page['key']}: {parts}")
     return 0
-
-
-def add_deskmap_parser(sub: "argparse._SubParsersAction[argparse.ArgumentParser]") -> None:
-    parser = sub.add_parser(
-        "deskmap",
-        help="write the tablet desk's map: pages, controls, swatches and dials from the saved show",
-    )
-    parser.add_argument("workspace")
-    parser.add_argument("--out", required=True, help="the JSON file to write")
-    parser.add_argument(
-        "--description",
-        help="the show description whose language and names the map uses "
-        "(default: the language the workspace was generated in)",
-    )
-    parser.set_defaults(func=cmd_deskmap)

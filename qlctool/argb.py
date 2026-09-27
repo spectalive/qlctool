@@ -15,8 +15,3 @@ def argb_from_rgb(rgb: RGB) -> int:
     """Return the opaque 32-bit ARGB int QLC+ writes for this colour."""
     red, green, blue = rgb
     return OPAQUE_ALPHA | (red << 16) | (green << 8) | blue
-
-
-def rgb_from_argb(value: int) -> RGB:
-    """Inverse of argb_from_rgb; the alpha byte is discarded."""
-    return ((value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF)

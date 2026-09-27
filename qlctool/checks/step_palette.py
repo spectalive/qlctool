@@ -7,7 +7,7 @@ seventeen colours, so a beam on "the nearest position" is never the same
 value as the wash beside it even when it is the same colour.
 """
 
-from ..argb import rgb_from_argb
+from ..rgb_from_argb import rgb_from_argb
 from .fixture_colour import fixture_colour
 from .matrix_colour import matrix_colour
 from .show_graph import ShowGraph

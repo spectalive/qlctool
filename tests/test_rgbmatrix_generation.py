@@ -9,7 +9,7 @@ generator injects the cross-product without touching anything that was there.
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.argb import argb_from_rgb, rgb_from_argb
+from qlctool.argb import argb_from_rgb
 from qlctool.color_format_of import INDEXED, LEGACY, color_format_of
 from qlctool.constants import ALL_FIXTURES_GROUP
 from qlctool.curated_script import CuratedScript
@@ -23,6 +23,7 @@ from qlctool.ids import existing_function_ids
 from qlctool.iter_local import iter_local
 from qlctool.matrix_step_count import matrix_step_count
 from qlctool.palette import PALETTE
+from qlctool.rgb_from_argb import rgb_from_argb
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT
