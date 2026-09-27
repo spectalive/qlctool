@@ -20,21 +20,21 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 from .. import roles
-from ..capability import FixtureCapabilities
-from ..color_wheel_match import WHEEL_NAMES
-from ..fog_off import fog_off_pairs
+from ..color_wheel_pairs import WHEEL_NAMES
+from ..fixture_capabilities import FixtureCapabilities
+from ..fog_off_pairs import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..mode_park import mode_park_pairs
+from ..mode_park_pairs import mode_park_pairs
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..outside_color_looks import outside_color_looks
 from ..shutter_open import shutter_open_pairs
-from ..stepped_dimmer import stepped_dimmer_offsets
-from ..strobe_off import strobe_off_pairs
+from ..stepped_dimmer_offsets import stepped_dimmer_offsets
+from ..strobe_off_pairs import strobe_off_pairs
 from ..wheel_blade_offsets import wheel_blade_offsets
 from ..workspace import Workspace
-from ..zoom_wide import zoom_wide_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 
 # The quiet level's dimmer: visibly down from full, nowhere near dark. A first
 # guess for the venue, like the level holds themselves. It reaches every dimmer
@@ -103,7 +103,7 @@ def _scene(
             continue
         # The pump is owned at zero by whatever is running, on every machine
         # including the fog-only ones: a Flash restores nothing on release, and
-        # on a pump that is the tank (`fog_off`).
+        # on a pump that is the tank (`fog_off_pairs`).
         if capability.is_smoke:
             off = fog_off_pairs(capability)
             if off:
@@ -114,7 +114,7 @@ def _scene(
             continue
         # A blade dimmer has no fraction to give: between the ends it covers
         # part of the lens instead of dimming, and the quiet level held that
-        # for four minutes (`stepped_dimmer`). It joins the level at full and
+        # for four minutes (`stepped_dimmer_offsets`). It joins the level at full and
         # takes its darkness from the shutter, like the MiN Wash does.
         stepped = set(stepped_dimmer_offsets(capability))
         # A lit smoke machine's LED sits behind its own nozzle and does not

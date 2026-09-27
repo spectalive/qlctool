@@ -20,7 +20,7 @@ and somebody presses it off - or a room state replaces it - when it is over.
 
 from collections.abc import Sequence
 
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..functions.build_chaser import build_chaser
 from ..ids import next_function_id
 from ..names.default_names import default_names

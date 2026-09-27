@@ -13,10 +13,10 @@ from rig_root import RIG_ROOT
 
 from qlctool.capabilities_of import capabilities_of
 from qlctool.cli import main
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate import generate_vertical_smoke_light
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.generate.builtin_effects import generate_builtin_effects
-from qlctool.library import FixtureLibrary
 from qlctool.vibra.keys import KEYS
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local

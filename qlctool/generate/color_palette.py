@@ -9,10 +9,10 @@ Returns the created scene IDs and the chaser ID (or None).
 from dataclasses import dataclass
 
 from ..capabilities_of import capabilities_of
+from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..library import FixtureLibrary
 from ..palette import PALETTE
 from ..workspace import Workspace
 from .color_scene_values import color_scene_values

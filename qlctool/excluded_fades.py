@@ -1,6 +1,6 @@
 """Read back which channels each fixture tells QLC+ not to fade.
 
-The check side of `exclude_fade`: fixture id -> the offsets listed in that
+The check side of `pin_wheel_fades`: fixture id -> the offsets listed in that
 fixture's `<ExcludeFade>`, empty for a fixture that carries none. A scene may
 fade a wheel only if the wheel is in here.
 """

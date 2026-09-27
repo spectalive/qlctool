@@ -13,7 +13,7 @@ from pathlib import Path
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.rule_split_complementary import RULE_ID
 from qlctool.cli import main
-from qlctool.library import FixtureLibrary
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.workspace import Workspace
 
 EMPTY = Path(__file__).resolve().parent / "data" / "empty-workspace.qxw"

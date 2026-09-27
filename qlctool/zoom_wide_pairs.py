@@ -16,7 +16,7 @@ module exists to prevent.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 # Capability preset -> the end of that range that is the WIDE beam.
 WIDE_END = {"SmallToBig": "maximum", "BigToSmall": "minimum"}

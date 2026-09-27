@@ -13,7 +13,8 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.cli import main
-from qlctool.library import FixtureLibrary
+from qlctool.fixture_library import FixtureLibrary
+from qlctool.role_of import role_of
 from qlctool.workspace import Workspace
 
 VIBRA = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
@@ -31,8 +32,8 @@ def test_2026_09_25_panels_without_a_smoke_machine_promise_no_haze(tmp_path):
 
 
 def test_2026_09_25_a_pump_named_haze_is_a_smoke_channel():
-    assert roles.role_of(None, "Effect", "Haze") == roles.SMOKE
-    assert roles.role_of(None, "Intensity", "Hazer output") == roles.SMOKE
+    assert role_of(None, "Effect", "Haze") == roles.SMOKE
+    assert role_of(None, "Intensity", "Hazer output") == roles.SMOKE
 
 
 def test_2026_09_25_a_hazer_typed_fixture_is_a_smoke_machine():

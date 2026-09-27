@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from ...matrix_algorithms import CuratedScript
+from ...curated_script import CuratedScript
 from ...names.names import Names
 from .named import named
 from .reject_unknown_keys import reject_unknown_keys

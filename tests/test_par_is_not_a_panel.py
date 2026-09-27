@@ -16,10 +16,10 @@ from console_captions import console_captions
 from panel_rig import PANEL_FILE, build_panel_patch
 from rig_root import RIG_ROOT
 
-from qlctool.capability import FixtureCapabilities
 from qlctool.cli import main
 from qlctool.definition import Dimensions, load_definition
 from qlctool.fixture import PatchedFixture
+from qlctool.fixture_capabilities import FixtureCapabilities
 from qlctool.is_panel import is_panel
 from qlctool.names.default_names import default_names
 

@@ -1,7 +1,7 @@
 """Whether a fixture is a panel: a flat fixture that runs a programme of its own."""
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 from .has_panel_face import has_panel_face
 from .internal_program import internal_program
 

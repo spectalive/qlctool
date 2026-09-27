@@ -4,7 +4,7 @@ Taking the vertical-smoke light chaser away from a rig without columns must
 not take the columns' light away from a rig with them: the LED half of a lit
 smoke machine joins the room's colour like a floor PAR (`color_scene.py`) and
 its LED master rides the energy levels at full, while every scene that owns
-the room holds its pump at zero (`fog_off.py`). Pinned on the frozen Vibra and
+the room holds its pump at zero (`fog_off_pairs.py`). Pinned on the frozen Vibra and
 on Vibra with its fog-only machine (fixture 17) removed.
 """
 
@@ -13,12 +13,12 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
-from qlctool.capability import FixtureCapabilities
 from qlctool.cli import main
+from qlctool.fixture_capabilities import FixtureCapabilities
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.internal_program import internal_program
-from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import findall_local, iter_local

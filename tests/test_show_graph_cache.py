@@ -11,7 +11,7 @@ from rig_root import RIG_ROOT
 
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.show_graph import build_show_graph
-from qlctool.library import FixtureLibrary
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.workspace import Workspace
 
 

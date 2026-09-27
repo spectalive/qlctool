@@ -2,7 +2,7 @@
 
 from .definition_outcome import DefinitionOutcome
 from .fixture import PatchedFixture
-from .library import FixtureLibrary
+from .fixture_library import FixtureLibrary
 
 
 def definition_outcome_of(fixture: PatchedFixture, library: FixtureLibrary) -> DefinitionOutcome:

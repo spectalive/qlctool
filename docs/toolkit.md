@@ -151,7 +151,7 @@ loads it in QLC+.
 - **One EFX cannot hold two kinds of fixture.** One whose fine channels are
   not adjacent to their coarse ones turns 16-bit off for the *whole* EFX,
   because the flag lives on the EFX's fader rather than on the fixture.
-  `efx_16bit` says which side a fixture falls on, for pan and tilt or for
+  `keeps_16bit` says which side a fixture falls on, for pan and tilt or for
   intensity; movement and the dimmer chase are both generated per group and run
   from a Collection, so the console still sees one function per look.
 - **One answer to "what value opens this shutter".** `shutter_open_pairs` reads

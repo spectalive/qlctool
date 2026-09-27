@@ -2,7 +2,7 @@
 
 from collections.abc import Iterable
 
-from ..matrix_algorithms import CuratedScript
+from ..curated_script import CuratedScript
 
 
 def matrices_by_group(scripts: Iterable[CuratedScript]) -> dict[str, tuple[CuratedScript, ...]]:

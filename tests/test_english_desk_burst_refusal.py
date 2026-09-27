@@ -14,8 +14,8 @@ from rig_root import RIG_ROOT
 from qlctool.build_deskmap import build_deskmap
 from qlctool.desk_burst_buttons import desk_burst_buttons
 from qlctool.desk_burst_sources import desk_burst_sources
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.shipped_names import shipped_names
 from qlctool.vibra.vibra_description import vibra_description

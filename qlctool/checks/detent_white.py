@@ -3,8 +3,8 @@
 from collections.abc import Mapping
 
 from .. import roles
-from ..capability import FixtureCapabilities
-from ..color_wheel_match import WHEEL_NAMES
+from ..color_wheel_pairs import WHEEL_NAMES
+from ..fixture_capabilities import FixtureCapabilities
 
 WHITE_DETENTS = tuple(name.lower() for name in WHEEL_NAMES["white"])
 

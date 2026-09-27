@@ -13,8 +13,8 @@ a definition that grows a wheel is excluded the next time the show is built.
 
 from lxml import etree
 
-from .capability import FixtureCapabilities
 from .constants import QLC_NS
+from .fixture_capabilities import FixtureCapabilities
 from .wheel_fade_offsets import wheel_fade_offsets
 from .xmlutil import find_local, findall_local
 

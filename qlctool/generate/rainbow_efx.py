@@ -17,10 +17,10 @@ from dataclasses import dataclass
 
 from .. import roles
 from ..capabilities_of import capabilities_of
+from ..fixture_library import FixtureLibrary
 from ..functions.efx import EFXAxis, EFXFixture, build_efx
 from ..ids import next_function_id
 from ..internal_program import internal_program
-from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace

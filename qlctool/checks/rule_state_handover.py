@@ -18,7 +18,7 @@ next state, whose business it then is.
 """
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from .color_roles import COLOUR
 from .driven_channels import Driven
 from .finding import ERROR, Finding

@@ -14,8 +14,8 @@ seat for each of them, and every wheel ends up on a real detent.
 
 from collections.abc import Sequence
 
-from ..capability import FixtureCapabilities
-from ..color_wheel_match import color_wheel_pairs
+from ..color_wheel_pairs import color_wheel_pairs
+from ..fixture_capabilities import FixtureCapabilities
 from ..names.names import Names
 
 

@@ -28,13 +28,13 @@ shutters going for a while.
 from dataclasses import dataclass
 
 from ..capabilities_of import capabilities_of
+from ..fixture_library import FixtureLibrary
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
-from ..strobe_speed import strobe_speed_pairs
+from ..strobe_speed_pairs import strobe_speed_pairs
 from ..workspace import Workspace
 
 # Where the held strobes sit on each channel's slow-to-fast run: the same two

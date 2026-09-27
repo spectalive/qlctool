@@ -3,7 +3,7 @@
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 
-from ..matrix_algorithms import CuratedScript
+from ..curated_script import CuratedScript
 from .colour_settings import ColourSettings
 from .console_settings import ConsoleSettings
 from .controller_settings import ControllerSettings

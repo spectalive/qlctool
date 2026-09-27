@@ -18,7 +18,7 @@ is caught by it.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 
 def stepped_dimmer_offsets(capability: FixtureCapabilities) -> list[int]:

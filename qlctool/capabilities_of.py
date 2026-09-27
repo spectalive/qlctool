@@ -9,9 +9,9 @@ must not guess at them.
 
 from lxml import etree
 
-from .capability import FixtureCapabilities
 from .fixture import patched_fixtures
-from .library import FixtureLibrary
+from .fixture_capabilities import FixtureCapabilities
+from .fixture_library import FixtureLibrary
 from .resolved_definition import resolved_definition
 
 

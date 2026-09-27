@@ -7,7 +7,7 @@ copies only carried four of them - stacks all 27 fixtures on the same spot, and
 both views come out unreadable.
 
 This writes the whole node: a stage big enough for the rig, an explicit point of
-view, and a row per band (see `stage_band`) with the fixtures of that band spread
+view, and a row per band (see `band_of`) with the fixtures of that band spread
 evenly across the stage width. It is a starting plot, not a survey - the rig has
 never been measured - so the numbers are deliberately round and easy to drag
 somewhere better in QLC+.
@@ -19,11 +19,11 @@ which silently rewrites a layout that was already right.
 
 from dataclasses import dataclass
 
+from ..band_of import BANDS, PARS, band_of
 from ..capabilities_of import capabilities_of
 from ..fixture import patched_fixtures
-from ..library import FixtureLibrary
+from ..fixture_library import FixtureLibrary
 from ..monitor_node import MonitorItem, write_monitor
-from ..stage_band import BANDS, PARS, band_of
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
 

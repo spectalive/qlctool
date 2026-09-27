@@ -2,7 +2,7 @@
 
 from collections.abc import Iterable
 
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 
 
 def rig_has_role(capabilities: Iterable[FixtureCapabilities], role: str) -> bool:

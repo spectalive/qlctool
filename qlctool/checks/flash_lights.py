@@ -13,7 +13,7 @@ A lit smoke machine is judged by its LEDs' colour and dimmer
 from collections.abc import Mapping
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from .raises_light import raises_light
 from .smoke_column_lit import smoke_column_lit
 from .strobe_written import strobe_capable_offsets, value_strobes

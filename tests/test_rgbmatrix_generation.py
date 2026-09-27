@@ -10,13 +10,13 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.argb import argb_from_rgb, rgb_from_argb
-from qlctool.color_format import INDEXED, LEGACY, color_format_of
+from qlctool.color_format_of import INDEXED, LEGACY, color_format_of
 from qlctool.constants import ALL_FIXTURES_GROUP
+from qlctool.curated_script import CuratedScript
 from qlctool.fixture_group import fixture_groups
 from qlctool.functions.build_rgbmatrix import build_rgbmatrix
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
 from qlctool.ids import existing_function_ids
-from qlctool.matrix_algorithms import CuratedScript
 from qlctool.matrix_step_count import matrix_step_count
 from qlctool.palette import PALETTE
 from qlctool.workspace import Workspace

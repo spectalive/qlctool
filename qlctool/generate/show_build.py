@@ -15,10 +15,10 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 from ..argb import RGB
-from ..capability import FixtureCapabilities
 from ..controllers.midi_pad_profile import MidiPadProfile
 from ..description.show_description import ShowDescription
-from ..library import FixtureLibrary
+from ..fixture_capabilities import FixtureCapabilities
+from ..fixture_library import FixtureLibrary
 from ..names.names import Names
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace

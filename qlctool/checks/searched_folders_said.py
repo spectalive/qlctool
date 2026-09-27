@@ -1,6 +1,6 @@
 """The folders a library searched, before anyone knows the language to say them in."""
 
-from ..library import FixtureLibrary
+from ..fixture_library import FixtureLibrary
 from .phrase import Phrase
 
 

@@ -5,7 +5,7 @@ from lxml import etree
 from .desk_policy import place, split_caption
 from .desk_widgets import DeskWidget, desk_widgets
 from .names.names import Names
-from .slug import slugify
+from .slugify import slugify
 
 
 def desk_burst_sources(root: etree._Element, names: Names) -> dict[str, DeskWidget]:

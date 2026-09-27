@@ -3,7 +3,7 @@
 from lxml import etree
 
 from .fixture import PatchedFixture, patched_fixtures
-from .library import FixtureLibrary
+from .fixture_library import FixtureLibrary
 from .resolved_definition import resolved_definition
 
 

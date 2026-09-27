@@ -8,7 +8,7 @@ either shape, and it is the only place that question is answered.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 
 def fog_offsets(capability: FixtureCapabilities) -> list[int]:

@@ -4,7 +4,7 @@ Moved verbatim out of `build_canonical_show` (2026-09-26, round G); the
 functions are created in the order they always were.
 """
 
-from ..monitor_positions import house_right_fixture_ids
+from ..house_right_fixture_ids import house_right_fixture_ids
 from .generate_home_position import generate_home_position
 from .generate_stage_aim import generate_stage_aim
 from .movement_families import generate_movement_families

@@ -17,7 +17,7 @@ whose only range spans the whole channel - never by model.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 
 def multicolor_off_pairs(capabilities: FixtureCapabilities) -> list[tuple[int, int]]:

@@ -16,7 +16,7 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.rule_caption_promise import check_caption_promise
 from qlctool.checks.show_graph import build_show_graph
 from qlctool.cli import main
-from qlctool.library import FixtureLibrary
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local

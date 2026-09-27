@@ -3,7 +3,7 @@
 from collections.abc import Sequence
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 
 
 def wheel_only_fixture_ids(caps: Sequence[FixtureCapabilities]) -> list[int]:

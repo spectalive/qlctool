@@ -12,8 +12,8 @@ page-2 duplicate had started.
 
 from rig_root import RIG_ROOT
 
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.library import FixtureLibrary
 from qlctool.names.frame_caption_head import frame_caption_head
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local

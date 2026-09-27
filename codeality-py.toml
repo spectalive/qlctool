@@ -31,6 +31,12 @@ data = [
   "qlctool/smoke_types.py",
   "qlctool/split_pairs.py",
   "qlctool/wheel_palette.py",
+  # Every channel role's string value; role_of.py (split out 2026-09-27) is
+  # the only unit that derives one.
+  "qlctool/roles.py",
+  # The RGB script names QLC+ ships and the curated per-group script recipes;
+  # curated_script.py (split out 2026-09-27) carries the one dataclass.
+  "qlctool/matrix_algorithms.py",
   "qlctool/vibra/timing.py",
   "qlctool/vibra/tuning.py",
   "qlctool/vibra/keys.py",

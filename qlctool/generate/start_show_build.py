@@ -13,11 +13,11 @@ from ..description.localize_description import localize_description
 from ..description.pastel_palette_of import pastel_palette_of
 from ..description.show_description import ShowDescription
 from ..description.wheel_palette_of import wheel_palette_of
-from ..exclude_fade import pin_wheel_fades
-from ..library import FixtureLibrary
-from ..output_binding import pin_generic_output
-from ..skeleton import strip_to_skeleton
+from ..fixture_library import FixtureLibrary
+from ..pin_generic_output import pin_generic_output
+from ..pin_wheel_fades import pin_wheel_fades
 from ..stage_plot import load_stage_plot
+from ..strip_to_skeleton import strip_to_skeleton
 from ..vibra.vibra_description import vibra_description
 from ..workspace import Workspace
 from .apply_stage_plot import apply_stage_plot

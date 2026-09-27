@@ -11,14 +11,14 @@ from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
-from ..efx_16bit import PAN_TILT_PAIRS, keeps_16bit
 from ..efx_algorithms import EFX_ALGORITHMS
 from ..efx_shape_identifiers import EFX_SHAPE_IDENTIFIERS
+from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
 from ..functions.efx import EFXAxis, EFXFixture, build_efx
 from ..ids import next_function_id
-from ..library import FixtureLibrary
+from ..keeps_16bit import PAN_TILT_PAIRS, keeps_16bit
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
@@ -127,7 +127,7 @@ def generate_movement_efx(
 
     # One EFX cannot hold both kinds of mover: a fixture whose fine channels are
     # not adjacent turns 16-bit off for the whole EFX, and the ones that *do*
-    # pair then lose their coarse channels entirely. See `efx_16bit`.
+    # pair then lose their coarse channels entirely. See `keeps_16bit`.
     by_id = {caps.fixture.fixture_id: caps for caps in capabilities_of(workspace.root, library)}
     groups: dict[bool, list[int]] = {True: [], False: []}
     for fid in ids:

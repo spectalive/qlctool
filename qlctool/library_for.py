@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from .fixture_dirs import fixture_dirs
-from .library import FixtureLibrary
+from .fixture_library import FixtureLibrary
 
 
 def library_for(

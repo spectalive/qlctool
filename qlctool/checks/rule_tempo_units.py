@@ -23,7 +23,7 @@ kinds off the graph.
 
 A Collection in the way changes nothing: `Collection::write` starts every member
 with the collection's own override fades (`collection.cpp`), so a Beats chaser
-whose step is a Collection of two EFX - a split figure, `efx_16bit` - hands the
+whose step is a Collection of two EFX - a split figure, `keeps_16bit` - hands the
 number through to both. The rule walks through Collections and stops at any
 function with a clock of its own (2026-09-02, when the wash figures split).
 """

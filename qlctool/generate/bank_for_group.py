@@ -3,7 +3,7 @@
 from collections.abc import Mapping, Sequence
 
 from ..argb import RGB
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..fixture_group import DefinedFixtureGroup
 from ..functions.scene import build_scene
 from ..ids import next_function_id

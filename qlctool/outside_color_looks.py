@@ -20,8 +20,8 @@ The same predicate decides both.
 from collections.abc import Iterable
 
 from . import roles
-from .capability import FixtureCapabilities
-from .color_wheel_match import color_wheel_pairs
+from .color_wheel_pairs import color_wheel_pairs
+from .fixture_capabilities import FixtureCapabilities
 from .names.names import Names
 
 

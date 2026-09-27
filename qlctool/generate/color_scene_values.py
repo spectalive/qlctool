@@ -11,13 +11,13 @@ a colour bank for the heads alone, say.
 from collections.abc import Sequence
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
-from ..mode_park import mode_park_pairs
+from ..mode_park_pairs import mode_park_pairs
 from ..rgbw_split import rgbw_split
 from ..shutter_open import shutter_open_pairs
-from ..strobe_off import strobe_off_pairs
-from ..zoom_wide import zoom_wide_pairs
+from ..strobe_off_pairs import strobe_off_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 
 RGB = tuple[int, int, int]
 

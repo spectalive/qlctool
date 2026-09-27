@@ -17,8 +17,8 @@ from qlctool.desk_burst_buttons import desk_burst_buttons
 from qlctool.desk_burst_identifier import desk_burst_identifier
 from qlctool.desk_burst_sources import desk_burst_sources
 from qlctool.desk_policy import BURST_MS
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.workspace import Workspace
@@ -162,8 +162,8 @@ def test_burst_map_keeps_source_captions_and_swatches(generated, tmp_path):
     workspace, library = generated
     from qlctool.checks.show_graph import group_fixtures
     from qlctool.desk_policy import split_caption
-    from qlctool.desk_swatch import swatches
     from qlctool.leading_glyph import leading_glyph
+    from qlctool.swatches import swatches
 
     path = tmp_path / "show.qxw"
     workspace.save(path)

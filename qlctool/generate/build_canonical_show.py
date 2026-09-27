@@ -17,7 +17,7 @@ function of a thousand lines).
 from collections.abc import Sequence
 
 from ..description.show_description import ShowDescription
-from ..library import FixtureLibrary
+from ..fixture_library import FixtureLibrary
 from ..workspace import Workspace
 from .add_base_looks import add_base_looks
 from .add_colour_wheels import add_colour_wheels

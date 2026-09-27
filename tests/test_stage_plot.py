@@ -12,8 +12,8 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.fixture import patched_fixtures
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.apply_stage_plot import apply_stage_plot
-from qlctool.library import FixtureLibrary
 from qlctool.monitor_node import POINTS_OF_VIEW
 from qlctool.stage_plot import load_stage_plot
 from qlctool.workspace import Workspace

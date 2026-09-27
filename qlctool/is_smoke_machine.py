@@ -10,7 +10,7 @@ title and the rule both ask this now.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 
 def is_smoke_machine(capabilities: FixtureCapabilities) -> bool:

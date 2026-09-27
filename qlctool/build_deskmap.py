@@ -30,15 +30,15 @@ from .desk_policy import (
     place,
     split_caption,
 )
-from .desk_swatch import swatches
 from .desk_unique_key import desk_unique_key
 from .desk_widgets import desk_widgets
+from .fixture_library import FixtureLibrary
 from .leading_glyph import leading_glyph
-from .library import FixtureLibrary
 from .names.names import Names
 from .names.shipped_names import shipped_names
 from .names.workspace_language import workspace_language
-from .slug import slugify
+from .slugify import slugify
+from .swatches import swatches
 from .workspace import Workspace
 
 SCHEMA = 2

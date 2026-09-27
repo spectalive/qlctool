@@ -9,7 +9,7 @@ colour pick was released under AUTO: the rig went black and the beams stayed
 red, because the level held their blade open (en-sala DMX audit, 2026-09-26,
 item 5).
 
-A blade dimmer (`stepped_dimmer`) has no level to give - open or shut, the
+A blade dimmer (`stepped_dimmer_offsets`) has no level to give - open or shut, the
 quiet level already wrote it at full - so it carries nothing the level owns.
 On a wheel-coloured head it goes with the colour instead: every colour look
 that puts the wheel somewhere opens it, the levels leave it alone, and when
@@ -26,8 +26,8 @@ held it.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
-from .stepped_dimmer import stepped_dimmer_offsets
+from .fixture_capabilities import FixtureCapabilities
+from .stepped_dimmer_offsets import stepped_dimmer_offsets
 
 
 def wheel_blade_offsets(capability: FixtureCapabilities) -> list[int]:

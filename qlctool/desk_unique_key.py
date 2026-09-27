@@ -2,7 +2,7 @@
 
 from collections.abc import Mapping
 
-from .slug import slugify
+from .slugify import slugify
 
 
 def desk_unique_key(existing: Mapping[str, object], caption: str, widget_id: int) -> str:

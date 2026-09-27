@@ -3,11 +3,11 @@
 from rig_root import RIG_ROOT
 
 from qlctool.capabilities_of import capabilities_of
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.internal_program import (
     internal_program,
     internal_program_off_pairs,
 )
-from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT

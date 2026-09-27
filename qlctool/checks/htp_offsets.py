@@ -12,7 +12,7 @@ from collections.abc import Mapping
 
 from lxml import etree
 
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..xmlutil import find_local, iter_local
 
 INTENSITY_GROUP = "Intensity"

@@ -9,7 +9,7 @@ from lxml import etree
 
 from ..constants import QLC_NS
 from ..fixture import patched_fixtures
-from ..library import FixtureLibrary
+from ..fixture_library import FixtureLibrary
 from ..patch_conflicts import patch_conflicts
 from ..xmlutil import find_local, findall_local
 

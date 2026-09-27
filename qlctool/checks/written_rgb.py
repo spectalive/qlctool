@@ -9,7 +9,7 @@ unwritten or unpredictable.
 from collections.abc import Mapping
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 
 RGB = (roles.RED, roles.GREEN, roles.BLUE)
 

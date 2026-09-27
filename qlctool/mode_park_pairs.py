@@ -25,7 +25,7 @@ wire and is a job for the display on its back, not for this file.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 from .internal_program import internal_program
 
 

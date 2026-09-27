@@ -24,17 +24,17 @@ from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
+from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
 from ..functions.efx import EFXFixture, build_efx
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
-from ..zoom_wide import zoom_wide_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 from .fader_dimmed import fader_dimmed
 from .movement_efx import spread_offsets
 
@@ -73,7 +73,7 @@ def generate_dimmer_chases(
     excluded = set(exclude_fixture_ids)
     # A blade dimmer is not a fader: an EFX sweeping it does not dip the beam,
     # it slides a blade across the lens and the head shows a crescent for most
-    # of every pass (`stepped_dimmer`). Those fixtures stay out of the chase
+    # of every pass (`stepped_dimmer_offsets`). Those fixtures stay out of the chase
     # rather than run a chase of half-moons.
     dimmable = [
         capability
@@ -90,7 +90,7 @@ def generate_dimmer_chases(
     # whole-rig Circle replaced that and lost the look (old-vs-new audit,
     # 2026-08-28); the family partition comes back here, by model, which is
     # the line the old EFX drew. Model families are homogeneous, so the 16-bit
-    # adjacency question (see `efx_16bit`) is answered per family instead of
+    # adjacency question (see `keeps_16bit`) is answered per family instead of
     # splitting one - a family whose dimmer fine channel is not adjacent runs
     # 8 bit on its own without turning it off for the rest.
     families: dict[tuple[str, str], list] = {}

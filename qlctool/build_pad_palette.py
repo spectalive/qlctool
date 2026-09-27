@@ -22,7 +22,7 @@ from .generate.pad_note import pad_note
 from .generate.smc_pad_device import PAD_MIDI_CHANNEL, PADS, pad_channel
 from .pad_idle_colour import pad_idle_colour
 from .pad_input_universe import pad_input_universe
-from .slug import slugify
+from .slugify import slugify
 from .workspace import Workspace
 
 FORMAT = 1

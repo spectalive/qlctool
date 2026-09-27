@@ -4,7 +4,7 @@ Moved verbatim out of `build_canonical_show` (2026-09-26, round G); the
 functions are created in the order they always were.
 """
 
-from ..beat_generator import set_beat_generator
+from ..set_beat_generator import set_beat_generator
 from .beat_tempo import apply_beat_tempo
 from .movement_tempo_functions import movement_tempo_functions
 from .show_build import ShowBuild

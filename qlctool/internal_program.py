@@ -22,8 +22,8 @@ last night's effect through a speech.
 from dataclasses import dataclass
 
 from . import roles
-from .capability import FixtureCapabilities
 from .definition import Capability
+from .fixture_capabilities import FixtureCapabilities
 
 # The range name that marks the mode channel's "obey DMX" position.
 OFF_NAMES = ("no function", "off", "no funcion")

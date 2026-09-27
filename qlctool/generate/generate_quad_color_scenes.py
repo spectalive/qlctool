@@ -20,9 +20,9 @@ from .. import roles
 from ..argb import RGB
 from ..capabilities_of import capabilities_of
 from ..fixture_group import fixture_groups
+from ..fixture_library import FixtureLibrary
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..palette import PALETTE

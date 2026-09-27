@@ -17,17 +17,17 @@ thing opening them, and they went dark except under a flat scene like
 from collections.abc import Sequence
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..internal_program import internal_program_off_pairs
-from ..mode_park import mode_park_pairs
+from ..mode_park_pairs import mode_park_pairs
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
-from ..strobe_off import strobe_off_pairs
+from ..strobe_off_pairs import strobe_off_pairs
 from ..workspace import Workspace
-from ..zoom_wide import zoom_wide_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 
 PATH = "Show"
 

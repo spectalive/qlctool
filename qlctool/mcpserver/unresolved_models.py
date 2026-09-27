@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..library import FixtureLibrary
+from ..fixture_library import FixtureLibrary
 from ..unresolved_fixtures import unresolved_fixtures
 
 

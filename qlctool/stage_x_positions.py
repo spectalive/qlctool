@@ -1,9 +1,9 @@
 """Where each fixture stands across the stage, in millimetres.
 
 The `<Monitor>` node the plot writes is the only place a workspace records the
-room. `monitor_positions.house_right_fixture_ids` reads it for symmetry - which
-side a fixture is on; this reads the raw coordinate, which is what ordering a
-fixture group's cells needs.
+room. `house_right_fixture_ids.house_right_fixture_ids` reads it for symmetry -
+which side a fixture is on; this reads the raw coordinate, which is what
+ordering a fixture group's cells needs.
 
 Hidden fixtures are left out. A hidden item is one the plot marks as not rigged,
 and a spare in a flight case should not decide where a sweep starts.

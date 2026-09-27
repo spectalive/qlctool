@@ -6,17 +6,17 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.description.reading.read_names import read_names
 from qlctool.fixture_group import fixture_groups
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
 from qlctool.generate.movement_families import generate_movement_families
 from qlctool.generate.wheel_scenes import generate_wheel_scenes
-from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.sections import SECTIONS
 from qlctool.names.shipped_languages import shipped_languages
 from qlctool.names.shipped_names import shipped_names
 from qlctool.names.template_affixes import template_affixes
 from qlctool.names.template_fields import template_fields
-from qlctool.skeleton import strip_to_skeleton
+from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 

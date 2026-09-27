@@ -15,7 +15,7 @@ from qlctool.checks.console_states import room_states
 from qlctool.checks.family_frame_picks import family_frame_picks
 from qlctool.checks.pick_leaves_light_alone import pick_leaves_light_alone
 from qlctool.checks.show_graph import build_show_graph, group_fixtures
-from qlctool.library import FixtureLibrary
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 

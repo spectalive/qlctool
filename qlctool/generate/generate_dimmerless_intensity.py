@@ -5,7 +5,7 @@
 dimmer role, like the Chauvet MiN Wash, has no channel the chase could ever
 touch: its light lives behind a shutter range instead (`shutter_open_pairs`).
 A fixture whose dimmer is a mechanical blade, like the BEAM 230W 7R, is left
-out on purpose (`stepped_dimmer`) and gets its one usable value, full, here. So a level that
+out on purpose (`stepped_dimmer_offsets`) and gets its one usable value, full, here. So a level that
 hands its dimmer fixtures to the chase and drops its old flat intensity scene
 would leave that fixture with no owner at all in that level - not shadowed,
 just dark, the moment nothing keeps writing its shutter open.
@@ -28,21 +28,21 @@ LTP - which is exactly the kind of luck a self-contained moment does not get.
 from collections.abc import Sequence
 
 from .. import roles
-from ..capability import FixtureCapabilities
-from ..color_wheel_match import WHEEL_NAMES
-from ..fog_off import fog_off_pairs
+from ..color_wheel_pairs import WHEEL_NAMES
+from ..fixture_capabilities import FixtureCapabilities
+from ..fog_off_pairs import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..mode_park import mode_park_pairs
+from ..mode_park_pairs import mode_park_pairs
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..outside_color_looks import outside_color_looks
 from ..shutter_open import shutter_open_pairs
-from ..stepped_dimmer import stepped_dimmer_offsets
-from ..strobe_off import strobe_off_pairs
+from ..stepped_dimmer_offsets import stepped_dimmer_offsets
+from ..strobe_off_pairs import strobe_off_pairs
 from ..wheel_blade_offsets import wheel_blade_offsets
 from ..workspace import Workspace
-from ..zoom_wide import zoom_wide_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 
 
 def generate_dimmerless_intensity(
@@ -67,7 +67,7 @@ def generate_dimmerless_intensity(
         if capability.is_smoke:
             # The pump, and only to hold it shut: this level runs under the
             # smoke flashes like every other, and a released flash needs
-            # something writing zero to come home to (`fog_off`).
+            # something writing zero to come home to (`fog_off_pairs`).
             off = fog_off_pairs(capability)
             if off:
                 values[capability.fixture.fixture_id] = sorted(set(off))
@@ -81,7 +81,7 @@ def generate_dimmerless_intensity(
             # 2026-09-02; the montage note of 2026-08-29 wants them "subir y
             # bajar con los niveles").
             pairs += [(offset, 255) for offset in capability.offsets_for_role(roles.DIMMER)]
-        # A blade dimmer is out of the chase (`stepped_dimmer`), so this level
+        # A blade dimmer is out of the chase (`stepped_dimmer_offsets`), so this level
         # owns it - at full, the one value it has - unless the head's colour is
         # a wheel a colour look reaches: then the blade opens with that colour
         # (`wheel_blade_offsets`, 2026-09-27).

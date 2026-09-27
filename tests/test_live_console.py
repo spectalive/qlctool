@@ -11,7 +11,7 @@ instant it was pressed.
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.control_glyph import glyph
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.generate.console_layout import (
     BIG_FONT,
@@ -22,8 +22,8 @@ from qlctool.generate.console_layout import (
     PAGE_CONTROL,
     ROOM_STATES,
 )
+from qlctool.glyph import glyph
 from qlctool.leading_glyph import leading_glyph
-from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.palette import PRIMARY_COLORS
 from qlctool.vibra.keys import KEYS

@@ -9,7 +9,7 @@ byte-comparable with a hand-built one.
 from lxml import etree
 
 from ..argb import RGB, argb_from_rgb
-from ..color_format import INDEXED, LEGACY
+from ..color_format_of import INDEXED, LEGACY
 from ..constants import ALL_FIXTURES_GROUP, QLC_NS
 
 

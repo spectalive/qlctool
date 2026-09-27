@@ -18,7 +18,7 @@ today) is skipped: writing it would be the guess this toolkit exists to avoid.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 from .strobe_range import strobe_range
 
 

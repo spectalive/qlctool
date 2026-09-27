@@ -15,7 +15,7 @@ rather than parked on a position that means something else.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 from .names.default_names import default_names
 from .names.names import Names
 

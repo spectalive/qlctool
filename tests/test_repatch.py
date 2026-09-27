@@ -10,14 +10,14 @@ from rig_root import RIG_ROOT
 
 from qlctool.capabilities_of import capabilities_of
 from qlctool.fixture import patched_fixtures
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.fixture_references import fixture_references
-from qlctool.library import FixtureLibrary
 from qlctool.patch_conflicts import patch_conflicts
 from qlctool.repatch.add import add_fixture
-from qlctool.repatch.address import set_fixture_address
 from qlctool.repatch.patch_element import patch_element
-from qlctool.repatch.remove import remove_fixture
-from qlctool.repatch.rename import rename_fixture
+from qlctool.repatch.remove_fixture import remove_fixture
+from qlctool.repatch.rename_fixture import rename_fixture
+from qlctool.repatch.set_fixture_address import set_fixture_address
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT

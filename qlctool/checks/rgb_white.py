@@ -3,7 +3,7 @@
 from collections.abc import Mapping
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 
 
 def rgb_white(capability: FixtureCapabilities, written: Mapping[int, int | None]) -> bool:

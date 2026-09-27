@@ -8,7 +8,7 @@ colour is its light. `htp` is that fixture's HTP offsets (`merged_htp`).
 from collections.abc import Collection, Mapping
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from .show_graph import lit
 
 

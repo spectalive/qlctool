@@ -20,7 +20,7 @@ EFX with the ones that pair.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 # EFXFixture::PanTilt drives these...
 PAN_TILT_PAIRS = ((roles.PAN, roles.PAN_FINE), (roles.TILT, roles.TILT_FINE))

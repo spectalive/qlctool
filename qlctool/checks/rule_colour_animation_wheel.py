@@ -28,7 +28,7 @@ A single static detent under a running rainbow is the bug, not the fix.
 from lxml import etree
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit

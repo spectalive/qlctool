@@ -15,7 +15,7 @@ beside the wheel counts too: it is the same motor.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 WHEEL_ROLES = (roles.COLOR_MACRO, roles.GOBO, roles.PRISM)
 

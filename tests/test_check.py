@@ -36,9 +36,9 @@ from qlctool.checks.show_graph import (
 from qlctool.checks.strobe_written import strobe_capable_offsets
 from qlctool.cli import main
 from qlctool.fixture_group import fixture_groups
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.library import FixtureLibrary
 from qlctool.wheel_blade_offsets import wheel_blade_offsets
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local, localname
@@ -698,7 +698,7 @@ def test_a_beats_chaser_driving_millisecond_effects(library):
     putting Movimientos Washes back on Beats with its fade intact.
 
     Since 2026-09-02 every step of that chaser is a Collection of two EFX (the
-    wash figures split on `efx_16bit`), and `Collection::write` hands the
+    wash figures split on `keeps_16bit`), and `Collection::write` hands the
     chaser's override fade straight to both - so the rule has to look through
     the Collection, and this test is what says it does.
     """
@@ -1564,7 +1564,7 @@ def test_a_split_movement_is_not_a_block_that_parks_the_beams(library):
     The Mini Led Moving Head's channels 9-16 were settled off three agreeing
     OEM charts, which put its fine channels at 14 and 15 - not beside the
     coarse ones - so every wash figure is now a 16-bit EFX and an 8-bit EFX
-    under one Collection (`efx_16bit`). As a step of the washes' chaser that
+    under one Collection (`keeps_16bit`). As a step of the washes' chaser that
     Collection moves the washes and not the beams, exactly as the single EFX
     did, and the beams' chaser beside it moves the beams. The rule must read
     it as one movement, not as a block of the cycle parking four 7R - while a

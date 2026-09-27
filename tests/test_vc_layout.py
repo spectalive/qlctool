@@ -9,10 +9,10 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.argb import argb_from_rgb
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.color_palette import generate_color_palette
 from qlctool.generate.movement_efx import generate_movement_efx
 from qlctool.generate.vc_layout import generate_vc_layout
-from qlctool.library import FixtureLibrary
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.vc.widget_ids import existing_widget_ids
 from qlctool.workspace import Workspace

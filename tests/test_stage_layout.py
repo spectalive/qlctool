@@ -10,14 +10,14 @@ rewrites every position it finds.
 import pytest
 from rig_root import RIG_ROOT
 
+from qlctool.band_of import BARS, BEAMS, PARS, SMOKE, WASHES
 from qlctool.fixture import patched_fixtures
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.stage_layout import (
     generate_stage_layout,
     spread,
 )
-from qlctool.library import FixtureLibrary
 from qlctool.monitor_node import POINTS_OF_VIEW
-from qlctool.stage_band import BARS, BEAMS, PARS, SMOKE, WASHES
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 

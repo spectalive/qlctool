@@ -11,7 +11,7 @@ import pytest
 from lxml import etree
 from rig_root import RIG_ROOT
 
-from qlctool.compose import compose_workspace
+from qlctool.compose_workspace import compose_workspace
 from qlctool.decompose import FUNCTIONS_DIR, decompose_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlsemantics import first_difference

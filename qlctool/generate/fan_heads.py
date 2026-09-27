@@ -12,8 +12,8 @@ from collections.abc import Sequence
 
 from .. import roles
 from ..capabilities_of import capabilities_of
-from ..capability import FixtureCapabilities
-from ..library import FixtureLibrary
+from ..fixture_capabilities import FixtureCapabilities
+from ..fixture_library import FixtureLibrary
 from ..rigged_fixture_ids import rigged_fixture_ids
 from ..workspace import Workspace
 

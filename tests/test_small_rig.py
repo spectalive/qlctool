@@ -19,11 +19,11 @@ from qlctool.checks.rule_dangling_reference import check_dangling_references
 from qlctool.checks.rule_empty_frame import check_empty_frames
 from qlctool.checks.show_graph import build_show_graph
 from qlctool.cli import main
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.library_help_lines import library_help_lines
 from qlctool.generate.matrices_frame_caption import matrices_frame_caption
 from qlctool.generate.page_control_title import page_control_title
 from qlctool.generate.tempo_help_line import tempo_help_line
-from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace

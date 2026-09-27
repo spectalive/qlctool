@@ -14,8 +14,8 @@ whose shutter channel is only a strobe - is left alone.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
 from .definition import Capability
+from .fixture_capabilities import FixtureCapabilities
 from .shutter_open_value import shutter_open_value
 
 OPEN_PRESET = "ShutterOpen"

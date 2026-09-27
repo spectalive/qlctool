@@ -11,7 +11,7 @@ the grid is drawn. The CMY fallback was missing until the Round 2 review of
 from collections.abc import Iterable, Mapping
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 
 def rgb_cells(

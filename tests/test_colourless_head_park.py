@@ -15,8 +15,8 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.rule_mode_owner import RULE_ID
 from qlctool.cli import main
-from qlctool.color_wheel_match import WHEEL_NAMES
-from qlctool.library import FixtureLibrary
+from qlctool.color_wheel_pairs import WHEEL_NAMES
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.outside_color_looks import outside_color_looks
 from qlctool.workspace import Workspace
 

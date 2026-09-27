@@ -13,8 +13,8 @@ from rig_root import RIG_ROOT
 from qlctool.build_deskmap import build_deskmap
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.desk_widgets import desk_widgets
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.vibra.vibra_description import vibra_description

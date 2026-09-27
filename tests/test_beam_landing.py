@@ -12,7 +12,7 @@ from rig_root import RIG_ROOT
 
 from qlctool.beam_landing import HANGING, STANDING, beam_landing
 from qlctool.capabilities_of import capabilities_of
-from qlctool.library import FixtureLibrary
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.monitor_node import MonitorItem
 from qlctool.stage_plot import load_stage_plot
 from qlctool.workspace import Workspace

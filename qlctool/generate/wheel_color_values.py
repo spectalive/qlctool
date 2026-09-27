@@ -13,14 +13,14 @@ a beam with its dimmer at full and its shutter shut is still a beam that is off.
 from collections.abc import Sequence
 
 from .. import roles
-from ..capability import FixtureCapabilities
-from ..color_wheel_match import color_wheel_pairs
-from ..mode_park import mode_park_pairs
-from ..multicolor_off import multicolor_off_pairs
+from ..color_wheel_pairs import color_wheel_pairs
+from ..fixture_capabilities import FixtureCapabilities
+from ..mode_park_pairs import mode_park_pairs
+from ..multicolor_off_pairs import multicolor_off_pairs
 from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..wheel_blade_offsets import wheel_blade_offsets
-from ..zoom_wide import zoom_wide_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 
 
 def wheel_color_values(

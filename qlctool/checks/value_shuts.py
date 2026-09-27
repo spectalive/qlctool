@@ -11,7 +11,7 @@ finds, not the strobe range, and not labelled open, lamp on or "no strobe". A
 bare speed channel (no labelled ranges) never shuts: 0 there is no strobe.
 """
 
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..shutter_open import shutter_open_ranges
 from ..strobe_range import strobe_range
 

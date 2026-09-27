@@ -13,7 +13,7 @@ only ever looked at where a step *ends*.
 The rule reads the wiring: every scene that is a chaser step (or carries a
 fade of its own) and writes a colour, gobo or prism wheel with a non-zero fade
 must find that wheel in the fixture's `<ExcludeFade>`. The generator pins the
-wheels there (`exclude_fade`); a hand-patched fixture or a definition that
+wheels there (`pin_wheel_fades`); a hand-patched fixture or a definition that
 grew a wheel is what this catches.
 """
 

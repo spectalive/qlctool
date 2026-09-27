@@ -11,7 +11,7 @@ from collections.abc import Sequence
 from lxml import etree
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..fixture_group import fixture_groups
 from ..rigged_fixture_ids import rigged_fixture_ids
 

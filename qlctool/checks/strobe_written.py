@@ -13,8 +13,8 @@ strobes.
 """
 
 from .. import roles
-from ..capability import FixtureCapabilities
 from ..definition import Capability
+from ..fixture_capabilities import FixtureCapabilities
 from ..strobe_range import strobe_range
 
 

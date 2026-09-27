@@ -9,11 +9,11 @@ show rather than a fixture.
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.beat_generator import set_beat_generator
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.beat_tempo import BeatTiming, apply_beat_tempo
 from qlctool.generate.unison_colors import generate_unison_colors
-from qlctool.library import FixtureLibrary
-from qlctool.skeleton import strip_to_skeleton
+from qlctool.set_beat_generator import set_beat_generator
+from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
 

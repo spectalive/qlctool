@@ -6,7 +6,7 @@ from rig_root import RIG_ROOT
 from qlctool.fixture import patched_fixtures
 from qlctool.fixture_group import fixture_groups
 from qlctool.patch_conflicts import patch_conflicts
-from qlctool.skeleton import strip_to_skeleton
+from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, localname

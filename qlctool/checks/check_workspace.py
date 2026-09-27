@@ -14,7 +14,7 @@ is how a bug stops being able to happen twice. A controller's rules come from th
 from collections.abc import Sequence
 
 from ..capabilities_of import capabilities_of
-from ..library import FixtureLibrary
+from ..fixture_library import FixtureLibrary
 from ..names.names import Names
 from ..workspace import Workspace
 from .applying_providers import applying_providers

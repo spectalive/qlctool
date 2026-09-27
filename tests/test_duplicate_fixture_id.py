@@ -12,7 +12,7 @@ from single_shape_rig import build_single_shape_patch
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.rule_duplicate_fixture_id import RULE_ID, check_duplicate_fixture_ids
 from qlctool.cli import main
-from qlctool.library import FixtureLibrary
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 

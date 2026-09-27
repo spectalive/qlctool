@@ -20,8 +20,8 @@ from qlctool.description.controller_settings import ControllerSettings
 from qlctool.description.load_show_description import load_show_description
 from qlctool.description.show_description import ShowDescription
 from qlctool.desk_function_path import DESK_FUNCTION_PATH
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.template_fields import template_fields
 from qlctool.vibra.vibra_description import vibra_description

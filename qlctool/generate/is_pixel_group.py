@@ -3,7 +3,7 @@
 from collections.abc import Iterable
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 
 
 def is_pixel_group(caps: Iterable[FixtureCapabilities], fixture_ids: Iterable[int]) -> bool:

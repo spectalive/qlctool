@@ -17,7 +17,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
@@ -25,9 +25,9 @@ from ..internal_program import internal_program
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
-from ..strobe_off import strobe_off_pairs
+from ..strobe_off_pairs import strobe_off_pairs
 from ..workspace import Workspace
-from ..zoom_wide import zoom_wide_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 
 # Where the hand-built show ran these: its speed sequence stepped the panels'
 # channel between 160 and 255, so 128 - the blind mid-scale first guess - was

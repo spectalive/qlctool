@@ -16,7 +16,7 @@ dimmer on channel 1 goes dark under a matrix that is painting it beautifully.
 from lxml import etree
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..xmlutil import find_local, findall_local
 
 # EFXFixture::Mode - what an EFX drives on a fixture that participates in it.

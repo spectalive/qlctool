@@ -10,9 +10,9 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_stage_aim import MEASURED_AIMS, generate_stage_aim
 from qlctool.generate.movement_aim import WASH_PAN_AIM, WASH_TILT_AIM
-from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
 

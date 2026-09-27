@@ -16,9 +16,9 @@ from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
+from ..fixture_library import FixtureLibrary
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..library import FixtureLibrary
 from ..workspace import Workspace
 
 # Mid-speed on the jitter's 1-128 slow-to-fast run: visible tremble, not blur.

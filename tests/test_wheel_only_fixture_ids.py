@@ -12,12 +12,12 @@ from single_shape_rig import build_single_shape_patch
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
-from qlctool.capability import FixtureCapabilities
 from qlctool.cli import main
-from qlctool.color_wheel_match import color_wheel_pairs
+from qlctool.color_wheel_pairs import color_wheel_pairs
 from qlctool.fixture import PatchedFixture
+from qlctool.fixture_capabilities import FixtureCapabilities
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.wheel_only_fixture_ids import wheel_only_fixture_ids
-from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import findall_local, iter_local

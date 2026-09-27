@@ -15,7 +15,7 @@ Writing zero is not "touching the smoke" in the sense `rule_smoke` guards: that
 rule is about a scene that *fires* the pump beside other fixtures.
 """
 
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 from .fog_offsets import fog_offsets
 
 

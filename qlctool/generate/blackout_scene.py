@@ -3,8 +3,8 @@
 from collections.abc import Sequence
 
 from .. import roles
-from ..capability import FixtureCapabilities
-from ..fog_off import fog_off_pairs
+from ..fixture_capabilities import FixtureCapabilities
+from ..fog_off_pairs import fog_off_pairs
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..internal_program import internal_program_off_pairs
@@ -20,7 +20,7 @@ def blackout_scene(workspace: Workspace, caps: Sequence[FixtureCapabilities], na
     rest; its pump is a different role, so zeroing the dimmer cannot stop the
     fog. The pump is therefore written by name, at zero: a blackout that leaves
     a machine fogging is not a blackout, and a room state that never writes the
-    pump is a room state a released smoke flash latches against (`fog_off`).
+    pump is a room state a released smoke flash latches against (`fog_off_pairs`).
 
     A labelled mechanical shutter stays in its open range while RGB and dimmer
     remain zero. The state is still black, but a later family pick can introduce

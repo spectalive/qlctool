@@ -10,7 +10,7 @@ the floor at the back; a smoke machine goes in a corner where nobody walks.
 """
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 BEAMS = "beams"
 WASHES = "washes"

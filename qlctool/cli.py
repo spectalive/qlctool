@@ -16,7 +16,7 @@ from .apply_install import apply_install
 from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
 from .cmd_deskmap import add_deskmap_parser
-from .compose import compose_workspace
+from .compose_workspace import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
 from .decompose import decompose_workspace
 from .description.described_files import described_files
@@ -45,7 +45,6 @@ from .patch_conflicts import patch_conflicts
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
 from .repatch.add import add_fixture
-from .repatch.address import set_fixture_address
 from .repatch.group_add import add_fixture_group
 from .repatch.group_head import add_group_head
 from .repatch.group_head_move import move_group_head
@@ -53,8 +52,9 @@ from .repatch.group_head_remove import remove_group_head
 from .repatch.group_reshape import reshape_group
 from .repatch.group_size import set_group_size
 from .repatch.group_sort import sort_group_by_stage
-from .repatch.remove import remove_fixture
-from .repatch.rename import rename_fixture
+from .repatch.remove_fixture import remove_fixture
+from .repatch.rename_fixture import rename_fixture
+from .repatch.set_fixture_address import set_fixture_address
 from .stage_plot import load_stage_plot
 from .toolkit_config_from import toolkit_config_from
 from .validate import validate_workspace

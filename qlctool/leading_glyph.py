@@ -1,13 +1,13 @@
 """Split a caption into the glyph it starts with and the words after it.
 
-The console carries each control's glyph inside its caption (`control_glyph`),
+The console carries each control's glyph inside its caption (`glyph`),
 because QLC+'s own `<Icon>` is a path into one machine's disk. The tablet desk
 does not have that problem: it draws its own tiles, and a glyph it is handed as
 a field can be sized and placed like an icon instead of riding along as the
 first character of a label. So the map splits what the console joined.
 """
 
-from .control_glyph import GLYPHS
+from .glyph import GLYPHS
 from .pick_marks import PICK_MARKS
 
 MARKS = frozenset(GLYPHS.values()) | PICK_MARKS

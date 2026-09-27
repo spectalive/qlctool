@@ -13,10 +13,10 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.checks.check_workspace import check_workspace
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.movement_families import generate_movement_families
-from qlctool.library import FixtureLibrary
-from qlctool.monitor_positions import house_right_fixture_ids
-from qlctool.skeleton import strip_to_skeleton
+from qlctool.house_right_fixture_ids import house_right_fixture_ids
+from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local
 
@@ -32,7 +32,7 @@ def library():
 def _efx_by_name(root):
     """Every EFX by name - and a split figure by its plain name, via its first part.
 
-    A family that mixes fixtures on both sides of `efx_16bit` is generated as
+    A family that mixes fixtures on both sides of `keeps_16bit` is generated as
     one EFX per side under a Collection carrying the figure's name (the Mini
     Led Moving Head put the washes there on 2026-09-02). The shape - algorithm,
     propagation, speed, rotation - is the same on every part, so the plain

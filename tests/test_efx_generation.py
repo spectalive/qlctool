@@ -9,6 +9,7 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.efx_algorithms import EFX_ALGORITHMS
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.functions.efx import EFXAxis, EFXFixture, build_efx
 from qlctool.generate.movement_efx import (
     generate_movement_efx,
@@ -16,7 +17,6 @@ from qlctool.generate.movement_efx import (
     spread_offsets,
 )
 from qlctool.ids import existing_function_ids
-from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlsemantics import first_difference
 from qlctool.xmlutil import find_local, findall_local, iter_local

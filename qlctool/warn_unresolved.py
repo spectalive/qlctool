@@ -12,7 +12,7 @@ import sys
 from lxml import etree
 
 from .definition_outcome_of import definition_outcome_of
-from .library import FixtureLibrary
+from .fixture_library import FixtureLibrary
 from .names.names import Names
 from .names.shipped_names import shipped_names
 from .searched_folders import searched_folders

@@ -1,7 +1,7 @@
 """Whether a fixture is a bar: a pixel fixture whose heads lie in a line."""
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 
 def is_bar(capabilities: FixtureCapabilities) -> bool:

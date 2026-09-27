@@ -11,8 +11,8 @@ back into a generated show and bite if the generator loses it again.
 import pytest
 from rig_root import RIG_ROOT
 
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.library import FixtureLibrary
 from qlctool.vibra.keys import KEYS
 from qlctool.wheel_palette import WHEEL_PALETTE
 from qlctool.workspace import Workspace
@@ -242,7 +242,7 @@ def test_movement_keeps_the_simultaneo_twins_and_the_crossfade(built):
     functions = _functions(root)
 
     # A split figure is "<name> (16 bit)" and "<name> (8 bit)" under a
-    # Collection named plainly (`efx_16bit`); count figures, not parts.
+    # Collection named plainly (`keeps_16bit`); count figures, not parts.
     sims = {
         f.attrib["Name"].split(" (")[0]
         for f in functions.values()

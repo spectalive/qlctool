@@ -8,7 +8,7 @@ the blade would be one more HTP bid, and a held Flash that raises light on the
 beams owes them a strobe it has no business firing.
 """
 
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..wheel_blade_offsets import wheel_blade_offsets
 
 

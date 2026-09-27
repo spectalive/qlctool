@@ -2,7 +2,7 @@
 
 from collections.abc import Iterable
 
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..internal_program import internal_program
 
 

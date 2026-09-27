@@ -9,7 +9,7 @@ machine is not one, however it is mounted.
 
 from collections.abc import Iterable
 
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 
 
 def vertical_smoke_columns(

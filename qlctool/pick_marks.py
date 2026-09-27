@@ -2,7 +2,7 @@
 
 A page of picks is a wall of identical buttons whose captions are the only
 difference, so each family marks its tiles with one glyph: the colour picks, the
-pixel matrices, the head movements, the gobo and prism looks. `control_glyph`
+pixel matrices, the head movements, the gobo and prism looks. `glyph`
 carries the glyphs of the named master buttons; these belong to no function name
 at all, because a pick's caption is built from the function it fires.
 

@@ -21,13 +21,13 @@ from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
-from ..capability import FixtureCapabilities
 from ..complementary_pairs import COMPLEMENTARY_PAIRS
+from ..fixture_capabilities import FixtureCapabilities
+from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..palette import PALETTE, PRIMARY_COLORS

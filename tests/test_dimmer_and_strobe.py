@@ -10,11 +10,11 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.dimmer_chases import MODE_DIMMER, generate_dimmer_chases
 from qlctool.generate.energy_intensity import generate_energy_intensity
 from qlctool.generate.generate_dimmer_sequence import generate_dimmer_sequence
 from qlctool.generate.strobe_effects import generate_strobe_effects
-from qlctool.library import FixtureLibrary
 from qlctool.shutter_open import shutter_open_pairs
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
@@ -177,7 +177,7 @@ def test_the_lit_half_of_the_ping_pong_opens_its_shutter(library):
     The BEAM 230W 7R used to be the example here. Since 2026-08-29 it is the
     counter-example instead: its dimmer is a mechanical blade, a chase that
     sweeps it draws half-moons rather than dips, and it is kept out of the
-    chase entirely (`stepped_dimmer`).
+    chase entirely (`stepped_dimmer_offsets`).
     """
     ws = Workspace.load(SHOW)
     generated = generate_dimmer_chases(ws, library)
@@ -260,7 +260,7 @@ def test_the_console_strobes_are_held_shutter_scenes(library):
     (the `flash lento` rule refuses anything under 70% of the run).
     """
     from qlctool.generate.strobe_effects import FAST_FRACTION, MEDIUM_FRACTION
-    from qlctool.strobe_speed import strobe_speed_pairs
+    from qlctool.strobe_speed_pairs import strobe_speed_pairs
 
     ws = Workspace.load(SHOW)
     generated = generate_strobe_effects(ws, library)

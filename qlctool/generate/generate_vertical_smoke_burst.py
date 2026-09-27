@@ -29,10 +29,10 @@ now, and the release costs one DMX frame.
 
 from .. import roles
 from ..capabilities_of import capabilities_of
+from ..fixture_library import FixtureLibrary
 from ..fog_offsets import fog_offsets
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..vertical_smoke_columns import vertical_smoke_columns

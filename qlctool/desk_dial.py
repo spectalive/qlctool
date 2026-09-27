@@ -6,7 +6,7 @@ from lxml import etree
 
 from .desk_policy import split_caption
 from .desk_widgets import DeskWidget
-from .speed_multiplier import multiplier
+from .multiplier import multiplier
 from .xmlutil import find_local, findall_local
 
 

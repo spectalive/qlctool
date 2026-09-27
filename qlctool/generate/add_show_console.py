@@ -3,7 +3,7 @@
 Moved verbatim out of `build_canonical_show` (2026-09-26, round G).
 """
 
-from ..control_glyph import GLYPHS
+from ..glyph import GLYPHS
 from ..is_bar import is_bar
 from ..is_panel import is_panel
 from ..is_smoke_machine import is_smoke_machine

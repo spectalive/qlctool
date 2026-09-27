@@ -2,7 +2,7 @@
 
 from collections.abc import Collection
 
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from .families import FAMILIES
 from .pixel_mode_offset import pixel_mode_offset
 

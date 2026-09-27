@@ -40,7 +40,7 @@ import math
 from dataclasses import dataclass
 
 from . import roles
-from .capability import FixtureCapabilities
+from .fixture_capabilities import FixtureCapabilities
 from .monitor_node import MonitorItem
 
 # The only two ways a moving head is ever rigged.

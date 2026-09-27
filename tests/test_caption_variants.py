@@ -14,13 +14,13 @@ from small_rig import build_small_rig_patch
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.cli import main
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.library_help_lines import library_help_lines
 from qlctool.generate.matrices_frame_caption import matrices_frame_caption
 from qlctool.generate.panels_frame_caption import panels_frame_caption
 from qlctool.generate.tempo_help_line import tempo_help_line
 from qlctool.is_bar import is_bar
 from qlctool.is_panel import is_panel
-from qlctool.library import FixtureLibrary
 from qlctool.names.default_names import default_names
 from qlctool.names.shipped_names import shipped_names
 from qlctool.workspace import Workspace

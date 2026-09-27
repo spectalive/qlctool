@@ -22,7 +22,7 @@ from dataclasses import dataclass, field
 
 from lxml import etree
 
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..fixture_group import fixture_groups
 from ..xmlutil import find_local, findall_local, localname
 from .driven_channels import Driven, driven_channels

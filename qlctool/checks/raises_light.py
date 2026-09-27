@@ -9,7 +9,7 @@ and leave every dimmer and shutter to the state beneath - they raise nothing.
 from collections.abc import Mapping
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..shutter_open import shutter_open_ranges
 from .show_graph import lit
 

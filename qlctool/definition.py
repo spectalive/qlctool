@@ -10,7 +10,7 @@ from pathlib import Path
 
 from lxml import etree
 
-from .roles import role_of
+from .role_of import role_of
 from .xmlutil import find_local, findall_local, iter_local
 
 

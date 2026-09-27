@@ -1,9 +1,9 @@
-"""Map a QLC+ channel to a semantic role the generators reason about.
+"""The semantic roles a QLC+ channel can play, and their fixed string values.
 
 A role is what a channel *does* (red, dimmer, pan) independent of the fixture,
-so a generator can say "set red to full" and the capability layer resolves it to
-the right channel index on each fixture. Roles are derived from the channel's
-QLC+ Preset first (precise), then its Group and name as a fallback.
+so a generator can say "set red to full" and the capability layer resolves it
+to the right channel index on each fixture. `role_of` derives one from a
+channel's preset, group and name.
 """
 
 RED = "red"
@@ -47,81 +47,3 @@ SPEED = "speed"
 # both: the pump and the light's master dimmer are different channels, and a
 # generator that says "dimmer" must never reach the pump.
 SMOKE = "smoke"
-
-# The words a pump channel's name carries. "haze" also reads "hazer": a hazer's
-# pump is a pump (2026-09-25, review of `rotulo que promete lo que no hay`).
-_PUMP_WORDS = ("fog", "smoke", "humo", "haze")
-
-_INTENSITY_PRESETS = {
-    "IntensityRed": RED,
-    "IntensityGreen": GREEN,
-    "IntensityBlue": BLUE,
-    "IntensityWhite": WHITE,
-    "IntensityAmber": AMBER,
-    "IntensityUV": UV,
-    "IntensityCyan": CYAN,
-    "IntensityMagenta": MAGENTA,
-    "IntensityYellow": YELLOW,
-    "IntensityDimmer": DIMMER,
-    "IntensityMasterDimmer": DIMMER,
-    "IntensityDimmerFine": DIMMER_FINE,
-    "IntensityMasterDimmerFine": DIMMER_FINE,
-}
-
-
-def role_of(preset: str | None, group: str | None, name: str | None) -> str | None:
-    """Resolve a channel's role, or None when it is not one the toolkit drives."""
-    p = preset or ""
-
-    if p in _INTENSITY_PRESETS:
-        return _INTENSITY_PRESETS[p]
-    if p.startswith("PositionPan"):
-        return PAN_FINE if "Fine" in p else PAN
-    if p.startswith("PositionTilt"):
-        return TILT_FINE if "Fine" in p else TILT
-    if p.startswith("ShutterStrobe") or p == "ShutterOpen":
-        return STROBE
-    if p == "ColorMacro":
-        return COLOR_MACRO
-    if p.startswith(("GoboMacro", "GoboWheel")):
-        return GOBO
-    if p.startswith("PrismEffect"):
-        return PRISM
-    if p.startswith("BeamZoom") and "Fine" not in p:
-        return ZOOM
-    if p.startswith("BeamFocus"):
-        return FOCUS
-
-    # Fallback: no usable preset, read the group and the human name.
-    g = (group or "").lower()
-    n = (name or "").lower()
-    if g == "beam" and "zoom" in n:
-        return ZOOM
-    if g == "beam" and "focus" in n:
-        return FOCUS
-    if g == "gobo":
-        return GOBO
-    if g == "prism":
-        return PRISM
-    if g == "speed" and "prism" in n:
-        return PRISM_ROTATION
-    if g == "effect" and ("jitter" in n or "shake" in n):
-        return GOBO_SHAKE
-    if g == "effect" and any(word in n for word in _PUMP_WORDS):
-        return SMOKE
-    if g == "effect":
-        return EFFECT
-    if g == "speed":
-        return SPEED
-    if g == "colour" or ("macro" in n and "color" in n) or "colour" in n:
-        return COLOR_MACRO
-    if g == "shutter" or "strob" in n:
-        return STROBE
-    # A pump lives in the Intensity group so QLC+ resets it every cycle (see
-    # the LED Spray Fog definition), and it is still a pump: a generator that
-    # says "dimmer" must never reach it.
-    if g == "intensity" and any(word in n for word in _PUMP_WORDS):
-        return SMOKE
-    if g == "intensity" and ("dimmer" in n or "master" in n):
-        return DIMMER
-    return None

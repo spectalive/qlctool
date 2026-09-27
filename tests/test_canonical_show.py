@@ -12,9 +12,9 @@ from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.fixture import patched_fixtures
 from qlctool.fixture_group import fixture_groups
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.library import FixtureLibrary
 from qlctool.patch_conflicts import patch_conflicts
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.vibra.keys import KEYS
@@ -222,7 +222,7 @@ def test_dimmer_chase_owns_peak_and_nothing_is_left_dark(built):
     # it, because nothing in the level wrote the channel back.
     # A smoke machine is not in the chase at all, and on a plain fog machine
     # the pump *is* typed as the dimmer - what this level writes there is the
-    # pump held shut, which is the point (2026-08-29, `fog_off`).
+    # pump held shut, which is the point (2026-08-29, `fog_off_pairs`).
     for fixture_id, written in static_writes.items():
         if caps[fixture_id].is_smoke:
             assert set(written) <= set(fog_offsets(caps[fixture_id])), (

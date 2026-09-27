@@ -10,13 +10,13 @@ every ordered pair of a colour set, which is what the original's 38-step
 from collections.abc import Sequence
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..internal_program import internal_program_off_pairs
 from ..names.names import Names
 from ..rgbw_split import rgbw_split
 from ..shutter_open import shutter_open_pairs
-from ..strobe_off import strobe_off_pairs
-from ..zoom_wide import zoom_wide_pairs
+from ..strobe_off_pairs import strobe_off_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 from .wheel_color_values import wheel_color_values
 
 RGB = tuple[int, int, int]

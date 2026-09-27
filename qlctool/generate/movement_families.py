@@ -36,10 +36,10 @@ from dataclasses import dataclass, field
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..efx_shape_identifiers import EFX_SHAPE_IDENTIFIERS
+from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
 from ..ids import next_function_id
-from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..rigged_fixture_ids import rigged_fixture_ids

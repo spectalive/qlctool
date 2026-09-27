@@ -8,7 +8,7 @@ wrong show and an empty tank. `smoke_auto` and `newshow` both ask this.
 from collections.abc import Iterable
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 
 
 def haze_machines(capabilities: Iterable[FixtureCapabilities]) -> list[FixtureCapabilities]:

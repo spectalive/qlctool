@@ -18,7 +18,7 @@ black out are not lighting anything and are left alone.
 """
 
 from .. import roles
-from ..zoom_wide import zoom_wide_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 from .finding import WARNING, Finding
 from .show_graph import ShowGraph, lit
 

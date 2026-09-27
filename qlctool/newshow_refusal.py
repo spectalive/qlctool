@@ -15,8 +15,8 @@ from lxml import etree
 from .capabilities_of import capabilities_of
 from .definition_outcome_of import definition_outcome_of
 from .fixture import patched_fixtures
+from .fixture_library import FixtureLibrary
 from .generate.rig_below_minimum import rig_below_minimum
-from .library import FixtureLibrary
 from .names.names import Names
 from .searched_folders import searched_folders
 

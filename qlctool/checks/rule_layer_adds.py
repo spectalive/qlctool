@@ -24,7 +24,7 @@ from collections.abc import Mapping
 from lxml import etree
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from .color_roles import COLOUR
 from .family_frames import family_frame_problems
 from .finding import ERROR, Finding

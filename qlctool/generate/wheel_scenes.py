@@ -12,16 +12,16 @@ from dataclasses import dataclass
 
 from .. import roles
 from ..capabilities_of import capabilities_of
+from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..library import FixtureLibrary
-from ..multicolor_off import multicolor_off_pairs
+from ..multicolor_off_pairs import multicolor_off_pairs
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
-from ..zoom_wide import zoom_wide_pairs
+from ..zoom_wide_pairs import zoom_wide_pairs
 
 
 @dataclass(frozen=True)

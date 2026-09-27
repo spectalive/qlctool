@@ -11,10 +11,10 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
-from qlctool.library import FixtureLibrary
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
-from qlctool.zoom_wide import zoom_wide_pairs
+from qlctool.zoom_wide_pairs import zoom_wide_pairs
 
 REPO = RIG_ROOT
 

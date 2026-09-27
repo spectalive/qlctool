@@ -10,7 +10,7 @@ out as a crescent.
 
 The rule reads the definition, not the model: a dimmer channel described in
 **labelled ranges** is one whose author had to describe it in steps, and a
-channel described in steps has no fraction to give (`stepped_dimmer`). A plain
+channel described in steps has no fraction to give (`stepped_dimmer_offsets`). A plain
 fader declares no ranges at all, so nothing else in this rig is asked about.
 
 An EFX in Dimmer mode over such a channel is the same fault in motion - it
@@ -18,7 +18,7 @@ sweeps the blade, so most of every pass is a half-moon - and is caught here
 too, since the value it writes is unknowable rather than an end.
 """
 
-from ..stepped_dimmer import stepped_dimmer_offsets
+from ..stepped_dimmer_offsets import stepped_dimmer_offsets
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 

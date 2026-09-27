@@ -1,13 +1,13 @@
 """Whether a fixture has a dimmer the intensity chases may sweep.
 
 A blade dimmer is not a fader: an EFX sweeping it does not dip the beam, it
-slides a blade across the lens (`stepped_dimmer`). A smoke machine's level is
+slides a blade across the lens (`stepped_dimmer_offsets`). A smoke machine's level is
 its pump. Neither is a dimmer a chase may run.
 """
 
 from .. import roles
-from ..capability import FixtureCapabilities
-from ..stepped_dimmer import stepped_dimmer_offsets
+from ..fixture_capabilities import FixtureCapabilities
+from ..stepped_dimmer_offsets import stepped_dimmer_offsets
 
 
 def fader_dimmed(capability: FixtureCapabilities) -> bool:

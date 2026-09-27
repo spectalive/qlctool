@@ -14,9 +14,9 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.color_scene_values import color_scene_values
 from qlctool.generate.wheel_scenes import generate_wheel_scenes
-from qlctool.library import FixtureLibrary
 from qlctool.shutter_open import shutter_open_pairs
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname

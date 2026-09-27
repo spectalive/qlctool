@@ -46,7 +46,7 @@ def master_button_factory(
             return None
         # The glyph travels in the caption: QLC+'s own <Icon> is a path into the
         # show Mac's disk, and a missing file is a blank button there and
-        # nowhere else (`control_glyph`, 2026-09-22).
+        # nowhere else (`glyph`, 2026-09-22).
         mark = glyphs.get(name, "")
         if mark and not caption.startswith(mark):
             caption = f"{mark} {caption}"

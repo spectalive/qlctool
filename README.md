@@ -215,10 +215,10 @@ A workspace given on the command line as well must be the one `[rig]` names.
 
 - `workspace.py`, `xmlsemantics.py`, `xmlutil.py` - load/save + the round-trip net
 - `validate.py` - headless QLC+ load, the second safety net
-- `skeleton.py` - strip a show back to its patch, for a fresh build
+- `strip_to_skeleton.py` - strip a show back to its patch, for a fresh build
 - `vc/` - Virtual Console widget builders (button, solo frame, appearance)
-- `library.py`, `definition.py`, `roles.py` - fixture definitions and channel roles
-- `fixture.py`, `capability.py`, `capabilities_of.py` - the patch and its capabilities
+- `fixture_library.py`, `definition.py`, `roles.py` - fixture definitions and channel roles
+- `fixture.py`, `fixture_capabilities.py`, `capabilities_of.py` - the patch and its capabilities
 - `fixture_group.py`, `argb.py`, `matrix_algorithms.py` - RGBMatrix inputs
 - `efx_algorithms.py` - EFX shapes and their Spanish show names
 - `patch_conflicts.py`, `fixture_references.py`, `repatch/` - the patch layer:

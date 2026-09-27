@@ -6,7 +6,7 @@ from .desk_frame_identifier import desk_frame_identifier
 from .desk_widgets import DeskWidget, desk_widgets
 from .names.default_names import default_names
 from .names.names import Names
-from .slug import slugify
+from .slugify import slugify
 
 
 def desk_burst_buttons(

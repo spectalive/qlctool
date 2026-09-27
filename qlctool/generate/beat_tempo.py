@@ -8,7 +8,7 @@ longer milliseconds but **thousandths of a beat**, quantised to eighths
 (`Function::timeToBeats` floors to 125). So one bar of 4/4 is 4000 and half a
 beat is 500.
 
-What ticks the beat is the workspace's beat generator - see `beat_generator` -
+What ticks the beat is the workspace's beat generator - see `set_beat_generator` -
 and until something does, a function in Beats tempo does not advance. That is
 why this is applied to the layers that should feel the music (colour, matrices,
 gobos) and never to the energy cycle, which measures the night in minutes and

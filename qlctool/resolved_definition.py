@@ -8,7 +8,7 @@ generators skip it and every rule is blind to it.
 from .definition import FixtureDefinition
 from .definition_outcome_of import definition_outcome_of
 from .fixture import PatchedFixture
-from .library import FixtureLibrary
+from .fixture_library import FixtureLibrary
 
 
 def resolved_definition(

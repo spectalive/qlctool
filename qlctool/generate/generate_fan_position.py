@@ -16,9 +16,9 @@ Fine channels go to zero so a 16-bit head lands on the coarse value.
 from collections.abc import Sequence
 
 from .. import roles
+from ..fixture_library import FixtureLibrary
 from ..functions.scene import build_scene
 from ..ids import next_function_id
-from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace

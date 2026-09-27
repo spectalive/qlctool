@@ -9,9 +9,9 @@ from pathlib import Path
 
 import pytest
 
-from qlctool.definition_schema import SCHEMA_PATH, definition_errors
+from qlctool.definition_errors import SCHEMA_PATH, definition_errors
 from qlctool.fixture_dirs import fixture_dirs
-from qlctool.library import SYSTEM_FIXTURES
+from qlctool.fixture_library import SYSTEM_FIXTURES
 
 DEFINITIONS = sorted(
     q for d in fixture_dirs(start=Path(__file__)) for q in d.glob("*.qxf")

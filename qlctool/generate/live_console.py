@@ -31,7 +31,7 @@ rig, which is what turned the room white - impossible to press.
 
 from collections.abc import Mapping, Sequence
 
-from ..control_glyph import GLYPHS
+from ..glyph import GLYPHS
 from ..names.default_names import default_names
 from ..names.localised_keys import localised_keys
 from ..names.names import Names

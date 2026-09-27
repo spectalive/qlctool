@@ -18,7 +18,7 @@ no shutter, so whoever owns the intensity keeps owning it.
 from collections.abc import Sequence
 
 from .. import roles
-from ..capability import FixtureCapabilities
+from ..fixture_capabilities import FixtureCapabilities
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..names.default_names import default_names

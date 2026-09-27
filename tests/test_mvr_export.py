@@ -22,10 +22,9 @@ import pymvr
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool import roles
 from qlctool.definition import Channel, Dimensions, FixtureDefinition
 from qlctool.fixture import patched_fixtures
-from qlctool.library import FixtureLibrary
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.monitor_node import MonitorItem
 from qlctool.mvr.beam_direction import beam_direction
 from qlctool.mvr.build_fixture_type import build_fixture_type
@@ -37,6 +36,7 @@ from qlctool.mvr.monitor_items import monitor_items
 from qlctool.mvr.mvr_matrix import mvr_matrix
 from qlctool.mvr.write_gdtf import write_gdtf
 from qlctool.mvr.write_mvr import write_mvr
+from qlctool.role_of import role_of
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT
@@ -86,7 +86,7 @@ def _definition(
 
 def _channel(name, preset=None, group="", caps=()):
     return Channel(
-        name=name, role=roles.role_of(preset, group, name), capabilities=tuple(caps), group=group
+        name=name, role=role_of(preset, group, name), capabilities=tuple(caps), group=group
     )
 
 

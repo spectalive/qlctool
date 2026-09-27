@@ -7,15 +7,15 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
-from qlctool.color_wheel_match import color_wheel_pairs
+from qlctool.color_wheel_pairs import color_wheel_pairs
+from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.library import FixtureLibrary
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.rgbw_split import rgbw_split
 from qlctool.rigged_fixture_ids import rigged_fixture_ids
 from qlctool.shutter_open import shutter_open_pairs
-from qlctool.strobe_speed import strobe_speed_pairs
+from qlctool.strobe_speed_pairs import strobe_speed_pairs
 from qlctool.vibra.tuning import VIBRA_TUNING
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
