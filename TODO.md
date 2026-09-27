@@ -247,16 +247,19 @@
   `test_qlcplus_discovery.py`, `test_saved_io_patches.py` (29 tests) green
   three times in a row under `-n auto`, and the full suite (951 passed, 1
   skipped) once.
-- [ ] **A lone fixture is refused instead of getting a smaller show (round G
-  review, 2026-09-26).** The rig minimum became one fixture group of two or
-  more fixtures because the sweep (`tests/test_every_single_model_rig.py`)
-  showed a lone fixture fails `check`: the odd/even strobe has no odd half and
-  the tap dial re-tempos only the colour wheels, all at one multiplier. A lone
-  four-head bar used to build a passing show and is now refused. Smallest next
-  step: let the strobe and tap-dial generators degrade for a one-fixture group,
-  then lower the minimum and let the sweep prove it.
-- [ ] **`check` cannot see whether page 4's help names the frames drawn
-  (round G review, 2026-09-26).** `library_help_lines` picks the lines that
+- [x] **A lone fixture is refused instead of getting a smaller show (round G
+  review, 2026-09-26).** Closed 2026-09-27 (e58dca8): the minimum is one
+  fixture group with a fixture in it; the odd/even ping-pong is built only
+  where two fixtures dim, the together movement twins only where two heads
+  are rigged, and `tap_dial` reads the listed functions' own durations (one
+  multiplier over layers of one length flattens nothing;
+  `tests/test_tap_dial_equal_layers.py`). The sweep builds and checks one of
+  every model and mode; Vibra x3 identical.
+- [x] **`check` cannot see whether page 4's help names the frames drawn
+  (round G review, 2026-09-26).** Closed 2026-09-27 (ea9f01f): rule
+  `help_names_frame` reads the console (Frame and SoloFrame captions on the
+  label's page, any shipped language); `tests/test_help_names_frame.py`
+  deletes the mixes and the matrices frame of Vibra-split. `library_help_lines` picks the lines that
   name the two-colour mixes and the matrices from the frames `live_console`
   draws (`has_mixes`, `has_matrices`), and their `CAPTION_PROMISES` entries
   promise nothing, because no fixture capability shows either frame. A
@@ -326,10 +329,13 @@
   fix) and `tests/test_lit_smoke_wash.py` (the columns' LEDs stay a wash in
   every room colour, their LED master at full in the levels and their pump at
   zero, on Vibra and on Vibra without its fog-only machine). Vibra identical x3.
-  - [ ] A `check` rule for a built function that no button, chaser,
-    collection or input binding reaches would have seen this. Caveat: some
-    functions are reached only through the input profile (the pad's
-    bindings), so the rule must read the profile too, or it flags them.
+  - [x] A `check` rule for a built function that no button, chaser,
+    collection or input binding reaches would have seen this. Closed
+    2026-09-27 (ea9f01f): `unreachable_function`, a warning; an input
+    profile binds widgets, never functions, so the pad reaches nothing a
+    widget does not. Over the sweep it found two more of the class, fixed at
+    the cause: the beams' rainbow spin with no rainbow EFX (beams-only rig)
+    and the wheel step matrices on an all-pixel rig.
 - [-] **`Flash Color` leaves the lit smoke machines out of the strobe
   (2026-09-25).** Superseded by the owner's answer on 2026-09-26 ("Si, el
   flash enciende las maquinas de humo en blanco"): the columns go white, not
