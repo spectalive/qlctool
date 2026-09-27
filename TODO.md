@@ -1,5 +1,12 @@
 # qlctool follow-up
 
+- [ ] **Diamante takes the beams out of the audience window (en-sala re-audit,
+  2026-09-27).** Measured on the v0.1.9 Vibra show: every Diamante variant puts
+  the 7R tilt at 200-240 in about 30% of samples, outside the 207-234 window
+  (Hoja about 7%); the MACs stay inside on every figure. Next (CLAUDE.md order):
+  a `check` rule that bounds each movement EFX's tilt excursion by the
+  fixture's measured window, a dated test, then the generator's Diamante and
+  Hoja sizes. Evidence: vibra-lighting `docs/en-sala-dmx-reaudit-2026-09-27.md`.
 - [ ] **Desk bursts on a combined HTP dimmer/strobe channel (C2b, measured
   2026-09-27).** The tablet's bursts are Chasers started with
   `setFunctionStatus`, so the button's ForceLTP never applies, and on the
