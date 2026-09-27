@@ -36,6 +36,7 @@ from .rule_colour_clocks import check_colour_clocks
 from .rule_console import check_console
 from .rule_context import RuleContext
 from .rule_dangling_reference import check_dangling_references
+from .rule_duplicate_fixture_id import check_duplicate_fixture_ids
 from .rule_grid_order import check_grid_order
 from .rule_group_grid import check_group_grids
 from .rule_held_column import check_held_column
@@ -152,9 +153,9 @@ def check_workspace(
     findings += check_untempoed_rhythm(graph, groups, root, entries)
     findings += check_tempo_units(graph)
     findings += movement_findings(graph, groups, root, states)
-    findings += check_smoke(graph, groups, entries)
-    findings += check_smoke_light(graph, groups, entries)
-    findings += check_smoke_restore(graph, groups, root, states)
+    findings += check_smoke(graph, groups)
+    findings += check_smoke_light(graph, groups)
+    findings += check_smoke_restore(graph, groups, root)
     findings += check_held_column(graph, groups, root, bounded)
     findings += check_group_grids(graph, root)
     findings += check_grid_order(root)
