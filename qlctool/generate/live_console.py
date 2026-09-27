@@ -58,6 +58,7 @@ from ..vc.speed_dial import build_speed_dial
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
+from .bank_caption import bank_caption
 from .bind_pad import bind_pad
 from .console_ids import ConsoleIds
 from .console_layout import (
@@ -726,7 +727,7 @@ def _page_control(
             button(
                 element,
                 function_id,
-                _mix_caption(name, mix_code) if split else _bank_caption(name, short_colour),
+                _mix_caption(name, mix_code) if split else bank_caption(name, short_colour),
                 x=GAP + index * pitch,
                 y=HEADER,
                 w=pitch - 3,
@@ -1294,12 +1295,6 @@ def _function_names(workspace: Workspace) -> dict[int, str]:
 
 def _first(ids):
     return ids[0] if ids else None
-
-
-def _bank_caption(name: str, short_colour: Mapping[str, str]) -> str:
-    """ "Rojo BarrasLed" is a red button in the bars' bank: it says "Rojo"."""
-    first = name.split(" ", maxsplit=1)[0] if name else ""
-    return short_colour.get(first, first)
 
 
 def _mix_caption(name: str, mix_code: Mapping[str, str]) -> str:
