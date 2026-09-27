@@ -24,7 +24,7 @@ So the rule reads the wiring against the device, not against names:
 
 from lxml import etree
 
-from ..input_binding import midi_input_patch
+from ..midi_input_patch import midi_input_patch
 from .finding import ERROR, Finding
 from .input_profile_channels import input_profile_channels
 from .pad_bindings import pad_bindings

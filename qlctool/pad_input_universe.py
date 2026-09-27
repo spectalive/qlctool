@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from .input_binding import midi_input_patch
+from .midi_input_patch import midi_input_patch
 
 # Where `pin_midi_input` seeds the pad's patch, and where `build_input_source`
 # binds a widget by default.
