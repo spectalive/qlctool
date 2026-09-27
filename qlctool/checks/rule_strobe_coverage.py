@@ -19,16 +19,16 @@ opener - but the generator builds it from the same fixture list as the ON,
 so covering one covers the other.
 """
 
-from .. import roles
+from .all_strobe_writes import all_strobe_writes
+from .any_strobing_write import any_strobing_write
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .strobe_written import strobe_capable_offsets
-from .value_strobes import value_strobes
 
 RULE_ID = "strobe_coverage"
 
 
-def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
+def check_strobe_coverage(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> list[Finding]:
     capable = {
         fixture_id: offsets
         for fixture_id, capability in graph.capabilities.items()
@@ -41,9 +41,9 @@ def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
         if function.attrib.get("Type") != "Scene":
             continue
         written = graph.driven_of(function, groups)
-        if not written or not _all_strobe_writes(graph, written):
+        if not written or not all_strobe_writes(graph, written):
             continue
-        if not _any_strobing_write(graph, written):
+        if not any_strobing_write(graph, written):
             continue
         missing = [
             graph.capabilities[fixture_id].fixture.name or str(fixture_id)
@@ -62,30 +62,3 @@ def check_strobe_coverage(graph: ShowGraph, groups) -> list[Finding]:
                 )
             )
     return findings
-
-
-def _all_strobe_writes(graph: ShowGraph, written) -> bool:
-    """Every written channel is a strobe-role channel, on every fixture."""
-    for fixture_id, pairs in written.items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None:
-            return False
-        strobe_offsets = set(capability.offsets_for_role(roles.STROBE))
-        if not set(pairs) <= strobe_offsets:
-            return False
-    return True
-
-
-def _any_strobing_write(graph: ShowGraph, written) -> bool:
-    """At least one written value actually strobes its channel."""
-    for fixture_id, pairs in written.items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None:
-            continue
-        capable = strobe_capable_offsets(capability)
-        for offset, value in pairs.items():
-            if value is None or offset not in capable:
-                continue
-            if value_strobes(capable[offset], value):
-                return True
-    return False
