@@ -30,26 +30,19 @@ rig, which is what turned the room white - impossible to press.
 """
 
 from collections.abc import Mapping, Sequence
-from typing import Any
 
-from lxml import etree
-
-from ..argb import argb_from_rgb
 from ..control_glyph import GLYPHS
 from ..names.default_names import default_names
 from ..names.localised_keys import localised_keys
 from ..names.names import Names
 from ..palette import PALETTE
-from ..vc.appearance import DEFAULT
 from ..vc.audio_triggers import build_audio_triggers
-from ..vc.button import FLASH, TOGGLE, build_button
 from ..vc.dial_function import DialFunction
-from ..vc.frame import build_frame
-from ..vc.label import build_label
 from ..workspace import Workspace
 from .beam_subsets import GeneratedBeamSubsets
 from .bind_pad import bind_pad
 from .builtin_effects import GeneratedBuiltins
+from .button_factory import button_factory
 from .console_ids import ConsoleIds
 from .console_layout import (
     AUDIO_BANDS,
@@ -73,11 +66,14 @@ from .console_layout import (
     TEMPO_BEAT_MS,
     TITLE_FONT,
 )
+from .frame_factory import frame_factory
 from .function_names import function_names
 from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
 from .generated_matrices import GeneratedMatrices
 from .generated_play_wrappers import GeneratedPlayWrappers
+from .label_factory import label_factory
+from .master_button_factory import master_button_factory
 from .on_page import on_page
 from .page_control import page_control
 from .page_library import page_library
@@ -85,7 +81,6 @@ from .page_show import page_show
 from .play_page import build_play_page
 from .root_frame import root_frame
 from .set_canvas import set_canvas
-from .smc_pad_colors import readable_foreground
 from .wheel_scenes import GeneratedWheel
 
 
@@ -142,121 +137,12 @@ def generate_live_console(
     flash = set(flash_functions)
 
     widget_of: dict[int, int] = {}
-
-    def button(
-        parent: etree._Element,
-        function_id: int | None,
-        caption: str,
-        x: int,
-        y: int,
-        w: int,
-        h: int,
-        page: int | None = None,
-        **kwargs: Any,
-    ) -> etree._Element:
-        widget_id = ids.take()
-        element = build_button(
-            parent,
-            widget_id,
-            caption,
-            function_id,
-            x=x,
-            y=y,
-            width=w,
-            height=h,
-            **kwargs,
-        )
-        on_page(element, page)
-        console.button_ids.append(widget_id)
-        console.widget_ids.append(widget_id)
-        if function_id is not None:
-            widget_of[function_id] = widget_id
-        return element
-
-    def frame(
-        parent: etree._Element,
-        caption: str,
-        x: int,
-        y: int,
-        w: int,
-        h: int,
-        page: int | None = None,
-        **kwargs: Any,
-    ) -> etree._Element:
-        widget_id = ids.take()
-        element = build_frame(parent, widget_id, caption, x, y, w, h, **kwargs)
-        on_page(element, page)
-        console.frame_ids.append(widget_id)
-        console.widget_ids.append(widget_id)
-        return element
-
-    def label(
-        parent: etree._Element,
-        caption: str,
-        x: int,
-        y: int,
-        w: int,
-        h: int,
-        page: int | None = None,
-        font: str = DEFAULT,
-    ) -> etree._Element:
-        widget_id = ids.take()
-        element = build_label(parent, widget_id, caption, x, y, w, h, font=font)
-        on_page(element, page)
-        console.widget_ids.append(widget_id)
-        return element
-
-    def master_button(
-        parent: etree._Element,
-        name: str,
-        caption: str,
-        x: int,
-        y: int,
-        w: int,
-        h: int,
-        page: int | None = None,
-        function_id: int | None = None,
-        include_key: bool = True,
-        **kwargs: Any,
-    ) -> etree._Element | None:
-        """A button for a master function, with its key, glyph and action."""
-        target_id = function_id if function_id is not None else master.get(name)
-        if target_id is None:
-            return None
-        # The glyph travels in the caption: QLC+'s own <Icon> is a path into the
-        # show Mac's disk, and a missing file is a blank button there and
-        # nowhere else (`control_glyph`, 2026-09-22).
-        mark = glyphs.get(name, "")
-        if mark and not caption.startswith(mark):
-            caption = f"{mark} {caption}"
-        # A pad-bound function wears its palette colour, so the console button
-        # and the pad LED read as the same surface.
-        colour = pad_colors.get(name)
-        if colour is not None and "background" not in kwargs:
-            kwargs["background"] = str(argb_from_rgb(colour))
-            kwargs.setdefault("foreground", str(argb_from_rgb(readable_foreground(colour))))
-        element = button(
-            parent,
-            target_id,
-            caption,
-            x,
-            y,
-            w,
-            h,
-            page=page,
-            key=keys.get(name) if include_key else None,
-            action=FLASH if name in flash else TOGGLE,
-            # A hit must read over the running state, not merely join it.
-            # Override only orders the faders: on an HTP channel the level's
-            # higher value still wins the compare, so a MiN Wash strobe on its
-            # Intensity-group Dimmer/Strobe channel never showed under a level
-            # (`rule_strobe_masked_by_htp`, 2026-09-26). ForceLTP writes past it.
-            flash_override=name in flash,
-            flash_force_ltp=name in flash,
-            **kwargs,
-        )
-        bind_pad(element, pad_bindings, name)
-        return element
+    button = button_factory(ids, console, widget_of)
+    frame = frame_factory(ids, console)
+    label = label_factory(ids, console)
+    master_button = master_button_factory(
+        button, master, keys, flash, glyphs, pad_colors, pad_bindings
+    )
 
     outer = frame(
         console_root,

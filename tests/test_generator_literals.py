@@ -197,6 +197,11 @@ CONVERTED: tuple[str, ...] = (
     "generate/speed_fader.py",
     "generate/live_matrix.py",
     "generate/library_help.py",
+    # 2026-09-27: live_console's widget closures move to their own factories.
+    "generate/button_factory.py",
+    "generate/frame_factory.py",
+    "generate/label_factory.py",
+    "generate/master_button_factory.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
