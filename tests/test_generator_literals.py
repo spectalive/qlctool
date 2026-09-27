@@ -179,6 +179,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/page_show.py",
     # 2026-09-27: page 1 cut along its frames, room states first.
     "generate/room_states.py",
+    "generate/hits.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
