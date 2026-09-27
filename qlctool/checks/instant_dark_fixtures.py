@@ -3,13 +3,13 @@
 from functools import partial
 
 from .. import roles
-from ..definition import Capability
 from ..shutter_open import shutter_open_ranges
 from ..strobe_range import strobe_range
 from .color_roles import COLOUR
 from .driven_channels import Driven
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph, lit, merge, reach
+from .shutter_closed import shutter_closed
 from .shutter_closed_while_lit import shutter_closed_while_lit
 from .unowned_while_lit import unowned_while_lit
 
@@ -62,7 +62,7 @@ def instant_dark_fixtures(
                 coloured,
                 offset,
                 partial(
-                    _shut,
+                    shutter_closed,
                     opening=opening,
                     strobing=strobe_range(capability.capabilities_by_offset[offset]),
                 ),
@@ -73,11 +73,3 @@ def instant_dark_fixtures(
         ):
             dark.append(capability.fixture.name)
     return dark
-
-
-def _shut(value: int | None, opening: Capability, strobing: Capability | None) -> bool:
-    if value is None:
-        return False
-    if opening.minimum <= value <= opening.maximum:
-        return False
-    return strobing is None or not (strobing.minimum <= value <= strobing.maximum)
