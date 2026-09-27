@@ -25,7 +25,7 @@ from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph
-from .stepped_leaves import stepped_leaves
+from .stepped_writes_by_state import stepped_writes_by_state
 from .wrapper_scenes import wrapper_scenes
 
 RULE_ID = "pick_overridden"
@@ -48,7 +48,7 @@ def check_pick_overridden(
 ) -> list[Finding]:
     if not states:
         return []
-    stepped = _stepped_writes(graph, groups, states)
+    stepped = stepped_writes_by_state(graph, groups, states)
     findings: list[Finding] = []
     for button in layer_buttons(root, states):
         if family_frame_problems(graph, groups, states, button.widget) == ():
@@ -85,19 +85,3 @@ def check_pick_overridden(
             )
         )
     return findings
-
-
-def _stepped_writes(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
-) -> dict[tuple[int, int], set[int]]:
-    """(fixture, offset) -> the states whose chasers re-write it at a step."""
-    found: dict[tuple[int, int], set[int]] = {}
-    for state_id in states:
-        for leaf_id in stepped_leaves(graph, state_id):
-            leaf = graph.functions.get(leaf_id)
-            if leaf is None:
-                continue
-            for fixture_id, written in graph.driven_of(leaf, groups).items():
-                for offset in written:
-                    found.setdefault((fixture_id, offset), set()).add(state_id)
-    return found
