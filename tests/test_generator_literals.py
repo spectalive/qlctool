@@ -183,6 +183,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/panic.py",
     "generate/haze_row.py",
     "generate/tempo_dial.py",
+    # 2026-09-27: page 3 cut along its frames, the bank column first.
+    "generate/bank_column.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
