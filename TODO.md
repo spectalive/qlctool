@@ -191,8 +191,13 @@
   through the graph's parse cache (`ShowGraph.driven_of`) instead of
   re-parsing it once per rule. One check of Vibra-split: 1.16-1.22 s ->
   0.74-0.76 s. Suite: summed 480.9 s -> 393.9 s, `test_check.py` 259.9 s ->
-  184.3 s, wall 69-73 s -> 55 s. Smallest next step: read the next CI runs'
-  3.11 leg; close below 50% (300 s).
+  184.3 s, wall 69-73 s -> 55 s. The v0.1.11 tag run 36331022760
+  (2026-09-27) after those cuts: 575.6 s on 3.11 (96% of 600) and 433.4 s on
+  3.13, so the cuts did not reach CI and the leg was one slow runner from
+  failing as over-budget. The CI budget was raised to 900 s the same day
+  (the budget guards against a hang, not a slow leg); the local 120 s stays.
+  Smallest next step: read the next CI runs' 3.11 leg against 900 s; close
+  below 50% (450 s) on three runs in a row.
 - [ ] **The MiN Wash sit at full in Ambiente (ruling D2, en-sala audit
   2026-09-26).** Their one Dimmer/Strobe channel is in the Intensity group
   and inverted (8 = 100 %, 134 = 0 %), and the levels hold it at 255 "Open"
@@ -276,12 +281,16 @@
   length mismatch is a bug, not an intended cut: all 29 are `strict=True`
   and B905 left the `ignore` list (5965909). Vibra x3 identical.
 - [ ] **The mypy ratchet in `mypy.ini` (moved from vibra-lighting,
-  2026-09-26).** 70 modules carry `ignore_errors`; with every one of them
-  switched off mypy finds 226 errors in 70 files, nearly all missing
-  annotations (`lxml-stubs` is installed). Round G took
-  `generate/canonical_show` off the list (from 71 modules and 260 errors).
-  Smallest next step: annotate the smallest listed module and delete its
-  section; a section is never added.
+  2026-09-26).** 67 modules carry `ignore_errors` (70 on 2026-09-26; with
+  every one of them switched off mypy found 226 errors in 70 files, nearly
+  all missing annotations; `lxml-stubs` is installed). Round G took
+  `generate/canonical_show` off the list (from 71 modules and 260 errors);
+  2026-09-27 took `xmlutil`, `vc/widget_ids` and `repatch/rename` off it
+  (`iter_local` typed, a comment's callable tag narrowed as `object`, a
+  fixture with no `<Name>` refused). No section passes on its own: every
+  remaining module has at least one error of its own. Smallest next step:
+  annotate the smallest listed module and delete its section; a section is
+  never added.
 - [ ] **The codeality structural baseline (moved from vibra-lighting,
   2026-09-26).** `codeality-py check` gives 198 findings, all in the baseline
   (`baseline check`: 0 new, 198 known): BPY001 116, BPY002 72, BPY004 10. The
