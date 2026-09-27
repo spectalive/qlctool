@@ -263,6 +263,10 @@ CONVERTED: tuple[str, ...] = (
     "generate/first_free_y.py",
     "generate/background_for.py",
     "generate/grow_console.py",
+    # 2026-09-27, batch 5: split out of play_wrappers.py, which was converted.
+    # spaced.py (split earlier out of gobo_shake.py) is generic now and
+    # reused here instead of a second identical _spread.
+    "generate/play_wrap.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

@@ -1,11 +1,12 @@
-"""`count` positions spread evenly across a wheel's patterns."""
+"""A stable, evenly distributed subset of `count` items, without repeats."""
 
 from collections.abc import Sequence
+from typing import TypeVar
 
-from ..definition import Capability
+T = TypeVar("T")
 
 
-def spaced(patterns: Sequence[Capability], count: int) -> list[Capability]:
-    if len(patterns) <= count:
-        return list(patterns)
-    return [patterns[round(i * (len(patterns) - 1) / (count - 1))] for i in range(count)]
+def spaced(items: Sequence[T], count: int) -> list[T]:
+    if len(items) <= count:
+        return list(items)
+    return [items[round(i * (len(items) - 1) / (count - 1))] for i in range(count)]
