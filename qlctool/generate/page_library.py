@@ -12,25 +12,19 @@ from lxml import etree
 from ..names.names import Names
 from ..vc.level_slider import build_level_slider
 from ..vc.matrix_control import build_matrix_control
-from .after_marker import after_marker
 from .beam_subsets import GeneratedBeamSubsets
 from .builtin_effects import GeneratedBuiltins
 from .console_ids import ConsoleIds
 from .console_layout import (
-    GAP,
-    HEADER,
     HELP_FONT,
     LEFT_WIDTH,
     LEFT_X,
     LIBRARY_SEPARATOR,
-    MIDDLE_WIDTH,
-    MIDDLE_X,
     OUTER_WIDTH,
     PAGE_LIBRARY,
     RIGHT_WIDTH,
     RIGHT_X,
     SMALL_FONT,
-    TINY_FONT,
     TITLE_FONT,
 )
 from .cycles import cycles
@@ -41,7 +35,7 @@ from .library_help_lines import library_help_lines
 from .matrix_frame import matrix_frame
 from .mixes import mixes
 from .on_page import on_page
-from .panels_frame_caption import panels_frame_caption
+from .panels import panels
 from .wheel_frame import wheel_frame
 
 
@@ -101,30 +95,7 @@ def page_library(
 
     cycles(outer, button, frame, names, banks, matrices, builtins, vocabulary)
 
-    if builtins.scene_ids:
-        panels = frame(
-            outer,
-            vocabulary.render(panels_frame_caption(has_panels), count=len(builtins.scene_ids)),
-            MIDDLE_X,
-            580,
-            MIDDLE_WIDTH,
-            244,
-            page=PAGE_LIBRARY,
-            solo=True,
-            font=TITLE_FONT,
-        )
-        for index, function_id in enumerate(builtins.scene_ids):
-            column, row = index % 12, index // 12
-            button(
-                panels,
-                function_id,
-                after_marker(names.get(function_id, ""), " - "),
-                x=GAP + column * 51,
-                y=HEADER + row * 52,
-                w=47,
-                h=46,
-                font=TINY_FONT,
-            )
+    panels(outer, button, frame, names, builtins, has_panels, vocabulary)
 
     if builtins.speed_channels:
         # The live fader over the panels' speed channel, beside the effects it
