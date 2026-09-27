@@ -60,6 +60,7 @@ from ..workspace import Workspace
 from ..xmlutil import find_local, localname
 from .after_marker import after_marker
 from .bank_caption import bank_caption
+from .before_marker import before_marker
 from .bind_pad import bind_pad
 from .console_ids import ConsoleIds
 from .console_layout import (
@@ -1031,7 +1032,7 @@ def _page_library(
             font=TITLE_FONT,
         )
         for page, generated in enumerate(matrices):
-            group = _before(names.get(_first(generated.matrix_ids), ""), " - ")
+            group = before_marker(names.get(_first(generated.matrix_ids), ""), " - ")
             label(
                 matrix_frame,
                 vocabulary.render("group_label", group=group),
@@ -1297,11 +1298,6 @@ def _function_names(workspace: Workspace) -> dict[int, str]:
 
 def _first(ids):
     return ids[0] if ids else None
-
-
-def _before(name: str, marker: str) -> str:
-    head, separator, _ = name.partition(marker)
-    return head if separator else name
 
 
 def _set_canvas(root: etree._Element, canvas: tuple[int, int]) -> None:
