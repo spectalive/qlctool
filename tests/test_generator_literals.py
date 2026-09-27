@@ -267,6 +267,13 @@ CONVERTED: tuple[str, ...] = (
     # spaced.py (split earlier out of gobo_shake.py) is generic now and
     # reused here instead of a second identical _spread.
     "generate/play_wrap.py",
+    # 2026-09-27, batch 5: split out of beam_subsets.py, which was converted.
+    "generate/generated_beam_subsets.py",
+    "generate/inserted_prism.py",
+    "generate/parked_prism.py",
+    "generate/prism_scene.py",
+    "generate/multicolor_offset.py",
+    "generate/multicolor_scene.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

@@ -39,13 +39,13 @@ from ..palette import PALETTE
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
 from .audio_triggers_row import audio_triggers_row
-from .beam_subsets import GeneratedBeamSubsets
 from .console_ids import ConsoleIds
 from .console_layout import CANVAS_HEIGHT, CANVAS_WIDTH, MIX_COLOURS, SHORT_COLOURS, TEMPO_BEAT_MS
 from .console_outer_frame import console_outer_frame
 from .console_widgets import console_widgets
 from .function_names import function_names
 from .generated_bank import GeneratedBank
+from .generated_beam_subsets import GeneratedBeamSubsets
 from .generated_builtins import GeneratedBuiltins
 from .generated_console import GeneratedConsole
 from .generated_matrices import GeneratedMatrices

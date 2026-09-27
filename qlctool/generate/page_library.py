@@ -10,11 +10,11 @@ from collections.abc import Callable, Mapping, Sequence
 from lxml import etree
 
 from ..names.names import Names
-from .beam_subsets import GeneratedBeamSubsets
 from .console_ids import ConsoleIds
 from .console_layout import LEFT_WIDTH, LEFT_X, OUTER_WIDTH, PAGE_LIBRARY, TITLE_FONT
 from .cycles import cycles
 from .generated_bank import GeneratedBank
+from .generated_beam_subsets import GeneratedBeamSubsets
 from .generated_builtins import GeneratedBuiltins
 from .generated_console import GeneratedConsole
 from .generated_matrices import GeneratedMatrices

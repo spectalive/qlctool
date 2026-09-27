@@ -22,8 +22,8 @@ from ..fixture_library import FixtureLibrary
 from ..names.names import Names
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
-from .beam_subsets import GeneratedBeamSubsets
 from .generated_bank import GeneratedBank
+from .generated_beam_subsets import GeneratedBeamSubsets
 from .generated_builtins import GeneratedBuiltins
 from .generated_dimmers import GeneratedDimmers
 from .generated_gobo_shake import GeneratedGoboShake
