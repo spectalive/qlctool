@@ -15,7 +15,8 @@ shipped file drifts from what this builds.
 from lxml import etree
 
 from ..constants import XML_DECLARATION
-from .smc_pad_device import PADS, control_channel, pad_channel
+from .control_channel import control_channel
+from .smc_pad_device import PADS, pad_channel
 
 PROFILE_NS = "http://www.qlcplus.org/InputProfile"
 PROFILE_DOCTYPE = "<!DOCTYPE InputProfile>"

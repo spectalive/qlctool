@@ -207,6 +207,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/audio_triggers_row.py",
     "generate/play_page_call.py",
     "generate/console_widgets.py",
+    # 2026-09-27, batch 5: split out of smc_pad_device.py, which was converted.
+    "generate/control_channel.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

@@ -66,10 +66,3 @@ def pad_channel(pad: int, bank: int = 1) -> int:
         raise ValueError(f"bank {bank}: the show only uses the pad's first two")
     note = FIRST_PAD_NOTE + (bank - 1) * PADS + pad - 1
     return ((PAD_MIDI_CHANNEL - 1) << OMNI_CHANNEL_SHIFT) + NOTE_OFFSET + note
-
-
-def control_channel(cc: int) -> int:
-    """The QLC+ input channel for a knob or button's control change."""
-    if not 0 <= cc <= 127:
-        raise ValueError(f"CC {cc} is outside MIDI's 0-127")
-    return ((CONTROL_MIDI_CHANNEL - 1) << OMNI_CHANNEL_SHIFT) + cc

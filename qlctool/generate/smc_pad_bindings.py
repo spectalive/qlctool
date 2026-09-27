@@ -29,7 +29,8 @@ Play stays free: a button can carry one external source per control, and AUTO's
 is pad 5's.
 """
 
-from .smc_pad_device import control_channel, pad_channel
+from .control_channel import control_channel
+from .smc_pad_device import pad_channel
 
 SMC_PAD_BINDINGS: dict[str, int] = {
     # Bank 1, top row (pads 13-16): the hits you hammer.
