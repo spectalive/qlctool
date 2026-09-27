@@ -11,10 +11,8 @@ from lxml import etree
 
 from ..names.names import Names
 from ..vc.dial_function import DialFunction
-from ..vc.speed_dial import build_speed_dial
 from .aim_pad import aim_pad
 from .bank_column import bank_column
-from .bind_pad import bind_pad
 from .console_ids import ConsoleIds
 from .console_layout import (
     DIMMER_CHASES,
@@ -22,19 +20,17 @@ from .console_layout import (
     LEFT_X,
     MIDDLE_WIDTH,
     MIDDLE_X,
-    MOVEMENT_DIAL_LINES,
     OUTER_WIDTH,
     PAGE_CONTROL,
     RIGHT_WIDTH,
     RIGHT_X,
-    TEMPO_TAP_KEY,
     TITLE_FONT,
 )
 from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
 from .grand_master import grand_master
 from .intensity import intensity
-from .on_page import on_page
+from .movement_dial import movement_dial
 from .page_control_title import page_control_title
 from .wheel_frame import wheel_frame
 from .wheel_scenes import GeneratedWheel
@@ -145,35 +141,6 @@ def page_control(
 
     aim_pad(outer, label, ids, console, mover_fixture_ids, vocabulary)
 
-    # The movement dial stays with the direct controls and on the same tap key
-    # as page 1's tempo. It re-times each rotation AND the EFX
-    # under it, chaser fade included, so the figure stays the same fraction
-    # of its step whatever the room is doing.
-    if movement_functions:
-        dial_id = ids.take()
-        dial = build_speed_dial(
-            outer,
-            dial_id,
-            vocabulary.display("movement_speed"),
-            RIGHT_X,
-            68,
-            124,
-            150,
-            functions=movement_functions,
-            time_ms=tempo_beat_ms,
-            tap_key=TEMPO_TAP_KEY,
-        )
-        bind_pad(dial, pad_bindings, vocabulary.display("movement_speed"))
-        on_page(dial, PAGE_CONTROL)
-        console.widget_ids.append(dial_id)
-        for index, line in enumerate(MOVEMENT_DIAL_LINES):
-            label(
-                outer,
-                vocabulary.display(line),
-                RIGHT_X,
-                228 + index * 22,
-                RIGHT_WIDTH,
-                20,
-                page=PAGE_CONTROL,
-                font=HELP_FONT,
-            )
+    movement_dial(
+        outer, label, ids, console, movement_functions, tempo_beat_ms, pad_bindings, vocabulary
+    )
