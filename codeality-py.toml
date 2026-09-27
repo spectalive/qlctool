@@ -55,6 +55,8 @@ data = [
   "qlctool/generate/show_path.py",
   "qlctool/generate/default_matrix_algorithms.py",
   "qlctool/generate/cycle_algorithms.py",
+  # The live console's layout numbers and identifier tables (2026-09-27 split).
+  "qlctool/generate/console_layout.py",
   # One constant each, imported where it is needed: a tag list, the console
   # canvas of a workspace that states none, an invalid function id sentinel, a
   # folder name, a language, a pattern, the catalogue's sections and where the

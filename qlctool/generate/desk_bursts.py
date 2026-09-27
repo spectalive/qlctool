@@ -16,7 +16,7 @@ from ..vc.label import build_label
 from ..vc.widget_ids import next_widget_id
 from ..workspace import Workspace
 from ..xmlutil import find_local, iter_local
-from .live_console import HELP_FONT, PAGE_CONTROL, SMALL_FONT
+from .console_layout import HELP_FONT, PAGE_CONTROL, SMALL_FONT
 
 
 def generate_desk_bursts(workspace: Workspace, names: Names | None = None) -> list[int]:

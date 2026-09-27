@@ -13,7 +13,7 @@ from rig_root import RIG_ROOT
 
 from qlctool.control_glyph import glyph
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.generate.live_console import (
+from qlctool.generate.console_layout import (
     BIG_FONT,
     CANVAS_HEIGHT,
     CANVAS_WIDTH,

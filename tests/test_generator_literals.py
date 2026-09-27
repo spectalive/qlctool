@@ -160,6 +160,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/fan_heads.py",
     # 2026-09-27, en-sala DMX re-audit: the size a turned figure fits at.
     "generate/fit_rotated_figure.py",
+    # 2026-09-27: the live console split; every table and page moved verbatim.
+    "generate/console_layout.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

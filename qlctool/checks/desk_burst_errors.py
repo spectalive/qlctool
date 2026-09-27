@@ -7,7 +7,7 @@ the finding reads in the workspace's language.
 from lxml import etree
 
 from ..desk_widgets import DeskWidget
-from ..generate.live_console import PAGE_CONTROL
+from ..generate.console_layout import PAGE_CONTROL
 from ..xmlutil import find_local, findall_local, iter_local
 from .phrase import Phrase
 from .show_graph import ShowGraph
