@@ -106,6 +106,14 @@ data = [
   "qlctool/checks/console_widget_tags.py",
   # The three SpectrumBar Type codes: DMX channel, function, or another widget.
   "qlctool/checks/spectrum_bar_types.py",
+  # The workspace XML namespace, doctype and function-type strings QLC+ 4.13.1
+  # emits, reverse-engineered from its own source.
+  "qlctool/constants.py",
+  # The EFX movement algorithm strings QLC+ matches against verbatim.
+  "qlctool/efx_algorithms.py",
+  # The show's colour palette and its screen-wide primary bank, mined from
+  # DeluxeEventos2's real scenes and matrices.
+  "qlctool/palette.py",
 ]
 # Instances other code finds by name: the MIDI pads a description can ask for,
 # the SMC-PAD's profile, and the two rule providers the `qlctool.rules` entry
