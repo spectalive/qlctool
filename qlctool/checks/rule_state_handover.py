@@ -18,11 +18,10 @@ next state, whose business it then is.
 """
 
 from .. import roles
-from ..fixture_capabilities import FixtureCapabilities
-from .color_roles import COLOUR
-from .driven_channels import Driven
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit, reach
+from .fixture_lit_in_state import fixture_lit_in_state
+from .left_showing import left_showing
+from .show_graph import ShowGraph, reach
 
 RULE_ID = "state_handover"
 INHERITED_ROLES = (
@@ -49,13 +48,13 @@ def check_state_handover(
         inherited: dict[str, set[str]] = {}
         for fixture_id, written in reaches[state_id].items():
             capability = graph.capabilities.get(fixture_id)
-            if capability is None or not _lights(capability, written):
+            if capability is None or not fixture_lit_in_state(capability, written):
                 continue
             for role in INHERITED_ROLES:
                 for offset in capability.offsets_for_role(role):
                     if offset in written:
                         continue
-                    if not _left_showing(reaches, state_id, fixture_id, offset):
+                    if not left_showing(reaches, state_id, fixture_id, offset):
                         continue
                     inherited.setdefault(role, set()).add(capability.fixture.name)
         if not inherited:
@@ -73,24 +72,3 @@ def check_state_handover(
             )
         )
     return findings
-
-
-def _lights(capability: FixtureCapabilities, written: dict[int, int | None]) -> bool:
-    dimmers = capability.offsets_for_role(roles.DIMMER)
-    if dimmers:
-        return any(lit(written.get(offset, 0)) for offset in dimmers)
-    coloured = {offset for role in COLOUR for offset in capability.offsets_for_role(role)}
-    return any(lit(written[offset]) for offset in coloured if offset in written)
-
-
-def _left_showing(reaches: dict[int, Driven], state_id: int, fixture_id: int, offset: int) -> bool:
-    """Whether another state can leave this channel at a value that is not 0."""
-    for other_id, other in reaches.items():
-        if other_id == state_id:
-            continue
-        value = other.get(fixture_id, {}).get(offset)
-        if value is None and offset in other.get(fixture_id, {}):
-            return True
-        if value:
-            return True
-    return False
