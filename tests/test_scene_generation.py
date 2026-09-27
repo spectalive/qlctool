@@ -12,12 +12,12 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.functions.scene import build_scene
 from qlctool.generate.color_scene import color_scene_values
 from qlctool.ids import existing_function_ids, next_function_id
+from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
-from qlctool.library import FixtureLibrary
 
 
 def _count_functions(root):

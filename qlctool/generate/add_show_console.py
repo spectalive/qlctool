@@ -29,10 +29,7 @@ def add_show_console(build: ShowBuild) -> list[int]:
     algorithms = build.algorithms
     banks = build.banks
     matrices = build.matrices
-    movement = build.movement
-    gobos = build.gobos
     beam_colors = build.beam_colors
-    prisms = build.prisms
     builtins = build.builtins
     beam_subsets = build.beam_subsets
     tempo_functions = build.tempo_functions
@@ -43,10 +40,7 @@ def add_show_console(build: ShowBuild) -> list[int]:
         master=master,
         banks=banks,
         matrices=matrices,
-        movement=movement,
-        gobos=gobos,
         beam_colors=beam_colors,
-        prisms=prisms,
         mover_fixture_ids=moving_head_ids(workspace, library),
         builtins=builtins,
         keys=dict(described.console.keys),

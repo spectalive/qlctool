@@ -1,20 +1,18 @@
 """The layers the show's tap dial re-times."""
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 
 from ..names.names import Names
 from ..vc.beat_multiplier import beat_multiplier
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
 from ..xmlutil import find_local
-from .generated_matrices import GeneratedMatrices
 from .timed_parts import timed_parts
 
 
 def tap_dial_functions(
     workspace: Workspace,
     master: Mapping[str, int],
-    matrices: Sequence[GeneratedMatrices],
     beat_ms: int,
     vocabulary: Names,
 ) -> list[DialFunction]:

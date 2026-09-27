@@ -40,7 +40,7 @@ def check_state_palette(
             judged.setdefault(chaser_id, entries[function_id])
     for chaser_id, caption in sorted(judged.items()):
         for step_id in graph.members.get(chaser_id, ()):
-            colours = step_palette(graph, groups, step_id)
+            colours = step_palette(graph, step_id)
             if len(colours) <= AT_MOST:
                 continue
             findings.append(

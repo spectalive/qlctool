@@ -13,9 +13,7 @@ from .matrix_colour import matrix_colour
 from .show_graph import ShowGraph
 
 
-def step_palette(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], step_id: int
-) -> set[tuple[int, int, int]]:
+def step_palette(graph: ShowGraph, step_id: int) -> set[tuple[int, int, int]]:
     """Every distinct lit colour this step puts on an RGB fixture or a matrix."""
     colours: set[tuple[int, int, int]] = set()
     for member in graph.descendants(step_id):

@@ -34,9 +34,7 @@ RULE_ID = "smoke_restore"
 RESET_GROUP = "intensity"
 
 
-def check_smoke_restore(
-    graph: ShowGraph, groups, root: etree._Element, states: set[int]
-) -> list[Finding]:
+def check_smoke_restore(graph: ShowGraph, groups, root: etree._Element) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []

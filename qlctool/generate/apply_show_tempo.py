@@ -39,9 +39,7 @@ def apply_show_tempo(build: ShowBuild) -> None:
         "Audio" if beats else "Internal",
         bpm=0 if beats else described.timing.bpm,
     )
-    tempo_functions = tap_dial_functions(
-        workspace, master, matrices, described.timing.beat_ms, vocabulary
-    )
+    tempo_functions = tap_dial_functions(workspace, master, described.timing.beat_ms, vocabulary)
     movement_functions = movement_tempo_functions(workspace, described.timing.beat_ms, vocabulary)
 
     if beats or bpm_tap:

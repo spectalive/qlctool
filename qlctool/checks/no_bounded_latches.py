@@ -3,6 +3,6 @@
 from .rule_context import RuleContext
 
 
-def no_bounded_latches(context: RuleContext) -> frozenset[int]:
+def no_bounded_latches(_context: RuleContext) -> frozenset[int]:
     """No function is exempt from the held-column rule."""
     return frozenset()

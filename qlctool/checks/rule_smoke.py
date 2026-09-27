@@ -19,7 +19,7 @@ from .show_graph import ShowGraph, lit
 RULE_ID = "smoke"
 
 
-def check_smoke(graph: ShowGraph, groups, entries) -> list[Finding]:
+def check_smoke(graph: ShowGraph, groups) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, function in sorted(graph.functions.items()):
         driven = graph.driven_of(function, groups)

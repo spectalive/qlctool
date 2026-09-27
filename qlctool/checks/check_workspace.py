@@ -108,6 +108,7 @@ def check_workspace(
 
     findings: list[Finding] = []
     findings += check_missing_definitions(root, library)
+    findings += check_duplicate_fixture_ids(root)
     findings += check_dangling_references(graph, root)
     findings += check_intensity(graph, groups, entries, states)
     findings += check_instant_dimmer(graph, groups, states)

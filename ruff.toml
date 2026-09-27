@@ -45,9 +45,8 @@ ignore = [
   "PLR0913", "PLR0917",  # 104 generators taking one keyword per show parameter
   "PLR0911", "PLR0912", "PLR0915",  # 12 oversized functions
   "PLR2004",  # 26 magic values, mostly DMX channel numbers and QLC+ constants
-  "ARG001",   # 4  unused arguments in callback signatures
   "RUF005", "RUF059",  # 5
-  "E402", "PLW2901", "SIM105",  # 3
+  "PLW2901", "SIM105",  # 2
 
   # Conflicts with the formatter; keeping these on fights ruff format forever.
   "E501", "W191", "E111", "E114", "E117", "D206", "D300", "COM812", "ISC001",
