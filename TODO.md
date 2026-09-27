@@ -1,18 +1,24 @@
 # qlctool follow-up
 
-- [ ] **The live console's pages are each over the structural cap (2026-09-27).**
-  `live_console.py` (1516 lines, 17 units) was split into `console_layout`,
-  `generated_console`, `console_ids`, nine helpers, `wheel_frame` and one
-  module per page; the orchestrator now passes strict mypy. What the
-  baseline still carries: `page_library.py` 314, `page_control.py` 273,
-  `page_show.py` 233 and `live_console.py` 309 code lines against the cap
-  of 150 (BPY004), and BPY002 on `live_console.py` because the one unit
-  left is `generate_live_console` (the file name is the import path
-  `add_show_console`, `desk_bursts` and the tests use). Smallest next step:
-  cut each page along its frames (room states, hits, panic, haze row, tempo
-  dial; banks, intensity, grand master, aim pad, movement dial; mixes,
-  matrices, cycles, panels, speed fader, live matrix, help) in creation
-  order, `tests/test_vibra_byte_identity.py` as the gate, as this split did.
+- [x] **The live console's pages are each over the structural cap (2026-09-27).**
+  Closed by cutting each page along its frames, one frame per commit,
+  `tests/test_vibra_byte_identity.py` as the gate throughout (Vibra x3
+  stayed byte-identical at every commit): page 1 into `room_states`,
+  `hits`, `panic`, `haze_row`, `tempo_dial`; page 3 into `bank_column`,
+  `intensity`, `grand_master`, `aim_pad`, `movement_dial`; page 4 into
+  `mixes`, `matrix_frame`, `cycles`, `panels`, `speed_fader`,
+  `live_matrix`, `library_help`. `live_console.py`'s own widget closures
+  (`button`, `frame`, `label`, `master_button`) moved to their own
+  factories, then `console_outer_frame`, `audio_triggers_row` and
+  `play_page_call` came out of the orchestrator body, and the four
+  factory calls were gathered under one `console_widgets` call. Code
+  lines, before -> after: `page_show.py` 233 -> 80, `page_control.py`
+  273 -> 114, `page_library.py` 314 -> 80, `live_console.py` 309 -> 147;
+  all four clear the 150 cap (BPY004). Baseline: 202 known -> 198 known,
+  4 resolved, 0 new. BPY002 on `live_console.py` stays open by design:
+  the one unit left is `generate_live_console`, and the file name is the
+  import path `add_show_console`, `desk_bursts` and the tests use, so
+  renaming it would be a behaviour change, not a move.
 - [ ] **Desk bursts on a combined HTP dimmer/strobe channel (C2b, measured
   2026-09-27).** The tablet's bursts are Chasers started with
   `setFunctionStatus`, so the button's ForceLTP never applies, and on the
