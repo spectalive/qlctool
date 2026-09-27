@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from ..validate import validate_workspace
+from ..validate_workspace import validate_workspace
 from .existing_path import existing_path
 
 

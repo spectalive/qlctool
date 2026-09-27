@@ -18,9 +18,9 @@ from lxml import etree
 from rig_root import RIG_ROOT
 from stand_in_qlcplus import stand_in_qlcplus
 
-from qlctool import validate
+from qlctool import run_qlcplus
 from qlctool.iter_local import iter_local
-from qlctool.validate import validate_workspace
+from qlctool.validate_workspace import validate_workspace
 
 VIBRA = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 BUILDS = ("qlcplus", "qlcplus-qml")
@@ -104,7 +104,7 @@ def test_the_qlcplus_it_started_is_stopped_when_reading_its_log_fails(tmp_path, 
         _report(ready)
         raise OSError("the log pipe broke")
 
-    monkeypatch.setattr(validate, "read_until_loaded", broken)
+    monkeypatch.setattr(run_qlcplus, "read_until_loaded", broken)
     with pytest.raises(OSError, match="log pipe"):
         validate_workspace(VIBRA, binary=str(stand_in_qlcplus(tmp_path)))
     assert _gone(int(_report(ready)[0]))

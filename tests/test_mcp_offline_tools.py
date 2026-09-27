@@ -20,7 +20,7 @@ from qlctool.mcpserver.tool_info import tool_info
 from qlctool.mcpserver.tool_newshow import tool_newshow
 from qlctool.mcpserver.tool_pad_palette import tool_pad_palette
 from qlctool.mcpserver.tool_validate import tool_validate
-from qlctool.validate import qlcplus_binary
+from qlctool.qlcplus_binary import qlcplus_binary
 
 SETUPS = RIG_ROOT / "QLC+ Setups"
 VIBRA = SETUPS / "Vibra.qxw"

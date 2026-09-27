@@ -16,7 +16,8 @@ from qlctool.checks.rule_providers import rule_providers
 from qlctool.cli import main
 from qlctool.desk_function_path import DESK_FUNCTION_PATH
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.validate import qlcplus_binary, validate_workspace
+from qlctool.qlcplus_binary import qlcplus_binary
+from qlctool.validate_workspace import validate_workspace
 from qlctool.workspace import Workspace
 
 EXAMPLE = Path(__file__).resolve().parents[1] / "examples" / "small-club"

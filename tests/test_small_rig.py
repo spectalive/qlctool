@@ -26,7 +26,8 @@ from qlctool.generate.page_control_title import page_control_title
 from qlctool.generate.tempo_help_line import tempo_help_line
 from qlctool.iter_local import iter_local
 from qlctool.names.default_names import default_names
-from qlctool.validate import qlcplus_binary, validate_workspace
+from qlctool.qlcplus_binary import qlcplus_binary
+from qlctool.validate_workspace import validate_workspace
 from qlctool.workspace import Workspace
 
 

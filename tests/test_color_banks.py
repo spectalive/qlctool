@@ -9,8 +9,9 @@ from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_color_banks import generate_color_banks
 from qlctool.key_split_pairs import KEY_SPLIT_PAIRS
 from qlctool.palette import PALETTE, PRIMARY_COLORS
+from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.split_pairs import SPLIT_PAIRS
-from qlctool.validate import qlcplus_binary, validate_workspace
+from qlctool.validate_workspace import validate_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import localname
 

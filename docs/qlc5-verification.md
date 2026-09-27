@@ -25,7 +25,7 @@ it: the `Creator`/`InputOutputMap`/one-`Fixture` header copied from
 `QLC+ Setups/Vibra-split.qxw`, plus the one construct under test. Probes live
 in `tests/probes/`.
 
-Each probe was run through `qlctool.validate.validate_workspace()` - the same
+Each probe was run through `qlctool.validate_workspace.validate_workspace()` - the same
 loader `qlctool validate` uses - which launches the installed
 `qlcplus-qml` headless (`-d -m -o <file>`), waits for its end-of-load markers,
 kills it, and returns the full captured log.

@@ -57,7 +57,7 @@ from .repatch.rename_fixture import rename_fixture
 from .repatch.set_fixture_address import set_fixture_address
 from .stage_plot import load_stage_plot
 from .toolkit_config_from import toolkit_config_from
-from .validate import validate_workspace
+from .validate_workspace import validate_workspace
 from .vibra.vibra_description import vibra_description
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace

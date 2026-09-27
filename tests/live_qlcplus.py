@@ -15,10 +15,10 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from qlctool.offline_workspace import offline_workspace
+from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.quiet_launch_environment import quiet_launch_environment
 from qlctool.refuse_saved_io import refuse_saved_io
 from qlctool.stop_own_process import stop_own_process
-from qlctool.validate import qlcplus_binary
 
 
 def qml_binary() -> str | None:

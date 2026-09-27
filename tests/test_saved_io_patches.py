@@ -12,7 +12,7 @@ from stand_in_qlcplus import stand_in_qlcplus
 
 from qlctool.refuse_saved_io import refuse_saved_io
 from qlctool.saved_io_patches import INI, PLIST, saved_io_patches
-from qlctool.validate import validate_workspace
+from qlctool.validate_workspace import validate_workspace
 
 SECRET = "DMX USB interface serial 12345"
 

@@ -17,7 +17,8 @@ from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.iter_local import iter_local
 from qlctool.names.load_catalogue import load_catalogue
-from qlctool.validate import qlcplus_binary, validate_workspace
+from qlctool.qlcplus_binary import qlcplus_binary
+from qlctool.validate_workspace import validate_workspace
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
 

@@ -7,7 +7,8 @@ from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
 from qlctool.generate.generate_channel_probe import generate_channel_probe
 from qlctool.iter_local import iter_local
-from qlctool.validate import qlcplus_binary, validate_workspace
+from qlctool.qlcplus_binary import qlcplus_binary
+from qlctool.validate_workspace import validate_workspace
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT

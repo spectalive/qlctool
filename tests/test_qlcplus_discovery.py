@@ -9,7 +9,7 @@ bundles and keeps only what this CPU can execute.
 import struct
 from pathlib import Path
 
-from qlctool import validate
+from qlctool import qlcplus_binary as qlcplus_binary_module
 from qlctool.mach_o_architectures import mach_o_architectures
 from qlctool.qlcplus_bundles import qlcplus_bundles
 from qlctool.qlcplus_candidates import qlcplus_candidates
@@ -74,11 +74,13 @@ def test_fixed_paths_follow_the_versioned_bundles_without_repeats(tmp_path):
 def test_the_override_still_wins(monkeypatch, tmp_path):
     chosen = _binary(tmp_path, "custom", "qlcplus", ARM64)
     monkeypatch.setenv("QLCTOOL_QLCPLUS", chosen)
-    monkeypatch.setattr(validate, "qlcplus_candidates", lambda fixed: ["/elsewhere"])
-    assert validate.qlcplus_binary() == chosen
+    monkeypatch.setattr(qlcplus_binary_module, "qlcplus_candidates", lambda fixed: ["/elsewhere"])
+    assert qlcplus_binary_module.qlcplus_binary() == chosen
 
 
 def test_discovery_feeds_the_validator(monkeypatch):
     monkeypatch.delenv("QLCTOOL_QLCPLUS", raising=False)
-    monkeypatch.setattr(validate, "qlcplus_candidates", lambda fixed: ["/first", "/second"])
-    assert validate.qlcplus_binary() == "/first"
+    monkeypatch.setattr(
+        qlcplus_binary_module, "qlcplus_candidates", lambda fixed: ["/first", "/second"]
+    )
+    assert qlcplus_binary_module.qlcplus_binary() == "/first"

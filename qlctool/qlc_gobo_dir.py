@@ -7,7 +7,7 @@ have to go inside the bundle and go again after every QLC+ upgrade.
 
 from pathlib import Path
 
-from .validate import qlcplus_binary
+from .qlcplus_binary import qlcplus_binary
 
 
 def qlc_gobo_dir(binary: str | None = None) -> Path | None:

@@ -8,7 +8,7 @@ from ..description.load_show_description import load_show_description
 from ..generate.build_canonical_show import build_canonical_show
 from ..library_for import library_for
 from ..newshow_refusal import newshow_refusal
-from ..validate import validate_workspace
+from ..validate_workspace import validate_workspace
 from ..vibra.vibra_description import vibra_description
 from ..workspace import Workspace
 from .existing_path import existing_path

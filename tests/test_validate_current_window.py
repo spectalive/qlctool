@@ -17,7 +17,7 @@ import pytest
 from rig_root import RIG_ROOT
 from stand_in_qlcplus import stand_in_qlcplus
 
-from qlctool.validate import validate_workspace
+from qlctool.validate_workspace import validate_workspace
 
 SPLIT = RIG_ROOT / "QLC+ Setups" / "Vibra-split.qxw"
 

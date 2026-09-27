@@ -15,7 +15,8 @@ from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_color_palette import generate_color_palette
 from qlctool.generate.generate_movement_efx import generate_movement_efx
 from qlctool.generate.generate_vc_layout import generate_vc_layout
-from qlctool.validate import qlcplus_binary, validate_workspace
+from qlctool.qlcplus_binary import qlcplus_binary
+from qlctool.validate_workspace import validate_workspace
 from qlctool.vc.widget_ids import existing_widget_ids
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import localname
