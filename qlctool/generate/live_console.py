@@ -116,6 +116,7 @@ from .console_layout import (
     TINY_FONT,
     TITLE_FONT,
 )
+from .first_of import first_of
 from .function_names import function_names
 from .generated_console import GeneratedConsole
 from .library_help_lines import library_help_lines
@@ -1032,7 +1033,7 @@ def _page_library(
             font=TITLE_FONT,
         )
         for page, generated in enumerate(matrices):
-            group = before_marker(names.get(_first(generated.matrix_ids), ""), " - ")
+            group = before_marker(names.get(first_of(generated.matrix_ids), ""), " - ")
             label(
                 matrix_frame,
                 vocabulary.render("group_label", group=group),
@@ -1276,7 +1277,3 @@ def _wheel_frame(
             flash_override=True,
             font=TINY_FONT,
         )
-
-
-def _first(ids):
-    return ids[0] if ids else None
