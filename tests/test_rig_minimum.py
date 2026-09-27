@@ -19,13 +19,14 @@ import pytest
 
 from qlctool.cli import main
 from qlctool.description.description_names import description_names
+from qlctool.find_local import find_local
 from qlctool.generate.rig_below_minimum import rig_below_minimum
+from qlctool.iter_local import iter_local
 from qlctool.library_for import library_for
 from qlctool.names.default_names import default_names
 from qlctool.searched_folders import searched_folders
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, iter_local
 
 EMPTY = Path(__file__).resolve().parent / "data" / "empty-workspace.qxw"
 PAR = "Vortex|PC-64 LED S|Default|0|{address}|Par {index}"

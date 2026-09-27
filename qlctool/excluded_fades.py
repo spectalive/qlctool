@@ -7,7 +7,8 @@ fade a wheel only if the wheel is in here.
 
 from lxml import etree
 
-from .xmlutil import find_local, findall_local
+from .find_local import find_local
+from .findall_local import findall_local
 
 
 def excluded_fades(root: etree._Element) -> dict[int, set[int]]:

@@ -11,7 +11,8 @@ without the wait.
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local
+from ..find_local import find_local
+from ..findall_local import findall_local
 
 
 def serial_waits(efx: etree._Element, fixture_id: int) -> bool:

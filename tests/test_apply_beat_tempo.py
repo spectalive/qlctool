@@ -9,6 +9,8 @@ show rather than a fixture.
 import pytest
 from rig_root import RIG_ROOT
 
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.apply_beat_tempo import apply_beat_tempo
 from qlctool.generate.beat_timing import BeatTiming
@@ -16,7 +18,6 @@ from qlctool.generate.generate_unison_colors import generate_unison_colors
 from qlctool.set_beat_generator import set_beat_generator
 from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"

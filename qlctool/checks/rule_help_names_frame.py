@@ -13,8 +13,9 @@ any shipped language, a frame with that caption must sit on the same page.
 
 from lxml import etree
 
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..names.frame_caption_head import frame_caption_head
-from ..xmlutil import find_local, iter_local
 from .catalogue_spellings import catalogue_spellings
 from .finding import ERROR, Finding
 from .help_line import HELP_LINE_FRAMES, MIXES, help_line

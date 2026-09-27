@@ -3,8 +3,8 @@
 from lxml import etree
 
 from .. import roles
+from ..find_local import find_local
 from ..fixture_capabilities import FixtureCapabilities
-from ..xmlutil import find_local
 
 # What an RGBMatrix paints, and the whole of it.
 MATRIX_ROLES = (roles.RED, roles.GREEN, roles.BLUE)

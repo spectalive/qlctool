@@ -22,11 +22,12 @@ from qlctool.checks.flash_lights import flash_lights
 from qlctool.checks.rule_flash_lit_smoke import RULE_ID
 from qlctool.checks.strobe_capable_offsets import strobe_capable_offsets
 from qlctool.checks.value_strobes import value_strobes
+from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
+from qlctool.iter_local import iter_local
 from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import findall_local, iter_local
 
 SETUPS = RIG_ROOT / "QLC+ Setups"
 VIBRA = SETUPS / "Vibra.qxw"

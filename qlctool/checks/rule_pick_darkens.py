@@ -8,7 +8,8 @@ the only function opening a coloured fixture's dimmer or labelled shutter.
 
 from lxml import etree
 
-from ..xmlutil import find_local, iter_local
+from ..find_local import find_local
+from ..iter_local import iter_local
 from .family_frame_picks import family_frame_picks
 from .finding import ERROR, Finding
 from .instant_dark_fixtures import instant_dark_fixtures

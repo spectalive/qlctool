@@ -2,9 +2,9 @@
 
 from copy import deepcopy
 
+from ..findall_local import findall_local
 from ..ids import next_function_id
 from ..workspace import Workspace
-from ..xmlutil import findall_local
 
 
 def generate_rest_scene(

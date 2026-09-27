@@ -13,7 +13,8 @@ already had them - so a re-shaped group sweeps in the order it swept before.
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local
+from ..find_local import find_local
+from ..findall_local import findall_local
 from .group_name import group_name
 from .group_of import group_of
 

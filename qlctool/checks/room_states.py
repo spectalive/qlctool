@@ -16,7 +16,9 @@ buttons it has.
 
 from lxml import etree
 
-from ..xmlutil import find_local, iter_local, localname
+from ..find_local import find_local
+from ..iter_local import iter_local
+from ..xmlutil import localname
 from .function_of import function_of
 from .reach import reach
 from .show_graph import ShowGraph

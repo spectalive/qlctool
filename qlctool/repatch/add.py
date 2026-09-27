@@ -8,9 +8,10 @@ mismatch that silently shifts every fixture after it on the universe.
 from lxml import etree
 
 from ..constants import QLC_NS
+from ..find_local import find_local
+from ..findall_local import findall_local
 from ..fixture_library import FixtureLibrary
 from ..patch_conflicts import patch_conflicts
-from ..xmlutil import find_local, findall_local
 from .child import child
 from .next_fixture_id import next_fixture_id
 

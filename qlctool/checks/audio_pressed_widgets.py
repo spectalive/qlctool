@@ -7,7 +7,7 @@ from this same list.
 
 from lxml import etree
 
-from ..xmlutil import iter_local
+from ..iter_local import iter_local
 
 
 def audio_pressed_widgets(console: etree._Element) -> set[str]:

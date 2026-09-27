@@ -6,8 +6,10 @@ from ..desk_burst_duration import desk_burst_duration
 from ..desk_burst_sources import desk_burst_sources
 from ..desk_function_path import DESK_FUNCTION_PATH
 from ..desk_policy import split_caption
+from ..find_local import find_local
 from ..functions.build_chaser import build_chaser
 from ..ids import next_function_id
+from ..iter_local import iter_local
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..vc.build_button import build_button
@@ -15,7 +17,6 @@ from ..vc.build_frame import build_frame
 from ..vc.build_label import build_label
 from ..vc.next_widget_id import next_widget_id
 from ..workspace import Workspace
-from ..xmlutil import find_local, iter_local
 from .console_layout import HELP_FONT, PAGE_CONTROL, SMALL_FONT
 
 

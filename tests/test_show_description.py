@@ -9,6 +9,7 @@ from qlctool.description.contrast_pairs_of import contrast_pairs_of
 from qlctool.description.pastel_palette_of import pastel_palette_of
 from qlctool.description.split_pairs_of import split_pairs_of
 from qlctool.description.wheel_palette_of import wheel_palette_of
+from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.beat_timing import BeatTiming
 from qlctool.generate.build_canonical_show import build_canonical_show
@@ -19,7 +20,6 @@ from qlctool.split_pairs import SPLIT_PAIRS
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.wheel_palette import WHEEL_PALETTE
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local
 
 REPO = RIG_ROOT
 VIBRA_SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"

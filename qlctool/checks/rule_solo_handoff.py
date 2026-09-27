@@ -25,7 +25,8 @@ that another Toggle button outside the frame also drives.
 
 from lxml import etree
 
-from ..xmlutil import find_local, iter_local
+from ..find_local import find_local
+from ..iter_local import iter_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .started_as_child import started_as_child

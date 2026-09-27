@@ -6,7 +6,7 @@ Only a QLC+ newer than the 5.2.2 this show runs honours it, which is why
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 
 
 def dial_controls_bpm(dial: etree._Element) -> bool:

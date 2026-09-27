@@ -15,7 +15,8 @@ single centre fixture is not left alone in its own half.
 
 from lxml import etree
 
-from .xmlutil import find_local, iter_local
+from .find_local import find_local
+from .iter_local import iter_local
 
 
 def house_right_fixture_ids(root: etree._Element) -> set[int]:

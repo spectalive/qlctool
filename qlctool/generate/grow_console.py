@@ -4,7 +4,7 @@ from typing import cast
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 
 
 def grow_console(root: etree._Element, needed_height: int) -> None:

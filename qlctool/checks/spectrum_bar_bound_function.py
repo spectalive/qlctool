@@ -2,8 +2,8 @@
 
 from lxml import etree
 
+from ..find_local import find_local
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local
 from .spectrum_bar_types import FUNCTION_BAR, WIDGET_BAR
 
 

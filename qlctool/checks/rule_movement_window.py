@@ -31,7 +31,7 @@ because the stage is not the crowd - is a decision, not a figure.
 import math
 
 from ..efx_extent import efx_extent
-from ..xmlutil import find_local
+from ..find_local import find_local
 from .axis_offset import axis_offset
 from .axis_shape import axis_shape
 from .finding import ERROR, Finding

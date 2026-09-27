@@ -33,13 +33,16 @@ from qlctool.checks.rule_pick_darkens import check_pick_darkens
 from qlctool.checks.rule_undeclared_heads import check_undeclared_heads
 from qlctool.checks.strobe_capable_offsets import strobe_capable_offsets
 from qlctool.cli import main
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_group import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
+from qlctool.iter_local import iter_local
 from qlctool.wheel_blade_offsets import wheel_blade_offsets
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, iter_local, localname
+from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOWS = ("Vibra.qxw", "Vibra-beats.qxw", "Vibra-split.qxw")
@@ -3216,8 +3219,9 @@ def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_pat
     from pathlib import Path
 
     from qlctool.checks.rule_missing_definition import RULE_ID
+    from qlctool.find_local import find_local
+    from qlctool.iter_local import iter_local
     from qlctool.names.shipped_names import shipped_names
-    from qlctool.xmlutil import find_local, iter_local
 
     example = Path(__file__).resolve().parents[1] / "examples" / "small-club"
     workspace = Workspace.load(example / "club.qxw")

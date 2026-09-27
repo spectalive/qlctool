@@ -15,7 +15,8 @@ where a head sits is where it appears in every pattern.
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local
+from ..find_local import find_local
+from ..findall_local import findall_local
 from .group_of import group_of
 
 

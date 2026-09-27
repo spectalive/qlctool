@@ -9,8 +9,9 @@ next to it changes colour all night.
 from lxml import etree
 
 from ..constants import QLC_NS
+from ..find_local import find_local
+from ..findall_local import findall_local
 from ..fixture import patched_fixtures
-from ..xmlutil import find_local, findall_local
 from .group_of import group_of
 
 

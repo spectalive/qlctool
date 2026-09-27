@@ -8,8 +8,9 @@ does not list, counts as rigged: nothing says otherwise.
 
 from lxml import etree
 
+from .find_local import find_local
 from .fixture import patched_fixtures
-from .xmlutil import find_local, iter_local
+from .iter_local import iter_local
 
 
 def rigged_fixture_ids(root: etree._Element) -> set[int]:

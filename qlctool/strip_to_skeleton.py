@@ -15,10 +15,11 @@ a Spanish-saved file does not open on "Página 1" (owner's delegated decision,
 from lxml import etree
 
 from .constants import QLC_NS
+from .find_local import find_local
 from .names.default_names import default_names
 from .names.names import Names
 from .workspace import Workspace
-from .xmlutil import find_local, localname
+from .xmlutil import localname
 
 # Engine children that describe the rig rather than the show.
 KEPT_ENGINE_CHILDREN = (

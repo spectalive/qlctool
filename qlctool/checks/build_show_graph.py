@@ -2,9 +2,11 @@
 
 from lxml import etree
 
+from ..find_local import find_local
+from ..findall_local import findall_local
 from ..fixture_capabilities import FixtureCapabilities
 from ..fixture_group import fixture_groups
-from ..xmlutil import find_local, findall_local, localname
+from ..xmlutil import localname
 from .htp_offsets import htp_offsets
 from .show_graph import BRANCHING, ShowGraph
 

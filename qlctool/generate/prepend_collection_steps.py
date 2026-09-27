@@ -3,8 +3,8 @@
 from lxml import etree
 
 from ..constants import QLC_NS
+from ..findall_local import findall_local
 from ..workspace import Workspace
-from ..xmlutil import findall_local
 
 
 def prepend_collection_steps(workspace: Workspace, collection_id: int, members: list[int]) -> None:

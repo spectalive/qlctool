@@ -14,14 +14,15 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.cli import main
+from qlctool.findall_local import findall_local
 from qlctool.fixture_capabilities import FixtureCapabilities
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.internal_program import internal_program
+from qlctool.iter_local import iter_local
 from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import findall_local, iter_local
 
 VIBRA = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 RGB = (roles.RED, roles.GREEN, roles.BLUE)

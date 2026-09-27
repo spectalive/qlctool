@@ -3,10 +3,12 @@
 import pytest
 from rig_root import RIG_ROOT
 
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.generate.generate_channel_probe import generate_channel_probe
+from qlctool.iter_local import iter_local
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, iter_local
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

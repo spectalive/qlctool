@@ -3,8 +3,9 @@
 from lxml import etree
 
 from .. import roles
+from ..find_local import find_local
+from ..findall_local import findall_local
 from ..fixture_capabilities import FixtureCapabilities
-from ..xmlutil import find_local, findall_local
 
 # EFXFixture::Mode - what an EFX drives on a fixture that participates in it.
 EFX_PAN_TILT, EFX_DIMMER, EFX_RGB = 0, 1, 2

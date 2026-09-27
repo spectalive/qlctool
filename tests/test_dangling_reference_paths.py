@@ -20,8 +20,8 @@ from qlctool.checks.build_show_graph import build_show_graph
 from qlctool.checks.invalid_function_id import INVALID_ID
 from qlctool.checks.rule_dangling_reference import check_dangling_references
 from qlctool.constants import QLC_NS
+from qlctool.find_local import find_local
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local
 
 CLUB = Path(__file__).resolve().parents[1] / "examples" / "small-club" / "club.qxw"
 NOBODY = "987654"

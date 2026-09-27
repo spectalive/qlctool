@@ -9,10 +9,12 @@ their neighbours' 47.
 import pytest
 from rig_root import RIG_ROOT
 
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
+from qlctool.iter_local import iter_local
 from qlctool.repatch.group_head import add_group_head
 from qlctool.repatch.group_size import set_group_size
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, iter_local
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"

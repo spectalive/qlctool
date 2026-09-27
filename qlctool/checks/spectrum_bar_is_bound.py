@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 from .spectrum_bar_types import DMX_BAR, FUNCTION_BAR, WIDGET_BAR
 
 

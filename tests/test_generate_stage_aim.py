@@ -10,11 +10,13 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_stage_aim import MEASURED_AIMS, generate_stage_aim
 from qlctool.generate.movement_aim import WASH_PAN_AIM, WASH_TILT_AIM
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, localname
+from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra-split.qxw"

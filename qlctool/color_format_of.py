@@ -8,7 +8,9 @@ should write the shape that show uses, so a file stays internally consistent.
 
 from lxml import etree
 
-from .xmlutil import find_local, iter_local, localname
+from .find_local import find_local
+from .iter_local import iter_local
+from .xmlutil import localname
 
 LEGACY = "legacy"  # <MonoColor> / <EndColor>
 INDEXED = "indexed"  # <Color Index="n">

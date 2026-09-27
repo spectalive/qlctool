@@ -15,7 +15,7 @@ nothing.
 
 from lxml import etree
 
-from ..xmlutil import findall_local
+from ..findall_local import findall_local
 from .group_name import group_name
 from .group_of import group_of
 

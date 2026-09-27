@@ -29,8 +29,9 @@ stop in a dark room full of people is a hazard, not a parked gobo.
 
 from lxml import etree
 
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .instant_evaluator import InstantEvaluator
 from .latched_strobe_writes import latched_strobe_writes

@@ -2,11 +2,11 @@
 
 from collections.abc import Mapping
 
+from ..find_local import find_local
 from ..names.names import Names
 from ..vc.beat_multiplier import beat_multiplier
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
-from ..xmlutil import find_local
 from .timed_parts import timed_parts
 
 

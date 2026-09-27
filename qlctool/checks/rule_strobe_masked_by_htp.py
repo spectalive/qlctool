@@ -17,8 +17,9 @@ that cannot show while that state runs.
 
 from lxml import etree
 
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .fixture_names_of import fixture_names_of
 from .htp_offsets import htp_offsets

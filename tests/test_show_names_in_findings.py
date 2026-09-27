@@ -17,10 +17,10 @@ from qlctool.checks.named_findings import named_findings
 from qlctool.checks.phrase import Phrase
 from qlctool.cli import main
 from qlctool.constants import QLC_NS
+from qlctool.iter_local import iter_local
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.shipped_names import shipped_names
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import iter_local
 
 CLUB = Path(__file__).resolve().parents[1] / "examples" / "small-club"
 

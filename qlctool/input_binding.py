@@ -32,8 +32,9 @@ it by name, and re-picking the port in the tab is a normal thing to do.
 from lxml import etree
 
 from .constants import QLC_NS
+from .find_local import find_local
 from .generate.input_profile import PROFILE_NAME
-from .xmlutil import find_local, iter_local
+from .iter_local import iter_local
 
 INPUT_PLUGIN = "MIDI"
 # What QLC+ calls the pad's Bluetooth port - its CoreMIDI `Model` property, not

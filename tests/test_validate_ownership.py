@@ -19,8 +19,8 @@ from rig_root import RIG_ROOT
 from stand_in_qlcplus import stand_in_qlcplus
 
 from qlctool import validate
+from qlctool.iter_local import iter_local
 from qlctool.validate import validate_workspace
-from qlctool.xmlutil import iter_local
 
 VIBRA = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 BUILDS = ("qlcplus", "qlcplus-qml")

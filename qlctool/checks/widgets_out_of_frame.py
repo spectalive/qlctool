@@ -2,7 +2,8 @@
 
 from lxml import etree
 
-from ..xmlutil import find_local, localname
+from ..find_local import find_local
+from ..xmlutil import localname
 from .console_widget_tags import WIDGETS
 from .widgets_under import widgets_under
 

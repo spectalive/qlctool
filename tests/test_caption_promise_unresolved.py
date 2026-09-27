@@ -16,10 +16,11 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.build_show_graph import build_show_graph
 from qlctool.checks.rule_caption_promise import check_caption_promise
 from qlctool.cli import main
+from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
+from qlctool.iter_local import iter_local
 from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, iter_local
 
 PARS = ("Vortex|PC-64 LED S|Default|0|{address}|Par {index}", 3, 5)
 PROMISE = "page_control_no_haze_no_beam_wheel"

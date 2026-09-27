@@ -23,8 +23,9 @@ a room, which is why this is an error and not a warning.
 
 from lxml import etree
 
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, iter_local
 from .clears_itself import clears_itself
 from .finding import ERROR, Finding
 from .pumps_held import pumps_held

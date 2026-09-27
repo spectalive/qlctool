@@ -7,7 +7,8 @@ Console - the patch entry is the one carrying <Channels>.
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local
+from ..find_local import find_local
+from ..findall_local import findall_local
 
 
 def patch_element(root: etree._Element, fixture_id: int) -> etree._Element:

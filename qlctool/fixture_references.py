@@ -9,7 +9,8 @@ all of them leaves QLC+ pointing at nothing, so they are enumerated in one place
 
 from lxml import etree
 
-from .xmlutil import find_local, localname
+from .find_local import find_local
+from .xmlutil import localname
 
 # Elements whose Fixture="n" attribute is a reference.
 _ATTRIBUTE_REFERENCES = {"Head", "Channel"}

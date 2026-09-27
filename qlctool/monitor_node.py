@@ -20,8 +20,8 @@ from dataclasses import dataclass
 from lxml import etree
 
 from .constants import QLC_NS
+from .find_local import find_local
 from .workspace import Workspace
-from .xmlutil import find_local
 
 # MonitorProperties::PointOfView in the QLC+ source, by name.
 POINTS_OF_VIEW = {"top": 1, "front": 2, "right": 3, "left": 4}

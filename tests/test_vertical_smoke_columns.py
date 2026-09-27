@@ -13,13 +13,15 @@ from rig_root import RIG_ROOT
 
 from qlctool.capabilities_of import capabilities_of
 from qlctool.cli import main
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate import generate_vertical_smoke_light
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.generate.generate_builtin_effects import generate_builtin_effects
+from qlctool.iter_local import iter_local
 from qlctool.vibra.keys import KEYS
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, iter_local
 
 VIBRA = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 SMOKE_MACHINES = ("17", "29", "30", "31", "32")

@@ -7,8 +7,8 @@ then the whole patch is re-checked, and it is rolled back if it collides.
 
 from lxml import etree
 
+from ..find_local import find_local
 from ..patch_conflicts import PatchConflict, patch_conflicts
-from ..xmlutil import find_local
 from .patch_element import patch_element
 
 

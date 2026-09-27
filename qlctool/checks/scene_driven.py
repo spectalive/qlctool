@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import findall_local
+from ..findall_local import findall_local
 
 
 def scene_driven(function: etree._Element) -> dict[int, dict[int, int | None]]:

@@ -25,6 +25,7 @@ from qlctool.checks.phrase import Phrase
 from qlctool.checks.rendered_value import rendered_value
 from qlctool.checks.rule_empty_frame import check_empty_frames
 from qlctool.cli import main
+from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.names.load_catalogue import load_catalogue
@@ -35,7 +36,6 @@ from qlctool.vc.build_label import build_label
 from qlctool.vc.next_widget_id import next_widget_id
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local
 
 SETUPS = RIG_ROOT / "QLC+ Setups"
 CLUB = Path(__file__).resolve().parents[1] / "examples" / "small-club" / "club.qxw"

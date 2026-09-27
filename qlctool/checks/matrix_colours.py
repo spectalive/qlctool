@@ -3,7 +3,7 @@
 from lxml import etree
 
 from .. import roles
-from ..xmlutil import find_local
+from ..find_local import find_local
 from .matrix_colour import matrix_colour
 from .show_graph import ShowGraph
 

@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import findall_local
+from ..findall_local import findall_local
 from .matrix_pass_duration import matrix_pass_duration
 from .show_graph import ShowGraph
 from .tempo_element_is_beats import tempo_element_is_beats

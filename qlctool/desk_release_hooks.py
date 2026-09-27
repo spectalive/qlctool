@@ -34,7 +34,8 @@ from lxml import etree
 
 from .checks.family_frame_handoff import family_frame_handoff
 from .checks.show_graph import ShowGraph
-from .xmlutil import find_local, iter_local
+from .find_local import find_local
+from .iter_local import iter_local
 
 
 def desk_release_hooks(

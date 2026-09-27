@@ -22,8 +22,9 @@ is released is `rule_pick_release_orphans`' question.
 from lxml import etree
 
 from .. import roles
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..rigged_fixture_ids import rigged_fixture_ids
-from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .position_frame_picks import position_frame_picks
 from .reach import reach

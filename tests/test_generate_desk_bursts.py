@@ -18,12 +18,13 @@ from qlctool.desk_burst_buttons import desk_burst_buttons
 from qlctool.desk_burst_identifier import desk_burst_identifier
 from qlctool.desk_burst_sources import desk_burst_sources
 from qlctool.desk_policy import BURST_MS
+from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
+from qlctool.iter_local import iter_local
 from qlctool.names.default_names import default_names
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, iter_local
 
 REPO = RIG_ROOT
 

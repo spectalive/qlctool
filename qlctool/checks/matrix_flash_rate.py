@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 
 STROBE_ALGORITHM = "Strobe"
 # MasterTimer runs at 50 Hz; a zero-duration step flips every other tick.

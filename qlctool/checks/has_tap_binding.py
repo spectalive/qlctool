@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import findall_local
+from ..findall_local import findall_local
 
 TAP_CONTROL_ID = "1"
 

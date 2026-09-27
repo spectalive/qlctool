@@ -1,11 +1,12 @@
 """The movement dial's functions: the rotations and their EFX."""
 
+from ..find_local import find_local
+from ..findall_local import findall_local
 from ..names.names import Names
 from ..vc.beat_multiplier import beat_multiplier
 from ..vc.build_speed_dial import MULTIPLIER_NONE
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
-from ..xmlutil import find_local, findall_local
 
 
 def movement_tempo_functions(

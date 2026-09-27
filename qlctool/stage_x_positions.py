@@ -11,7 +11,8 @@ and a spare in a flight case should not decide where a sweep starts.
 
 from lxml import etree
 
-from .xmlutil import find_local, iter_local
+from .find_local import find_local
+from .iter_local import iter_local
 
 
 def stage_x_positions(root: etree._Element) -> dict[int, float]:

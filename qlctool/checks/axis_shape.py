@@ -7,7 +7,7 @@ arguments); an `<Axis>` that omits a tag reads it as 0, which is what
 
 from lxml import etree
 
-from ..xmlutil import findall_local
+from ..findall_local import findall_local
 from .function_number import function_number
 
 

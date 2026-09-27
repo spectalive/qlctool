@@ -25,7 +25,7 @@ fast or slow.
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 from .finding import ERROR, Finding
 from .hand_flash_scenes import hand_flash_scenes
 from .show_graph import ShowGraph

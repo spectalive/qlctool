@@ -24,10 +24,10 @@ from qlctool.generate.library_help_lines import library_help_lines
 from qlctool.generate.matrices_frame_caption import matrices_frame_caption
 from qlctool.generate.page_control_title import page_control_title
 from qlctool.generate.tempo_help_line import tempo_help_line
+from qlctool.iter_local import iter_local
 from qlctool.names.default_names import default_names
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import iter_local
 
 
 @pytest.fixture(scope="module")

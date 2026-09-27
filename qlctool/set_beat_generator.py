@@ -23,7 +23,7 @@ something.
 from lxml import etree
 
 from .constants import QLC_NS
-from .xmlutil import find_local
+from .find_local import find_local
 
 BEAT_TYPES = ("Disabled", "Internal", "Plugin", "Audio")
 

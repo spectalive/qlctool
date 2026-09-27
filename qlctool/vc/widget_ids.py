@@ -9,7 +9,7 @@ the Function allocator hit.
 from lxml import etree
 
 from ..constants import ALL_FIXTURES_GROUP
-from ..xmlutil import find_local
+from ..find_local import find_local
 
 WIDGET_TAGS = {
     "Frame",

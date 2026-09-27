@@ -31,8 +31,9 @@ half of the rule binds it to the second.
 
 from lxml import etree
 
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, iter_local
 from .audio_pressed_widgets import audio_pressed_widgets
 from .finding import ERROR, Finding
 from .flash_strobe_writes import flash_strobe_writes

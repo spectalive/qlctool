@@ -12,11 +12,13 @@ from lxml import etree
 from .channel import Channel
 from .definition import Capability
 from .dimensions import Dimensions
+from .find_local import find_local
+from .findall_local import findall_local
 from .fixture_definition import FixtureDefinition
+from .iter_local import iter_local
 from .optics_of import optics_of
 from .role_of import role_of
 from .text_of import text_of
-from .xmlutil import find_local, findall_local, iter_local
 
 
 def load_definition(path: str | Path) -> FixtureDefinition:

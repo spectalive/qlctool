@@ -13,10 +13,10 @@ from single_shape_rig import build_single_shape_patch
 
 from qlctool.checks.rule_help_names_frame import RULE_ID, check_help_names_frame
 from qlctool.cli import main
+from qlctool.iter_local import iter_local
 from qlctool.names.default_names import default_names
 from qlctool.names.frame_caption_head import frame_caption_head
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import iter_local
 
 PARS = ("Vortex|PC-64 LED S|Default|0|{address}|Par {index}", 3, 5)
 

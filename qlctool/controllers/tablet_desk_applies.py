@@ -5,8 +5,9 @@ from lxml import etree
 from ..desk_frame_identifier import desk_frame_identifier
 from ..desk_function_path import DESK_FUNCTION_PATH
 from ..desk_widgets import desk_widgets
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..names.default_names import default_names
-from ..xmlutil import find_local, iter_local
 
 
 def tablet_desk_applies(root: etree._Element) -> bool:

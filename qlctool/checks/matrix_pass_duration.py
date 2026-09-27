@@ -2,8 +2,8 @@
 
 from lxml import etree
 
+from ..find_local import find_local
 from ..matrix_step_count import matrix_step_count
-from ..xmlutil import find_local
 
 
 def matrix_pass_duration(matrix: etree._Element, grids: dict[int, tuple[int, int]]) -> int:

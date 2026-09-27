@@ -16,9 +16,10 @@ from qlctool.checks.family_frame_picks import family_frame_picks
 from qlctool.checks.group_fixtures import group_fixtures
 from qlctool.checks.pick_leaves_light_alone import pick_leaves_light_alone
 from qlctool.checks.room_states import room_states
+from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
+from qlctool.iter_local import iter_local
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, iter_local
 
 VIBRA_SPLIT = RIG_ROOT / "QLC+ Setups" / "Vibra-split.qxw"
 

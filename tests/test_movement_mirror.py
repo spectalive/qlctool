@@ -8,6 +8,8 @@ out of the workspace rather than only written into it.
 
 from rig_root import RIG_ROOT
 
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_home_position import generate_home_position
 from qlctool.generate.generate_movement_efx import generate_movement_efx
@@ -16,7 +18,7 @@ from qlctool.generate.moving_head_ids import moving_head_ids
 from qlctool.house_right_fixture_ids import house_right_fixture_ids
 from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, localname
+from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"

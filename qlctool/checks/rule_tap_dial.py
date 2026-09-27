@@ -25,7 +25,9 @@ the same night) - so a bound tap key needs functions to write into.
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local, iter_local
+from ..find_local import find_local
+from ..findall_local import findall_local
+from ..iter_local import iter_local
 from .dial_controls_bpm import dial_controls_bpm
 from .dial_durations import dial_durations
 from .finding import ERROR, Finding

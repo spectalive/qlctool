@@ -7,7 +7,7 @@ that closes it. A Collection is as safe as the member that does, so the
 question recurses. A bare scene never does.
 """
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 from .show_graph import ShowGraph
 from .shuts_pump import shuts_pump
 

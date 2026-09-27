@@ -18,8 +18,9 @@ light on no fixture or only on some, and are left alone.
 from lxml import etree
 
 from .. import roles
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .flash_lights import flash_lights
 from .show_graph import ShowGraph

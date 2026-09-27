@@ -2,7 +2,8 @@
 
 from lxml import etree
 
-from ..xmlutil import find_local, iter_local
+from ..find_local import find_local
+from ..iter_local import iter_local
 
 # EFXFixture::Mode - PanTilt, Dimmer, RGB
 EFX_PANTILT_MODE = "0"

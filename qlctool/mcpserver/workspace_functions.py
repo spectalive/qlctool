@@ -2,7 +2,8 @@
 
 from lxml import etree
 
-from ..xmlutil import iter_local, localname
+from ..iter_local import iter_local
+from ..xmlutil import localname
 
 
 def workspace_functions(root: etree._Element) -> dict[int, str]:

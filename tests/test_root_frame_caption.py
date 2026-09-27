@@ -11,12 +11,12 @@ from dataclasses import replace
 import pytest
 from rig_root import RIG_ROOT
 
+from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.names.shipped_names import shipped_names
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local
 
 VIBRA = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 # A file whose root frame QLC+ saved with no caption at all.

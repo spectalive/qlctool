@@ -14,7 +14,8 @@ matrix is generated for it until it has heads.
 from lxml import etree
 
 from ..constants import QLC_NS
-from ..xmlutil import find_local, iter_local
+from ..find_local import find_local
+from ..iter_local import iter_local
 from .group_name import group_name
 
 

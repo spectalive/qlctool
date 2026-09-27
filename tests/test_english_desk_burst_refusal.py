@@ -14,13 +14,14 @@ from rig_root import RIG_ROOT
 from qlctool.build_deskmap import build_deskmap
 from qlctool.desk_burst_buttons import desk_burst_buttons
 from qlctool.desk_burst_sources import desk_burst_sources
+from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
+from qlctool.iter_local import iter_local
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.shipped_names import shipped_names
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, iter_local
 
 
 def _with_two_step_burst(language: str) -> Workspace:

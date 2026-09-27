@@ -13,7 +13,8 @@ which is exactly the kind of silent corruption this toolkit exists to avoid.
 
 from lxml import etree
 
-from .xmlutil import find_local, findall_local
+from .find_local import find_local
+from .findall_local import findall_local
 
 
 def existing_function_ids(root: etree._Element) -> set[int]:

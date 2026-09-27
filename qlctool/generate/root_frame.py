@@ -5,7 +5,7 @@ Moved verbatim out of `live_console` (2026-09-27 split).
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 
 
 def root_frame(root: etree._Element) -> etree._Element:

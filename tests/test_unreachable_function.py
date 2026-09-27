@@ -13,8 +13,9 @@ from single_shape_rig import build_single_shape_patch
 
 from qlctool.checks.rule_unreachable_function import RULE_ID, check_unreachable_functions
 from qlctool.cli import main
+from qlctool.find_local import find_local
+from qlctool.iter_local import iter_local
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, iter_local
 
 PARS = ("Vortex|PC-64 LED S|Default|0|{address}|Par {index}", 3, 5)
 

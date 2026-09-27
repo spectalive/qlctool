@@ -16,8 +16,9 @@ not there. Read off the EFX the buttons reach, never off their names.
 
 from lxml import etree
 
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..rigged_fixture_ids import rigged_fixture_ids
-from ..xmlutil import find_local, iter_local
 from .finding import WARNING, Finding
 from .movement_figure import MovementFigure
 from .movement_signature import movement_signature

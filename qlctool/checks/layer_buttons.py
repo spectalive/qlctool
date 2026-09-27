@@ -9,8 +9,9 @@ and keeps adding.
 
 from lxml import etree
 
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, iter_local
 from .layer_button import LayerButton
 
 

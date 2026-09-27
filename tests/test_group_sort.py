@@ -11,11 +11,13 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.checks.rule_grid_order import check_grid_order
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_group import fixture_groups
+from qlctool.iter_local import iter_local
 from qlctool.repatch.group_sort import sort_group_by_stage
 from qlctool.stage_x_positions import stage_x_positions
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, iter_local
 
 REPO = RIG_ROOT
 SHOWS = ("Vibra.qxw", "Vibra-beats.qxw", "Vibra-split.qxw")

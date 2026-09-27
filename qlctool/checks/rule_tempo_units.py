@@ -28,7 +28,7 @@ number through to both. The rule walks through Collections and stops at any
 function with a clock of its own (2026-09-02, when the wash figures split).
 """
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 from .finding import ERROR, Finding
 from .function_fade import function_fade
 from .self_timed_members import self_timed_members

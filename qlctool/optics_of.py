@@ -2,8 +2,8 @@
 
 from lxml import etree
 
+from .find_local import find_local
 from .optics import Optics
-from .xmlutil import find_local
 
 
 def optics_of(physical: etree._Element) -> Optics:

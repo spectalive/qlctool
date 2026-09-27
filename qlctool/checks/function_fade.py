@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 
 
 def function_fade(function: etree._Element) -> int:

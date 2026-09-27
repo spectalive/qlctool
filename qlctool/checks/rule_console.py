@@ -15,7 +15,7 @@ y ciclos" frame underneath it (2026-08-27).
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 from .duplicate_blackout_captions import duplicate_blackout_captions
 from .finding import ERROR, Finding
 from .off_canvas_widgets import off_canvas_widgets

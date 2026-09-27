@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 
 
 def first_free_y(frame: etree._Element) -> int:

@@ -9,6 +9,8 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.efx_algorithms import EFX_ALGORITHMS
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.functions.build_efx import build_efx
 from qlctool.functions.efx import EFXFixture
@@ -17,9 +19,9 @@ from qlctool.generate.generate_movement_efx import generate_movement_efx
 from qlctool.generate.moving_head_ids import moving_head_ids
 from qlctool.generate.spread_offsets import spread_offsets
 from qlctool.ids import existing_function_ids
+from qlctool.iter_local import iter_local
 from qlctool.workspace import Workspace
 from qlctool.xmlsemantics import first_difference
-from qlctool.xmlutil import find_local, findall_local, iter_local
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

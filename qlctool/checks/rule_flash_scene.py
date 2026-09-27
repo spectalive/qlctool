@@ -14,8 +14,9 @@ The rule is about the wiring, not the name on the cap: every button whose
 
 from lxml import etree
 
+from ..find_local import find_local
+from ..iter_local import iter_local
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .phrase import Phrase
 from .show_graph import ShowGraph

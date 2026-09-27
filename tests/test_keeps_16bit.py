@@ -17,11 +17,12 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_movement_efx import generate_movement_efx
 from qlctool.keeps_16bit import INTENSITY_PAIRS, PAN_TILT_PAIRS, keeps_16bit
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, localname
+from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"

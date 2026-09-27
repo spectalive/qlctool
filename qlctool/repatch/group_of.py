@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import iter_local
+from ..iter_local import iter_local
 
 
 def group_of(root: etree._Element, group_id: int) -> etree._Element:

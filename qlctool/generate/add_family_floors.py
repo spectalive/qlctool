@@ -21,7 +21,7 @@ Added after the console, so every function the console binds keeps its id.
 
 from ..checks.build_show_graph import build_show_graph
 from ..checks.group_fixtures import group_fixtures
-from ..xmlutil import findall_local
+from ..findall_local import findall_local
 from .generate_rest_scene import generate_rest_scene
 from .prepend_collection_steps import prepend_collection_steps
 from .show_build import ShowBuild

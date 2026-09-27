@@ -6,7 +6,7 @@ from .default_canvas import DEFAULT_CANVAS
 
 
 def canvas_of(root: etree._Element) -> tuple[int, int]:
-    from ..xmlutil import find_local
+    from ..find_local import find_local
 
     console = find_local(root, "VirtualConsole")
     properties = find_local(console, "Properties") if console is not None else None

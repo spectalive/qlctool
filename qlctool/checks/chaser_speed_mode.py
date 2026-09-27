@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 
 
 def chaser_speed_mode(function: etree._Element) -> str:

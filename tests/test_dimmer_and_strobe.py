@@ -10,6 +10,8 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_dimmer_chases import MODE_DIMMER, generate_dimmer_chases
 from qlctool.generate.generate_dimmer_sequence import generate_dimmer_sequence
@@ -17,7 +19,7 @@ from qlctool.generate.generate_energy_intensity import generate_energy_intensity
 from qlctool.generate.generate_strobe_effects import generate_strobe_effects
 from qlctool.shutter_open import shutter_open_pairs
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, localname
+from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

@@ -14,7 +14,7 @@ with a strobe's shape (see `strobe_flash_rate`) that loops is a latched strobe
 wherever it hangs, chaser and button alike.
 """
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 from .strobe_flash_rate import strobe_flash_rate

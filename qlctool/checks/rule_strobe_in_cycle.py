@@ -12,7 +12,7 @@ strobe nobody chose. A strobe on its own button, however it loops internally,
 is fine - that is what a strobe button is.
 """
 
-from ..xmlutil import findall_local
+from ..findall_local import findall_local
 from .finding import ERROR, Finding
 from .is_strobe import is_strobe
 from .show_graph import ShowGraph

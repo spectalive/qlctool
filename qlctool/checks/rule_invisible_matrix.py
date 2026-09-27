@@ -15,10 +15,10 @@ spares. A workspace with no Monitor counts every fixture as rigged.
 
 from lxml import etree
 
+from ..find_local import find_local
 from ..fixture_group import fixture_groups
 from ..rgb_cells import rgb_cells
 from ..rigged_fixture_ids import rigged_fixture_ids
-from ..xmlutil import find_local
 from .finding import ERROR, WARNING, Finding
 from .show_graph import ShowGraph
 

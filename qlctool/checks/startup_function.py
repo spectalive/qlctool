@@ -2,7 +2,8 @@
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local
+from ..find_local import find_local
+from ..findall_local import findall_local
 
 
 def startup_function(root: etree._Element) -> int | None:

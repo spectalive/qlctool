@@ -8,6 +8,8 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.color_wheel_pairs import color_wheel_pairs
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
@@ -18,7 +20,6 @@ from qlctool.shutter_open import shutter_open_pairs
 from qlctool.strobe_speed_pairs import strobe_speed_pairs
 from qlctool.vibra.tuning import VIBRA_TUNING
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

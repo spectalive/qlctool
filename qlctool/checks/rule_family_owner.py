@@ -2,7 +2,8 @@
 
 from lxml import etree
 
-from ..xmlutil import find_local, iter_local
+from ..find_local import find_local
+from ..iter_local import iter_local
 from .family_frame_problems import family_frame_problems
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph

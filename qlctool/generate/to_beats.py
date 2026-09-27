@@ -3,7 +3,8 @@
 from lxml import etree
 
 from ..constants import QLC_NS
-from ..xmlutil import find_local, findall_local
+from ..find_local import find_local
+from ..findall_local import findall_local
 from .beat_timing import BeatTiming
 from .beat_units import beat_units
 

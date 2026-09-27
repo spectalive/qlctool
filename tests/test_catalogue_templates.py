@@ -5,6 +5,8 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.description.reading.read_names import read_names
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_group import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
@@ -18,7 +20,6 @@ from qlctool.names.template_affixes import template_affixes
 from qlctool.names.template_fields import template_fields
 from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local
 
 SETUPS = RIG_ROOT / "QLC+ Setups"
 SHOW = SETUPS / "DeluxeEventos2.qxw"

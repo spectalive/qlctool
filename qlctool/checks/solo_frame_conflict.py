@@ -10,8 +10,9 @@ walked the same way.
 
 from lxml import etree
 
+from ..find_local import find_local
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, localname
+from ..xmlutil import localname
 
 
 def solo_frame_conflict(target: etree._Element, solo_frame: etree._Element) -> bool:

@@ -6,10 +6,10 @@ beside it - the washes held while a beam-only look is picked (`wash_hold`).
 
 from collections.abc import Mapping, Sequence
 
+from ..findall_local import findall_local
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
-from ..xmlutil import findall_local
 from .generated_play_wrappers import GeneratedPlayWrappers as _GeneratedPlayWrappers
 from .play_wrap import play_wrap
 from .spaced import spaced

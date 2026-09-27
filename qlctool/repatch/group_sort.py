@@ -22,8 +22,8 @@ two-row pattern it belongs to - a different question, and one for the rig.
 
 from lxml import etree
 
+from ..findall_local import findall_local
 from ..stage_x_positions import stage_x_positions
-from ..xmlutil import findall_local
 from .group_of import group_of
 
 

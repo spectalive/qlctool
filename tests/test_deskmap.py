@@ -296,7 +296,7 @@ def test_2026_09_27_a_state_that_starts_no_hook_of_the_frame_has_no_entry(tmp_pa
     starts no hook of the colour frame, so its key disappears from every
     colour pick's `releaseTo`.
     """
-    from qlctool.xmlutil import findall_local
+    from qlctool.findall_local import findall_local
 
     workspace = Workspace.load(SHOW)
     library = FixtureLibrary.load()

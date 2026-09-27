@@ -13,12 +13,14 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.checks.check_workspace import check_workspace
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_movement_families import generate_movement_families
 from qlctool.house_right_fixture_ids import house_right_fixture_ids
+from qlctool.iter_local import iter_local
 from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, iter_local
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"

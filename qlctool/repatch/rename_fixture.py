@@ -6,7 +6,7 @@ untouched, so no function, group or Virtual Console widget needs updating.
 
 from lxml import etree
 
-from ..xmlutil import find_local
+from ..find_local import find_local
 from .patch_element import patch_element
 
 

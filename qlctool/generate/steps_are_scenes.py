@@ -1,7 +1,7 @@
 """Whether a named chaser steps only Scenes."""
 
+from ..findall_local import findall_local
 from ..workspace import Workspace
-from ..xmlutil import findall_local
 
 
 def steps_are_scenes(workspace: Workspace, name: str) -> bool:

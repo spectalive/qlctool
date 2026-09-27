@@ -10,7 +10,9 @@ from dataclasses import dataclass
 
 from lxml import etree
 
-from .xmlutil import find_local, findall_local, iter_local
+from .find_local import find_local
+from .findall_local import findall_local
+from .iter_local import iter_local
 
 
 @dataclass(frozen=True)

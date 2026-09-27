@@ -14,13 +14,14 @@ from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.cli import main
 from qlctool.color_wheel_pairs import color_wheel_pairs
+from qlctool.findall_local import findall_local
 from qlctool.fixture import PatchedFixture
 from qlctool.fixture_capabilities import FixtureCapabilities
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.wheel_only_fixture_ids import wheel_only_fixture_ids
+from qlctool.iter_local import iter_local
 from qlctool.names.default_names import default_names
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import findall_local, iter_local
 
 WHEEL_PARS = ("Stairville|CLB2.4 Compact LED PAR System|2 Channel|0|{address}|Bar {index}", 2, 2)
 

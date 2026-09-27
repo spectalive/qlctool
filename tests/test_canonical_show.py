@@ -10,6 +10,8 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
+from qlctool.find_local import find_local
+from qlctool.findall_local import findall_local
 from qlctool.fixture import patched_fixtures
 from qlctool.fixture_group import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
@@ -19,7 +21,7 @@ from qlctool.patch_conflicts import patch_conflicts
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.vibra.keys import KEYS
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, findall_local, localname
+from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

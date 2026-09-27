@@ -23,7 +23,8 @@ from pathlib import Path
 from lxml import etree
 
 from .force_vc_window import force_vc_window
-from .xmlutil import iter_local, localname
+from .iter_local import iter_local
+from .xmlutil import localname
 
 IO_PATCHES = ("Input", "Output", "Feedback")
 

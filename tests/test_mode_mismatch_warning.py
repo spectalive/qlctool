@@ -14,11 +14,12 @@ from small_rig import build_small_rig_patch
 
 from qlctool.cli import main
 from qlctool.description.description_names import description_names
+from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
+from qlctool.iter_local import iter_local
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.warn_unresolved import warn_unresolved
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import find_local, iter_local
 
 EXAMPLE = Path(__file__).resolve().parents[1] / "examples" / "small-club"
 

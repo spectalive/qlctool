@@ -15,7 +15,7 @@ from pathlib import Path
 from lxml import etree
 
 from .constants import DOCTYPE, XML_DECLARATION
-from .xmlutil import find_local
+from .find_local import find_local
 
 
 class Workspace:

@@ -1,6 +1,6 @@
 """Scene id -> the longest fade-in it is started with, its own included."""
 
-from ..xmlutil import findall_local
+from ..findall_local import findall_local
 from .chaser_speed_mode import chaser_speed_mode
 from .own_fade_in import own_fade_in
 from .scenes_under import scenes_under
