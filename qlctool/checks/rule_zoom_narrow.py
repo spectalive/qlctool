@@ -17,22 +17,19 @@ end is wide (`zoom_wide_pairs`). Scenes that only move, only strobe or only
 black out are not lighting anything and are left alone.
 """
 
-from .. import roles
-from ..zoom_wide_pairs import zoom_wide_pairs
 from .finding import WARNING, Finding
-from .show_graph import ShowGraph, lit
+from .lit_without_zoom import lit_without_zoom
+from .show_graph import ShowGraph
 
 RULE_ID = "zoom_narrow"
 
-LIGHTING_ROLES = (roles.DIMMER, roles.RED, roles.GREEN, roles.BLUE, roles.WHITE)
 
-
-def check_zoom_narrow(graph: ShowGraph, groups) -> list[Finding]:
+def check_zoom_narrow(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> list[Finding]:
     findings: list[Finding] = []
     for function_id in sorted(graph.functions):
         if graph.kind(function_id) != "Scene":
             continue
-        silent = _lit_without_zoom(graph, groups, function_id)
+        silent = lit_without_zoom(graph, groups, function_id)
         if not silent:
             continue
         findings.append(
@@ -45,28 +42,3 @@ def check_zoom_narrow(graph: ShowGraph, groups) -> list[Finding]:
             )
         )
     return findings
-
-
-def _lit_without_zoom(graph: ShowGraph, groups, function_id: int) -> list[str]:
-    driven = graph.driven_of(graph.functions[function_id], groups)
-    names: list[str] = []
-    for fixture_id, written in driven.items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None:
-            continue
-        zoom = zoom_wide_pairs(capability)
-        if not zoom:
-            continue
-        if all(offset in written for offset, _ in zoom):
-            continue
-        if _lights(capability, written):
-            names.append(capability.fixture.name)
-    return names
-
-
-def _lights(capability, written: dict[int, int | None]) -> bool:
-    for role in LIGHTING_ROLES:
-        for offset in capability.offsets_for_role(role):
-            if offset in written and lit(written[offset]):
-                return True
-    return False
