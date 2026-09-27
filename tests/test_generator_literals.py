@@ -176,6 +176,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/wheel_frame.py",
     "generate/page_library.py",
     "generate/page_control.py",
+    "generate/page_show.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
