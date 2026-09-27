@@ -30,6 +30,9 @@ rig, which is what turned the room white - impossible to press.
 """
 
 from collections.abc import Mapping, Sequence
+from typing import Any
+
+from lxml import etree
 
 from ..argb import argb_from_rgb
 from ..control_glyph import GLYPHS
@@ -44,7 +47,9 @@ from ..vc.dial_function import DialFunction
 from ..vc.frame import build_frame
 from ..vc.label import build_label
 from ..workspace import Workspace
+from .beam_subsets import GeneratedBeamSubsets
 from .bind_pad import bind_pad
+from .builtin_effects import GeneratedBuiltins
 from .console_ids import ConsoleIds
 from .console_layout import (
     AUDIO_BANDS,
@@ -69,7 +74,10 @@ from .console_layout import (
     TITLE_FONT,
 )
 from .function_names import function_names
+from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
+from .generated_matrices import GeneratedMatrices
+from .generated_play_wrappers import GeneratedPlayWrappers
 from .on_page import on_page
 from .page_control import page_control
 from .page_library import page_library
@@ -78,24 +86,25 @@ from .play_page import build_play_page
 from .root_frame import root_frame
 from .set_canvas import set_canvas
 from .smc_pad_colors import readable_foreground
+from .wheel_scenes import GeneratedWheel
 
 
 def generate_live_console(
     workspace: Workspace,
     master: dict[str, int],
-    banks: Sequence,
-    matrices: Sequence,
-    beam_colors,
+    banks: Sequence[GeneratedBank],
+    matrices: Sequence[GeneratedMatrices],
+    beam_colors: GeneratedWheel,
     mover_fixture_ids: Sequence[int],
-    builtins,
+    builtins: GeneratedBuiltins,
     keys: dict[str, str],
     flash_functions: Sequence[str] = (),
     matrix_algorithms: Sequence[str] = (),
-    beam_subsets=None,
+    beam_subsets: GeneratedBeamSubsets | None = None,
     tempo_functions: Sequence[DialFunction] = (),
     movement_functions: Sequence[DialFunction] = (),
     bpm_tap: bool = False,
-    play_wrappers=None,
+    play_wrappers: GeneratedPlayWrappers | None = None,
     colour_flash_ids: dict[str, int] | None = None,
     canvas: tuple[int, int] = (CANVAS_WIDTH, CANVAS_HEIGHT),
     tempo_beat_ms: int = TEMPO_BEAT_MS,
@@ -134,7 +143,17 @@ def generate_live_console(
 
     widget_of: dict[int, int] = {}
 
-    def button(parent, function_id, caption, x, y, w, h, page=None, **kwargs):
+    def button(
+        parent: etree._Element,
+        function_id: int | None,
+        caption: str,
+        x: int,
+        y: int,
+        w: int,
+        h: int,
+        page: int | None = None,
+        **kwargs: Any,
+    ) -> etree._Element:
         widget_id = ids.take()
         element = build_button(
             parent,
@@ -154,7 +173,16 @@ def generate_live_console(
             widget_of[function_id] = widget_id
         return element
 
-    def frame(parent, caption, x, y, w, h, page=None, **kwargs):
+    def frame(
+        parent: etree._Element,
+        caption: str,
+        x: int,
+        y: int,
+        w: int,
+        h: int,
+        page: int | None = None,
+        **kwargs: Any,
+    ) -> etree._Element:
         widget_id = ids.take()
         element = build_frame(parent, widget_id, caption, x, y, w, h, **kwargs)
         on_page(element, page)
@@ -162,7 +190,16 @@ def generate_live_console(
         console.widget_ids.append(widget_id)
         return element
 
-    def label(parent, caption, x, y, w, h, page=None, font=DEFAULT):
+    def label(
+        parent: etree._Element,
+        caption: str,
+        x: int,
+        y: int,
+        w: int,
+        h: int,
+        page: int | None = None,
+        font: str = DEFAULT,
+    ) -> etree._Element:
         widget_id = ids.take()
         element = build_label(parent, widget_id, caption, x, y, w, h, font=font)
         on_page(element, page)
@@ -170,18 +207,18 @@ def generate_live_console(
         return element
 
     def master_button(
-        parent,
-        name,
-        caption,
-        x,
-        y,
-        w,
-        h,
-        page=None,
-        function_id=None,
-        include_key=True,
-        **kwargs,
-    ):
+        parent: etree._Element,
+        name: str,
+        caption: str,
+        x: int,
+        y: int,
+        w: int,
+        h: int,
+        page: int | None = None,
+        function_id: int | None = None,
+        include_key: bool = True,
+        **kwargs: Any,
+    ) -> etree._Element | None:
         """A button for a master function, with its key, glyph and action."""
         target_id = function_id if function_id is not None else master.get(name)
         if target_id is None:
@@ -317,6 +354,12 @@ def generate_live_console(
     )
 
     # Last, because a band presses a button and needs its widget ID.
+    bars: list[tuple[str, int | None]] = []
+    for band, target in AUDIO_BANDS:
+        pressed = master.get(vocabulary.display(target)) if target else None
+        bars.append(
+            (vocabulary.display(band), widget_of.get(pressed) if pressed is not None else None)
+        )
     triggers_id = ids.take()
     triggers = build_audio_triggers(
         outer,
@@ -326,13 +369,7 @@ def generate_live_console(
         330,
         RIGHT_WIDTH,
         110,
-        bars=[
-            (
-                vocabulary.display(band),
-                widget_of.get(master.get(vocabulary.display(target))) if target else None,
-            )
-            for band, target in AUDIO_BANDS
-        ],
+        bars=bars,
     )
     on_page(triggers, PAGE_CONTROL)
     console.widget_ids.append(triggers_id)
