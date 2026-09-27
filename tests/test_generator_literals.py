@@ -185,6 +185,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/tempo_dial.py",
     # 2026-09-27: page 3 cut along its frames, the bank column first.
     "generate/bank_column.py",
+    "generate/intensity.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

@@ -10,7 +10,6 @@ from collections.abc import Callable, Mapping, Sequence
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.bank_pitch import DIMMER_FRAME_HEIGHT
 from ..vc.dial_function import DialFunction
 from ..vc.grand_master_slider import build_grand_master_slider
 from ..vc.speed_dial import build_speed_dial
@@ -24,9 +23,7 @@ from .console_layout import (
     GRAND_MASTER_HEIGHT,
     GRAND_MASTER_LINES,
     GRAND_MASTER_WIDTH,
-    HEADER,
     HELP_FONT,
-    LEFT_WIDTH,
     LEFT_X,
     MIDDLE_WIDTH,
     MIDDLE_X,
@@ -40,6 +37,7 @@ from .console_layout import (
 )
 from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
+from .intensity import intensity
 from .on_page import on_page
 from .page_control_title import page_control_title
 from .wheel_frame import wheel_frame
@@ -101,28 +99,7 @@ def page_control(
 
     y = bank_column(outer, button, frame, names, banks, palette, short_colour, mix_code, vocabulary)
 
-    if has_intensity:
-        dimmers = frame(
-            outer,
-            vocabulary.display("intensity_chases"),
-            LEFT_X,
-            y,
-            LEFT_WIDTH,
-            DIMMER_FRAME_HEIGHT,
-            page=PAGE_CONTROL,
-            font=TITLE_FONT,
-        )
-        for index, (function, caption) in enumerate(DIMMER_CHASES):
-            column, row = index % 3, index // 3
-            master_button(
-                dimmers,
-                vocabulary.display(function),
-                vocabulary.display(caption),
-                GAP + column * 170,
-                HEADER + row * 52,
-                166,
-                46,
-            )
+    intensity(outer, master_button, frame, has_intensity, y, vocabulary)
 
     # Below the audio triggers (they end at y=440): the left column is full,
     # four colour banks deep.
