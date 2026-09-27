@@ -30,7 +30,6 @@ from .console_layout import (
     PAGE_SHOW,
     RIGHT_WIDTH,
     RIGHT_X,
-    ROOM_STATES,
     SMOKE_BUTTON_HEIGHT,
     SMOKE_RHYTHMS,
     SMOKE_ROW_HEIGHT,
@@ -42,6 +41,7 @@ from .console_layout import (
 )
 from .generated_console import GeneratedConsole
 from .on_page import on_page
+from .room_states import room_states
 from .tempo_close_line import tempo_close_line
 from .tempo_help_line import tempo_help_line
 
@@ -79,35 +79,7 @@ def page_show(
         font=TITLE_FONT,
     )
 
-    # Solo on purpose: this is what makes the room one state at a time. Nothing
-    # here starts anything else in here, so the solo-frame rule is not broken -
-    # a moment starts wheels and chasers, and every one of those lives on
-    # another page, in a plain frame.
-    room = frame(
-        outer,
-        vocabulary.display("room_states"),
-        LEFT_X,
-        68,
-        OUTER_WIDTH - 16,
-        322,
-        page=PAGE_SHOW,
-        solo=True,
-        # A moment must stop an AUTO that the page-2 duplicate started, which
-        # leaves this frame's AUTO button only monitoring it.
-        exclude_monitored=False,
-        font=TITLE_FONT,
-    )
-    for function, caption, (x, y, w, h), font in ROOM_STATES:
-        master_button(
-            room,
-            vocabulary.display(function),
-            vocabulary.display(caption),
-            x,
-            y,
-            w,
-            h,
-            font=font,
-        )
+    room_states(outer, master_button, frame, vocabulary)
 
     hits = frame(
         outer,
