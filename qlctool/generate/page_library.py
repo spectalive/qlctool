@@ -11,7 +11,6 @@ from lxml import etree
 
 from ..names.names import Names
 from ..names.template_affixes import template_affixes
-from ..vc.button import FLASH
 from ..vc.level_slider import build_level_slider
 from ..vc.matrix_control import build_matrix_control
 from .after_marker import after_marker
@@ -45,10 +44,9 @@ from .generated_console import GeneratedConsole
 from .generated_matrices import GeneratedMatrices
 from .library_help_lines import library_help_lines
 from .matrices_frame_caption import matrices_frame_caption
-from .mix_caption import mix_caption
+from .mixes import mixes
 from .on_page import on_page
 from .panels_frame_caption import panels_frame_caption
-from .swatch import swatch
 from .wheel_frame import wheel_frame
 
 
@@ -84,56 +82,8 @@ def page_library(
         font=TITLE_FONT,
     )
 
-    # Held with ForceLTP like the banks (2026-09-02): a two-colour scene on a
-    # Toggle adds to the running state's colour instead of showing its own.
-    # The blue/red pair lives on the bank's keys 9/0 (restored 2026-08-28); a
-    # second button here would always look off. A rig whose banks hold no
-    # other mix (one beam, 2026-09-26) gets no frame: it would be empty.
     library_splits = [[fid for fid in bank.split_ids if fid not in bank.key_ids] for bank in banks]
-    if any(library_splits):
-        mixes = frame(
-            outer,
-            vocabulary.display("mixes_frame"),
-            LEFT_X,
-            68,
-            LEFT_WIDTH,
-            230,
-            page=PAGE_LIBRARY,
-            pages=len(banks) or 1,
-            font=TITLE_FONT,
-        )
-        for page, bank in enumerate(banks):
-            label(
-                mixes,
-                vocabulary.render("group_label", group=bank.group_name),
-                GAP,
-                HEADER,
-                512,
-                20,
-                page=page,
-                font=HELP_FONT,
-            )
-            for index, function_id in enumerate(library_splits[page]):
-                column, row = index % 10, index // 10
-                name = names.get(function_id, "")
-                on_page(
-                    button(
-                        mixes,
-                        function_id,
-                        mix_caption(name, mix_code),
-                        x=GAP + column * 51,
-                        y=HEADER + 24 + row * 51,
-                        w=48,
-                        h=45,
-                        action=FLASH,
-                        flash_override=True,
-                        flash_force_ltp=True,
-                        background=swatch(name, palette),
-                        foreground=swatch(name, palette, second=True),
-                        font=TINY_FONT,
-                    ),
-                    page,
-                )
+    mixes(outer, button, frame, label, names, banks, library_splits, palette, mix_code, vocabulary)
 
     wheel_frame(
         outer,

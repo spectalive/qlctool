@@ -189,6 +189,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/grand_master.py",
     "generate/aim_pad.py",
     "generate/movement_dial.py",
+    # 2026-09-27: page 4 cut along its frames, mixes first.
+    "generate/mixes.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
