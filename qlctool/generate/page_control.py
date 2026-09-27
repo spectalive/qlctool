@@ -11,7 +11,6 @@ from lxml import etree
 
 from ..names.names import Names
 from ..vc.dial_function import DialFunction
-from ..vc.grand_master_slider import build_grand_master_slider
 from ..vc.speed_dial import build_speed_dial
 from ..vc.xy_pad import build_xy_pad
 from .bank_column import bank_column
@@ -19,10 +18,6 @@ from .bind_pad import bind_pad
 from .console_ids import ConsoleIds
 from .console_layout import (
     DIMMER_CHASES,
-    GAP,
-    GRAND_MASTER_HEIGHT,
-    GRAND_MASTER_LINES,
-    GRAND_MASTER_WIDTH,
     HELP_FONT,
     LEFT_X,
     MIDDLE_WIDTH,
@@ -37,6 +32,7 @@ from .console_layout import (
 )
 from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
+from .grand_master import grand_master
 from .intensity import intensity
 from .on_page import on_page
 from .page_control_title import page_control_title
@@ -101,46 +97,7 @@ def page_control(
 
     intensity(outer, master_button, frame, has_intensity, y, vocabulary)
 
-    # Below the audio triggers (they end at y=440): the left column is full,
-    # four colour banks deep.
-    grand_master_y = 450
-    # The bass bar's target has to be a widget (SpectrumBar presses widgets,
-    # not functions), so its plain white hit gets a button of its own here,
-    # beside the audio triggers that press it.
-    master_button(
-        outer,
-        vocabulary.display("bass_hit"),
-        vocabulary.display("bass_button"),
-        RIGHT_X + GRAND_MASTER_WIDTH + GAP,
-        grand_master_y,
-        RIGHT_WIDTH - GRAND_MASTER_WIDTH - GAP,
-        60,
-        page=PAGE_CONTROL,
-    )
-    grand_master_id = ids.take()
-    grand_master = build_grand_master_slider(
-        outer,
-        grand_master_id,
-        vocabulary.display("grand_master"),
-        RIGHT_X,
-        grand_master_y,
-        GRAND_MASTER_WIDTH,
-        GRAND_MASTER_HEIGHT,
-    )
-    bind_pad(grand_master, pad_bindings, vocabulary.display("grand_master"))
-    on_page(grand_master, PAGE_CONTROL)
-    console.widget_ids.append(grand_master_id)
-    for index, line in enumerate(GRAND_MASTER_LINES):
-        label(
-            outer,
-            vocabulary.display(line),
-            RIGHT_X,
-            grand_master_y + GRAND_MASTER_HEIGHT + GAP + index * 22,
-            RIGHT_WIDTH,
-            20,
-            page=PAGE_CONTROL,
-            font=HELP_FONT,
-        )
+    grand_master(outer, master_button, label, ids, console, pad_bindings, vocabulary)
 
     # The vertical smoke's light: latched on purpose - the column lasts as
     # long as it lasts, and somebody presses it off when it is over.
