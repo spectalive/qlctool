@@ -35,8 +35,11 @@ hook. The pad and the keyboard leave that to the operator; the tablet does it.
   read from the show's function graph. A state that starts none, or more than
   one, is left out: AUTO starts two or three of the heads', gobo and prism
   hooks through its energy levels, so which one is right depends on the level
-  playing. There the floor holds the family, and the next level step restarts
-  the right hook by itself.
+  playing. There the desk presses nothing at all: the family sits on the
+  floor - centred, gobo open, prism out - until AUTO's own next level step
+  restarts the right hook, and `Ciclo Energia` holds a level for up to 480 s
+  (240 s, 480 s, 40 s or 240 s depending on which one is running). An operator
+  who wants the look back sooner presses the hook themselves.
 - The object is omitted when it would be empty. Room-state controls never
   carry it.
 - A control the desk places among the hooks can carry it too: `Colores
