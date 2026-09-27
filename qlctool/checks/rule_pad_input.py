@@ -24,10 +24,9 @@ So the rule reads the wiring against the device, not against names:
 
 from lxml import etree
 
-from ..generate.input_profile import build_input_profile
 from ..input_binding import midi_input_patch
-from ..xmlutil import localname
 from .finding import ERROR, Finding
+from .input_profile_channels import input_profile_channels
 from .pad_bindings import pad_bindings
 
 RULE_ID = "pad_input"
@@ -41,7 +40,7 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
         return []
 
     findings: list[Finding] = []
-    sendable = _profile_channels()
+    sendable = input_profile_channels()
     for channel, captions in sorted(bindings.items()):
         if channel not in sendable:
             findings.append(
@@ -75,13 +74,3 @@ def check_pad_input(root: etree._Element) -> list[Finding]:
             )
         )
     return findings
-
-
-def _profile_channels() -> set[int]:
-    """The channel numbers the shipped input profile declares."""
-    profile = etree.fromstring(build_input_profile())
-    return {
-        int(channel.attrib["Number"])
-        for channel in profile.iter()
-        if localname(channel) == "Channel"
-    }

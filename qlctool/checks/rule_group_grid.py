@@ -22,6 +22,7 @@ from lxml import etree
 
 from ..xmlutil import find_local, findall_local, iter_local
 from .finding import ERROR, Finding
+from .group_name_or_id import group_name_or_id
 from .show_graph import ShowGraph
 
 RULE_ID = "group_grid"
@@ -40,7 +41,7 @@ def check_group_grids(graph: ShowGraph, root: etree._Element) -> list[Finding]:
         cells = [
             (int(head.attrib["X"]), int(head.attrib["Y"])) for head in findall_local(group, "Head")
         ]
-        name = _name(group)
+        name = group_name_or_id(group)
 
         outside = [cell for cell in cells if cell[0] >= width or cell[1] >= height]
         if outside:
@@ -72,8 +73,3 @@ def check_group_grids(graph: ShowGraph, root: etree._Element) -> list[Finding]:
                 )
             )
     return findings
-
-
-def _name(group: etree._Element) -> str:
-    name = find_local(group, "Name")
-    return (name.text or "").strip() if name is not None else group.attrib["ID"]

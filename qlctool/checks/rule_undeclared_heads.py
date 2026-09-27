@@ -30,13 +30,12 @@ channels, satisfy a count and leave the matrix exactly as broken as before.
 
 from lxml import etree
 
-from .. import roles
 from ..fixture_group import fixture_groups
+from .colour_heads import COLOUR_ROLES, colour_heads
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
 RULE_ID = "undeclared_heads"
-COLOUR_ROLES = (roles.RED, roles.GREEN, roles.BLUE)
 
 
 def check_undeclared_heads(graph: ShowGraph, root: etree._Element) -> list[Finding]:
@@ -51,7 +50,7 @@ def check_undeclared_heads(graph: ShowGraph, root: etree._Element) -> list[Findi
         sets = min(len(capability.offsets_for_role(role)) for role in COLOUR_ROLES)
         if sets < 2:
             continue
-        declared = _colour_heads(capability)
+        declared = colour_heads(capability)
         if declared >= sets:
             continue
         findings.append(
@@ -65,13 +64,3 @@ def check_undeclared_heads(graph: ShowGraph, root: etree._Element) -> list[Findi
             )
         )
     return findings
-
-
-def _colour_heads(capability) -> int:
-    """How many declared heads carry a full RGB set of their own."""
-    by_role = {role: set(capability.offsets_for_role(role)) for role in COLOUR_ROLES}
-    return sum(
-        1
-        for head in capability.declared_heads
-        if all(by_role[role] & set(head) for role in COLOUR_ROLES)
-    )
