@@ -68,6 +68,8 @@ data = [
   "qlctool/generate/movement_aim.py",
   # The XML namespace every QLC+ input profile element lives in.
   "qlctool/generate/profile_ns.py",
+  # Shared placement numbers for the JUGAR page's frames and button grid.
+  "qlctool/generate/play_page_layout.py",
   # Which physical SMC-PAD control fires each console widget; the numbers
   # come from smc_pad_device.py.
   "qlctool/generate/smc_pad_bindings.py",

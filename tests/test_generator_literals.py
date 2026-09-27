@@ -278,6 +278,21 @@ CONVERTED: tuple[str, ...] = (
     # converted.
     "generate/envelope.py",
     "generate/generated_families.py",
+    # 2026-09-27, batch 5: split out of play_page.py, which was converted.
+    "generate/play_page_layout.py",
+    "generate/grid_position.py",
+    "generate/source_name.py",
+    "generate/pick_caption.py",
+    "generate/hook.py",
+    "generate/bound_pick.py",
+    "generate/pick.py",
+    "generate/build_reset_strip.py",
+    "generate/build_colour_hits.py",
+    "generate/build_color_family.py",
+    "generate/build_pixel_family.py",
+    "generate/build_movement_family.py",
+    "generate/build_gobo_family.py",
+    "generate/build_prism_family.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
