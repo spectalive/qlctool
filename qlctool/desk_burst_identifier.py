@@ -1,8 +1,8 @@
 """What a held desk accent is, by identifier: a hit caption or a palette colour."""
 
-from .desk_policy import split_caption
 from .leading_glyph import leading_glyph
 from .names.names import Names
+from .split_caption import split_caption
 
 
 def desk_burst_identifier(caption: str, names: Names) -> str | None:

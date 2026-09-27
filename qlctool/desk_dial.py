@@ -4,11 +4,11 @@ from typing import Any
 
 from lxml import etree
 
-from .desk_policy import split_caption
 from .desk_widgets import DeskWidget
 from .find_local import find_local
 from .findall_local import findall_local
 from .multiplier import multiplier
+from .split_caption import split_caption
 
 
 def desk_dial(root: etree._Element, widget: DeskWidget) -> dict[str, Any]:

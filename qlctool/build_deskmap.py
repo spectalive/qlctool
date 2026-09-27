@@ -28,17 +28,17 @@ from .desk_policy import (
     SAFETY_CAPTION_BY_FUNCTION,
     SAFETY_DETAIL_BY_FUNCTION,
     SAFETY_DETAIL_BY_ROLE,
-    place,
-    split_caption,
 )
 from .desk_unique_key import desk_unique_key
-from .desk_widgets import desk_widgets
+from .desk_widgets_of import desk_widgets
 from .fixture_library import FixtureLibrary
 from .leading_glyph import leading_glyph
 from .names.names import Names
 from .names.shipped_names import shipped_names
 from .names.workspace_language import workspace_language
+from .place import place
 from .slugify import slugify
+from .split_caption import split_caption
 from .swatches import swatches
 from .workspace import Workspace
 

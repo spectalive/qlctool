@@ -5,13 +5,13 @@ from copy import deepcopy
 from ..desk_burst_duration import desk_burst_duration
 from ..desk_burst_sources import desk_burst_sources
 from ..desk_function_path import DESK_FUNCTION_PATH
-from ..desk_policy import split_caption
 from ..find_local import find_local
 from ..functions.build_chaser import build_chaser
 from ..ids import next_function_id
 from ..iter_local import iter_local
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..split_caption import split_caption
 from ..vc.build_button import build_button
 from ..vc.build_frame import build_frame
 from ..vc.build_label import build_label

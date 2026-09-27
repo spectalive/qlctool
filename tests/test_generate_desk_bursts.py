@@ -163,8 +163,8 @@ def test_2026_09_13_burst_corruption_fails_closed(generated, fault):
 def test_burst_map_keeps_source_captions_and_swatches(generated, tmp_path):
     workspace, library = generated
     from qlctool.checks.group_fixtures import group_fixtures
-    from qlctool.desk_policy import split_caption
     from qlctool.leading_glyph import leading_glyph
+    from qlctool.split_caption import split_caption
     from qlctool.swatches import swatches
 
     path = tmp_path / "show.qxw"

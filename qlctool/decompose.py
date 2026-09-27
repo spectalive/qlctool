@@ -9,11 +9,9 @@ what makes the show diffable and lets AI edit one function at a time.
 import json
 from pathlib import Path
 
-from lxml import etree
-
-from .constants import XML_DECLARATION
-from .slugify import slugify
+from .function_filename import function_filename
 from .workspace import Workspace
+from .write_fragment import write_fragment
 from .xmlutil import localname
 
 MANIFEST = "manifest.json"
@@ -31,8 +29,8 @@ def decompose_workspace(src: str | Path, out_dir: str | Path) -> None:
     engine_order: list[dict] = []
     for child in list(engine):
         if localname(child) == "Function":
-            filename = _function_filename(child)
-            _write_fragment(out / FUNCTIONS_DIR / filename, child)
+            filename = function_filename(child)
+            write_fragment(out / FUNCTIONS_DIR / filename, child)
             engine_order.append({"function": filename})
             engine.remove(child)
         else:
@@ -44,16 +42,3 @@ def decompose_workspace(src: str | Path, out_dir: str | Path) -> None:
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
-
-
-def _function_filename(function: etree._Element) -> str:
-    fid = int(function.attrib.get("ID", "0"))
-    ftype = function.attrib.get("Type", "Function")
-    name = function.attrib.get("Name", "")
-    return f"{fid:05d}-{ftype}-{slugify(name)}.xml"
-
-
-def _write_fragment(path: Path, element: etree._Element) -> None:
-    body = etree.tostring(element, pretty_print=True, encoding="unicode")
-    header = f"{XML_DECLARATION}\n"
-    path.write_text(header + body, encoding="utf-8")

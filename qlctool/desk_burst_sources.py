@@ -2,10 +2,12 @@
 
 from lxml import etree
 
-from .desk_policy import place, split_caption
-from .desk_widgets import DeskWidget, desk_widgets
+from .desk_widgets import DeskWidget
+from .desk_widgets_of import desk_widgets
 from .names.names import Names
+from .place import place
 from .slugify import slugify
+from .split_caption import split_caption
 
 
 def desk_burst_sources(root: etree._Element, names: Names) -> dict[str, DeskWidget]:

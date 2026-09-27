@@ -12,10 +12,10 @@ from rig_root import RIG_ROOT
 
 from qlctool.build_deskmap import build_deskmap
 from qlctool.cli import main
-from qlctool.desk_policy import split_caption
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.multiplier import multiplier
+from qlctool.split_caption import split_caption
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT
