@@ -12,25 +12,26 @@ LED belongs to the colour bed like any PAR, and a colour scene writing that LED
 has not touched the fog.
 """
 
-from ..fog_offsets import fog_offsets
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit
+from .fixture_id_is_smoke import fixture_id_is_smoke
+from .pump_lit import pump_lit
+from .show_graph import ShowGraph
 
 RULE_ID = "smoke"
 
 
-def check_smoke(graph: ShowGraph, groups) -> list[Finding]:
+def check_smoke(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, function in sorted(graph.functions.items()):
         driven = graph.driven_of(function, groups)
         smoke = [
             fixture_id
             for fixture_id, written in driven.items()
-            if _pump_lit(graph, fixture_id, written)
+            if pump_lit(graph, fixture_id, written)
         ]
         if not smoke:
             continue
-        others = [fixture_id for fixture_id in driven if not _is_smoke(graph, fixture_id)]
+        others = [fixture_id for fixture_id in driven if not fixture_id_is_smoke(graph, fixture_id)]
         if others:
             findings.append(
                 Finding(
@@ -46,16 +47,3 @@ def check_smoke(graph: ShowGraph, groups) -> list[Finding]:
                 )
             )
     return findings
-
-
-def _is_smoke(graph: ShowGraph, fixture_id: int) -> bool:
-    capability = graph.capabilities.get(fixture_id)
-    return capability is not None and capability.is_smoke
-
-
-def _pump_lit(graph: ShowGraph, fixture_id: int, written) -> bool:
-    capability = graph.capabilities.get(fixture_id)
-    if capability is None or not capability.is_smoke:
-        return False
-    pump = set(fog_offsets(capability))
-    return any(lit(value) for offset, value in written.items() if offset in pump)
