@@ -2,10 +2,13 @@
 
 Named `qlcplus` it plays the 4.x build (validation waits for its log to go
 quiet); named `qlcplus-qml` it plays the QML build and logs `renderPage`, the
-end-of-load marker. Given `-o`, it copies the workspace it was handed to
-`$FAKE_QLC_SEEN`, starts a `sleep` child when `$FAKE_QLC_CHILD` is set, and
-writes its pid, that child's pid (0 for none) and the path it was given to
-`$FAKE_QLC_READY`, one per line. Then it sleeps until it is killed.
+end-of-load marker - but, like the real QML build, only when the workspace it
+was handed has `CurrentWindow="VC"` (2026-09-27, C-1 regression: real QLC+ 5
+renders that marker's page only on the VC view). Given `-o`, it copies the
+workspace it was handed to `$FAKE_QLC_SEEN`, starts a `sleep` child when
+`$FAKE_QLC_CHILD` is set, and writes its pid, that child's pid (0 for none)
+and the path it was given to `$FAKE_QLC_READY`, one per line. Then it sleeps
+until it is killed.
 
 Three more modes, 2026-09-26 (round G): `$FAKE_QLC_ORPHAN` names a file
 where it writes the pid of a `sleep` it leaves behind, detached (its parent
@@ -21,8 +24,13 @@ from pathlib import Path
 SCRIPT = """#!PYTHON
 import os, shutil, subprocess, sys, time
 args = sys.argv[1:]
+current_window = None
 if "-o" in args:
     given = args[args.index("-o") + 1]
+    with open(given, encoding="utf-8") as handed:
+        head = handed.read(4096)
+    if 'CurrentWindow="' in head:
+        current_window = head.split('CurrentWindow="', 1)[1].split('"', 1)[0]
     if os.environ.get("FAKE_QLC_SEEN"):
         shutil.copy(given, os.environ["FAKE_QLC_SEEN"])
     child = subprocess.Popen(["sleep", "60"]) if os.environ.get("FAKE_QLC_CHILD") else None
@@ -34,7 +42,11 @@ if os.environ.get("FAKE_QLC_ORPHAN"):
     target = os.environ["FAKE_QLC_ORPHAN"]
     subprocess.run(["sh", "-c", f'sleep 60 & echo $! > "{target}.part"; mv "{target}.part" "{target}"'])
 print("Q Light Controller Plus stand-in", flush=True)
-if sys.argv[0].endswith("-qml") and not os.environ.get("FAKE_QLC_NO_MARKER"):
+if (
+    sys.argv[0].endswith("-qml")
+    and not os.environ.get("FAKE_QLC_NO_MARKER")
+    and current_window == "VC"
+):
     print("[VC] renderPage", flush=True)
 if os.environ.get("FAKE_QLC_PARTIAL"):
     sys.stdout.write("a line that never ends")

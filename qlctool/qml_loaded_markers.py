@@ -2,7 +2,11 @@
 
 It never goes quiet on its own, so this is what "loading finished" means
 there: a Virtual Console page has rendered, which happens only after the
-whole document - fixtures included - is loaded.
+whole document - fixtures included - is loaded. That page renders only when
+the workspace's `CurrentWindow` names the VC view, so the copy validation
+loads is always forced onto it first (`force_vc_window`) - otherwise a
+workspace last saved on another view, such as I/O or Show Manager, would
+never log this marker at all (C-1, 2026-09-27 final review).
 
 `MasterTimer is running late` and `Time is late` used to be in this tuple
 too. Both come from the DMX output thread, which starts ticking as soon as

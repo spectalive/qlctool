@@ -12,7 +12,10 @@ its log rather than the exit code.
 
 What QLC+ loads is an offline copy (`validation_copy`, `offline_workspace`):
 every universe kept, its `<Input>`, `<Output>` and `<Feedback>` removed, an
-audio beat generator made internal and a network server's autostart off. A
+audio beat generator made internal, a network server's autostart off, and its
+`CurrentWindow` forced to `VC` so the QML build's end-of-load marker, which
+only ever logs there, is not missed on a workspace saved on another view
+(`force_vc_window`; C-1, 2026-09-27 final review). A
 validation run during a show must never open the rig's DMX interface,
 Art-Net, MIDI or the microphone again, and QLC+ 5 has no flag to load without
 them - so validation no longer checks the I/O map the file names (2026-09-26,
