@@ -23,18 +23,19 @@ a room, which is why this is an error and not a warning.
 
 from lxml import etree
 
-from ..fog_offsets import fog_offsets
 from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
+from .clears_itself import clears_itself
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit, reach
+from .pumps_held import pumps_held
+from .show_graph import ShowGraph
 
 RULE_ID = "smoke_restore"
-# The one QLC+ zeroes every cycle. Everything else holds its last value.
-RESET_GROUP = "intensity"
 
 
-def check_smoke_restore(graph: ShowGraph, groups, root: etree._Element) -> list[Finding]:
+def check_smoke_restore(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element
+) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:
         return []
@@ -46,8 +47,8 @@ def check_smoke_restore(graph: ShowGraph, groups, root: etree._Element) -> list[
         function_id = int(function.attrib.get("ID", NO_FUNCTION))
         if function_id not in graph.functions:
             continue
-        held = _pumps_held(graph, groups, function_id)
-        if not held or _clears_itself(graph, groups, function_id, held):
+        held = pumps_held(graph, groups, function_id)
+        if not held or clears_itself(graph, groups, function_id, held):
             continue
         caption = button.attrib.get("Caption", "")
         for fixture_id in sorted(held):
@@ -62,69 +63,3 @@ def check_smoke_restore(graph: ShowGraph, groups, root: etree._Element) -> list[
                 )
             )
     return findings
-
-
-def _pumps_held(graph: ShowGraph, groups, function_id: int) -> dict[int, set[int]]:
-    """Fixture id -> the pump offsets this button raises that QLC+ will not clear."""
-    held: dict[int, set[int]] = {}
-    for fixture_id, written in reach(graph, groups, function_id).items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None or not capability.is_smoke:
-            continue
-        offsets = {
-            offset
-            for offset in fog_offsets(capability)
-            if offset in written
-            and lit(written[offset])
-            and capability.groups_by_offset[offset].lower() != RESET_GROUP
-        }
-        if offsets:
-            held[fixture_id] = offsets
-    return held
-
-
-def _clears_itself(
-    graph: ShowGraph,
-    groups,
-    function_id: int,
-    held: dict[int, set[int]],
-    seen: frozenset = frozenset(),
-) -> bool:
-    """Whether the thing this button starts carries its own "pump shut".
-
-    A chaser alternating a fog step with an off step does - `Humo Auto` has run
-    the haze that way for years, and the pump closes again a step later
-    whatever anyone presses. A SingleShot burst does when its **last** step is
-    the one that closes it. A Collection is as safe as the member that does, so
-    the question recurses. A bare scene never does.
-    """
-    if function_id in seen:
-        return False
-    seen = seen | {function_id}
-    steps = graph.members.get(function_id, ())
-    if not steps:
-        return False
-    function = graph.functions[function_id]
-    order = find_local(function, "RunOrder")
-    single = (
-        function.attrib.get("Type") == "Chaser"
-        and order is not None
-        and (order.text or "").strip() == "SingleShot"
-    )
-    candidates = [steps[-1]] if single else list(steps)
-    return any(
-        _shuts(graph, groups, step, held) or _clears_itself(graph, groups, step, held, seen)
-        for step in candidates
-    )
-
-
-def _shuts(graph: ShowGraph, groups, step: int, held) -> bool:
-    """Whether this one step writes zero to every pump offset that was raised."""
-    if step not in graph.functions:
-        return False
-    written = graph.driven_of(graph.functions[step], groups)
-    return all(
-        written.get(fixture_id, {}).get(offset) == 0
-        for fixture_id, offsets in held.items()
-        for offset in offsets
-    )
