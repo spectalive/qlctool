@@ -25,17 +25,18 @@ that another Toggle button outside the frame also drives.
 
 from lxml import etree
 
-from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import find_local, iter_local, localname
+from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
-from .show_graph import BRANCHING, ShowGraph
+from .show_graph import ShowGraph
+from .started_as_child import started_as_child
+from .toggle_functions_by_frame import toggle_functions_by_frame
 
 RULE_ID = "solo_handoff"
 
 
 def check_solo_handoff(graph: ShowGraph, root: etree._Element, states: set[int]) -> list[Finding]:
     findings: list[Finding] = []
-    outside = _toggle_functions_by_frame(root)
+    outside = toggle_functions_by_frame(root)
     # What every room state reaches, computed once: the walk is the cost.
     reached = {state_id: graph.descendants(state_id) for state_id in states}
     for frame in iter_local(root, "SoloFrame"):
@@ -49,7 +50,7 @@ def check_solo_handoff(graph: ShowGraph, root: etree._Element, states: set[int])
         needing = sorted(
             function_id
             for function_id in toggles
-            if _started_as_child(graph, reached, function_id) or function_id in elsewhere
+            if started_as_child(graph, reached, function_id) or function_id in elsewhere
         )
         if not needing:
             continue
@@ -65,44 +66,3 @@ def check_solo_handoff(graph: ShowGraph, root: etree._Element, states: set[int])
             )
         )
     return findings
-
-
-def _started_as_child(
-    graph: ShowGraph, reached: dict[int, frozenset[int]], function_id: int
-) -> bool:
-    """A branching function that a room state other than itself reaches."""
-    if graph.kind(function_id) not in BRANCHING:
-        return False
-    return any(
-        function_id in below for state_id, below in reached.items() if state_id != function_id
-    )
-
-
-def _toggle_functions_by_frame(root: etree._Element) -> dict[etree._Element | None, set[int]]:
-    """The functions of every Toggle button, keyed by the solo frame holding it.
-
-    Buttons outside any solo frame are keyed by None, which makes them count
-    as "elsewhere" for every frame.
-    """
-    found: dict[etree._Element | None, set[int]] = {}
-    for button in iter_local(root, "Button"):
-        action = find_local(button, "Action")
-        if action is not None and (action.text or "").strip() not in ("", "Toggle"):
-            continue
-        function = find_local(button, "Function")
-        if function is None:
-            continue
-        function_id = int(function.attrib.get("ID", NO_FUNCTION))
-        if function_id == NO_FUNCTION:
-            continue
-        found.setdefault(_solo_frame_of(button), set()).add(function_id)
-    return found
-
-
-def _solo_frame_of(widget: etree._Element) -> etree._Element | None:
-    current = widget.getparent()
-    while current is not None:
-        if localname(current) == "SoloFrame":
-            return current
-        current = current.getparent()
-    return None
