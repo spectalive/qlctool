@@ -19,18 +19,17 @@ choice and are left alone; only a value that *means* open without reaching the
 endpoint is reported.
 """
 
-from ..shutter_open import shutter_open_ranges
-from ..shutter_open_value import shutter_open_value
 from .finding import ERROR, Finding
+from .short_of_the_endpoint import short_of_the_endpoint
 from .show_graph import ShowGraph
 
 RULE_ID = "shutter_endpoint"
 
 
-def check_shutter_endpoint(graph: ShowGraph, groups) -> list[Finding]:
+def check_shutter_endpoint(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> list[Finding]:
     findings: list[Finding] = []
     for function_id in sorted(graph.functions):
-        short = _short_of_the_endpoint(graph, groups, function_id)
+        short = short_of_the_endpoint(graph, groups, function_id)
         if not short:
             continue
         names = tuple(sorted(name for name, _, _ in short))
@@ -46,23 +45,3 @@ def check_shutter_endpoint(graph: ShowGraph, groups) -> list[Finding]:
             )
         )
     return findings
-
-
-def _short_of_the_endpoint(
-    graph: ShowGraph, groups, function_id: int
-) -> list[tuple[str, int, int]]:
-    """(fixture name, value written, the endpoint it should have written)."""
-    driven = graph.driven_of(graph.functions[function_id], groups)
-    short: list[tuple[str, int, int]] = []
-    for fixture_id, written in driven.items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None:
-            continue
-        for offset, opening in shutter_open_ranges(capability):
-            value = written.get(offset)
-            if value is None:
-                continue
-            endpoint = shutter_open_value(opening)
-            if opening.minimum <= value <= opening.maximum and value != endpoint:
-                short.append((capability.fixture.name, value, endpoint))
-    return short
