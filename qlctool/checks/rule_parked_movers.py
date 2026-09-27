@@ -30,7 +30,7 @@ block the rule is about is the one that mixes a scene into the step.
 
 from .. import roles
 from ..xmlutil import find_local, findall_local
-from .driven_channels import EFX_PAN_TILT
+from .efx_driven import EFX_PAN_TILT
 from .finding import ERROR, Finding
 from .show_graph import CONCURRENT, ShowGraph
 

@@ -19,7 +19,7 @@ forgiving than a 2-degree needle, but neither of them is aimed by a default.
 """
 
 from ..xmlutil import find_local, findall_local
-from .driven_channels import EFX_PAN_TILT
+from .efx_driven import EFX_PAN_TILT
 from .finding import WARNING, Finding
 from .show_graph import ShowGraph
 

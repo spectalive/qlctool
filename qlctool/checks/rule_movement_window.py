@@ -34,7 +34,7 @@ from .. import roles
 from ..audience_window import BEAM_WINDOW, WASH_WINDOW
 from ..efx_extent import efx_extent
 from ..xmlutil import find_local, findall_local
-from .driven_channels import EFX_PAN_TILT
+from .efx_driven import EFX_PAN_TILT
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
