@@ -5,9 +5,9 @@ the mode it is patched in. Either one missing leaves its channels unreadable:
 generators skip it and every rule is blind to it.
 """
 
-from .definition import FixtureDefinition
 from .definition_outcome_of import definition_outcome_of
 from .fixture import PatchedFixture
+from .fixture_definition import FixtureDefinition
 from .fixture_library import FixtureLibrary
 
 

@@ -13,7 +13,7 @@ from pathlib import Path
 from pygdtf import Wheel, WheelSlot
 
 from .. import roles
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 from .wheel_name import wheel_name
 from .wheel_plan import WheelPlan
 from .wheel_slot import wheel_slot

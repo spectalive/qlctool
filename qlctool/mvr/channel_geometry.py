@@ -3,7 +3,7 @@ the parent of every beam when no head claims it.
 """
 
 from .. import roles
-from ..definition import Channel
+from ..channel import Channel
 from .geometry_plan import GeometryPlan
 
 

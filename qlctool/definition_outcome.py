@@ -9,7 +9,7 @@ the check and the `newshow` refusal to share (2026-09-25 review).
 
 from dataclasses import dataclass
 
-from .definition import FixtureDefinition
+from .fixture_definition import FixtureDefinition
 
 
 @dataclass(frozen=True)

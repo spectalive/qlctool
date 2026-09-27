@@ -5,7 +5,7 @@ one row; a mover's lenses sit on top of its head, a static fixture's on top
 of its body.
 """
 
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 
 LENS_THICKNESS = 0.02
 

@@ -1,6 +1,6 @@
 """Whether a fixture's body is a panel's: a flat face clearly wider than it is tall."""
 
-from .definition import Dimensions
+from .dimensions import Dimensions
 
 
 def has_panel_face(dimensions: Dimensions | None) -> bool:

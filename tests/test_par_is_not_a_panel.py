@@ -17,10 +17,11 @@ from panel_rig import PANEL_FILE, build_panel_patch
 from rig_root import RIG_ROOT
 
 from qlctool.cli import main
-from qlctool.definition import Dimensions, load_definition
+from qlctool.dimensions import Dimensions
 from qlctool.fixture import PatchedFixture
 from qlctool.fixture_capabilities import FixtureCapabilities
 from qlctool.is_panel import is_panel
+from qlctool.load_definition import load_definition
 from qlctool.names.default_names import default_names
 
 # Upstream QLC+ library: Litecraft LED PAR 64 AT3 and Chauvet SlimPAR T6 USB.

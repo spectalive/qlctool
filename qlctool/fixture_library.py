@@ -9,8 +9,9 @@ QLC+ does with a user library too - and among the rig's folders the first wins.
 from collections.abc import Sequence
 from pathlib import Path
 
-from .definition import FixtureDefinition, load_definition
+from .fixture_definition import FixtureDefinition
 from .fixture_dirs import fixture_dirs as resolve_fixture_dirs
+from .load_definition import load_definition
 
 SYSTEM_FIXTURES = Path(__file__).resolve().parent / "library" / "system"
 

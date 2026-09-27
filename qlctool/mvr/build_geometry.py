@@ -17,7 +17,7 @@ beams, where GDTF lets it reach all of them.
 from pygdtf import Geometry, GeometryAxis
 
 from .. import roles
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 from .beam_geometry import beam_geometry
 from .gdtf_matrix import gdtf_matrix
 from .geometry_model import geometry_model

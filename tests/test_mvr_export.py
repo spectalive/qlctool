@@ -22,8 +22,10 @@ import pymvr
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.definition import Channel, Dimensions, FixtureDefinition
+from qlctool.channel import Channel
+from qlctool.dimensions import Dimensions
 from qlctool.fixture import patched_fixtures
+from qlctool.fixture_definition import FixtureDefinition
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.monitor_node import MonitorItem
 from qlctool.mvr.beam_direction import beam_direction

@@ -9,7 +9,7 @@ does not turn into a directory.
 
 import re
 
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 
 _UNSAFE = re.compile(r"[^A-Za-z0-9._-]+")
 

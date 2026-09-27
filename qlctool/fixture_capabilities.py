@@ -10,8 +10,10 @@ from dataclasses import dataclass
 from functools import cached_property
 
 from . import roles
-from .definition import Capability, Dimensions, FixtureDefinition
+from .definition import Capability
+from .dimensions import Dimensions
 from .fixture import PatchedFixture
+from .fixture_definition import FixtureDefinition
 from .smoke_types import SMOKE_TYPES
 
 

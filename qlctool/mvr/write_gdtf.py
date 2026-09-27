@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pygdtf import FixtureTypeWriter
 
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 from .build_fixture_type import build_fixture_type
 from .gdtf_file_name import gdtf_file_name
 

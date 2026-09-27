@@ -10,7 +10,8 @@ range, with pan and tilt resting at the middle.
 
 from pygdtf import ChannelFunction, DmxValue
 
-from ..definition import Channel, FixtureDefinition
+from ..channel import Channel
+from ..fixture_definition import FixtureDefinition
 from .channel_function import channel_function
 from .physical_range import DEFAULT_STROBE_HZ, physical_range
 from .ranged_functions import ranged_functions

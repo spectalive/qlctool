@@ -18,7 +18,7 @@ from pathlib import Path
 import pygdtf
 from pygdtf.utils import regenerate_attribute_definitions
 
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 from .build_channels import build_channels
 from .build_geometry import build_geometry
 from .build_wheels import build_wheels

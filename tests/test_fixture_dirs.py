@@ -16,9 +16,9 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.cli import main
-from qlctool.definition import load_definition
 from qlctool.fixture_dirs import fixture_dirs
 from qlctool.fixture_library import FixtureLibrary
+from qlctool.load_definition import load_definition
 from qlctool.read_toolkit_config import read_toolkit_config
 from qlctool.toolkit_config import ToolkitConfig
 

@@ -6,7 +6,7 @@ byte - the order every definition in this rig uses.
 """
 
 from .. import roles
-from ..definition import Channel
+from ..channel import Channel
 
 FINE_OF = {
     roles.PAN_FINE: roles.PAN,

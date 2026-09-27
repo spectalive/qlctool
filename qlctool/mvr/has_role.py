@@ -1,6 +1,6 @@
 """Whether any channel of a definition carries a role."""
 
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 
 
 def has_role(definition: FixtureDefinition, role: str) -> bool:

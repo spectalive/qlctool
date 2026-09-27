@@ -20,7 +20,7 @@ implicit are made explicit here:
 
 from pygdtf import DmxChannel, LogicalChannel, NodeLink
 
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 from .channel_functions import channel_functions
 from .channel_geometry import channel_geometry
 from .fine_channel_for import FINE_OF, fine_channel_for

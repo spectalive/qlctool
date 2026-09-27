@@ -6,7 +6,7 @@ a spot (gobo wheel) that says nothing gets a tight beam, a wash a wide one.
 
 from pygdtf import BeamType, GeometryBeam, LampType
 
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 from .gdtf_matrix import gdtf_matrix
 
 

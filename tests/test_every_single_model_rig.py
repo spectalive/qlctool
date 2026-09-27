@@ -16,7 +16,7 @@ from rig_root import RIG_ROOT
 from single_shape_rig import build_single_shape_patch
 
 from qlctool.cli import main
-from qlctool.definition import load_definition
+from qlctool.load_definition import load_definition
 from qlctool.names.default_names import default_names
 
 FIXTURES = RIG_ROOT / "QLC+ Fixtures"

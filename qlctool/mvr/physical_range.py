@@ -5,7 +5,7 @@ conventions where it does not: a mover with no stated travel gets 540/270, a
 zoom with no stated spread gets a plausible one around what it does state.
 """
 
-from ..definition import FixtureDefinition
+from ..fixture_definition import FixtureDefinition
 
 DEFAULT_PAN, DEFAULT_TILT = 540.0, 270.0
 DEFAULT_STROBE_HZ = (1.0, 20.0)

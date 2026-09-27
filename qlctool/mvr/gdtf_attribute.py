@@ -13,7 +13,7 @@ attribute for it that the Annex data knows.
 """
 
 from .. import roles
-from ..definition import Channel
+from ..channel import Channel
 
 NO_FEATURE = "NoFeature"
 
