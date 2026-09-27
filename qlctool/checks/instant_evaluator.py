@@ -1,18 +1,9 @@
 """Cached instant evaluation for one immutable show graph."""
 
-from dataclasses import dataclass
-
+from .concurrent_instants import concurrent_instants
+from .instant import Instant
 from .read_only_driven import ReadOnlyDriven
 from .show_graph import ShowGraph, lit
-
-
-@dataclass(frozen=True)
-class _Instant:
-    """One possible output for a channel and the colour running beside it."""
-
-    coloured: bool
-    written: bool
-    value: int | None
 
 
 class InstantEvaluator:
@@ -30,11 +21,11 @@ class InstantEvaluator:
                 frozenset[int],
                 frozenset[int],
             ],
-            frozenset[_Instant],
+            frozenset[Instant],
         ] = {}
         self._roots: dict[
             tuple[tuple[int, ...], int, int, tuple[int, ...], frozenset[int]],
-            frozenset[_Instant],
+            frozenset[Instant],
         ] = {}
 
     def states(
@@ -44,7 +35,7 @@ class InstantEvaluator:
         offset: int,
         light_offsets: tuple[int, ...],
         stopped: frozenset[int],
-    ) -> frozenset[_Instant]:
+    ) -> frozenset[Instant]:
         """Every reachable HTP channel result for concurrent function roots."""
         roots = (function_ids,) if isinstance(function_ids, int) else function_ids
         key = (roots, fixture_id, offset, light_offsets, stopped)
@@ -56,9 +47,9 @@ class InstantEvaluator:
                 roots[0], fixture_id, offset, light_offsets, stopped, frozenset()
             )
         else:
-            states = frozenset((_Instant(False, False, 0),))
+            states = frozenset((Instant(False, False, 0),))
             for root_id in roots:
-                states = _concurrent(
+                states = concurrent_instants(
                     states, self.states(root_id, fixture_id, offset, light_offsets, stopped)
                 )
         self._roots[key] = states
@@ -72,7 +63,7 @@ class InstantEvaluator:
         light_offsets: tuple[int, ...],
         stopped: frozenset[int],
         seen: frozenset[int],
-    ) -> frozenset[_Instant]:
+    ) -> frozenset[Instant]:
         """Possible channel results for one graph node and traversal frontier.
 
         The frontier only matters where it meets what this node can reach, so
@@ -98,14 +89,14 @@ class InstantEvaluator:
 
         function = self._graph.functions.get(function_id)
         if function is None or function_id in seen or function_id in stopped:
-            states = frozenset((_Instant(False, False, 0),))
+            states = frozenset((Instant(False, False, 0),))
         else:
             members = self._graph.members.get(function_id, ())
             if not members:
                 written = self._driven_channels(function_id).get(fixture_id, {})
                 states = frozenset(
                     (
-                        _Instant(
+                        Instant(
                             coloured=any(
                                 lit(written.get(light_offset, 0)) for light_offset in light_offsets
                             ),
@@ -130,29 +121,12 @@ class InstantEvaluator:
                 if function.attrib.get("Type") != "Collection":
                     states = frozenset().union(*parts)
                 else:
-                    states = frozenset((_Instant(False, False, 0),))
+                    states = frozenset((Instant(False, False, 0),))
                     for part in parts:
-                        states = _concurrent(states, part)
+                        states = concurrent_instants(states, part)
 
         self._states[key] = states
         return states
 
     def _driven_channels(self, function_id: int) -> ReadOnlyDriven:
         return self._graph.driven(function_id, self._groups)
-
-
-def _concurrent(first: frozenset[_Instant], second: frozenset[_Instant]) -> frozenset[_Instant]:
-    """Combine every simultaneous pair using QLC+'s HTP channel value."""
-    return frozenset(_merge(left, right) for left in first for right in second)
-
-
-def _merge(first: _Instant, second: _Instant) -> _Instant:
-    if not first.written:
-        value, written = second.value, second.written
-    elif not second.written:
-        value, written = first.value, first.written
-    elif first.value is None or second.value is None:
-        value, written = None, True
-    else:
-        value, written = max(first.value, second.value), True
-    return _Instant(first.coloured or second.coloured, written, value)
