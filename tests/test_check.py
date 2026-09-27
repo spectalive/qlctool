@@ -171,7 +171,7 @@ def _burst_chaser(workspace, library, hold=125):
     from qlctool.functions.build_chaser import build_chaser
     from qlctool.ids import next_function_id
     from qlctool.vc.build_button import build_button
-    from qlctool.vc.widget_ids import next_widget_id
+    from qlctool.vc.next_widget_id import next_widget_id
 
     functions = _functions(workspace)
     capabilities = {
@@ -1947,7 +1947,7 @@ def _family_frame(workspace, function_names, *, caption="TEST FAMILY", solo=True
     """Add a small test frame with Toggle buttons for the named functions."""
     from qlctool.vc.build_button import build_button
     from qlctool.vc.build_frame import build_frame
-    from qlctool.vc.widget_ids import next_widget_id
+    from qlctool.vc.next_widget_id import next_widget_id
 
     root = find_local(find_local(workspace.root, "VirtualConsole"), "Frame")
     frame = build_frame(
@@ -1992,7 +1992,7 @@ def _wrapper_button(workspace, frame, source_name, wrapper_name):
     from qlctool.functions.build_collection import build_collection
     from qlctool.ids import next_function_id
     from qlctool.vc.build_button import build_button
-    from qlctool.vc.widget_ids import next_widget_id
+    from qlctool.vc.next_widget_id import next_widget_id
 
     source_id = int(_functions(workspace)[source_name].attrib["ID"])
     wrapper_id = next_function_id(workspace.root)
@@ -2467,7 +2467,7 @@ def test_a_state_started_movement_collection_is_its_own_required_hook(library, d
     from qlctool.functions.build_collection import build_collection
     from qlctool.ids import next_function_id
     from qlctool.vc.build_button import build_button
-    from qlctool.vc.widget_ids import next_widget_id
+    from qlctool.vc.next_widget_id import next_widget_id
 
     workspace = deluxe_show
     functions = _functions(workspace)
@@ -3139,7 +3139,7 @@ def test_2026_09_25_a_frame_with_nothing_to_press(library, club_show):
     from qlctool.names.default_names import default_names
     from qlctool.vc.build_frame import build_frame
     from qlctool.vc.build_label import build_label
-    from qlctool.vc.widget_ids import next_widget_id
+    from qlctool.vc.next_widget_id import next_widget_id
 
     workspace = club_show
     root = workspace.root

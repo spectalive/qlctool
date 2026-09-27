@@ -5,7 +5,7 @@ Moved verbatim out of `live_console` (2026-09-27 split), where it was `_Ids`.
 
 from lxml import etree
 
-from ..vc.widget_ids import next_widget_id
+from ..vc.next_widget_id import next_widget_id
 
 
 class ConsoleIds:

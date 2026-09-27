@@ -13,7 +13,7 @@ from lxml import etree
 
 from ..vc.build_button import build_button
 from ..vc.build_frame import build_frame
-from ..vc.widget_ids import next_widget_id
+from ..vc.next_widget_id import next_widget_id
 from ..workspace import Workspace
 from ..xmlutil import localname
 from .background_for import background_for

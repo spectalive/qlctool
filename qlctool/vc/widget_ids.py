@@ -44,8 +44,3 @@ def existing_widget_ids(root: etree._Element) -> set[int]:
         if value < ALL_FIXTURES_GROUP:
             ids.add(value)
     return ids
-
-
-def next_widget_id(root: etree._Element) -> int:
-    ids = existing_widget_ids(root)
-    return max(ids) + 1 if ids else 0

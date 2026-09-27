@@ -32,7 +32,7 @@ from qlctool.names.shipped_names import shipped_names
 from qlctool.print_check_report import print_check_report
 from qlctool.vc.build_frame import build_frame
 from qlctool.vc.build_label import build_label
-from qlctool.vc.widget_ids import next_widget_id
+from qlctool.vc.next_widget_id import next_widget_id
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local
