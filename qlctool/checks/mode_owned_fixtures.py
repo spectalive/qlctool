@@ -1,7 +1,7 @@
 """Fixtures whose mode channel every lighting room state drives."""
 
 from .. import roles
-from ..internal_program import internal_program
+from ..internal_program_of import internal_program
 from .lit import lit
 from .reach import reach
 from .show_graph import ShowGraph

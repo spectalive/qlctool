@@ -26,7 +26,7 @@ wire and is a job for the display on its back, not for this file.
 
 from . import roles
 from .fixture_capabilities import FixtureCapabilities
-from .internal_program import internal_program
+from .internal_program_of import internal_program
 
 
 def mode_park_pairs(capabilities: FixtureCapabilities) -> list[tuple[int, int]]:

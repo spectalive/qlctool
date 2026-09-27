@@ -3,7 +3,7 @@
 from collections.abc import Iterable
 
 from ..fixture_capabilities import FixtureCapabilities
-from ..internal_program import internal_program
+from ..internal_program_of import internal_program
 
 
 def all_self_animating(caps: Iterable[FixtureCapabilities], fixture_ids: Iterable[int]) -> bool:

@@ -2,7 +2,7 @@
 
 from collections.abc import Mapping
 
-from ..internal_program import internal_program
+from ..internal_program_of import internal_program
 from .color_roles import COLOUR
 from .lit import lit
 from .show_graph import ShowGraph

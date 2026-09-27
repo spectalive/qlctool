@@ -6,7 +6,7 @@ from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from ..fog_off_pairs import fog_off_pairs
 from ..functions.scene import build_scene
-from ..internal_program import internal_program_off_pairs
+from ..internal_program_off_pairs import internal_program_off_pairs
 from ..next_function_id import next_function_id
 from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace

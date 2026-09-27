@@ -19,7 +19,7 @@ from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
-from ..internal_program import internal_program
+from ..internal_program_of import internal_program
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..next_function_id import next_function_id

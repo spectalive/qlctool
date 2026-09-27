@@ -2,7 +2,7 @@
 
 from .. import roles
 from ..generate.fader_dimmed import fader_dimmed
-from ..internal_program import internal_program
+from ..internal_program_of import internal_program
 from ..is_bar import is_bar
 from ..is_panel import is_panel
 from ..is_smoke_machine import is_smoke_machine

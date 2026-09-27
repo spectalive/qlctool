@@ -23,7 +23,7 @@ WASH) is beyond any file's reach and stays a job for the display on its back.
 """
 
 from .. import roles
-from ..internal_program import internal_program
+from ..internal_program_of import internal_program
 from .finding import ERROR, Finding
 from .lit import lit
 from .show_graph import ShowGraph

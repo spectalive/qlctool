@@ -11,7 +11,7 @@ from collections.abc import Sequence
 
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
-from ..internal_program import internal_program_off_pairs
+from ..internal_program_off_pairs import internal_program_off_pairs
 from ..names.names import Names
 from ..rgbw_split import rgbw_split
 from ..shutter_open import shutter_open_pairs
