@@ -40,7 +40,6 @@ from ..vc.audio_triggers import build_audio_triggers
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
 from .beam_subsets import GeneratedBeamSubsets
-from .bind_pad import bind_pad
 from .builtin_effects import GeneratedBuiltins
 from .button_factory import button_factory
 from .console_ids import ConsoleIds
@@ -50,15 +49,8 @@ from .console_layout import (
     CANVAS_HEIGHT,
     CANVAS_WIDTH,
     MIX_COLOURS,
-    OUTER_HEIGHT,
-    OUTER_WIDTH,
-    OUTER_X,
-    OUTER_Y,
     PAGE_CONTROL,
-    PAGE_NEXT_KEY,
     PAGE_PLAY,
-    PAGE_PREVIOUS_KEY,
-    PAGES,
     RIGHT_WIDTH,
     RIGHT_X,
     SHORT_COLOURS,
@@ -66,6 +58,7 @@ from .console_layout import (
     TEMPO_BEAT_MS,
     TITLE_FONT,
 )
+from .console_outer_frame import console_outer_frame
 from .frame_factory import frame_factory
 from .function_names import function_names
 from .generated_bank import GeneratedBank
@@ -144,23 +137,7 @@ def generate_live_console(
         button, master, keys, flash, glyphs, pad_colors, pad_bindings
     )
 
-    outer = frame(
-        console_root,
-        "",
-        OUTER_X,
-        OUTER_Y,
-        OUTER_WIDTH,
-        OUTER_HEIGHT,
-        pages=PAGES,
-        next_page_key=PAGE_NEXT_KEY,
-        previous_page_key=PAGE_PREVIOUS_KEY,
-        font=TITLE_FONT,
-    )
-    # When a pad profile is given, its arrow buttons page the console: a
-    # frame's Next Page is external control 0 and Previous Page is 1 (qmlui
-    # vcframe.h). Without a pad, nothing is bound.
-    bind_pad(outer, pad_bindings, vocabulary.display("page_next"))
-    bind_pad(outer, pad_bindings, vocabulary.display("page_previous"), source_id=1)
+    outer = console_outer_frame(console_root, frame, pad_bindings, vocabulary)
 
     page_show(
         outer,
