@@ -81,7 +81,6 @@ from .console_layout import (
     LEFT_WIDTH,
     LEFT_X,
     LIBRARY_SEPARATOR,
-    LONG_WHEEL_NAME,
     MATRIX_BUTTON_HEIGHT,
     MATRIX_COLUMNS,
     MATRIX_ROW_HEIGHT,
@@ -132,6 +131,7 @@ from .smc_pad_colors import readable_foreground
 from .swatch import swatch
 from .tempo_close_line import tempo_close_line
 from .tempo_help_line import tempo_help_line
+from .wheel_frame import wheel_frame
 
 
 def generate_live_console(
@@ -837,7 +837,7 @@ def _page_control(
 
     # The beams' own colour wheel remains held here. A latched colour-wheel
     # pick on JUGAR would stop the rig wheel and leave every RGB fixture dark.
-    _wheel_frame(
+    wheel_frame(
         outer,
         button,
         frame,
@@ -1000,7 +1000,7 @@ def _page_library(
                     page,
                 )
 
-    _wheel_frame(
+    wheel_frame(
         outer,
         button,
         frame,
@@ -1219,61 +1219,4 @@ def _page_library(
             24,
             page=PAGE_LIBRARY,
             font=HELP_FONT,
-        )
-
-
-def _wheel_frame(
-    outer,
-    button,
-    frame,
-    names,
-    vocabulary: Names,
-    scene_ids,
-    caption,
-    marker,
-    x,
-    y,
-    width,
-    height,
-    page,
-    columns,
-) -> None:
-    """A frame of held wheel positions - gobos, beam colours, prism.
-
-    Held (Flash with Override priority), not latched, since 2026-09-02: a
-    Toggle pick on an LTP wheel lasted exactly until the running state's own
-    chaser stepped - Gobo Animacion every 4 s, the prism dance every 8 s, the
-    colour wheel every 3.3 s - because the step's new fader is appended after
-    the button's and wins (cross-audit). An Override fader is placed last
-    whatever starts after it, so the pick holds while the finger does, and the
-    state writes the wheel back the moment it lifts.
-    """
-    if not scene_ids:
-        return
-    element = frame(
-        outer,
-        vocabulary.render("hold_frame", caption=caption),
-        x,
-        y,
-        width,
-        height,
-        page=page,
-        font=TITLE_FONT,
-    )
-    step = (width - GAP * 2) // columns
-    for index, function_id in enumerate(scene_ids):
-        column, row = index % columns, index // columns
-        caption = after_marker(names.get(function_id, ""), marker)
-        long_name = LONG_WHEEL_NAME.get(caption)
-        button(
-            element,
-            function_id,
-            caption if long_name is None else vocabulary.display(long_name),
-            x=GAP + column * step,
-            y=HEADER + row * 52,
-            w=step - 4,
-            h=46,
-            action=FLASH,
-            flash_override=True,
-            font=TINY_FONT,
         )

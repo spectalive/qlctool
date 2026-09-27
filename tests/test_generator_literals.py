@@ -173,6 +173,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/root_frame.py",
     "generate/function_names.py",
     "generate/set_canvas.py",
+    "generate/wheel_frame.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
