@@ -63,6 +63,12 @@ data = [
   "qlctool/generate/cycle_algorithms.py",
   # The live console's layout numbers and identifier tables (2026-09-27 split).
   "qlctool/generate/console_layout.py",
+  # The measured audience window's aim and half-span for beams and washes, so
+  # a generated figure's window matches what the movement-window rule checks.
+  "qlctool/generate/movement_aim.py",
+  # Which physical SMC-PAD control fires each console widget; the numbers
+  # come from smc_pad_device.py.
+  "qlctool/generate/smc_pad_bindings.py",
   # Each SMC-PAD master function's console/LED colour, split out of
   # smc_pad_colors.py alongside its unrelated readable_foreground helper.
   "qlctool/generate/function_colors.py",
