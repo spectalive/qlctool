@@ -16,9 +16,11 @@ from lxml import etree
 
 from ..constants import XML_DECLARATION
 from .control_channel import control_channel
-from .smc_pad_device import PADS, pad_channel
+from .pads_top_down import pads_top_down
+from .profile_channel import profile_channel
+from .profile_ns import PROFILE_NS
+from .smc_pad_device import pad_channel
 
-PROFILE_NS = "http://www.qlcplus.org/InputProfile"
 PROFILE_DOCTYPE = "<!DOCTYPE InputProfile>"
 MANUFACTURER = "M-VAVE"
 MODEL = "SMC-PAD"
@@ -26,7 +28,6 @@ MODEL = "SMC-PAD"
 # that is the string a workspace's <Input Profile="..."> has to carry.
 PROFILE_NAME = f"{MANUFACTURER} {MODEL}"
 
-PADS_PER_ROW = 4
 KNOBS = 8
 FIRST_KNOB_CC = 30
 EDGE_BUTTONS = (
@@ -72,29 +73,13 @@ def build_input_profile() -> bytes:
     root.append(etree.Comment(HEADER_COMMENT))
 
     for bank in (1, 2):
-        for pad in _pads_top_down():
+        for pad in pads_top_down():
             label = f"Pad {pad}" if bank == 1 else f"Banco 2 - Pad {pad}"
-            _channel(root, pad_channel(pad, bank=bank), label, "Button")
+            profile_channel(root, pad_channel(pad, bank=bank), label, "Button")
     for knob in range(1, KNOBS + 1):
-        _channel(root, control_channel(FIRST_KNOB_CC + knob - 1), f"Knob {knob}", "Knob")
+        profile_channel(root, control_channel(FIRST_KNOB_CC + knob - 1), f"Knob {knob}", "Knob")
     for cc, label in EDGE_BUTTONS:
-        _channel(root, control_channel(cc), label, "Button")
+        profile_channel(root, control_channel(cc), label, "Button")
 
     body = etree.tostring(root, pretty_print=True, encoding="unicode")
     return f"{XML_DECLARATION}\n{PROFILE_DOCTYPE}\n{body}".encode()
-
-
-def _pads_top_down() -> list[int]:
-    """Pad numbers row by row from the top, the order a person sees them."""
-    rows = PADS // PADS_PER_ROW
-    return [
-        pad
-        for row in range(rows - 1, -1, -1)
-        for pad in range(row * PADS_PER_ROW + 1, (row + 1) * PADS_PER_ROW + 1)
-    ]
-
-
-def _channel(root: etree._Element, number: int, name: str, type_: str) -> None:
-    channel = etree.SubElement(root, f"{{{PROFILE_NS}}}Channel", Number=str(number))
-    etree.SubElement(channel, f"{{{PROFILE_NS}}}Name").text = name
-    etree.SubElement(channel, f"{{{PROFILE_NS}}}Type").text = type_

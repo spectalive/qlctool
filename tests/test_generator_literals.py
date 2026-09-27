@@ -238,6 +238,11 @@ CONVERTED: tuple[str, ...] = (
     "generate/intensity_scene.py",
     "generate/energy_level.py",
     "generate/generated_energy.py",
+    # 2026-09-27, batch 5: split out of input_profile.py (excluded below, but
+    # these carry no Spanish literal of their own).
+    "generate/pads_top_down.py",
+    "generate/profile_channel.py",
+    "generate/profile_ns.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
