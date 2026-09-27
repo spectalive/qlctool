@@ -1,5 +1,18 @@
 # qlctool follow-up
 
+- [ ] **The live console's pages are each over the structural cap (2026-09-27).**
+  `live_console.py` (1516 lines, 17 units) was split into `console_layout`,
+  `generated_console`, `console_ids`, nine helpers, `wheel_frame` and one
+  module per page; the orchestrator now passes strict mypy. What the
+  baseline still carries: `page_library.py` 314, `page_control.py` 273,
+  `page_show.py` 233 and `live_console.py` 309 code lines against the cap
+  of 150 (BPY004), and BPY002 on `live_console.py` because the one unit
+  left is `generate_live_console` (the file name is the import path
+  `add_show_console`, `desk_bursts` and the tests use). Smallest next step:
+  cut each page along its frames (room states, hits, panic, haze row, tempo
+  dial; banks, intensity, grand master, aim pad, movement dial; mixes,
+  matrices, cycles, panels, speed fader, live matrix, help) in creation
+  order, `tests/test_vibra_byte_identity.py` as the gate, as this split did.
 - [ ] **Desk bursts on a combined HTP dimmer/strobe channel (C2b, measured
   2026-09-27).** The tablet's bursts are Chasers started with
   `setFunctionStatus`, so the button's ForceLTP never applies, and on the
