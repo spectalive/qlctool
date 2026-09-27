@@ -5,11 +5,13 @@ of the saved console, so it is exercised on a freshly generated one.
 """
 
 import re
+import shutil
 
 import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.build_deskmap import build_deskmap
+from qlctool.cli import main
 from qlctool.desk_policy import split_caption
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.library import FixtureLibrary
@@ -313,3 +315,20 @@ def test_2026_09_27_a_state_that_starts_no_hook_of_the_frame_has_no_entry(tmp_pa
     picks = _by_caption(deskmap, "color", "picks").values()
     assert picks and all(charla not in p["releaseTo"] for p in picks)
     assert all(len(p["releaseTo"]) == 4 for p in picks)
+
+
+def test_2026_09_27_deskmap_refuses_to_write_a_map_with_unresolved_fixtures(
+    tmp_path, monkeypatch, capsys
+):
+    """M-2 (2026-09-27 final review): run with no fixture definitions in reach,
+    `deskmap` warned to stderr and still wrote a map missing most of its
+    `releaseTo` entries (23 controls of 99, only the colour frame surviving),
+    with no signal beyond that warning. It now exits 2 and writes nothing.
+    """
+    shutil.copy(SHOW, tmp_path / "Vibra.qxw")
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("QLCTOOL_FIXTURES", raising=False)
+    out = tmp_path / "desk.json"
+    assert main(["deskmap", str(tmp_path / "Vibra.qxw"), "--out", str(out)]) == 2
+    assert "no fixture definition" in capsys.readouterr().err
+    assert not out.exists()

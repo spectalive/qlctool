@@ -8,6 +8,7 @@ from .build_deskmap import build_deskmap
 from .description.description_names import description_names
 from .description.load_show_description import load_show_description
 from .library_for import library_for
+from .unresolved_fixtures import unresolved_fixtures
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
 
@@ -16,6 +17,11 @@ def cmd_deskmap(args: argparse.Namespace) -> int:
     workspace = Workspace.load(args.workspace)
     library = library_for(args.fixtures, Path(args.workspace))
     warn_unresolved(workspace.root, library)
+    if unresolved_fixtures(workspace.root, library):
+        # A control keyed to a fixture with no definition is left out rather
+        # than guessed, so a map built this way is missing entries with no
+        # other signal than the warning above (M-2, 2026-09-27 final review).
+        return 2
     names = None
     if args.description:
         names = description_names(load_show_description(args.description, workspace.root))
