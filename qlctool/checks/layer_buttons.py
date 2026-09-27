@@ -7,19 +7,11 @@ thinking about it. A Flash releases; a state replaces; a Toggle layer adds,
 and keeps adding.
 """
 
-from dataclasses import dataclass
-
 from lxml import etree
 
 from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
-
-
-@dataclass(frozen=True)
-class LayerButton:
-    caption: str
-    function_id: int
-    widget: etree._Element
+from .layer_button import LayerButton
 
 
 def layer_buttons(root: etree._Element, states: set[int]) -> list[LayerButton]:
