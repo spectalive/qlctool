@@ -203,6 +203,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/label_factory.py",
     "generate/master_button_factory.py",
     "generate/console_outer_frame.py",
+    "generate/audio_triggers_row.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

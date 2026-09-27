@@ -36,23 +36,19 @@ from ..names.default_names import default_names
 from ..names.localised_keys import localised_keys
 from ..names.names import Names
 from ..palette import PALETTE
-from ..vc.audio_triggers import build_audio_triggers
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
+from .audio_triggers_row import audio_triggers_row
 from .beam_subsets import GeneratedBeamSubsets
 from .builtin_effects import GeneratedBuiltins
 from .button_factory import button_factory
 from .console_ids import ConsoleIds
 from .console_layout import (
-    AUDIO_BANDS,
     BIG_FONT,
     CANVAS_HEIGHT,
     CANVAS_WIDTH,
     MIX_COLOURS,
-    PAGE_CONTROL,
     PAGE_PLAY,
-    RIGHT_WIDTH,
-    RIGHT_X,
     SHORT_COLOURS,
     SMALL_FONT,
     TEMPO_BEAT_MS,
@@ -67,7 +63,6 @@ from .generated_matrices import GeneratedMatrices
 from .generated_play_wrappers import GeneratedPlayWrappers
 from .label_factory import label_factory
 from .master_button_factory import master_button_factory
-from .on_page import on_page
 from .page_control import page_control
 from .page_library import page_library
 from .page_show import page_show
@@ -216,26 +211,7 @@ def generate_live_console(
         has_panels,
     )
 
-    # Last, because a band presses a button and needs its widget ID.
-    bars: list[tuple[str, int | None]] = []
-    for band, target in AUDIO_BANDS:
-        pressed = master.get(vocabulary.display(target)) if target else None
-        bars.append(
-            (vocabulary.display(band), widget_of.get(pressed) if pressed is not None else None)
-        )
-    triggers_id = ids.take()
-    triggers = build_audio_triggers(
-        outer,
-        triggers_id,
-        vocabulary.display("audio_triggers"),
-        RIGHT_X,
-        330,
-        RIGHT_WIDTH,
-        110,
-        bars=bars,
-    )
-    on_page(triggers, PAGE_CONTROL)
-    console.widget_ids.append(triggers_id)
+    audio_triggers_row(outer, ids, console, master, widget_of, vocabulary)
 
     set_canvas(workspace.root, canvas)
     return console
