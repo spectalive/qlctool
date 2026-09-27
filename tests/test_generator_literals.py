@@ -163,6 +163,7 @@ CONVERTED: tuple[str, ...] = (
     # 2026-09-27: the live console split; every table and page moved verbatim.
     "generate/console_layout.py",
     "generate/generated_console.py",
+    "generate/console_ids.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

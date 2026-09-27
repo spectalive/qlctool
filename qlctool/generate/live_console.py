@@ -55,11 +55,11 @@ from ..vc.label import build_label
 from ..vc.level_slider import build_level_slider
 from ..vc.matrix_control import build_matrix_control
 from ..vc.speed_dial import build_speed_dial
-from ..vc.widget_ids import next_widget_id
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname
 from .bind_pad import bind_pad
+from .console_ids import ConsoleIds
 from .console_layout import (
     AUDIO_BANDS,
     BANK_KEYS,
@@ -127,18 +127,6 @@ from .tempo_close_line import tempo_close_line
 from .tempo_help_line import tempo_help_line
 
 
-class _Ids:
-    """Widget IDs, handed out in order from wherever the console left off."""
-
-    def __init__(self, root: etree._Element) -> None:
-        self._next = next_widget_id(root)
-
-    def take(self) -> int:
-        value = self._next
-        self._next += 1
-        return value
-
-
 def generate_live_console(
     workspace: Workspace,
     master: dict[str, int],
@@ -187,7 +175,7 @@ def generate_live_console(
     colours = PALETTE if palette is None else palette
     root_frame = _root_frame(workspace.root)
     names = _function_names(workspace)
-    ids = _Ids(workspace.root)
+    ids = ConsoleIds(workspace.root)
     console = GeneratedConsole()
     flash = set(flash_functions)
 
