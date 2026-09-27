@@ -21,7 +21,7 @@ from lxml import etree
 
 from ..excluded_fades import excluded_fades
 from ..wheel_fade_offsets import wheel_fade_offsets
-from ..xmlutil import find_local, findall_local
+from .fade_of_every_scene import fade_of_every_scene
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
 
@@ -36,7 +36,7 @@ def check_wheel_fade(
         fixture_id: set(wheel_fade_offsets(capability))
         for fixture_id, capability in graph.capabilities.items()
     }
-    fades = _fade_of_every_scene(graph)
+    fades = fade_of_every_scene(graph)
     findings: list[Finding] = []
     for scene_id, fade in sorted(fades.items()):
         if fade <= 0:
@@ -61,47 +61,3 @@ def check_wheel_fade(
             )
         )
     return findings
-
-
-def _fade_of_every_scene(graph: ShowGraph) -> dict[int, int]:
-    """Scene id -> the longest fade-in it is started with, its own included."""
-    fades: dict[int, int] = {}
-    for function_id, function in graph.functions.items():
-        kind = function.attrib.get("Type")
-        if kind == "Scene":
-            fades[function_id] = max(fades.get(function_id, 0), _own_fade(function))
-        elif kind == "Chaser":
-            common = _own_fade(function)
-            per_step = _speed_mode(function) == "PerStep"
-            for step in findall_local(function, "Step"):
-                if not (step.text and step.text.strip().isdigit()):
-                    continue
-                target = int(step.text)
-                fade = int(step.attrib.get("FadeIn", "0")) if per_step else common
-                # A Collection in between changes nothing: `Collection::write`
-                # hands the chaser's override fade to every member.
-                for scene_id in _scenes_under(graph, target):
-                    fades[scene_id] = max(fades.get(scene_id, 0), fade)
-    return fades
-
-
-def _scenes_under(graph: ShowGraph, function_id: int) -> list[int]:
-    kind = graph.kind(function_id)
-    if kind == "Scene":
-        return [function_id]
-    if kind != "Collection":
-        return []
-    found: list[int] = []
-    for member in graph.members.get(function_id, ()):
-        found += _scenes_under(graph, member)
-    return found
-
-
-def _own_fade(function: etree._Element) -> int:
-    speed = find_local(function, "Speed")
-    return int(speed.attrib.get("FadeIn", "0")) if speed is not None else 0
-
-
-def _speed_mode(function: etree._Element) -> str:
-    modes = find_local(function, "SpeedModes")
-    return modes.attrib.get("FadeIn", "Common") if modes is not None else "Common"
