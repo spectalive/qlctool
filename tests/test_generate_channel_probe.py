@@ -3,7 +3,7 @@
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.generate.channel_probe import generate_channel_probe
+from qlctool.generate.generate_channel_probe import generate_channel_probe
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, iter_local

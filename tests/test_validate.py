@@ -11,7 +11,7 @@ from rig_root import RIG_ROOT
 
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
-from qlctool.generate.movement_efx import generate_movement_efx
+from qlctool.generate.generate_movement_efx import generate_movement_efx
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 

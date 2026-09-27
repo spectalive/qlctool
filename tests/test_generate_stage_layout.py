@@ -13,8 +13,8 @@ from rig_root import RIG_ROOT
 from qlctool.band_of import BARS, BEAMS, PARS, SMOKE, WASHES
 from qlctool.fixture import patched_fixtures
 from qlctool.fixture_library import FixtureLibrary
+from qlctool.generate.generate_stage_layout import generate_stage_layout
 from qlctool.generate.spread import spread
-from qlctool.generate.stage_layout import generate_stage_layout
 from qlctool.generate.unplaced_fixtures import unplaced_fixtures
 from qlctool.monitor_node import POINTS_OF_VIEW
 from qlctool.workspace import Workspace

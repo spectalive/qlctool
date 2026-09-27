@@ -2,7 +2,7 @@
 
 A smoke machine that also carries lights is a show machine - a vertical
 column somebody fires on purpose - and a timer that fires it all night is a
-wrong show and an empty tank. `smoke_auto` and `newshow` both ask this.
+wrong show and an empty tank. `generate_smoke_auto` and `newshow` both ask this.
 """
 
 from collections.abc import Iterable

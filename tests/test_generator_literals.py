@@ -13,7 +13,7 @@ from spanish_literals import spanish_literals
 PACKAGE = Path(__file__).resolve().parents[1] / "qlctool"
 
 CONVERTED: tuple[str, ...] = (
-    "generate/builtin_effects.py",
+    "generate/generate_builtin_effects.py",
     "generate/generate_color_banks.py",
     "generate/generate_color_flashes.py",
     "generate/generate_flash_color.py",
@@ -21,8 +21,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/generate_pixel_base.py",
     "generate/generate_pixel_wheel_matrices.py",
     "generate/generate_quad_color_scenes.py",
-    "generate/rainbow_efx.py",
-    "generate/unison_colors.py",
+    "generate/generate_rainbow_efx.py",
+    "generate/generate_unison_colors.py",
     "generate/generate_panel_manual.py",
     "generate/generate_panel_speed_auto.py",
     "generate/generate_vertical_smoke_light.py",
@@ -31,13 +31,13 @@ CONVERTED: tuple[str, ...] = (
     "color_wheel_pairs.py",
     "checks/detent_white.py",
     "efx_algorithms.py",
-    "generate/movement_efx.py",
-    "generate/movement_families.py",
+    "generate/generate_movement_efx.py",
+    "generate/generate_movement_families.py",
     "generate/generate_home_position.py",
     "generate/generate_cross_position.py",
     "generate/generate_fan_position.py",
     "generate/generate_stage_aim.py",
-    "generate/wheel_scenes.py",
+    "generate/generate_wheel_scenes.py",
     "generate/without_wheel_blades.py",
     "generate/add_family_floors.py",
     "generate/prepend_collection_steps.py",
@@ -50,18 +50,18 @@ CONVERTED: tuple[str, ...] = (
     "generate/store_suffix.py",
     "generate/panels_frame_caption.py",
     "generate/generate_dealt_gobo_scenes.py",
-    "generate/prism_spins.py",
-    "generate/beam_subsets.py",
-    "generate/dimmer_chases.py",
+    "generate/generate_prism_spins.py",
+    "generate/generate_beam_subsets.py",
+    "generate/generate_dimmer_chases.py",
     "generate/generate_dimmer_sequence.py",
     "generate/generate_dimmerless_intensity.py",
-    "generate/energy_intensity.py",
-    "generate/energy_levels.py",
-    "generate/smoke_auto.py",
-    "generate/strobe_effects.py",
+    "generate/generate_energy_intensity.py",
+    "generate/generate_energy_levels.py",
+    "generate/generate_smoke_auto.py",
+    "generate/generate_strobe_effects.py",
     "generate/generate_vertical_smoke_burst.py",
-    "generate/play_wrappers.py",
-    "generate/gobo_shake.py",
+    "generate/generate_play_wrappers.py",
+    "generate/generate_gobo_shake.py",
     "generate/canonical_show.py",
     "generate/add_base_looks.py",
     "generate/add_colour_wheels.py",
@@ -94,14 +94,14 @@ CONVERTED: tuple[str, ...] = (
     "generate/tap_dial_functions.py",
     "generate/timed_parts.py",
     "generate/wheel_colors_of.py",
-    "generate/moments.py",
+    "generate/generate_moments.py",
     "glyph.py",
     "generate/smc_pad_bindings.py",
     "generate/function_colors.py",
     "generate/readable_foreground.py",
     "generate/pad_note.py",
     "generate/live_console.py",
-    "generate/play_page.py",
+    "generate/build_play_page.py",
     "generate/generate_desk_bursts.py",
     "desk_policy.py",
     "build_deskmap.py",
@@ -112,7 +112,7 @@ CONVERTED: tuple[str, ...] = (
     "desk_unique_key.py",
     "desk_burst_note.py",
     # Task 12a (2026-09-25): no catalogue word in them; the scanner holds them clean.
-    "generate/beat_tempo.py",
+    "generate/apply_beat_tempo.py",
     "generate/bind_pad.py",
     "generate/color_scene_values.py",
     "generate/dealt_wheel_color.py",
@@ -122,8 +122,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/park_work_light.py",
     "generate/generate_rest_scene.py",
     "generate/smc_pad_device.py",
-    "generate/split_color_scene.py",
-    "generate/stage_layout.py",
+    "generate/split_color_scene_values.py",
+    "generate/generate_stage_layout.py",
     "generate/apply_stage_plot.py",
     "generate/wheel_color_values.py",
     # Plan C Task 2 (2026-09-25): no catalogue word in them.
@@ -243,12 +243,14 @@ CONVERTED: tuple[str, ...] = (
     "generate/pads_top_down.py",
     "generate/profile_channel.py",
     "generate/profile_ns.py",
-    # 2026-09-27, batch 5: split out of movement_efx.py, which was converted.
+    # 2026-09-27, batch 5: split out of movement_efx.py (now generate_movement_efx.py),
+    # which was converted.
     "generate/generated_movements.py",
     "generate/moving_head_ids.py",
     "generate/spread_offsets.py",
-    # 2026-09-27, batch 5: split out of strobe_effects.py and unison_colors.py,
-    # which were converted; add_scene.py is shared by both.
+    # 2026-09-27, batch 5: split out of strobe_effects.py (now generate_strobe_effects.py)
+    # and unison_colors.py (now generate_unison_colors.py), which were converted;
+    # add_scene.py is shared by both.
     "generate/add_scene.py",
     "generate/generated_strobes.py",
     "generate/held_values.py",
@@ -256,29 +258,32 @@ CONVERTED: tuple[str, ...] = (
     "generate/generated_unison.py",
     "generate/contrast_values.py",
     "generate/wheel_step.py",
-    # 2026-09-27, batch 5: split out of vc_layout.py (excluded below, but
-    # these carry no Spanish literal of their own). _console_frame was
+    # 2026-09-27, batch 5: split out of vc_layout.py (now generate_vc_layout.py,
+    # excluded below, but these carry no Spanish literal of their own). _console_frame was
     # identical to the existing root_frame.py and reuses it instead.
     "generate/generated_layout.py",
     "generate/first_free_y.py",
     "generate/background_for.py",
     "generate/grow_console.py",
-    # 2026-09-27, batch 5: split out of play_wrappers.py, which was converted.
-    # spaced.py (split earlier out of gobo_shake.py) is generic now and
+    # 2026-09-27, batch 5: split out of play_wrappers.py (now generate_play_wrappers.py),
+    # which was converted. spaced.py (split earlier out of gobo_shake.py, now
+    # generate_gobo_shake.py) is generic now and
     # reused here instead of a second identical _spread.
     "generate/play_wrap.py",
-    # 2026-09-27, batch 5: split out of beam_subsets.py, which was converted.
+    # 2026-09-27, batch 5: split out of beam_subsets.py (now generate_beam_subsets.py),
+    # which was converted.
     "generate/generated_beam_subsets.py",
     "generate/inserted_prism.py",
     "generate/parked_prism.py",
     "generate/prism_scene.py",
     "generate/multicolor_offset.py",
     "generate/multicolor_scene.py",
-    # 2026-09-27, batch 5: split out of movement_families.py, which was
-    # converted.
+    # 2026-09-27, batch 5: split out of movement_families.py (now
+    # generate_movement_families.py), which was converted.
     "generate/envelope.py",
     "generate/generated_families.py",
-    # 2026-09-27, batch 5: split out of play_page.py, which was converted.
+    # 2026-09-27, batch 5: split out of play_page.py (now build_play_page.py),
+    # which was converted.
     "generate/play_page_layout.py",
     "generate/grid_position.py",
     "generate/source_name.py",
@@ -298,9 +303,9 @@ CONVERTED: tuple[str, ...] = (
 # Ruling B6: modules that keep their literals, and why.
 EXCLUDED = {
     "generate/input_profile.py",  # the SMC-PAD device file, byte-tested against the .qxi
-    "generate/channel_probe.py",  # standalone `probe` command (B5)
-    "generate/color_palette.py",  # standalone `palette` command (B5)
-    "generate/vc_layout.py",  # standalone `layout` command (B5)
+    "generate/generate_channel_probe.py",  # standalone `probe` command (B5)
+    "generate/generate_color_palette.py",  # standalone `palette` command (B5)
+    "generate/generate_vc_layout.py",  # standalone `layout` command (B5)
     "generate/__init__.py",
 }
 

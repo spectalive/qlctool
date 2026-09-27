@@ -14,7 +14,7 @@ from rig_root import RIG_ROOT
 
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.generate.movement_families import generate_movement_families
+from qlctool.generate.generate_movement_families import generate_movement_families
 from qlctool.house_right_fixture_ids import house_right_fixture_ids
 from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.workspace import Workspace

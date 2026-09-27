@@ -5,7 +5,7 @@ from rig_root import RIG_ROOT
 
 from qlctool import roles
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.generate.wheel_scenes import generate_wheel_scenes
+from qlctool.generate.generate_wheel_scenes import generate_wheel_scenes
 from qlctool.validate import qlcplus_binary, validate_workspace
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
@@ -91,7 +91,7 @@ def test_a_wheel_scene_drives_the_wheel_and_not_its_neighbour():
     from qlctool import roles
     from qlctool.capabilities_of import capabilities_of
     from qlctool.fixture_library import FixtureLibrary
-    from qlctool.generate.wheel_scenes import generate_wheel_scenes
+    from qlctool.generate.generate_wheel_scenes import generate_wheel_scenes
     from qlctool.workspace import Workspace
     from qlctool.xmlutil import find_local, findall_local, localname
 

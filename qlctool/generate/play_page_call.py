@@ -10,9 +10,9 @@ from collections.abc import Callable, Mapping, Sequence
 from lxml import etree
 
 from ..names.names import Names
+from .build_play_page import build_play_page
 from .console_layout import BIG_FONT, PAGE_PLAY, SMALL_FONT, TITLE_FONT
 from .generated_play_wrappers import GeneratedPlayWrappers
-from .play_page import build_play_page
 
 
 def play_page_call(

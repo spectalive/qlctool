@@ -7,7 +7,7 @@ them, all with unique IDs, injected without disturbing existing functions.
 from rig_root import RIG_ROOT
 
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.generate.color_palette import generate_color_palette
+from qlctool.generate.generate_color_palette import generate_color_palette
 from qlctool.ids import existing_function_ids
 from qlctool.palette import PALETTE
 from qlctool.workspace import Workspace

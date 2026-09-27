@@ -4,7 +4,7 @@ Moved verbatim out of `build_canonical_show` (2026-09-26, round G); the
 functions are created in the order they always were.
 """
 
-from .play_wrappers import generate_play_wrappers
+from .generate_play_wrappers import generate_play_wrappers
 from .show_build import ShowBuild
 
 

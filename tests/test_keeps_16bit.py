@@ -18,7 +18,7 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.generate.movement_efx import generate_movement_efx
+from qlctool.generate.generate_movement_efx import generate_movement_efx
 from qlctool.keeps_16bit import INTENSITY_PAIRS, PAN_TILT_PAIRS, keeps_16bit
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, localname
@@ -114,7 +114,7 @@ def test_the_dimmer_efx_is_guarded_too(library):
     moved - each family is model-homogeneous, so a fixture whose dimmer fine
     channel is not adjacent runs 8 bit inside its own family without turning
     16 bit off for the rest. On this rig every family keeps 16 bit."""
-    from qlctool.generate.dimmer_chases import generate_dimmer_chases
+    from qlctool.generate.generate_dimmer_chases import generate_dimmer_chases
 
     ws = Workspace.load(SHOW)
     caps = capabilities_of(ws.root, library)

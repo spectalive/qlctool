@@ -1,4 +1,4 @@
-"""The heads-against-the-rest contrasts a rotation steps (`unison_colors.CONTRAST_PAIRS`)."""
+"""The heads-against-the-rest contrasts a rotation steps (`generate_unison_colors.CONTRAST_PAIRS`)."""
 
 from .colour_settings import ColourSettings
 

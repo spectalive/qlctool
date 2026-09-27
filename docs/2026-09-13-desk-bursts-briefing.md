@@ -7,7 +7,7 @@ shows, `--validate`; the rule-first convention: a check under
 `tools/qlctool/qlctool/checks/` with a dated regression before a generator
 changes), then `tools/qlctool/qlctool/generate/live_console.py` (the hits:
 Flash buttons with Override priority over Scenes in the `GOLPES` frame,
-w12..w18), `generate/play_page.py` (the ten colour hits, w53..w62),
+w12..w18), `generate/build_play_page.py` (the ten colour hits, w53..w62),
 `deskmap.py` and `desk_policy.py` (the desk map, roles, `SAFETY_*`),
 `ids.py`, and `checks/rule_solo_handoff.py` as the model of a rule.
 

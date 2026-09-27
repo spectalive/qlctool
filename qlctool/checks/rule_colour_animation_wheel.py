@@ -5,7 +5,7 @@ it counts only Scenes, for a good reason: a matrix paints a group's pixels and
 can say nothing about a member that has none. An EFX is different. It lists the
 fixtures it drives, one `<Fixture>` each, so a fixture it omits is a decision
 nobody made - and nothing was checking those. The two rainbows are relative EFX
-in RGB mode over "every RGB head" (`rainbow_efx.py` counts red channels and
+in RGB mode over "every RGB head" (`generate_rainbow_efx.py` counts red channels and
 finds none on a 7R), so `Arcoiris Simultaneo` sweeps the whole room through the
 spectrum with the four beams nailed to whatever colour they had: "el arcoiris
 no funciona con los beam, no hace el color arcoiris" (owner, 2026-09-22).

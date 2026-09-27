@@ -11,10 +11,10 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.generate.dimmer_chases import MODE_DIMMER, generate_dimmer_chases
-from qlctool.generate.energy_intensity import generate_energy_intensity
+from qlctool.generate.generate_dimmer_chases import MODE_DIMMER, generate_dimmer_chases
 from qlctool.generate.generate_dimmer_sequence import generate_dimmer_sequence
-from qlctool.generate.strobe_effects import generate_strobe_effects
+from qlctool.generate.generate_energy_intensity import generate_energy_intensity
+from qlctool.generate.generate_strobe_effects import generate_strobe_effects
 from qlctool.shutter_open import shutter_open_pairs
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local, localname
@@ -259,7 +259,7 @@ def test_the_console_strobes_are_held_shutter_scenes(library):
     a rate and nothing else, fast on `F` and at the slow flash's pace on `T`
     (the `flash lento` rule refuses anything under 70% of the run).
     """
-    from qlctool.generate.strobe_effects import FAST_FRACTION, MEDIUM_FRACTION
+    from qlctool.generate.generate_strobe_effects import FAST_FRACTION, MEDIUM_FRACTION
     from qlctool.strobe_speed_pairs import strobe_speed_pairs
 
     ws = Workspace.load(SHOW)

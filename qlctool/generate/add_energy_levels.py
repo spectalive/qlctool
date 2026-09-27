@@ -5,7 +5,7 @@ functions are created in the order they always were.
 """
 
 from .energy_level import EnergyLevel
-from .energy_levels import generate_energy_levels
+from .generate_energy_levels import generate_energy_levels
 from .show_build import ShowBuild
 from .show_collection import show_collection
 

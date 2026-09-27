@@ -6,16 +6,16 @@ functions are created in the order they always were.
 
 from .. import roles
 from ..capabilities_of import capabilities_of
-from .beam_subsets import generate_beam_subsets
+from .generate_beam_subsets import generate_beam_subsets
 from .generate_dealt_gobo_scenes import generate_dealt_gobo_scenes
+from .generate_gobo_shake import generate_gobo_shake
+from .generate_prism_spins import generate_prism_spins
 from .generate_rest_scene import generate_rest_scene
+from .generate_wheel_scenes import generate_wheel_scenes
 from .generated_wheel import GeneratedWheel
-from .gobo_shake import generate_gobo_shake
 from .prism_choreography import prism_choreography
-from .prism_spins import generate_prism_spins
 from .rig_has_role import rig_has_role
 from .show_build import ShowBuild
-from .wheel_scenes import generate_wheel_scenes
 
 
 def add_wheel_looks(build: ShowBuild) -> None:
@@ -28,7 +28,7 @@ def add_wheel_looks(build: ShowBuild) -> None:
     master = build.master
     # Wheel scenes state the wheel and nothing else: their dimmer used to ride
     # along at 255, which a quiet level could never bring down (HTP). The
-    # levels own intensity now - see `energy_intensity`.
+    # levels own intensity now - see `generate_energy_intensity`.
     # The shake bursts ride inside the gobo wheel's own rotation - a shake is
     # a step, never a concurrent layer - and every plain gobo scene parks the
     # jitter channel at zero, so the burst always has somebody to end it.

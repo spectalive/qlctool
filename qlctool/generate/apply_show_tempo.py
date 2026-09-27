@@ -5,7 +5,7 @@ functions are created in the order they always were.
 """
 
 from ..set_beat_generator import set_beat_generator
-from .beat_tempo import apply_beat_tempo
+from .apply_beat_tempo import apply_beat_tempo
 from .movement_tempo_functions import movement_tempo_functions
 from .show_build import ShowBuild
 from .steps_are_scenes import steps_are_scenes

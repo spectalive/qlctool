@@ -55,7 +55,7 @@ def test_the_number_counter_stays_out_of_the_cycle():
     show's own chaser skipped exactly one of the forty-two, Effect 40, and
     that is the counter: generated for the library page, never cycled.
     """
-    from qlctool.generate.builtin_effects import (
+    from qlctool.generate.generate_builtin_effects import (
         EXCLUDED_FROM_CYCLE,
         generate_builtin_effects,
     )
@@ -86,7 +86,7 @@ def test_the_vertical_smoke_light_is_the_old_chaser_verbatim():
     console's misnamed HUMO AUTO chaser (DeluxeEventos2 ID 367), values,
     order and holds carried verbatim.
     """
-    from qlctool.generate.builtin_effects import generate_builtin_effects
+    from qlctool.generate.generate_builtin_effects import generate_builtin_effects
     from qlctool.generate.generate_vertical_smoke_light import (
         generate_vertical_smoke_light,
     )

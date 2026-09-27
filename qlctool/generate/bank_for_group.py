@@ -12,7 +12,7 @@ from ..workspace import Workspace
 from .bank_wheel import bank_wheel
 from .color_scene_values import color_scene_values
 from .generated_bank import GeneratedBank
-from .split_color_scene import split_color_scene_values
+from .split_color_scene_values import split_color_scene_values
 from .wheel_color_values import wheel_color_values
 from .without_wheel_blades import without_wheel_blades
 

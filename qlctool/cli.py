@@ -28,13 +28,13 @@ from .fixture_group import fixture_groups
 from .generate.apply_stage_plot import apply_stage_plot
 from .generate.build_canonical_show import build_canonical_show
 from .generate.build_refusal_error import BuildRefusalError
-from .generate.channel_probe import generate_channel_probe
-from .generate.color_palette import generate_color_palette
+from .generate.generate_channel_probe import generate_channel_probe
+from .generate.generate_color_palette import generate_color_palette
 from .generate.generate_matrix_effects import generate_matrix_effects
+from .generate.generate_movement_efx import generate_movement_efx
+from .generate.generate_stage_layout import DEFAULT_STAGE, generate_stage_layout
+from .generate.generate_vc_layout import generate_vc_layout
 from .generate.input_profile import build_input_profile
-from .generate.movement_efx import generate_movement_efx
-from .generate.stage_layout import DEFAULT_STAGE, generate_stage_layout
-from .generate.vc_layout import generate_vc_layout
 from .install_plan import install_plan
 from .library_for import library_for
 from .matrix_algorithms import SCRIPT_ALGORITHMS

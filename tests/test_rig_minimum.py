@@ -1,8 +1,8 @@
 """2026-09-25: `newshow` refuses a rig below the minimum with a message, not a traceback.
 
 Plan C final review: pars only stopped at "no fixture in this workspace has
-both pan and tilt" (`movement_families.py`), washes only at "no fixture in
-this workspace has a dimmer" (`dimmer_chases.py`), both as tracebacks, and a
+both pan and tilt" (`generate_movement_families.py`), washes only at "no fixture in
+this workspace has a dimmer" (`generate_dimmer_chases.py`), both as tracebacks, and a
 patch with no fixture group built a show `check` then flagged. The README's
 minimum was then asked before any generator ran; since round G (2026-09-26)
 it is one fixture group, and the pars and the washes get a show. Each case is

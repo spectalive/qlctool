@@ -8,9 +8,9 @@ from ..functions.build_chaser import build_chaser
 from ..ids import next_function_id
 from .generate_multicolor_scenes import generate_multicolor_scenes
 from .generate_quad_color_scenes import generate_quad_color_scenes
+from .generate_unison_colors import WHEEL_FADE, WHEEL_HOLD, generate_unison_colors
 from .show_build import ShowBuild
 from .show_collection import show_collection
-from .unison_colors import WHEEL_FADE, WHEEL_HOLD, generate_unison_colors
 from .wheel_colors_of import wheel_colors_of
 
 

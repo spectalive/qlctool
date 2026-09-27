@@ -5,7 +5,7 @@ functions are created in the order they always were.
 """
 
 from ..description.split_pairs_of import split_pairs_of
-from .builtin_effects import generate_builtin_effects
+from .generate_builtin_effects import generate_builtin_effects
 from .generate_color_banks import generate_color_banks
 from .generate_panel_manual import generate_panel_manual
 from .generate_panel_speed_auto import generate_panel_speed_auto

@@ -49,6 +49,7 @@ from .envelope import Envelope
 from .fit_rotated_figure import fit_rotated_figure
 from .generate_cross_position import generate_cross_position
 from .generate_fan_position import generate_fan_position
+from .generate_movement_efx import generate_movement_efx
 from .generate_wash_hold import generate_wash_hold
 from .generated_families import GeneratedFamilies
 from .movement_aim import (
@@ -61,7 +62,6 @@ from .movement_aim import (
     WASH_TILT_AIM,
     WASH_TILT_SPAN,
 )
-from .movement_efx import generate_movement_efx
 
 # Sizes and durations are QLC+ raw EFX values, not degrees: a starting
 # envelope for on-site tuning, not a universal standard.

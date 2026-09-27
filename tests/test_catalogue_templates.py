@@ -8,8 +8,8 @@ from qlctool.description.reading.read_names import read_names
 from qlctool.fixture_group import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
-from qlctool.generate.movement_families import generate_movement_families
-from qlctool.generate.wheel_scenes import generate_wheel_scenes
+from qlctool.generate.generate_movement_families import generate_movement_families
+from qlctool.generate.generate_wheel_scenes import generate_wheel_scenes
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.sections import SECTIONS
 from qlctool.names.shipped_languages import shipped_languages
@@ -105,7 +105,7 @@ def test_the_matrix_cycle_starts_with_the_cycle_prefix(language):
 
 @pytest.mark.parametrize("language", ["es", "en"])
 def test_a_movement_pick_starts_with_the_movement_prefix(language):
-    """play_page strips the movement prefix from pick captions (B8, P12)."""
+    """build_play_page strips the movement prefix from pick captions (B8, P12)."""
     names = shipped_names(language)
     workspace = strip_to_skeleton(Workspace.load(SETUPS / "Vibra.qxw"))
     generated = generate_movement_families(workspace, FixtureLibrary.load(), names=names)

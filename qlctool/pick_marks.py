@@ -6,7 +6,7 @@ pixel matrices, the head movements, the gobo and prism looks. `glyph`
 carries the glyphs of the named master buttons; these belong to no function name
 at all, because a pick's caption is built from the function it fires.
 
-They live in one place because two files need the same set: `play_page` writes
+They live in one place because two files need the same set: `build_play_page` writes
 them into the caption, and `leading_glyph` splits them back out for the tablet.
 A mark this file does not list rides along as the first character of a label.
 """

@@ -4,7 +4,7 @@ Moved verbatim out of `build_canonical_show` (2026-09-26, round G); the
 functions are created in the order they always were.
 """
 
-from .rainbow_efx import generate_rainbow_efx
+from .generate_rainbow_efx import generate_rainbow_efx
 from .show_build import ShowBuild
 from .show_collection import show_collection
 

@@ -3005,7 +3005,7 @@ def test_2026_09_22_a_tint_washed_out_by_its_own_white_share(library):
 def test_2026_09_22_a_rainbow_that_leaves_the_beams_on_one_colour(library):
     """2026-09-22, owner reviewing the programme: "el arcoiris no funciona con
     los beam, no hace el color arcoiris". Both rainbows are relative EFX in RGB
-    mode built over "every RGB head", and `rainbow_efx.py` finds no red channel
+    mode built over "every RGB head", and `generate_rainbow_efx.py` finds no red channel
     on a 7R, so the spectrum swept the room with the four beams parked on
     whatever detent the state had left. Reproduced by taking the beams' own
     rainbow-spin layer back out of the rainbow's collection.

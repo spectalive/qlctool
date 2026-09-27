@@ -10,8 +10,8 @@ from rig_root import RIG_ROOT
 
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_home_position import generate_home_position
+from qlctool.generate.generate_movement_efx import generate_movement_efx
 from qlctool.generate.movement_aim import WASH_PAN_AIM, WASH_TILT_AIM
-from qlctool.generate.movement_efx import generate_movement_efx
 from qlctool.generate.moving_head_ids import moving_head_ids
 from qlctool.house_right_fixture_ids import house_right_fixture_ids
 from qlctool.strip_to_skeleton import strip_to_skeleton
