@@ -30,15 +30,14 @@ function with a clock of its own (2026-09-02, when the wash figures split).
 
 from ..xmlutil import find_local
 from .finding import ERROR, Finding
+from .function_fade import function_fade
+from .self_timed_members import self_timed_members
 from .show_graph import ShowGraph
 
 RULE_ID = "tempo_units"
 COLLECTION_RULE_ID = "tempo_in_collection"
 
 TEMPO_BEATS = "Beats"
-# Function kinds that time themselves in milliseconds whatever their parent
-# is counting in.
-SELF_TIMED = ("EFX", "RGBMatrix")
 
 
 def check_tempo_units(graph: ShowGraph) -> list[Finding]:
@@ -60,10 +59,10 @@ def check_tempo_units(graph: ShowGraph) -> list[Finding]:
             )
             continue
 
-        fade = _fade(function)
+        fade = function_fade(function)
         if fade == 0:
             continue
-        hurt = sorted({graph.name(member) for member in _self_timed(graph, function_id)})
+        hurt = sorted({graph.name(member) for member in self_timed_members(graph, function_id)})
         if not hurt:
             continue
         findings.append(
@@ -77,24 +76,3 @@ def check_tempo_units(graph: ShowGraph) -> list[Finding]:
             )
         )
     return findings
-
-
-def _self_timed(graph: ShowGraph, function_id: int) -> set[int]:
-    """The self-timed functions this one starts, looking through Collections."""
-    found: set[int] = set()
-    stack = list(graph.members.get(function_id, ()))
-    while stack:
-        member = stack.pop()
-        kind = graph.kind(member)
-        if kind in SELF_TIMED:
-            found.add(member)
-        elif kind == "Collection":
-            stack.extend(graph.members.get(member, ()))
-    return found
-
-
-def _fade(function) -> int:
-    speed = find_local(function, "Speed")
-    if speed is None:
-        return 0
-    return max(int(speed.attrib.get("FadeIn", 0)), int(speed.attrib.get("FadeOut", 0)))
