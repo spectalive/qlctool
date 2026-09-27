@@ -171,6 +171,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/after_marker.py",
     "generate/before_marker.py",
     "generate/root_frame.py",
+    "generate/function_names.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

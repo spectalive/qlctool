@@ -57,7 +57,7 @@ from ..vc.matrix_control import build_matrix_control
 from ..vc.speed_dial import build_speed_dial
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
-from ..xmlutil import find_local, localname
+from ..xmlutil import find_local
 from .after_marker import after_marker
 from .bank_caption import bank_caption
 from .before_marker import before_marker
@@ -119,6 +119,7 @@ from .console_layout import (
     TINY_FONT,
     TITLE_FONT,
 )
+from .function_names import function_names
 from .generated_console import GeneratedConsole
 from .library_help_lines import library_help_lines
 from .matrices_frame_caption import matrices_frame_caption
@@ -181,7 +182,7 @@ def generate_live_console(
     mix_code = {vocabulary.display(c): vocabulary.display(f"{c}_code") for c in MIX_COLOURS}
     colours = PALETTE if palette is None else palette
     console_root = root_frame(workspace.root)
-    names = _function_names(workspace)
+    names = function_names(workspace)
     ids = ConsoleIds(workspace.root)
     console = GeneratedConsole()
     flash = set(flash_functions)
@@ -1277,14 +1278,6 @@ def _wheel_frame(
             flash_override=True,
             font=TINY_FONT,
         )
-
-
-def _function_names(workspace: Workspace) -> dict[int, str]:
-    return {
-        int(f.attrib["ID"]): f.attrib.get("Name", "")
-        for f in workspace.engine
-        if localname(f) == "Function" and f.attrib.get("ID")
-    }
 
 
 def _first(ids):
