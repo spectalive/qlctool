@@ -256,6 +256,13 @@ CONVERTED: tuple[str, ...] = (
     "generate/generated_unison.py",
     "generate/contrast_values.py",
     "generate/wheel_step.py",
+    # 2026-09-27, batch 5: split out of vc_layout.py (excluded below, but
+    # these carry no Spanish literal of their own). _console_frame was
+    # identical to the existing root_frame.py and reuses it instead.
+    "generate/generated_layout.py",
+    "generate/first_free_y.py",
+    "generate/background_for.py",
+    "generate/grow_console.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

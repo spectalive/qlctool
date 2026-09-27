@@ -8,29 +8,24 @@ never disturbed.
 """
 
 from collections.abc import Sequence
-from dataclasses import dataclass
 
 from lxml import etree
 
-from ..argb import argb_from_rgb
-from ..palette import PALETTE
-from ..vc.build_appearance import DEFAULT
 from ..vc.build_button import build_button
 from ..vc.build_frame import build_frame
 from ..vc.widget_ids import next_widget_id
 from ..workspace import Workspace
-from ..xmlutil import find_local, localname
+from ..xmlutil import localname
+from .background_for import background_for
+from .first_free_y import first_free_y
+from .generated_layout import GeneratedLayout
+from .grow_console import grow_console
+from .root_frame import root_frame
 
 BUTTON_WIDTH = 120
 BUTTON_HEIGHT = 40
 PADDING = 6
 HEADER = 26
-
-
-@dataclass(frozen=True)
-class GeneratedLayout:
-    frame_ids: list[int]
-    button_ids: list[int]
 
 
 def generate_vc_layout(
@@ -65,8 +60,8 @@ def generate_vc_layout(
         key = function.attrib.get("Path") or function.attrib.get("Type", "Otros")
         groups.setdefault(key, []).append(function)
 
-    console_frame = _console_frame(workspace.root)
-    y = _first_free_y(console_frame) + PADDING
+    console_frame = root_frame(workspace.root)
+    y = first_free_y(console_frame) + PADDING
 
     frame_ids: list[int] = []
     button_ids: list[int] = []
@@ -97,59 +92,11 @@ def generate_vc_layout(
                 height=BUTTON_HEIGHT,
                 action=(actions or {}).get(int(function.attrib["ID"]), action),
                 key=(keys or {}).get(int(function.attrib["ID"])),
-                background=_background_for(function, color_by_name),
+                background=background_for(function, color_by_name),
             )
             button_ids.append(button_id)
 
         y += height + PADDING
 
-    _grow_console(workspace.root, y)
+    grow_console(workspace.root, y)
     return GeneratedLayout(frame_ids=frame_ids, button_ids=button_ids)
-
-
-def _console_frame(root: etree._Element) -> etree._Element:
-    console = find_local(root, "VirtualConsole")
-    if console is None:
-        raise ValueError("workspace has no <VirtualConsole>")
-    frame = find_local(console, "Frame")
-    if frame is None:
-        raise ValueError("Virtual Console has no root <Frame>")
-    return frame
-
-
-def _first_free_y(frame: etree._Element) -> int:
-    """The Y below every widget already placed in the console's root frame."""
-    bottom = 0
-    for child in frame:
-        state = find_local(child, "WindowState")
-        if state is None:
-            continue
-        bottom = max(
-            bottom,
-            int(state.attrib.get("Y", "0")) + int(state.attrib.get("Height", "0")),
-        )
-    return bottom
-
-
-def _background_for(function: etree._Element, color_by_name: bool) -> str:
-    """Colour a button by the palette colour its function is named after."""
-    if not color_by_name:
-        return DEFAULT
-    name = function.attrib.get("Name", "")
-    for color_name, rgb in PALETTE.items():
-        if name.endswith(color_name):
-            return str(argb_from_rgb(rgb))
-    return DEFAULT
-
-
-def _grow_console(root: etree._Element, needed_height: int) -> None:
-    """Keep the console canvas at least as tall as what we just laid out."""
-    console = find_local(root, "VirtualConsole")
-    properties = find_local(console, "Properties")
-    if properties is None:
-        return
-    size = find_local(properties, "Size")
-    if size is None:
-        return
-    if int(size.attrib.get("Height", "0")) < needed_height:
-        size.set("Height", str(needed_height))
