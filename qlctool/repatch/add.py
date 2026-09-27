@@ -8,10 +8,11 @@ mismatch that silently shifts every fixture after it on the universe.
 from lxml import etree
 
 from ..constants import QLC_NS
-from ..fixture import patched_fixtures
 from ..fixture_library import FixtureLibrary
 from ..patch_conflicts import patch_conflicts
 from ..xmlutil import find_local, findall_local
+from .child import child
+from .next_fixture_id import next_fixture_id
 
 
 def add_fixture(
@@ -42,16 +43,16 @@ def add_fixture(
     if engine is None:
         raise ValueError("workspace has no <Engine> element")
 
-    fixture_id = _next_fixture_id(root)
+    fixture_id = next_fixture_id(root)
     element = etree.Element(f"{{{QLC_NS}}}Fixture")
-    _child(element, "Manufacturer", manufacturer)
-    _child(element, "Model", model)
-    _child(element, "Mode", mode)
-    _child(element, "ID", fixture_id)
-    _child(element, "Name", name if name is not None else f"{model} #{fixture_id}")
-    _child(element, "Universe", universe)
-    _child(element, "Address", address)
-    _child(element, "Channels", len(definition.modes[mode]))
+    child(element, "Manufacturer", manufacturer)
+    child(element, "Model", model)
+    child(element, "Mode", mode)
+    child(element, "ID", fixture_id)
+    child(element, "Name", name if name is not None else f"{model} #{fixture_id}")
+    child(element, "Universe", universe)
+    child(element, "Address", address)
+    child(element, "Channels", len(definition.modes[mode]))
 
     # Keep patch entries together: after the last existing one, else at the top
     # of the Engine, which is where QLC+ writes them.
@@ -74,13 +75,3 @@ def add_fixture(
             "patch would overlap: " + "; ".join(conflict.describe() for conflict in introduced)
         )
     return fixture_id
-
-
-def _next_fixture_id(root: etree._Element) -> int:
-    ids = [f.fixture_id for f in patched_fixtures(root)]
-    return max(ids) + 1 if ids else 0
-
-
-def _child(parent: etree._Element, name: str, value: object) -> None:
-    element = etree.SubElement(parent, f"{{{QLC_NS}}}{name}")
-    element.text = str(value)

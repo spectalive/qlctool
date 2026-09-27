@@ -15,7 +15,9 @@ nothing.
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local, iter_local
+from ..xmlutil import findall_local
+from .group_name import group_name
+from .group_of import group_of
 
 
 def remove_group_head(root: etree._Element, group_id: int, fixture_id: int) -> int:
@@ -25,28 +27,16 @@ def remove_group_head(root: etree._Element, group_id: int, fixture_id: int) -> i
     when removing it would leave the group empty - an empty group generates a
     matrix that paints nothing and a colour bank with no fixtures.
     """
-    group = _group(root, group_id)
+    group = group_of(root, group_id)
     heads = findall_local(group, "Head")
     doomed = [head for head in heads if head.attrib.get("Fixture") == str(fixture_id)]
     if not doomed:
-        raise ValueError(f"fixture {fixture_id} is not in group {group_id} ({_name(group)!r})")
+        raise ValueError(f"fixture {fixture_id} is not in group {group_id} ({group_name(group)!r})")
     if len(doomed) == len(heads):
         raise ValueError(
             f"removing fixture {fixture_id} would leave group {group_id} "
-            f"({_name(group)!r}) with no heads at all"
+            f"({group_name(group)!r}) with no heads at all"
         )
     for head in doomed:
         group.remove(head)
     return len(doomed)
-
-
-def _group(root: etree._Element, group_id: int) -> etree._Element:
-    for element in iter_local(root, "FixtureGroup"):
-        if element.attrib.get("ID") == str(group_id):
-            return element
-    raise KeyError(f"no fixture group with ID {group_id}")
-
-
-def _name(group: etree._Element) -> str:
-    name = find_local(group, "Name")
-    return (name.text or "").strip() if name is not None else ""

@@ -15,12 +15,13 @@ on a fixture with no RGB anyway. Their cells are simply empty now: see
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local, iter_local
+from ..xmlutil import find_local, findall_local
+from .group_of import group_of
 
 
 def set_group_size(root: etree._Element, group_id: int, width: int, height: int) -> None:
     """Set a group's grid, refusing a size that would orphan heads it holds."""
-    group = _group(root, group_id)
+    group = group_of(root, group_id)
     orphaned = [
         (int(head.attrib["X"]), int(head.attrib["Y"]))
         for head in findall_local(group, "Head")
@@ -37,10 +38,3 @@ def set_group_size(root: etree._Element, group_id: int, width: int, height: int)
         raise ValueError(f"group {group_id} has no <Size>")
     size.set("X", str(width))
     size.set("Y", str(height))
-
-
-def _group(root: etree._Element, group_id: int) -> etree._Element:
-    for element in iter_local(root, "FixtureGroup"):
-        if element.attrib.get("ID") == str(group_id):
-            return element
-    raise KeyError(f"no fixture group with ID {group_id}")

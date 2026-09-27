@@ -13,7 +13,9 @@ already had them - so a re-shaped group sweeps in the order it swept before.
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local, iter_local
+from ..xmlutil import find_local, findall_local
+from .group_name import group_name
+from .group_of import group_of
 
 
 def reshape_group(root: etree._Element, group_id: int, width: int, height: int) -> None:
@@ -23,11 +25,11 @@ def reshape_group(root: etree._Element, group_id: int, width: int, height: int) 
     of being wrong are the bug this exists to remove: too small orphans heads,
     too large leaves holes.
     """
-    group = _group(root, group_id)
+    group = group_of(root, group_id)
     heads = findall_local(group, "Head")
     if width * height != len(heads):
         raise ValueError(
-            f"group {group_id} ({_name(group)!r}) has {len(heads)} head(s) and "
+            f"group {group_id} ({group_name(group)!r}) has {len(heads)} head(s) and "
             f"{width}x{height} is {width * height} cells: a grid that does not "
             "match leaves holes or orphans heads"
         )
@@ -42,15 +44,3 @@ def reshape_group(root: etree._Element, group_id: int, width: int, height: int) 
         raise ValueError(f"group {group_id} has no <Size>")
     size.set("X", str(width))
     size.set("Y", str(height))
-
-
-def _group(root: etree._Element, group_id: int) -> etree._Element:
-    for element in iter_local(root, "FixtureGroup"):
-        if element.attrib.get("ID") == str(group_id):
-            return element
-    raise KeyError(f"no fixture group with ID {group_id}")
-
-
-def _name(group: etree._Element) -> str:
-    name = find_local(group, "Name")
-    return (name.text or "").strip() if name is not None else ""

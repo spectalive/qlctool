@@ -23,7 +23,8 @@ two-row pattern it belongs to - a different question, and one for the rig.
 from lxml import etree
 
 from ..stage_x_positions import stage_x_positions
-from ..xmlutil import findall_local, iter_local
+from ..xmlutil import findall_local
+from .group_of import group_of
 
 
 def sort_group_by_stage(root: etree._Element, group_id: int) -> list[tuple[int, int]]:
@@ -39,7 +40,7 @@ def sort_group_by_stage(root: etree._Element, group_id: int) -> list[tuple[int, 
             "run `qlctool stage --plot ...` first"
         )
 
-    group = _group(root, group_id)
+    group = group_of(root, group_id)
     rows: dict[int, list[etree._Element]] = {}
     for head in findall_local(group, "Head"):
         rows.setdefault(int(head.attrib["Y"]), []).append(head)
@@ -61,10 +62,3 @@ def sort_group_by_stage(root: etree._Element, group_id: int) -> list[tuple[int, 
                 moved.append((was, cell))
             head.set("X", str(cell))
     return moved
-
-
-def _group(root: etree._Element, group_id: int) -> etree._Element:
-    for element in iter_local(root, "FixtureGroup"):
-        if element.attrib.get("ID") == str(group_id):
-            return element
-    raise KeyError(f"no fixture group with ID {group_id}")

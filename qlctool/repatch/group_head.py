@@ -10,7 +10,8 @@ from lxml import etree
 
 from ..constants import QLC_NS
 from ..fixture import patched_fixtures
-from ..xmlutil import find_local, findall_local, iter_local
+from ..xmlutil import find_local, findall_local
+from .group_of import group_of
 
 
 def add_group_head(
@@ -25,7 +26,7 @@ def add_group_head(
     if fixture_id not in {f.fixture_id for f in patched_fixtures(root)}:
         raise ValueError(f"fixture {fixture_id} is not patched")
 
-    group = _group(root, group_id)
+    group = group_of(root, group_id)
     size = find_local(group, "Size")
     width, height = int(size.attrib["X"]), int(size.attrib["Y"])
     if not (0 <= x < width and 0 <= y < height):
@@ -53,10 +54,3 @@ def add_group_head(
     element.set("Y", str(y))
     element.set("Fixture", str(fixture_id))
     element.text = str(head)
-
-
-def _group(root: etree._Element, group_id: int) -> etree._Element:
-    for element in iter_local(root, "FixtureGroup"):
-        if element.attrib.get("ID") == str(group_id):
-            return element
-    raise KeyError(f"no fixture group with ID {group_id}")

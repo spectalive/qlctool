@@ -15,6 +15,7 @@ from lxml import etree
 
 from ..constants import QLC_NS
 from ..xmlutil import find_local, iter_local
+from .group_name import group_name
 
 
 def add_fixture_group(root: etree._Element, name: str, width: int, height: int) -> int:
@@ -30,7 +31,7 @@ def add_fixture_group(root: etree._Element, name: str, width: int, height: int) 
 
     existing = [element for element in iter_local(root, "FixtureGroup") if "ID" in element.attrib]
     for element in existing:
-        if _name(element) == name.strip():
+        if group_name(element) == name.strip():
             raise ValueError(f"a fixture group named {name!r} already exists")
     group_id = max((int(e.attrib["ID"]) for e in existing), default=-1) + 1
 
@@ -49,8 +50,3 @@ def add_fixture_group(root: etree._Element, name: str, width: int, height: int) 
     else:
         engine.append(group)
     return group_id
-
-
-def _name(group: etree._Element) -> str:
-    name = find_local(group, "Name")
-    return (name.text or "").strip() if name is not None else ""

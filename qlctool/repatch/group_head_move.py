@@ -15,7 +15,8 @@ where a head sits is where it appears in every pattern.
 
 from lxml import etree
 
-from ..xmlutil import find_local, findall_local, iter_local
+from ..xmlutil import find_local, findall_local
+from .group_of import group_of
 
 
 def move_group_head(
@@ -33,7 +34,7 @@ def move_group_head(
     calls with a free cell in between, so that no move can silently overwrite a
     placement.
     """
-    group = _group(root, group_id)
+    group = group_of(root, group_id)
     size = find_local(group, "Size")
     width, height = int(size.attrib["X"]), int(size.attrib["Y"])
     if not (0 <= x < width and 0 <= y < height):
@@ -63,10 +64,3 @@ def move_group_head(
     moving.set("X", str(x))
     moving.set("Y", str(y))
     return was
-
-
-def _group(root: etree._Element, group_id: int) -> etree._Element:
-    for element in iter_local(root, "FixtureGroup"):
-        if element.attrib.get("ID") == str(group_id):
-            return element
-    raise KeyError(f"no fixture group with ID {group_id}")
