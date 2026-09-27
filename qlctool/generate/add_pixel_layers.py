@@ -4,6 +4,7 @@ Moved verbatim out of `build_canonical_show` (2026-09-26, round G); the
 functions are created in the order they always were.
 """
 
+from .. import roles
 from ..fixture_group import fixture_groups
 from ..rgb_cells import rgb_cells
 from ..rigged_fixture_ids import rigged_fixture_ids
@@ -130,7 +131,16 @@ def add_pixel_layers(build: ShowBuild) -> None:
 
     # The wheel colours the pixel groups too, but through a matrix of its own
     # colour started by each step - never through the scene, whose RGB would
-    # mix HTP with the matrix and land on a colour nobody chose.
+    # mix HTP with the matrix and land on a colour nobody chose. The steps
+    # exist only where the rig wheel has a fixture to colour outside the
+    # pixel groups; on a rig that is all pixels the per-group wheels are the
+    # colour source and these matrices started nothing (`unreachable_function`,
+    # 2026-09-27).
+    wheel_lit = any(
+        (c.has_role(roles.RED) or c.has_role(roles.COLOR_MACRO))
+        and c.fixture.fixture_id not in matrix_lit_ids
+        for c in caps
+    )
     step_matrices = (
         generate_pixel_wheel_matrices(
             workspace,
@@ -139,7 +149,7 @@ def add_pixel_layers(build: ShowBuild) -> None:
             CYCLE_ALGORITHMS,
             names=vocabulary,
         )
-        if pixel_group_ids
+        if pixel_group_ids and wheel_lit
         else {}
     )
     # And the same for the pastel mode, whose colours are the same names with
@@ -153,7 +163,7 @@ def add_pixel_layers(build: ShowBuild) -> None:
             tag=vocabulary.display("pastel_wheel"),
             names=vocabulary,
         )
-        if pixel_group_ids
+        if pixel_group_ids and wheel_lit
         else {}
     )
     build.beam_spin_id = beam_spin_id

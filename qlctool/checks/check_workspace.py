@@ -40,6 +40,7 @@ from .rule_duplicate_fixture_id import check_duplicate_fixture_ids
 from .rule_grid_order import check_grid_order
 from .rule_group_grid import check_group_grids
 from .rule_held_column import check_held_column
+from .rule_help_names_frame import check_help_names_frame
 from .rule_instant_dimmer import check_instant_dimmer
 from .rule_intensity import check_intensity
 from .rule_internal_program import check_internal_programs
@@ -73,6 +74,7 @@ from .rule_tap_dial import check_tap_dial
 from .rule_tempo_units import check_tempo_units
 from .rule_undeclared_heads import check_undeclared_heads
 from .rule_unfinished_effect import check_unfinished_effects
+from .rule_unreachable_function import check_unreachable_functions
 from .rule_untempoed_rhythm import check_untempoed_rhythm
 from .rule_wheel_colour import check_wheel_colour
 from .rule_wheel_fade import check_wheel_fade
@@ -111,6 +113,7 @@ def check_workspace(
     findings += check_missing_definitions(root, library)
     findings += check_duplicate_fixture_ids(root)
     findings += check_dangling_references(graph, root)
+    findings += check_unreachable_functions(root)
     findings += check_intensity(graph, groups, entries, states)
     findings += check_instant_dimmer(graph, groups, states)
     findings += check_white_emitter(graph, groups)
@@ -163,6 +166,7 @@ def check_workspace(
     findings += check_undeclared_heads(graph, root)
     findings += check_console(graph, root, canvas or canvas_of(root))
     findings += console_caption_findings(graph, root)
+    findings += check_help_names_frame(root)
     findings += key_binding_findings(graph, groups, root, states)
     findings += [finding for provider in applying for finding in provider.check(context)]
     return fixing_order(named_findings(findings, root, names))

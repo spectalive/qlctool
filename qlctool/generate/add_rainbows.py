@@ -35,4 +35,11 @@ def add_rainbows(build: ShowBuild) -> None:
             else function_id
         )
         rainbow_ids.append(master[name])
+    if not rainbow_ids and beam_spin_id is not None:
+        # No head with RGB to sweep, so the rig's rainbow is the beams' own
+        # spin alone, under the one name; without a button it was a scene
+        # nothing started (`unreachable_function`, 2026-09-27).
+        name = vocabulary.display("rainbow_together")
+        master[name] = show_collection(workspace, name, [beam_spin_id])
+        rainbow_ids.append(master[name])
     build.rainbow_ids = rainbow_ids
