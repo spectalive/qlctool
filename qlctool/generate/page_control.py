@@ -12,7 +12,7 @@ from lxml import etree
 from ..names.names import Names
 from ..vc.dial_function import DialFunction
 from ..vc.speed_dial import build_speed_dial
-from ..vc.xy_pad import build_xy_pad
+from .aim_pad import aim_pad
 from .bank_column import bank_column
 from .bind_pad import bind_pad
 from .console_ids import ConsoleIds
@@ -143,34 +143,7 @@ def page_control(
         columns=12,
     )
 
-    # Keep the aiming controls directly below the beam wheel. The outer frame
-    # is 892px tall, so the pad leaves the same 6px inset at its bottom after
-    # taking the space released by moving the wheel up (2026-09-03). A rig
-    # with nothing that pans and tilts gets no pad to aim nothing with.
-    if mover_fixture_ids:
-        label(
-            outer,
-            vocabulary.display("aim_frame"),
-            MIDDLE_X,
-            224,
-            MIDDLE_WIDTH,
-            20,
-            page=PAGE_CONTROL,
-            font=HELP_FONT,
-        )
-        pad_id = ids.take()
-        pad = build_xy_pad(
-            outer,
-            pad_id,
-            vocabulary.display("xy_pad"),
-            MIDDLE_X,
-            250,
-            MIDDLE_WIDTH,
-            636,
-            fixture_ids=list(mover_fixture_ids),
-        )
-        on_page(pad, PAGE_CONTROL)
-        console.widget_ids.append(pad_id)
+    aim_pad(outer, label, ids, console, mover_fixture_ids, vocabulary)
 
     # The movement dial stays with the direct controls and on the same tap key
     # as page 1's tempo. It re-times each rotation AND the EFX
