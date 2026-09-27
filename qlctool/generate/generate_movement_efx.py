@@ -14,7 +14,9 @@ from ..efx_shape_identifiers import EFX_SHAPE_IDENTIFIERS
 from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
-from ..functions.efx import EFXAxis, EFXFixture, build_efx
+from ..functions.build_efx import build_efx
+from ..functions.efx import EFXFixture
+from ..functions.efx_axis import EFXAxis
 from ..ids import next_function_id
 from ..keeps_16bit import PAN_TILT_PAIRS, keeps_16bit
 from ..names.default_names import default_names

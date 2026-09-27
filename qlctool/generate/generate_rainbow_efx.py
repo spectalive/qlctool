@@ -16,7 +16,9 @@ runs, and its colour already has an owner.
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
-from ..functions.efx import EFXAxis, EFXFixture, build_efx
+from ..functions.build_efx import build_efx
+from ..functions.efx import EFXFixture
+from ..functions.efx_axis import EFXAxis
 from ..ids import next_function_id
 from ..internal_program import internal_program
 from ..names.default_names import default_names

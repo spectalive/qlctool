@@ -8,6 +8,7 @@ it serializes without a prefix and loads back into QLC+ unchanged.
 from lxml import etree
 
 from ..constants import QLC_NS
+from .encode import encode
 
 FixtureValues = dict[int, list[tuple[int, int]]]
 
@@ -43,11 +44,6 @@ def build_scene(
         val = etree.SubElement(function, f"{{{QLC_NS}}}FixtureVal")
         val.set("ID", str(fixture_id))
         if pairs:
-            val.text = _encode(pairs)
+            val.text = encode(pairs)
 
     return function
-
-
-def _encode(pairs: list[tuple[int, int]]) -> str:
-    ordered = sorted(pairs, key=lambda pair: pair[0])
-    return ",".join(f"{offset},{value}" for offset, value in ordered)
