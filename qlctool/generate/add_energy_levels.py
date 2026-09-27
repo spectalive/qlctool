@@ -4,7 +4,8 @@ Moved verbatim out of `build_canonical_show` (2026-09-26, round G); the
 functions are created in the order they always were.
 """
 
-from .energy_levels import EnergyLevel, generate_energy_levels
+from .energy_level import EnergyLevel
+from .energy_levels import generate_energy_levels
 from .show_build import ShowBuild
 from .show_collection import show_collection
 

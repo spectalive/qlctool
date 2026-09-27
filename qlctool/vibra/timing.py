@@ -1,7 +1,7 @@
 """The Vibra night's clock: how long each level holds, and the beats its chases count."""
 
 from ..description.show_timing import ShowTiming
-from ..generate.beat_tempo import BeatTiming
+from ..generate.beat_timing import BeatTiming
 
 VIBRA_TIMING = ShowTiming(
     # Where the internal clock starts. 120 is the middle of the room this show

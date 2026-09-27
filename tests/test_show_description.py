@@ -10,7 +10,7 @@ from qlctool.description.pastel_palette_of import pastel_palette_of
 from qlctool.description.split_pairs_of import split_pairs_of
 from qlctool.description.wheel_palette_of import wheel_palette_of
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.generate.beat_tempo import BeatTiming
+from qlctool.generate.beat_timing import BeatTiming
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.generate.unison_colors import CONTRAST_PAIRS
 from qlctool.names.default_names import default_names

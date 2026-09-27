@@ -16,7 +16,6 @@ level, not how long the night takes to build.
 """
 
 from collections.abc import Sequence
-from dataclasses import dataclass, field
 
 from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
@@ -24,21 +23,8 @@ from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
-
-
-@dataclass(frozen=True)
-class EnergyLevel:
-    """One level: what runs on top of the colour bed, and for how long."""
-
-    name: str
-    members: Sequence[int]
-    hold: int
-
-
-@dataclass(frozen=True)
-class GeneratedEnergy:
-    level_ids: dict[str, int] = field(default_factory=dict)
-    cycle_id: int | None = None
+from .energy_level import EnergyLevel
+from .generated_energy import GeneratedEnergy
 
 
 def generate_energy_levels(

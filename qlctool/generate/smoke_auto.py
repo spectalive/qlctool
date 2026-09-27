@@ -16,8 +16,6 @@ the room states already use, and each of them is still just this generator
 with a different pause.
 """
 
-from dataclasses import dataclass, field
-
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..fog_offsets import fog_offsets
@@ -27,21 +25,13 @@ from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
+from .generated_smoke import GeneratedSmoke
 from .haze_machines import haze_machines
 
 # The rhythms the console offers, in minutes of pause between bursts. The
 # first is the default - the one AUTO starts and the one the key toggles - and
 # it is the 60 s this show ran on before there was a choice.
 SMOKE_INTERVALS_MIN = (1, 2, 4, 8)
-
-
-@dataclass(frozen=True)
-class GeneratedSmoke:
-    on_id: int
-    off_id: int
-    chaser_id: int
-    # name -> function id, default first: the solo frame the console builds.
-    interval_ids: dict[str, int] = field(default_factory=dict)
 
 
 def generate_smoke_auto(

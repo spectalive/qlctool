@@ -226,6 +226,18 @@ CONVERTED: tuple[str, ...] = (
     "generate/generated_stage.py",
     "generate/unplaced_fixtures.py",
     "generate/spread.py",
+    # 2026-09-27, batch 5 continued: split out of the modules named alongside
+    # them below, all of which were already converted.
+    "generate/generated_smoke.py",
+    "generate/beat_timing.py",
+    "generate/beat_units.py",
+    "generate/to_beats.py",
+    "generate/generated_dimmers.py",
+    "generate/half_lit.py",
+    "generate/generated_intensity.py",
+    "generate/intensity_scene.py",
+    "generate/energy_level.py",
+    "generate/generated_energy.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

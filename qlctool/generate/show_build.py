@@ -23,11 +23,11 @@ from ..names.names import Names
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
 from .beam_subsets import GeneratedBeamSubsets
-from .dimmer_chases import GeneratedDimmers
-from .energy_intensity import GeneratedIntensity
 from .generated_bank import GeneratedBank
 from .generated_builtins import GeneratedBuiltins
+from .generated_dimmers import GeneratedDimmers
 from .generated_gobo_shake import GeneratedGoboShake
+from .generated_intensity import GeneratedIntensity
 from .generated_matrices import GeneratedMatrices
 from .generated_play_wrappers import GeneratedPlayWrappers
 from .generated_prism_spins import GeneratedPrismSpins

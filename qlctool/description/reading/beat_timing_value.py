@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from ...generate.beat_tempo import BeatTiming
+from ...generate.beat_timing import BeatTiming
 from .reject_unknown_keys import reject_unknown_keys
 
 

@@ -10,7 +10,8 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.generate.beat_tempo import BeatTiming, apply_beat_tempo
+from qlctool.generate.beat_tempo import apply_beat_tempo
+from qlctool.generate.beat_timing import BeatTiming
 from qlctool.generate.unison_colors import generate_unison_colors
 from qlctool.set_beat_generator import set_beat_generator
 from qlctool.strip_to_skeleton import strip_to_skeleton

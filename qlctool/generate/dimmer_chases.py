@@ -20,39 +20,22 @@ under a 255 can dip nothing: the fixture would ride along invisibly forever
 """
 
 from collections.abc import Sequence
-from dataclasses import dataclass, field
 
-from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
 from ..functions.efx import EFXFixture, build_efx
-from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
-from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
-from ..zoom_wide_pairs import zoom_wide_pairs
 from .fader_dimmed import fader_dimmed
+from .generated_dimmers import GeneratedDimmers
+from .half_lit import half_lit
 from .movement_efx import spread_offsets
 
 MODE_DIMMER = 1  # EFXFixture::Mode - PanTilt, Dimmer, RGB
-
-
-@dataclass(frozen=True)
-class GeneratedDimmers:
-    # One function per look, whatever it took to build it: when the dimmable
-    # fixtures had to be split, each chase ID is a Collection over its own
-    # halves, and part_ids carries the parts for both directions.
-    chase_id: int
-    chase2_id: int
-    # None when only one fixture dims: a ping-pong of one fixture has no odd
-    # half, so it is a looping strobe on a button (2026-09-27).
-    pingpong_id: int | None
-    scene_ids: list[int]
-    part_ids: list[int] = field(default_factory=list)
 
 
 def generate_dimmer_chases(
@@ -161,7 +144,7 @@ def generate_dimmer_chases(
     pingpong_id: int | None = None
     if len(dimmable) >= 2:
         scene_ids = [
-            _half_lit(workspace, dimmable, remainder, path, vocabulary) for remainder in (0, 1)
+            half_lit(workspace, dimmable, remainder, path, vocabulary) for remainder in (0, 1)
         ]
         pingpong_id = next_function_id(workspace.root)
         workspace.add_function(
@@ -180,27 +163,3 @@ def generate_dimmer_chases(
         scene_ids=scene_ids,
         part_ids=part_ids,
     )
-
-
-def _half_lit(workspace: Workspace, dimmable, remainder: int, path: str, vocabulary: Names) -> int:
-    """Every other fixture at full, the rest at zero.
-
-    The lit half opens its shutter too - a beam at full dimmer behind a closed
-    shutter shows nothing. The dark half is left alone: its dimmer at zero is
-    already black, and closing the shutter as well only adds a second thing to
-    reopen.
-    """
-    values = {}
-    for index, capability in enumerate(dimmable):
-        lit = index % 2 == remainder
-        pairs = [
-            (offset, 255 if lit else 0) for offset in capability.offsets_for_role(roles.DIMMER)
-        ]
-        if lit:
-            pairs += shutter_open_pairs(capability)
-            pairs += zoom_wide_pairs(capability)
-        values[capability.fixture.fixture_id] = pairs
-    function_id = next_function_id(workspace.root)
-    name = vocabulary.display("dimmer_odd" if remainder else "dimmer_even")
-    workspace.add_function(build_scene(function_id, name, values, path=path))
-    return function_id

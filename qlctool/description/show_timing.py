@@ -3,7 +3,7 @@
 from collections.abc import Mapping
 from dataclasses import dataclass
 
-from ..generate.beat_tempo import BeatTiming
+from ..generate.beat_timing import BeatTiming
 
 
 @dataclass(frozen=True)
