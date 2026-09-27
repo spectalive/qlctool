@@ -10,5 +10,7 @@ def workspace_functions(root: etree._Element) -> dict[int, str]:
     return {
         int(element.get("ID", "-1")): element.get("Name", "")
         for element in iter_local(root, "Function")
-        if "ID" in element.attrib and localname(element.getparent()) == "Engine"
+        if "ID" in element.attrib
+        and (parent := element.getparent()) is not None
+        and localname(parent) == "Engine"
     }

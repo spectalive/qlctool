@@ -43,7 +43,9 @@ def add_fixture_group(root: etree._Element, name: str, width: int, height: int) 
 
     if existing:
         last = existing[-1]
-        last.getparent().insert(last.getparent().index(last) + 1, group)
+        beside = last.getparent()
+        assert beside is not None  # a FixtureGroup is never the document root
+        beside.insert(beside.index(last) + 1, group)
     else:
         engine.append(group)
     return group_id

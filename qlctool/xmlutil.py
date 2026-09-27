@@ -8,11 +8,14 @@ in any namespace or none and does the walk in C: one pass of every check called
 `localname` 2.7 million times from Python before this (2026-09-22).
 """
 
+from collections.abc import Iterator
+
 from lxml import etree
 
 
 def localname(element: etree._Element) -> str:
-    tag = element.tag
+    # A comment or a processing instruction carries a callable, not a name.
+    tag: object = element.tag
     if not isinstance(tag, str):
         return ""
     return tag.rsplit("}", 1)[-1]
@@ -26,5 +29,5 @@ def findall_local(parent: etree._Element, name: str) -> list[etree._Element]:
     return parent.findall(f"{{*}}{name}")
 
 
-def iter_local(root: etree._Element, name: str):
+def iter_local(root: etree._Element, name: str) -> Iterator[etree._Element]:
     yield from root.iter(f"{{*}}{name}")

@@ -32,7 +32,7 @@ def existing_widget_ids(root: etree._Element) -> set[int]:
         return set()
     ids = set()
     for element in console.iter():
-        tag = element.tag
+        tag: object = element.tag
         if not isinstance(tag, str):
             continue
         if tag.rsplit("}", 1)[-1] not in WIDGET_TAGS:

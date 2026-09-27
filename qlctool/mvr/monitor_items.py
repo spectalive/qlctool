@@ -28,7 +28,7 @@ def monitor_items(root: etree._Element) -> MonitorStage | None:
     )
     items = [
         MonitorItem(
-            fixture_id=int(item.get("ID")),
+            fixture_id=int(item.attrib["ID"]),
             x=float(item.get("XPos", "0")),
             y=float(item.get("YPos", "0")),
             z=float(item.get("ZPos", "0")),

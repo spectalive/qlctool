@@ -21,7 +21,7 @@ def stage_x_positions(root: etree._Element) -> dict[int, float]:
     if monitor is None:
         return {}
     return {
-        int(item.get("ID")): float(item.get("XPos", "0"))
+        int(item.attrib["ID"]): float(item.get("XPos", "0"))
         for item in iter_local(monitor, "FxItem")
         if item.get("ID") is not None and item.get("Hidden") is None
     }
