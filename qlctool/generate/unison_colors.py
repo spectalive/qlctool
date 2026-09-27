@@ -23,8 +23,8 @@ from .. import roles
 from ..capabilities_of import capabilities_of
 from ..capability import FixtureCapabilities
 from ..complementary_pairs import COMPLEMENTARY_PAIRS
-from ..functions.chaser import build_chaser
-from ..functions.collection import build_collection
+from ..functions.build_chaser import build_chaser
+from ..functions.build_collection import build_collection
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary

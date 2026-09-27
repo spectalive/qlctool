@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 
 from ..capabilities_of import capabilities_of
 from ..fog_offsets import fog_offsets
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary

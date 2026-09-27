@@ -170,7 +170,7 @@ def _burst_chaser(workspace, library, hold=125):
     twins of `Golpe Graves` (white, shutters open) and `Todo Negro`.
     """
 
-    from qlctool.functions.chaser import build_chaser
+    from qlctool.functions.build_chaser import build_chaser
     from qlctool.ids import next_function_id
     from qlctool.vc.build_button import build_button
     from qlctool.vc.widget_ids import next_widget_id
@@ -1991,7 +1991,7 @@ def _family_frame(workspace, function_names, *, caption="TEST FAMILY", solo=True
 
 def _wrapper_button(workspace, frame, source_name, wrapper_name):
     """Add a one-member Collection wrapper and its Toggle button."""
-    from qlctool.functions.collection import build_collection
+    from qlctool.functions.build_collection import build_collection
     from qlctool.ids import next_function_id
     from qlctool.vc.build_button import build_button
     from qlctool.vc.widget_ids import next_widget_id
@@ -2466,7 +2466,7 @@ def test_a_state_started_movement_collection_is_its_own_required_hook(library, d
     from lxml import etree
 
     from qlctool.constants import QLC_NS
-    from qlctool.functions.collection import build_collection
+    from qlctool.functions.build_collection import build_collection
     from qlctool.ids import next_function_id
     from qlctool.vc.build_button import build_button
     from qlctool.vc.widget_ids import next_widget_id
@@ -3366,8 +3366,8 @@ def test_2026_09_26_a_pastel_split_across_the_scenes_of_one_step(library):
     must name that fixture on the step.
     """
     from qlctool.checks.rule_white_share_dropped import RULE_ID
-    from qlctool.functions.chaser import build_chaser
-    from qlctool.functions.collection import build_collection
+    from qlctool.functions.build_chaser import build_chaser
+    from qlctool.functions.build_collection import build_collection
     from qlctool.ids import next_function_id
 
     workspace = _show()

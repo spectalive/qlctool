@@ -1,6 +1,6 @@
 """A chaser the canonical show adds, one hold per step."""
 
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..ids import next_function_id
 from ..workspace import Workspace
 

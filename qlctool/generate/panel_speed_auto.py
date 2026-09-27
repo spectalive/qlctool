@@ -16,7 +16,7 @@ already documents against the cycle's own 200.
 
 from collections.abc import Sequence
 
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..names.default_names import default_names

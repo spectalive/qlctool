@@ -19,7 +19,7 @@ from collections.abc import Sequence
 from ..argb import RGB
 from ..color_format import color_format_of
 from ..fixture_group import fixture_groups
-from ..functions.rgbmatrix import build_rgbmatrix
+from ..functions.build_rgbmatrix import build_rgbmatrix
 from ..ids import next_function_id
 from ..matrix_step_count import matrix_step_count
 from ..names.default_names import default_names

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 
 from .. import roles
 from ..capabilities_of import capabilities_of
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary

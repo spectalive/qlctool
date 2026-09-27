@@ -4,7 +4,7 @@ Moved verbatim out of `build_canonical_show` (2026-09-26, round G); the
 functions are created in the order they always were.
 """
 
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..ids import next_function_id
 from .multicolor_scene import generate_multicolor_scenes
 from .quad_color_scenes import generate_quad_color_scenes

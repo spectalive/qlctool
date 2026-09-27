@@ -6,7 +6,7 @@ from ..desk_burst_duration import desk_burst_duration
 from ..desk_burst_sources import desk_burst_sources
 from ..desk_function_path import DESK_FUNCTION_PATH
 from ..desk_policy import split_caption
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names

@@ -13,7 +13,7 @@ from qlctool.argb import argb_from_rgb, rgb_from_argb
 from qlctool.color_format import INDEXED, LEGACY, color_format_of
 from qlctool.constants import ALL_FIXTURES_GROUP
 from qlctool.fixture_group import fixture_groups
-from qlctool.functions.rgbmatrix import build_rgbmatrix
+from qlctool.functions.build_rgbmatrix import build_rgbmatrix
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
 from qlctool.ids import existing_function_ids
 from qlctool.matrix_algorithms import CuratedScript

@@ -8,7 +8,7 @@ it gives every programme the same visible starting point.
 
 from collections.abc import Sequence
 
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names

@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 
 from .. import roles
 from ..capability import FixtureCapabilities
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..internal_program import internal_program

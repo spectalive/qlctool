@@ -11,7 +11,7 @@ from collections.abc import Mapping, Sequence
 from ..argb import RGB
 from ..color_format import color_format_of
 from ..constants import ALL_FIXTURES_GROUP
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..ids import next_function_id
 from ..matrix_algorithms import SCRIPT_ALGORITHMS, CuratedScript
 from ..names.default_names import default_names

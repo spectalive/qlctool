@@ -11,7 +11,7 @@ clicking.
 from dataclasses import dataclass
 
 from ..fixture import patched_fixtures
-from ..functions.chaser import build_chaser
+from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..workspace import Workspace

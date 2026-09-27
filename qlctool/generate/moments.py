@@ -16,7 +16,7 @@ in exactly one state.
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from ..functions.collection import build_collection
+from ..functions.build_collection import build_collection
 from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
