@@ -6,7 +6,7 @@ Moved verbatim out of `live_console` (2026-09-27 split).
 from collections.abc import Mapping
 
 from ..argb import argb_from_rgb
-from ..vc.appearance import DEFAULT
+from ..vc.build_appearance import DEFAULT
 
 
 def swatch(name: str, palette: Mapping[str, tuple[int, int, int]], second: bool = False) -> str:

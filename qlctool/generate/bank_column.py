@@ -10,9 +10,9 @@ from collections.abc import Callable, Mapping, Sequence
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.appearance import DEFAULT
-from ..vc.bank_pitch import BANK_COLUMN_TOP, bank_pitch_for
-from ..vc.button import FLASH
+from ..vc.bank_pitch_for import BANK_COLUMN_TOP, bank_pitch_for
+from ..vc.build_appearance import DEFAULT
+from ..vc.build_button import FLASH
 from .bank_caption import bank_caption
 from .console_layout import (
     BANK_KEYS,

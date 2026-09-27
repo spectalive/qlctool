@@ -15,7 +15,7 @@ y ciclos" frame underneath it (2026-08-27).
 
 from lxml import etree
 
-from ..vc.button import NO_FUNCTION
+from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, localname
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph

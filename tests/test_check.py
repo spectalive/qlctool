@@ -172,7 +172,7 @@ def _burst_chaser(workspace, library, hold=125):
 
     from qlctool.functions.chaser import build_chaser
     from qlctool.ids import next_function_id
-    from qlctool.vc.button import build_button
+    from qlctool.vc.build_button import build_button
     from qlctool.vc.widget_ids import next_widget_id
 
     functions = _functions(workspace)
@@ -1947,8 +1947,8 @@ def _button_of(workspace, function_id):
 
 def _family_frame(workspace, function_names, *, caption="TEST FAMILY", solo=True, nested=False):
     """Add a small test frame with Toggle buttons for the named functions."""
-    from qlctool.vc.button import build_button
-    from qlctool.vc.frame import build_frame
+    from qlctool.vc.build_button import build_button
+    from qlctool.vc.build_frame import build_frame
     from qlctool.vc.widget_ids import next_widget_id
 
     root = find_local(find_local(workspace.root, "VirtualConsole"), "Frame")
@@ -1993,7 +1993,7 @@ def _wrapper_button(workspace, frame, source_name, wrapper_name):
     """Add a one-member Collection wrapper and its Toggle button."""
     from qlctool.functions.collection import build_collection
     from qlctool.ids import next_function_id
-    from qlctool.vc.button import build_button
+    from qlctool.vc.build_button import build_button
     from qlctool.vc.widget_ids import next_widget_id
 
     source_id = int(_functions(workspace)[source_name].attrib["ID"])
@@ -2468,7 +2468,7 @@ def test_a_state_started_movement_collection_is_its_own_required_hook(library, d
     from qlctool.constants import QLC_NS
     from qlctool.functions.collection import build_collection
     from qlctool.ids import next_function_id
-    from qlctool.vc.button import build_button
+    from qlctool.vc.build_button import build_button
     from qlctool.vc.widget_ids import next_widget_id
 
     workspace = deluxe_show
@@ -3137,8 +3137,8 @@ def test_2026_09_25_a_frame_with_nothing_to_press(library, club_show):
     from qlctool.checks.rule_empty_frame import RULE_ID
     from qlctool.constants import QLC_NS
     from qlctool.names.default_names import default_names
-    from qlctool.vc.frame import build_frame
-    from qlctool.vc.label import build_label
+    from qlctool.vc.build_frame import build_frame
+    from qlctool.vc.build_label import build_label
     from qlctool.vc.widget_ids import next_widget_id
 
     workspace = club_show

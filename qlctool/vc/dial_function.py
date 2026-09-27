@@ -11,7 +11,7 @@ how a 16 s head sweep once became a 6 s one.
 
 from dataclasses import dataclass
 
-from .speed_dial import MULTIPLIER_NONE
+from .build_speed_dial import MULTIPLIER_NONE
 
 
 @dataclass(frozen=True)

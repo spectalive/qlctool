@@ -25,7 +25,7 @@ fast or slow.
 
 from lxml import etree
 
-from ..vc.button import NO_FUNCTION
+from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .audio_pressed_widgets import audio_pressed_widgets
 from .finding import ERROR, Finding

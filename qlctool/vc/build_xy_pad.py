@@ -11,8 +11,8 @@ from collections.abc import Sequence
 from lxml import etree
 
 from ..constants import QLC_NS
-from .appearance import build_appearance
-from .window_state import build_window_state
+from .build_appearance import build_appearance
+from .build_window_state import build_window_state
 
 
 def build_xy_pad(

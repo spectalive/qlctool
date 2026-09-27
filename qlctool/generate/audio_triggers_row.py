@@ -10,7 +10,7 @@ from collections.abc import Mapping
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.audio_triggers import build_audio_triggers
+from ..vc.build_audio_triggers import build_audio_triggers
 from .console_ids import ConsoleIds
 from .console_layout import AUDIO_BANDS, PAGE_CONTROL, RIGHT_WIDTH, RIGHT_X
 from .generated_console import GeneratedConsole

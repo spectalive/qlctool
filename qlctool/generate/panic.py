@@ -10,7 +10,7 @@ from collections.abc import Callable, Mapping
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.button import BLACKOUT, STOP_ALL
+from ..vc.build_button import BLACKOUT, STOP_ALL
 from .bind_pad import bind_pad
 from .console_layout import (
     BIG_FONT,

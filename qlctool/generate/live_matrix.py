@@ -10,7 +10,7 @@ from collections.abc import Sequence
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.matrix_control import build_matrix_control
+from ..vc.build_matrix_control import build_matrix_control
 from .console_ids import ConsoleIds
 from .console_layout import PAGE_LIBRARY, RIGHT_WIDTH, RIGHT_X
 from .generated_console import GeneratedConsole

@@ -4,7 +4,7 @@ from collections.abc import Mapping
 
 from lxml import etree
 
-from ..vc.input_source import build_input_source
+from ..vc.build_input_source import build_input_source
 
 
 def bind_pad(

@@ -9,7 +9,7 @@ from ..names.default_names import default_names
 from ..names.names import Names
 from ..names.template_affixes import template_affixes
 from ..palette import PALETTE
-from ..vc.button import FLASH, TOGGLE
+from ..vc.build_button import FLASH, TOGGLE
 from .generated_play_wrappers import GeneratedPlayWrappers as _GeneratedPlayWrappers
 from .smc_pad_colors import readable_foreground
 

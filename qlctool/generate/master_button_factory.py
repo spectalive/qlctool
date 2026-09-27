@@ -11,7 +11,7 @@ from typing import Any
 from lxml import etree
 
 from ..argb import argb_from_rgb
-from ..vc.button import FLASH, TOGGLE
+from ..vc.build_button import FLASH, TOGGLE
 from .bind_pad import bind_pad
 from .smc_pad_colors import readable_foreground
 

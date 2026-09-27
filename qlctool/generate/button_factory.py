@@ -10,7 +10,7 @@ from typing import Any
 
 from lxml import etree
 
-from ..vc.button import build_button
+from ..vc.build_button import build_button
 from .console_ids import ConsoleIds
 from .generated_console import GeneratedConsole
 from .on_page import on_page

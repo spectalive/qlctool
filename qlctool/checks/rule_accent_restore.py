@@ -18,7 +18,7 @@ a closed dimmer restores nothing but also shows nothing.
 from lxml import etree
 
 from .. import roles
-from ..vc.button import NO_FUNCTION
+from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .finding import WARNING, Finding
 from .instant_evaluator import InstantEvaluator

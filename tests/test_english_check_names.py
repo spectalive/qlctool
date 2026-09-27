@@ -30,8 +30,8 @@ from qlctool.library import FixtureLibrary
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.shipped_names import shipped_names
 from qlctool.print_check_report import print_check_report
-from qlctool.vc.frame import build_frame
-from qlctool.vc.label import build_label
+from qlctool.vc.build_frame import build_frame
+from qlctool.vc.build_label import build_label
 from qlctool.vc.widget_ids import next_widget_id
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace

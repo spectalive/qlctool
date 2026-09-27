@@ -9,7 +9,7 @@ from collections.abc import Callable, Mapping, Sequence
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.button import FLASH
+from ..vc.build_button import FLASH
 from .after_marker import after_marker
 from .console_layout import GAP, HEADER, LONG_WHEEL_NAME, TINY_FONT, TITLE_FONT
 

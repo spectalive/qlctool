@@ -2,8 +2,8 @@
 
 from ..names.names import Names
 from ..vc.beat_multiplier import beat_multiplier
+from ..vc.build_speed_dial import MULTIPLIER_NONE
 from ..vc.dial_function import DialFunction
-from ..vc.speed_dial import MULTIPLIER_NONE
 from ..workspace import Workspace
 from ..xmlutil import find_local, findall_local
 

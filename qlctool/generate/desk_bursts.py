@@ -10,9 +10,9 @@ from ..functions.chaser import build_chaser
 from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
-from ..vc.button import build_button
-from ..vc.frame import build_frame
-from ..vc.label import build_label
+from ..vc.build_button import build_button
+from ..vc.build_frame import build_frame
+from ..vc.build_label import build_label
 from ..vc.widget_ids import next_widget_id
 from ..workspace import Workspace
 from ..xmlutil import find_local, iter_local

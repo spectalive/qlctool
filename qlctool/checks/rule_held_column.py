@@ -26,7 +26,7 @@ from lxml import etree
 
 from .. import roles
 from ..fog_offsets import fog_offsets
-from ..vc.button import NO_FUNCTION
+from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph, lit, reach

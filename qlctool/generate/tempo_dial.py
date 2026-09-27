@@ -10,8 +10,8 @@ from collections.abc import Callable, Mapping, Sequence
 from lxml import etree
 
 from ..names.names import Names
+from ..vc.build_speed_dial import build_speed_dial
 from ..vc.dial_function import DialFunction
-from ..vc.speed_dial import build_speed_dial
 from .bind_pad import bind_pad
 from .console_ids import ConsoleIds
 from .console_layout import HELP_FONT, PAGE_SHOW, RIGHT_WIDTH, RIGHT_X, TEMPO_TAP_KEY

@@ -9,8 +9,8 @@ from collections.abc import Callable
 
 from lxml import etree
 
-from ..vc.appearance import DEFAULT
-from ..vc.label import build_label
+from ..vc.build_appearance import DEFAULT
+from ..vc.build_label import build_label
 from .console_ids import ConsoleIds
 from .generated_console import GeneratedConsole
 from .on_page import on_page

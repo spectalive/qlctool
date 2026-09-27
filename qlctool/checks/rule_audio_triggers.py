@@ -36,7 +36,7 @@ involved and no cap on how often a beat repeats it.
   night.
 """
 
-from ..vc.button import NO_FUNCTION
+from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local, localname
 from .finding import ERROR, Finding
 from .rule_console import WIDGETS

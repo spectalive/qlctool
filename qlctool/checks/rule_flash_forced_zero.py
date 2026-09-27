@@ -20,7 +20,7 @@ to strobe over another that strobes is two hands, not a cut.
 from lxml import etree
 
 from .. import roles
-from ..vc.button import NO_FUNCTION
+from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .color_roles import COLOUR
 from .finding import ERROR, Finding

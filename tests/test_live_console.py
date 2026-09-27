@@ -406,7 +406,7 @@ def test_the_colour_banks_shrink_instead_of_running_off_the_screen():
     The pitch now comes from the room left between the layers above and the
     dimmer frame below, so the column fits whatever the rig grows into.
     """
-    from qlctool.vc.bank_pitch import (
+    from qlctool.vc.bank_pitch_for import (
         BANK_COLUMN_TOP,
         BANK_PITCH_TOP,
         DIMMER_FRAME_HEIGHT,

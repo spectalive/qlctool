@@ -11,8 +11,8 @@ confirmed to load on the installed 5.2.2 binary by
 from lxml import etree
 
 from ..constants import QLC_NS
-from .appearance import build_appearance
-from .window_state import build_window_state
+from .build_appearance import build_appearance
+from .build_window_state import build_window_state
 
 SLIDER_MODE = "GrandMaster"
 VALUE_DISPLAY_STYLE = "Exact"

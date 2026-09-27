@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..vc.button import NO_FUNCTION
+from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, localname
 from .solo_frame_of import solo_frame_of
 

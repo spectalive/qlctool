@@ -14,9 +14,9 @@ from lxml import etree
 
 from ..argb import argb_from_rgb
 from ..palette import PALETTE
-from ..vc.appearance import DEFAULT
-from ..vc.button import build_button
-from ..vc.frame import build_frame
+from ..vc.build_appearance import DEFAULT
+from ..vc.build_button import build_button
+from ..vc.build_frame import build_frame
 from ..vc.widget_ids import next_widget_id
 from ..workspace import Workspace
 from ..xmlutil import find_local, localname

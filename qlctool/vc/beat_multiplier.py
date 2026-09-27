@@ -9,7 +9,7 @@ rung, chosen on the logarithmic scale the rungs actually sit on.
 
 from math import log2
 
-from .speed_dial import MULTIPLIERS
+from .build_speed_dial import MULTIPLIERS
 
 RUNGS = sorted(MULTIPLIERS)
 

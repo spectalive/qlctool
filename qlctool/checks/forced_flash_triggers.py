@@ -9,7 +9,7 @@ every trigger that presses the same set reported once.
 from lxml import etree
 
 from ..pad_input_universe import pad_input_universe
-from ..vc.button import NO_FUNCTION
+from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .bound_inputs import bound_inputs
 

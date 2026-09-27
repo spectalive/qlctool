@@ -10,7 +10,7 @@ from collections.abc import Callable
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.level_slider import build_level_slider
+from ..vc.build_level_slider import build_level_slider
 from .builtin_effects import GeneratedBuiltins
 from .console_ids import ConsoleIds
 from .console_layout import HELP_FONT, PAGE_LIBRARY, RIGHT_WIDTH, RIGHT_X, SMALL_FONT

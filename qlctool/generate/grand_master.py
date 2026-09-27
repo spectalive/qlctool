@@ -10,7 +10,7 @@ from collections.abc import Callable, Mapping
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.grand_master_slider import build_grand_master_slider
+from ..vc.build_grand_master_slider import build_grand_master_slider
 from .bind_pad import bind_pad
 from .console_ids import ConsoleIds
 from .console_layout import (

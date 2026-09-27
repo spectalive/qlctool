@@ -10,7 +10,7 @@ from collections.abc import Callable, Sequence
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.xy_pad import build_xy_pad
+from ..vc.build_xy_pad import build_xy_pad
 from .console_ids import ConsoleIds
 from .console_layout import HELP_FONT, MIDDLE_WIDTH, MIDDLE_X, PAGE_CONTROL
 from .generated_console import GeneratedConsole

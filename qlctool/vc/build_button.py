@@ -11,8 +11,8 @@ started it.
 from lxml import etree
 
 from ..constants import QLC_NS
-from .appearance import DEFAULT, build_appearance
-from .window_state import build_window_state
+from .build_appearance import DEFAULT, build_appearance
+from .build_window_state import build_window_state
 
 # Function::invalidId() - what QLC+ stores for a button that drives nothing.
 NO_FUNCTION = 4294967295

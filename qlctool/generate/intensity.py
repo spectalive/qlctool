@@ -10,7 +10,7 @@ from collections.abc import Callable
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.bank_pitch import DIMMER_FRAME_HEIGHT
+from ..vc.bank_pitch_for import DIMMER_FRAME_HEIGHT
 from .console_layout import DIMMER_CHASES, GAP, HEADER, LEFT_WIDTH, LEFT_X, PAGE_CONTROL, TITLE_FONT
 
 
