@@ -17,20 +17,18 @@ a closed dimmer restores nothing but also shows nothing.
 
 from lxml import etree
 
-from .. import roles
 from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .finding import WARNING, Finding
 from .instant_evaluator import InstantEvaluator
+from .orphaned_wheel_writes import orphaned_wheel_writes
 from .show_graph import ShowGraph
-from .unowned_while_lit import unowned_while_lit
 
 RULE_ID = "accent_restore"
-WHEEL_ROLES = (roles.COLOR_MACRO, roles.GOBO, roles.PRISM)
 
 
 def check_accent_restore(
-    graph: ShowGraph, groups, root: etree._Element, states: set[int]
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], root: etree._Element, states: set[int]
 ) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None or not states:
@@ -50,60 +48,18 @@ def check_accent_restore(
         scene = graph.functions.get(function_id)
         if scene is None:
             continue
-        findings += _orphaned(
-            graph,
-            groups,
-            function_id,
-            scene,
-            states,
-            button.attrib.get("Caption", ""),
-            evaluator,
-        )
-    return findings
-
-
-def _orphaned(
-    graph: ShowGraph,
-    groups,
-    function_id: int,
-    scene,
-    states,
-    caption: str,
-    evaluator: InstantEvaluator,
-) -> list[Finding]:
-    findings: list[Finding] = []
-    for fixture_id, written in graph.driven_of(scene, {}).items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None:
-            continue
-        wheels = {offset for role in WHEEL_ROLES for offset in capability.offsets_for_role(role)}
-        touched = wheels & set(written)
-        if not touched:
-            continue
-        dimmers = capability.offsets_for_role(roles.DIMMER)
-        orphan_states = sorted(
-            graph.name(state_id)
-            for state_id in states
-            if unowned_while_lit(
-                graph,
-                groups,
-                state_id,
-                fixture_id,
-                frozenset(touched),
-                tuple(dimmers),
-                evaluator=evaluator,
+        caption = button.attrib.get("Caption", "")
+        for fixture_name, orphan_states in orphaned_wheel_writes(
+            graph, groups, scene, states, evaluator
+        ).items():
+            findings.append(
+                Finding(
+                    rule_id=RULE_ID,
+                    severity=WARNING,
+                    function=graph.name(function_id),
+                    message_id="accent_restore_wheel_left",
+                    fields={"caption": caption, "states": ", ".join(orphan_states)},
+                    fixtures=(fixture_name,),
+                )
             )
-        )
-        if not orphan_states:
-            continue
-        findings.append(
-            Finding(
-                rule_id=RULE_ID,
-                severity=WARNING,
-                function=graph.name(function_id),
-                message_id="accent_restore_wheel_left",
-                fields={"caption": caption, "states": ", ".join(orphan_states)},
-                fixtures=(capability.fixture.name,),
-            )
-        )
     return findings
