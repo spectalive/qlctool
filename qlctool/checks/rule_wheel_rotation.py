@@ -16,25 +16,24 @@ effect fast to slow" is the point and the operator asked for it by name - makes
 no such claim and is left alone.
 """
 
-from .. import roles
-from .color_roles import COLOUR
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit, reach
+from .show_graph import ShowGraph, reach
+from .spinning_wheels import spinning_wheels
+from .states_rgb_colour import states_rgb_colour
 
 RULE_ID = "wheel_rotation"
 STATES_COLOUR = ("Scene", "Sequence")
-ROTATION_PRESET_PREFIX = "Rotation"
 
 
-def check_wheel_rotation(graph: ShowGraph, groups) -> list[Finding]:
+def check_wheel_rotation(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> list[Finding]:
     findings: list[Finding] = []
     for function_id in sorted(graph.functions):
         if graph.kind(function_id) not in STATES_COLOUR:
             continue
         stated = reach(graph, groups, function_id, kinds=STATES_COLOUR)
-        if not _states_rgb_colour(graph, stated):
+        if not states_rgb_colour(graph, stated):
             continue
-        spinning = sorted(_spinning_wheels(graph, stated))
+        spinning = sorted(spinning_wheels(graph, stated))
         if spinning:
             findings.append(
                 Finding(
@@ -46,46 +45,3 @@ def check_wheel_rotation(graph: ShowGraph, groups) -> list[Finding]:
                 )
             )
     return findings
-
-
-def _states_rgb_colour(graph: ShowGraph, stated) -> bool:
-    """Whether this scene says a colour on a fixture that has red, green, blue."""
-    for fixture_id, written in stated.items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None or capability.is_smoke or not written:
-            continue
-        if not any(capability.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE)):
-            continue
-        offsets = {o for role in COLOUR for o in capability.offsets_for_role(role)}
-        if any(lit(written[o]) for o in offsets if o in written):
-            return True
-    return False
-
-
-def _spinning_wheels(graph: ShowGraph, stated) -> set[str]:
-    """The wheel-coloured fixtures this scene parks on a rotation range."""
-    spinning: set[str] = set()
-    for fixture_id, written in stated.items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None or capability.is_smoke or not written:
-            continue
-        if any(capability.has_role(role) for role in (roles.RED, roles.GREEN, roles.BLUE)):
-            continue
-        wheel = capability.wheel_for_role(roles.COLOR_MACRO)
-        if wheel is None:
-            continue
-        offset, positions = wheel
-        value = written.get(offset)
-        if value is None:
-            continue
-        if _is_rotation(positions, value):
-            spinning.add(capability.fixture.name)
-    return spinning
-
-
-def _is_rotation(positions, value: int) -> bool:
-    """Whether the range holding this value spins the wheel rather than naming."""
-    for position in positions:
-        if position.minimum <= value <= position.maximum:
-            return (position.preset or "").startswith(ROTATION_PRESET_PREFIX)
-    return False
