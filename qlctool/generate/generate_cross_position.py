@@ -23,7 +23,7 @@ from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
 from .fan_heads import fan_heads
-from .fan_position import MID, SPREAD, TILT
+from .generate_fan_position import MID, SPREAD, TILT
 
 
 def generate_cross_position(

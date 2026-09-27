@@ -8,7 +8,7 @@ out of the workspace rather than only written into it.
 
 from rig_root import RIG_ROOT
 
-from qlctool.generate.home_position import generate_home_position
+from qlctool.generate.generate_home_position import generate_home_position
 from qlctool.generate.movement_aim import WASH_PAN_AIM, WASH_TILT_AIM
 from qlctool.generate.movement_efx import generate_movement_efx, moving_head_ids
 from qlctool.library import FixtureLibrary

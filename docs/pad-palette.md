@@ -4,7 +4,7 @@ The M-VAVE SMC-PAD cannot light its own LEDs from QLC+: a small bridge holds
 the pad's Bluetooth LED session and paints each pad when QLC+'s feedback says
 the widget bound to it lit. The bridge reads which colour each pad wears from
 this file, written from the saved show. The colour is the pad profile's
-(`generate/smc_pad_colors.py`), the table the console paints most pad-bound
+(`generate/function_colors.py`), the table the console paints most pad-bound
 buttons with. Some page-2 hooks (the colour and mix wheels, the head movements,
 the gobo and prism animations) wear their page's colour on the console instead,
 so on those pads the LED and the button differ.
@@ -18,7 +18,7 @@ qlctool pad-palette --out "Vibra.pads.json" "QLC+ Setups/Vibra.qxw"
 A pad is **lit** when the workspace binds a console widget to its input channel,
 on the universe that carries the show's MIDI input patch (universe 0 when there
 is none), *and* the pad's profile (`qlctool/controllers/smc_pad_profile.py`: the bindings
-of `generate/smc_pad_bindings.py`, the colours of `generate/smc_pad_colors.py`)
+of `generate/smc_pad_bindings.py`, the colours of `generate/function_colors.py`)
 gives that channel a colour. Every other pad of the two banks the show uses is
 **free** and glows a faint grey, `(20, 20, 20)`: a pad that looks lit and does
 nothing is a pad somebody will press. A workspace that binds no widget to any

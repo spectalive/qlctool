@@ -17,8 +17,8 @@ from rig_root import RIG_ROOT
 from qlctool.build_pad_palette import FREE_PAD, build_pad_palette
 from qlctool.cli import main
 from qlctool.constants import QLC_NS
+from qlctool.generate.function_colors import FUNCTION_COLORS
 from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
-from qlctool.generate.smc_pad_colors import FUNCTION_COLORS
 from qlctool.generate.smc_pad_device import PADS
 from qlctool.workspace import Workspace
 

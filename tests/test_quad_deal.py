@@ -54,7 +54,7 @@ def test_2026_09_25_a_group_of_two_gets_no_complementary_pair(tmp_path):
 
 
 def _quad_colours():
-    from qlctool.generate.quad_color_scenes import QUAD_COLORS
+    from qlctool.generate.generate_quad_color_scenes import QUAD_COLORS
     from qlctool.names.default_names import default_names
     from qlctool.palette import PALETTE
 

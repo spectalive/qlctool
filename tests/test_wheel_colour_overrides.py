@@ -12,7 +12,7 @@ from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.color_wheel_match import color_wheel_pairs
 from qlctool.description.reading.read_names import read_names
-from qlctool.generate.color_flashes import generate_color_flashes
+from qlctool.generate.generate_color_flashes import generate_color_flashes
 from qlctool.library import FixtureLibrary
 from qlctool.names.shipped_names import shipped_names
 from qlctool.palette import PALETTE

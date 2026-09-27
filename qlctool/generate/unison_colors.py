@@ -32,7 +32,7 @@ from ..names.default_names import default_names
 from ..names.names import Names
 from ..palette import PALETTE, PRIMARY_COLORS
 from ..workspace import Workspace
-from .color_scene import color_scene_values
+from .color_scene_values import color_scene_values
 from .wheel_color_values import wheel_color_values
 
 # The wheel's pace. Slower than a per-group wheel on purpose: a whole-room

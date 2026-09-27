@@ -25,6 +25,7 @@ from .description.load_show_description import load_show_description
 from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_dirs import fixture_dirs
 from .fixture_group import fixture_groups
+from .generate.apply_stage_plot import apply_stage_plot
 from .generate.build_canonical_show import build_canonical_show
 from .generate.build_refusal_error import BuildRefusalError
 from .generate.channel_probe import generate_channel_probe
@@ -33,7 +34,6 @@ from .generate.generate_matrix_effects import generate_matrix_effects
 from .generate.input_profile import build_input_profile
 from .generate.movement_efx import generate_movement_efx
 from .generate.stage_layout import DEFAULT_STAGE, generate_stage_layout
-from .generate.stage_plot_layout import apply_stage_plot
 from .generate.vc_layout import generate_vc_layout
 from .install_plan import install_plan
 from .library_for import library_for

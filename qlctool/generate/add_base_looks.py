@@ -5,9 +5,9 @@ functions are created in the order they always were.
 """
 
 from .blackout_scene import blackout_scene
-from .color_flashes import generate_color_flashes
-from .flash_color import generate_flash_color
 from .flat_scene import flat_scene
+from .generate_color_flashes import generate_color_flashes
+from .generate_flash_color import generate_flash_color
 from .show_build import ShowBuild
 
 

@@ -5,11 +5,11 @@ functions are created in the order they always were.
 """
 
 from .dimmer_chases import generate_dimmer_chases
+from .generate_vertical_smoke_burst import generate_vertical_smoke_burst
 from .haze_machines import haze_machines
 from .show_build import ShowBuild
 from .smoke_auto import generate_smoke_auto
 from .strobe_effects import generate_strobe_effects
-from .vertical_smoke_burst import generate_vertical_smoke_burst
 
 
 def add_haze_dimmers_strobes(build: ShowBuild) -> None:

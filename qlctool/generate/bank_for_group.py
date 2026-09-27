@@ -10,7 +10,7 @@ from ..ids import next_function_id
 from ..names.names import Names
 from ..workspace import Workspace
 from .bank_wheel import bank_wheel
-from .color_scene import color_scene_values
+from .color_scene_values import color_scene_values
 from .generated_bank import GeneratedBank
 from .split_color_scene import split_color_scene_values
 from .wheel_color_values import wheel_color_values

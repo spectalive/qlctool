@@ -20,9 +20,9 @@ from ..skeleton import strip_to_skeleton
 from ..stage_plot import load_stage_plot
 from ..vibra.vibra_description import vibra_description
 from ..workspace import Workspace
+from .apply_stage_plot import apply_stage_plot
 from .show_build import ShowBuild
 from .stage_layout import generate_stage_layout, unplaced_fixtures
-from .stage_plot_layout import apply_stage_plot
 
 
 def start_show_build(

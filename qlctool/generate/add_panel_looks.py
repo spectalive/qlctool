@@ -7,11 +7,11 @@ functions are created in the order they always were.
 from ..description.split_pairs_of import split_pairs_of
 from .builtin_effects import generate_builtin_effects
 from .generate_color_banks import generate_color_banks
-from .panel_manual import generate_panel_manual
-from .panel_speed_auto import generate_panel_speed_auto
+from .generate_panel_manual import generate_panel_manual
+from .generate_panel_speed_auto import generate_panel_speed_auto
+from .generate_vertical_smoke_light import generate_vertical_smoke_light
 from .show_build import ShowBuild
 from .show_chaser import show_chaser
-from .vertical_smoke_light import generate_vertical_smoke_light
 
 
 def add_panel_looks(build: ShowBuild) -> None:

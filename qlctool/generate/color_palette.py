@@ -15,7 +15,7 @@ from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..palette import PALETTE
 from ..workspace import Workspace
-from .color_scene import color_scene_values
+from .color_scene_values import color_scene_values
 
 
 @dataclass(frozen=True)

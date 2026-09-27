@@ -11,8 +11,8 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.generate.dimmer_chases import MODE_DIMMER, generate_dimmer_chases
-from qlctool.generate.dimmer_sequence import generate_dimmer_sequence
 from qlctool.generate.energy_intensity import generate_energy_intensity
+from qlctool.generate.generate_dimmer_sequence import generate_dimmer_sequence
 from qlctool.generate.strobe_effects import generate_strobe_effects
 from qlctool.library import FixtureLibrary
 from qlctool.shutter_open import shutter_open_pairs

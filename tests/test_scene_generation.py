@@ -10,7 +10,7 @@ from rig_root import RIG_ROOT
 from qlctool import roles
 from qlctool.capabilities_of import capabilities_of
 from qlctool.functions.scene import build_scene
-from qlctool.generate.color_scene import color_scene_values
+from qlctool.generate.color_scene_values import color_scene_values
 from qlctool.ids import existing_function_ids, next_function_id
 from qlctool.library import FixtureLibrary
 from qlctool.workspace import Workspace

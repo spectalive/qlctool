@@ -10,7 +10,7 @@ from ..names.names import Names
 from ..strobe_speed import strobe_speed_pairs
 from ..wheel_blade_offsets import wheel_blade_offsets
 from ..workspace import Workspace
-from .color_scene import color_scene_values
+from .color_scene_values import color_scene_values
 from .show_path import SHOW_PATH
 from .wheel_color_values import wheel_color_values
 

@@ -87,7 +87,7 @@ def test_the_vertical_smoke_light_is_the_old_chaser_verbatim():
     order and holds carried verbatim.
     """
     from qlctool.generate.builtin_effects import generate_builtin_effects
-    from qlctool.generate.vertical_smoke_light import (
+    from qlctool.generate.generate_vertical_smoke_light import (
         generate_vertical_smoke_light,
     )
     from qlctool.xmlutil import find_local, findall_local, localname

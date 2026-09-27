@@ -1,60 +1,61 @@
-"""The whole rig on different colours at once: the wheel's wild steps.
+"""The hand-built "4 Colores" looks: four colours dealt across the rig.
 
-Every other step of the rig wheel puts the room on one colour, and the
-contrast pairs stop at two. This is the look past both - "algún modo más loco
-multicolor" (owner, 2026-08-28): each fixture takes its own colour from the
-palette, spread by patch order so neighbours differ.
+DeluxeEventos2 kept four deterministic scenes (85-88) rotating blue, red,
+green and white over the heads and the beams - the same deal shifted one seat
+each scene, so pressing through them walks every fixture through all four
+colours. The generated show replaced them with the two wild multicolor steps
+and lost the deterministic rotation (old-vs-new audit, 2026-08-28). This
+rebuilds the four looks over the whole colour-capable rig: RGB fixtures take
+their dealt colour, the beams take the nearest wheel position for theirs, and
+the deal follows patch order the way `Rig Multicolor` does - except that a
+group never takes exactly two opposite hues (`quad_seats`).
 
-The beams take a detent of their wheel like everybody else. They used to be
-sent to the wheel's rainbow-scroll range instead, which reads as the same idea
-and is not: a scroll range does not name a colour, it spins the wheel, and a
-2-degree beam looking through a wheel that is between two detents shows half of
-one colour and half of the next - "se queda como una media luna" (owner,
-2026-08-29, live under AUTO). The scroll's slow end made it worse, because the
-wheel then sits split for most of a minute.
-
-These are scenes, not a chaser of their own: they enter `Rueda Colores` as
-steps, so the crazy look appears on the wheel's clock the way every colour
-does - one clock, one owner, "de vez en cuando" by Random rotation.
+Colour only, no intensity: like every wheel step since 2026-08-27, the energy
+levels own the dimmers.
 """
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
 from .. import roles
 from ..argb import RGB
 from ..capabilities_of import capabilities_of
+from ..fixture_group import fixture_groups
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..library import FixtureLibrary
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..palette import PALETTE
 from ..workspace import Workspace
-from .color_scene import color_scene_values
-from .dealt_wheel_color import dealt_wheel_color
+from .color_scene_values import color_scene_values
+from .quad_seats import quad_seats
 from .wheel_color_values import wheel_color_values
 
+# The old scenes' own deal, in their own order - with the white seat given to
+# yellow (2026-09-22): a rotation puts no white on the room, however few the
+# fixtures ("luz blanca solo para blanco total", owner; `rule_wheel_white`).
+# Colour identifiers: the show's vocabulary spells them.
+QUAD_COLORS: tuple[str, ...] = ("blue", "red", "green", "yellow")
 
-def generate_multicolor_scenes(
+
+def generate_quad_color_scenes(
     workspace: Workspace,
     library: FixtureLibrary,
-    colors: Sequence[tuple[str, RGB]],
     exclude_fixture_ids: Sequence[int] = (),
     program_gated_ids: Sequence[int] = (),
-    variants: Sequence[int] = (0, 3),
     path: str | None = None,
+    palette: Mapping[str, RGB] | None = None,
     names: Names | None = None,
 ) -> list[int]:
-    """One scene per variant, each fixture on its own palette colour.
+    """One scene per rotation of the four-colour deal; [] when nothing colours.
 
-    `variants` are offsets into the colour list, so each scene deals the same
-    palette differently. `exclude_fixture_ids` keeps the scenes off the
-    matrix-painted fixtures (their multicolour is a matrix the step starts
-    beside these); `program_gated_ids` get RGB without the mode channel, the
-    same contract the wheel's other steps follow. `names` is the show's
-    vocabulary; `path` defaults to its rig-colours folder.
+    `palette` is keyed by display name in `names`, the show's vocabulary;
+    `path` defaults to its rig-colours folder.
     """
     vocabulary = default_names() if names is None else names
     path = vocabulary.display("path_rig_colours") if path is None else path
+    dealt = tuple(vocabulary.display(identifier) for identifier in QUAD_COLORS)
+    values_of = PALETTE if palette is None else palette
     caps = capabilities_of(workspace.root, library)
     excluded = set(exclude_fixture_ids)
     gated = set(program_gated_ids)
@@ -75,27 +76,29 @@ def generate_multicolor_scenes(
     ]
     if not rgb_caps and not wheel_caps:
         return []
+    seats = quad_seats(
+        [c.fixture.fixture_id for c in (*rgb_caps, *wheel_caps)],
+        {group.group_id: group.fixture_ids for group in fixture_groups(workspace.root)},
+        [values_of[name] for name in dealt],
+    )
 
     scene_ids: list[int] = []
-    for number, offset in enumerate(variants, start=1):
+    for offset in range(len(dealt)):
         values: dict[int, list[tuple[int, int]]] = {}
-        for index, capability in enumerate(rgb_caps):
+        for capability in rgb_caps:
             fixture_id = capability.fixture.fixture_id
-            _, rgb = colors[(index + offset) % len(colors)]
+            name = dealt[(seats[fixture_id] + offset) % len(dealt)]
             values.update(
                 color_scene_values(
                     caps,
-                    rgb,
+                    values_of[name],
                     fixture_ids=[fixture_id],
                     dimmer_full=False,
                     internal_program_off=fixture_id not in gated,
                 )
             )
-        palette_names = [name for name, _ in colors]
-        for index, capability in enumerate(wheel_caps, start=len(rgb_caps)):
-            name = dealt_wheel_color(capability, palette_names, index + offset, vocabulary)
-            if name is None:
-                continue
+        for capability in wheel_caps:
+            name = dealt[(seats[capability.fixture.fixture_id] + offset) % len(dealt)]
             values.update(
                 wheel_color_values(
                     caps,
@@ -111,7 +114,7 @@ def generate_multicolor_scenes(
         workspace.add_function(
             build_scene(
                 function_id,
-                vocabulary.render("rig_multicolour", number=number),
+                vocabulary.render("rig_four_colours", number=offset + 1),
                 values,
                 path=path,
             )

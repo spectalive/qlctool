@@ -13,7 +13,7 @@ from rig_root import RIG_ROOT
 
 from qlctool.capabilities_of import capabilities_of
 from qlctool.cli import main
-from qlctool.generate import vertical_smoke_light
+from qlctool.generate import generate_vertical_smoke_light
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.generate.builtin_effects import generate_builtin_effects
 from qlctool.library import FixtureLibrary
@@ -24,7 +24,7 @@ from qlctool.xmlutil import find_local, findall_local, iter_local
 VIBRA = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 SMOKE_MACHINES = ("17", "29", "30", "31", "32")
 # The column light's own holds: Effect 1 for a minute, Effect 3 for ten.
-HOLDS = [vertical_smoke_light.FIRST_HOLD_MS, vertical_smoke_light.SECOND_HOLD_MS]
+HOLDS = [generate_vertical_smoke_light.FIRST_HOLD_MS, generate_vertical_smoke_light.SECOND_HOLD_MS]
 
 
 @pytest.fixture(scope="module")
@@ -53,7 +53,9 @@ def test_2026_09_25_no_column_no_column_light(no_smoke_patch):
     builtins = generate_builtin_effects(workspace, caps, label="Panels")
     assert builtins.scene_ids, "the panels are still patched"
     assert (
-        vertical_smoke_light.generate_vertical_smoke_light(workspace, builtins.scene_ids, caps)
+        generate_vertical_smoke_light.generate_vertical_smoke_light(
+            workspace, builtins.scene_ids, caps
+        )
         is None
     )
 
@@ -64,7 +66,7 @@ def test_2026_09_25_the_show_without_columns_builds_one_function_fewer(no_smoke_
     built = build_canonical_show(without, library)
     assert _column_light_chasers(without) == []
     # The same build with the column check forced open: exactly the one chaser more.
-    monkeypatch.setattr(vertical_smoke_light, "vertical_smoke_columns", list)
+    monkeypatch.setattr(generate_vertical_smoke_light, "vertical_smoke_columns", list)
     allowed = Workspace.load(no_smoke_patch)
     forced = build_canonical_show(allowed, library)
     assert len(_column_light_chasers(allowed)) == 1

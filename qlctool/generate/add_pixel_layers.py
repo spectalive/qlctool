@@ -9,15 +9,15 @@ from ..fixture_group import fixture_groups
 from ..rgb_cells import rgb_cells
 from ..rigged_fixture_ids import rigged_fixture_ids
 from .all_self_animating import all_self_animating
-from .beam_rainbow_spin import generate_beam_rainbow_spin
 from .build_refusal_error import BuildRefusalError
 from .cycle_algorithms import CYCLE_ALGORITHMS
+from .generate_beam_rainbow_spin import generate_beam_rainbow_spin
 from .generate_matrix_effects import generate_matrix_effects
+from .generate_panel_manual import generate_panel_manual
+from .generate_pixel_base import generate_pixel_base
+from .generate_pixel_wheel_matrices import generate_pixel_wheel_matrices
 from .generated_matrices import GeneratedMatrices
 from .is_pixel_group import is_pixel_group
-from .panel_manual import generate_panel_manual
-from .pixel_base import generate_pixel_base
-from .pixel_wheel_matrices import generate_pixel_wheel_matrices
 from .show_build import ShowBuild
 from .wheel_colors_of import wheel_colors_of
 

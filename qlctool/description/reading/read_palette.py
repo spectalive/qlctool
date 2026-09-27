@@ -5,7 +5,7 @@ from dataclasses import replace
 from typing import Any
 
 from ...color_pair import ColorPair
-from ...generate.quad_color_scenes import QUAD_COLORS
+from ...generate.generate_quad_color_scenes import QUAD_COLORS
 from ...names.names import Names
 from ..colour_settings import ColourSettings
 from .identified_keys import identified_keys

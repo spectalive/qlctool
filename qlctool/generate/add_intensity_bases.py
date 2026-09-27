@@ -4,10 +4,10 @@ Moved verbatim out of `build_canonical_show` (2026-09-26, round G); the
 functions are created in the order they always were.
 """
 
-from .dimmer_sequence import generate_dimmer_sequence
-from .dimmerless_intensity import generate_dimmerless_intensity
 from .energy_intensity import generate_energy_intensity
 from .first_of import first_of
+from .generate_dimmer_sequence import generate_dimmer_sequence
+from .generate_dimmerless_intensity import generate_dimmerless_intensity
 from .park_work_light import park_work_light
 from .show_build import ShowBuild
 from .show_chaser import show_chaser

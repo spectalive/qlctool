@@ -11,7 +11,7 @@ from ..names.template_affixes import template_affixes
 from ..palette import PALETTE
 from ..vc.build_button import FLASH, TOGGLE
 from .generated_play_wrappers import GeneratedPlayWrappers as _GeneratedPlayWrappers
-from .smc_pad_colors import readable_foreground
+from .readable_foreground import readable_foreground
 
 # Catalogue identifiers of the frames a consumer (the tablet's map) finds the
 # page's parts by.

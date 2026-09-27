@@ -9,7 +9,7 @@ from ..names.default_names import default_names
 from ..names.names import Names
 from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
-from .color_scene import color_scene_values
+from .color_scene_values import color_scene_values
 from .generated_color_flashes import GeneratedColorFlashes as _GeneratedColorFlashes
 from .wheel_color_values import wheel_color_values
 

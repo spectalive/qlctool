@@ -5,10 +5,10 @@ functions are created in the order they always were.
 """
 
 from ..monitor_positions import house_right_fixture_ids
-from .home_position import generate_home_position
+from .generate_home_position import generate_home_position
+from .generate_stage_aim import generate_stage_aim
 from .movement_families import generate_movement_families
 from .show_build import ShowBuild
-from .stage_aim import generate_stage_aim
 
 
 def add_movement(build: ShowBuild) -> None:

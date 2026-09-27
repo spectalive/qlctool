@@ -46,9 +46,9 @@ from ..rigged_fixture_ids import rigged_fixture_ids
 from ..stage_ordered import stage_ordered
 from ..workspace import Workspace
 from .alternate_mirror import alternate_mirror
-from .cross_position import generate_cross_position
-from .fan_position import generate_fan_position
 from .fit_rotated_figure import fit_rotated_figure
+from .generate_cross_position import generate_cross_position
+from .generate_fan_position import generate_fan_position
 from .generate_wash_hold import generate_wash_hold
 from .movement_aim import (
     BEAM_PAN_AIM,

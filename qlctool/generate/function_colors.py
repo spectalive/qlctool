@@ -56,10 +56,3 @@ FUNCTION_COLORS: dict[str, RGB] = {
     "head_movements": (0, 128, 255),  # pad 15 - blue
     "gobo_animation": (0, 255, 128),  # pad 16 - spring green
 }
-
-
-def readable_foreground(rgb: RGB) -> RGB:
-    """Black on a light colour, white on a dark one - so the caption survives."""
-    r, g, b = rgb
-    luminance = 0.299 * r + 0.587 * g + 0.114 * b
-    return (0, 0, 0) if luminance > 150 else (255, 255, 255)

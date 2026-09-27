@@ -20,7 +20,7 @@ from ..names.names import Names
 from ..strobe_speed import strobe_speed_pairs
 from ..workspace import Workspace
 from ..zoom_wide import zoom_wide_pairs
-from .color_scene import color_scene_values
+from .color_scene_values import color_scene_values
 
 
 def generate_flash_color(
