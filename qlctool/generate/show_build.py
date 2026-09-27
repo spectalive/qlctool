@@ -26,6 +26,7 @@ from .generated_bank import GeneratedBank
 from .generated_beam_subsets import GeneratedBeamSubsets
 from .generated_builtins import GeneratedBuiltins
 from .generated_dimmers import GeneratedDimmers
+from .generated_families import GeneratedFamilies
 from .generated_gobo_shake import GeneratedGoboShake
 from .generated_intensity import GeneratedIntensity
 from .generated_matrices import GeneratedMatrices
@@ -33,7 +34,6 @@ from .generated_play_wrappers import GeneratedPlayWrappers
 from .generated_prism_spins import GeneratedPrismSpins
 from .generated_unison import GeneratedUnison
 from .generated_wheel import GeneratedWheel
-from .movement_families import GeneratedFamilies
 
 
 @dataclass

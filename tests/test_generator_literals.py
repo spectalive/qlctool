@@ -274,6 +274,10 @@ CONVERTED: tuple[str, ...] = (
     "generate/prism_scene.py",
     "generate/multicolor_offset.py",
     "generate/multicolor_scene.py",
+    # 2026-09-27, batch 5: split out of movement_families.py, which was
+    # converted.
+    "generate/envelope.py",
+    "generate/generated_families.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

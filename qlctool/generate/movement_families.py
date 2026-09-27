@@ -31,7 +31,6 @@ moments and the muscle memory survive the split.
 """
 
 from collections.abc import Collection
-from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
@@ -46,10 +45,12 @@ from ..rigged_fixture_ids import rigged_fixture_ids
 from ..stage_ordered import stage_ordered
 from ..workspace import Workspace
 from .alternate_mirror import alternate_mirror
+from .envelope import Envelope
 from .fit_rotated_figure import fit_rotated_figure
 from .generate_cross_position import generate_cross_position
 from .generate_fan_position import generate_fan_position
 from .generate_wash_hold import generate_wash_hold
+from .generated_families import GeneratedFamilies
 from .movement_aim import (
     BEAM_PAN_AIM,
     BEAM_PAN_SPAN,
@@ -61,38 +62,6 @@ from .movement_aim import (
     WASH_TILT_SPAN,
 )
 from .movement_efx import generate_movement_efx
-
-
-@dataclass(frozen=True)
-class Envelope:
-    """One family's movement at one tempo: shapes, size, and speed.
-
-    propagation and rotation apply to every algorithm in the envelope;
-    rotation_by_algorithm overrides rotation per shape, for an envelope that
-    mixes shapes wanting different angles (e.g. Diamond and Leaf).
-
-    width and height are the reach the envelope allows on pan and tilt. An
-    unturned shape reaches exactly its size; a turned one reaches further, so
-    fit_rotated redraws every turned shape at the largest size whose reach
-    stays inside them (`fit_rotated_figure`). Without it Diamante, turned 90
-    degrees at Width 20 Height 13, swung the 7R to tilt 200-240 over a 207-234
-    window (en-sala DMX re-audit, 2026-09-27).
-    """
-
-    algorithms: tuple[str, ...]
-    duration: int
-    width: int
-    height: int
-    hold: int
-    propagation: str = "Parallel"
-    rotation: int = 0
-    rotation_by_algorithm: dict[str, int] = field(default_factory=dict)
-    fit_rotated: bool = False
-    # Where the figure is centred in raw pan and tilt. 127 is mid-travel, which
-    # is what QLC+ writes when nobody says - not a place (`movement_aim`).
-    pan_offset: int = 127
-    tilt_offset: int = 127
-
 
 # Sizes and durations are QLC+ raw EFX values, not degrees: a starting
 # envelope for on-site tuning, not a universal standard.
@@ -320,29 +289,6 @@ BEAM_UNISON = Envelope(
     pan_offset=BEAM.pan_offset,
     tilt_offset=BEAM.tilt_offset,
 )
-
-
-@dataclass(frozen=True)
-class GeneratedFamilies:
-    slow_id: int | None = None
-    slow_beam_id: int | None = None
-    wash_id: int | None = None
-    beam_id: int | None = None
-    fast_wash_id: int | None = None
-    fast_beam_id: int | None = None
-    fan_id: int | None = None
-    # The console's names for "everything moves", spanning both families.
-    cabezas_id: int | None = None
-    rapidos_id: int | None = None
-    # One entry per shape for the console's solo frame, and the chasers the
-    # speed dial drives.
-    efx_ids: list[int] = field(default_factory=list)
-    # Exact movement functions the play page may wrap as manual picks.
-    play_pick_ids: list[int] = field(default_factory=list)
-    dial_ids: list[int] = field(default_factory=list)
-    # What a play pick starts beside its function: the washes held at their
-    # window while a beam-only look is picked (`generate_wash_hold`).
-    pick_companions: dict[int, list[int]] = field(default_factory=dict)
 
 
 def generate_movement_families(
