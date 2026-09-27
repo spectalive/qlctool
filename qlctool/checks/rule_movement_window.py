@@ -30,12 +30,14 @@ because the stage is not the crowd - is a decision, not a figure.
 
 import math
 
-from .. import roles
-from ..audience_window import BEAM_WINDOW, WASH_WINDOW
 from ..efx_extent import efx_extent
-from ..xmlutil import find_local, findall_local
-from .efx_driven import EFX_PAN_TILT
+from ..xmlutil import find_local
+from .axis_offset import axis_offset
+from .axis_shape import axis_shape
 from .finding import ERROR, Finding
+from .function_number import function_number
+from .heads_by_family import heads_by_family
+from .reach_count import reach_count
 from .show_graph import ShowGraph
 
 RULE_ID = "movement_window"
@@ -51,19 +53,19 @@ def check_movement_window(graph: ShowGraph) -> list[Finding]:
         function = graph.functions[function_id]
         if function.attrib.get("Type") != "EFX":
             continue
-        moved = _heads_by_family(graph, function)
+        moved = heads_by_family(graph, function)
         if not moved:
             continue
-        width = _number(function, "Width")
-        height = _number(function, "Height")
-        pan = _axis_offset(function, "X")
-        tilt = _axis_offset(function, "Y")
-        if None in (width, height, pan, tilt):
+        width = function_number(function, "Width")
+        height = function_number(function, "Height")
+        pan = axis_offset(function, "X")
+        tilt = axis_offset(function, "Y")
+        if width is None or height is None or pan is None or tilt is None:
             continue
         algorithm = find_local(function, "Algorithm")
-        rotation = _number(function, "Rotation")
-        x_frequency, x_phase = _axis_shape(function, "X", 2, 90)
-        y_frequency, y_phase = _axis_shape(function, "Y", 3, 0)
+        rotation = function_number(function, "Rotation")
+        x_frequency, x_phase = axis_shape(function, "X", 2, 90)
+        y_frequency, y_phase = axis_shape(function, "Y", 3, 0)
         pan_reach, tilt_reach = efx_extent(
             (algorithm.text or "").strip() if algorithm is not None else "Circle",
             width,
@@ -76,7 +78,7 @@ def check_movement_window(graph: ShowGraph) -> list[Finding]:
         )
         for window, names in moved.items():
             outside = [
-                f"{axis} {_count(centre + low)}..{_count(centre + high)}"
+                f"{axis} {reach_count(centre + low)}..{reach_count(centre + high)}"
                 for axis, centre, (low, high), (window_min, window_max) in (
                     ("pan", pan, pan_reach, (window.pan_min, window.pan_max)),
                     ("tilt", tilt, tilt_reach, (window.tilt_min, window.tilt_max)),
@@ -102,64 +104,3 @@ def check_movement_window(graph: ShowGraph) -> list[Finding]:
                 )
             )
     return findings
-
-
-def _number(function, name: str) -> int | None:
-    element = find_local(function, name)
-    if element is None or not (element.text or "").strip().lstrip("-").isdigit():
-        return None
-    return int(element.text)
-
-
-def _axis_offset(function, name: str) -> int | None:
-    for axis in findall_local(function, "Axis"):
-        if axis.attrib.get("Name") != name:
-            continue
-        return _number(axis, "Offset")
-    return None
-
-
-def _axis_shape(function, name: str, frequency: int, phase: int) -> tuple[int, int]:
-    """An axis's (Frequency, Phase in degrees), defaulted and clamped like QLC+.
-
-    An EFX with no `<Axis>` of that name keeps the constructor's values (the
-    arguments); an `<Axis>` that omits a tag reads it as 0, which is what
-    `EFX::loadXMLAxis` does (`efx.cpp` 1080-1110).
-    """
-    for axis in findall_local(function, "Axis"):
-        if axis.attrib.get("Name") != name:
-            continue
-        frequency = _number(axis, "Frequency") or 0
-        phase = _number(axis, "Phase") or 0
-        break
-    return min(max(frequency, 0), 32), min(max(phase, 0), 359)
-
-
-def _count(value: float) -> str:
-    """A reach as DMX counts: whole when it is, one decimal when it is not."""
-    rounded = round(value, 1)
-    return str(int(rounded)) if rounded == int(rounded) else str(rounded)
-
-
-def _heads_by_family(graph: ShowGraph, function) -> dict:
-    """The fixtures this EFX moves, grouped by the window their family lives in.
-
-    Told apart the way `rule_movement_families` tells them: a mover with a gobo
-    wheel is a beam, one without is a wash. They are different windows because
-    a raw pan or tilt value means nothing across models.
-    """
-    moved: dict = {}
-    for element in findall_local(function, "Fixture"):
-        identifier = find_local(element, "ID")
-        if identifier is None or not (identifier.text or "").strip().isdigit():
-            continue
-        mode = find_local(element, "Mode")
-        mode_value = int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
-        if mode_value != EFX_PAN_TILT:
-            continue
-        capability = graph.capabilities.get(int(identifier.text))
-        if capability is None or capability.is_smoke:
-            continue
-        window = BEAM_WINDOW if capability.has_role(roles.GOBO) else WASH_WINDOW
-        moved.setdefault(window, set()).add(capability.fixture.name)
-    return moved
