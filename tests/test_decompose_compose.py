@@ -13,8 +13,8 @@ from rig_root import RIG_ROOT
 
 from qlctool.compose_workspace import compose_workspace
 from qlctool.decompose import FUNCTIONS_DIR, decompose_workspace
+from qlctool.first_difference import first_difference
 from qlctool.workspace import Workspace
-from qlctool.xmlsemantics import first_difference
 from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT

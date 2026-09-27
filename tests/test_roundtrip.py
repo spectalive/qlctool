@@ -12,8 +12,8 @@ from lxml import etree
 from rig_root import RIG_ROOT
 
 from qlctool.constants import DOCTYPE, XML_DECLARATION
+from qlctool.first_difference import first_difference
 from qlctool.workspace import Workspace
-from qlctool.xmlsemantics import first_difference
 
 REPO = RIG_ROOT
 SETUPS = REPO / "QLC+ Setups"

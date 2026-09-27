@@ -15,6 +15,7 @@ from qlctool.constants import ALL_FIXTURES_GROUP
 from qlctool.curated_script import CuratedScript
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
+from qlctool.first_difference import first_difference
 from qlctool.fixture_group import fixture_groups
 from qlctool.functions.build_rgbmatrix import build_rgbmatrix
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
@@ -23,7 +24,6 @@ from qlctool.iter_local import iter_local
 from qlctool.matrix_step_count import matrix_step_count
 from qlctool.palette import PALETTE
 from qlctool.workspace import Workspace
-from qlctool.xmlsemantics import first_difference
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
