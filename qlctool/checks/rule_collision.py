@@ -25,78 +25,35 @@ not two looks fighting.
 """
 
 from collections.abc import Collection
-from itertools import combinations
 
-from .color_roles import CONTESTED
+from .contested_collection_members import contested_collection_members
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, reach
-from .static_floors import static_floors
+from .show_graph import ShowGraph
 
 RULE_ID = "collision"
 
 
 def check_collisions(
-    graph: ShowGraph, groups, entries: dict[int, str], states: Collection[int]
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    entries: dict[int, str],
+    states: Collection[int],
 ) -> list[Finding]:
     findings: list[Finding] = []
     reported: set[tuple[int, int, int]] = set()
     for function_id in sorted(entries):
         for collection_id in graph.collections(function_id):
-            findings += _collection(graph, groups, collection_id, reported, states)
+            for first, second, fixtures in contested_collection_members(
+                graph, groups, collection_id, reported, states
+            ):
+                findings.append(
+                    Finding(
+                        rule_id=RULE_ID,
+                        severity=ERROR,
+                        function=graph.name(collection_id),
+                        message_id="collision_same_channels",
+                        fields={"first": graph.name(first), "second": graph.name(second)},
+                        fixtures=fixtures,
+                    )
+                )
     return findings
-
-
-def _collection(
-    graph: ShowGraph, groups, collection_id: int, reported, states: Collection[int]
-) -> list[Finding]:
-    members = graph.members.get(collection_id, ())
-    if len(members) < 2:
-        return []
-    contested = {member: _contested_channels(graph, groups, member) for member in members}
-    floors = static_floors(graph, groups, collection_id, states)
-    findings: list[Finding] = []
-    for first, second in combinations(members, 2):
-        if first in floors:
-            continue
-        shared = contested[first].keys() & contested[second].keys()
-        if not shared:
-            continue
-        key = (collection_id, first, second)
-        if key in reported:
-            continue
-        reported.add(key)
-        fixtures = sorted(
-            {
-                graph.capabilities[fixture_id].fixture.name
-                for fixture_id, _ in shared
-                if fixture_id in graph.capabilities
-            }
-        )
-        findings.append(
-            Finding(
-                rule_id=RULE_ID,
-                severity=ERROR,
-                function=graph.name(collection_id),
-                message_id="collision_same_channels",
-                fields={"first": graph.name(first), "second": graph.name(second)},
-                fixtures=tuple(fixtures),
-            )
-        )
-    return findings
-
-
-def _contested_channels(graph: ShowGraph, groups, function_id: int) -> dict:
-    """(fixture, offset) this function can drive, restricted to what may fight."""
-    driven = reach(graph, groups, function_id)
-    contested = {}
-    for fixture_id, written in driven.items():
-        capability = graph.capabilities.get(fixture_id)
-        if capability is None:
-            continue
-        wanted = {offset for role in CONTESTED for offset in capability.offsets_for_role(role)}
-        for offset, value in written.items():
-            # A channel driven to zero everywhere is a fixture being turned
-            # off, not a second opinion about its colour.
-            if offset in wanted and (value is None or value > 0):
-                contested[(fixture_id, offset)] = value
-    return contested
