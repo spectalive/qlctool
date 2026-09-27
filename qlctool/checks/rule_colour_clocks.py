@@ -20,13 +20,16 @@ from .finding import ERROR, Finding
 from .joined import Joined
 from .phrase import Phrase
 from .show_graph import ShowGraph
-from .step_colours import step_colours
+from .stray_clock_fixtures import stray_clock_fixtures
 
 RULE_ID = "colour_clocks"
 
 
 def check_colour_clocks(
-    graph: ShowGraph, groups, entries: dict[int, str], states: set[int] | None = None
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    entries: dict[int, str],
+    states: set[int] | None = None,
 ) -> list[Finding]:
     findings: list[Finding] = []
     for function_id in sorted(states or ()):
@@ -54,28 +57,7 @@ def check_colour_clocks(
                         ),
                         "button": entries[function_id],
                     },
-                    fixtures=_stray_fixtures(graph, groups, distinct),
+                    fixtures=stray_clock_fixtures(graph, groups, distinct),
                 )
             )
     return findings
-
-
-def _stray_fixtures(graph: ShowGraph, groups, clock_ids: set[int]) -> tuple[str, ...]:
-    """The fixtures the narrower clocks paint: the group off on its own beat."""
-    painted = {
-        clock: {
-            item[0]
-            for step in graph.members.get(clock, ())
-            for item in step_colours(graph, groups, step)
-        }
-        for clock in clock_ids
-    }
-    widest = max(painted, key=lambda clock: len(painted[clock]))
-    stray = set().union(*(fixtures for clock, fixtures in painted.items() if clock != widest))
-    return tuple(
-        sorted(
-            graph.capabilities[fixture_id].fixture.name
-            for fixture_id in stray
-            if fixture_id in graph.capabilities
-        )
-    )
