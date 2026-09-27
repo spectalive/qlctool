@@ -13,8 +13,6 @@ the fraction of its run given here. So a fixture whose reverse run is a
 different band still turns the right way.
 """
 
-from dataclasses import dataclass
-
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
@@ -23,6 +21,8 @@ from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
+from .generated_prism_spins import GeneratedPrismSpins
+from .preset_value import preset_value
 
 # name identifier, rotation preset, how far along that preset's own range to sit. Slow
 # forward already belongs to the plain prism scene; these are the other two
@@ -31,11 +31,6 @@ SPINS = (
     ("prism_spin_fast", "RotationClockwiseSlowToFast", 0.85),
     ("prism_spin_reverse", "RotationCounterClockwiseSlowToFast", 0.5),
 )
-
-
-@dataclass(frozen=True)
-class GeneratedPrismSpins:
-    scene_ids: list[int]
 
 
 def generate_prism_spins(
@@ -59,8 +54,8 @@ def generate_prism_spins(
     for identifier, preset, fraction in SPINS:
         values: dict[int, list[tuple[int, int]]] = {}
         for capability in beams:
-            inserted = _preset_value(capability, roles.PRISM, "PrismEffectOn", 0.5)
-            spin = _preset_value(capability, roles.PRISM_ROTATION, preset, fraction)
+            inserted = preset_value(capability, roles.PRISM, "PrismEffectOn", 0.5)
+            spin = preset_value(capability, roles.PRISM_ROTATION, preset, fraction)
             if inserted is None or spin is None:
                 continue
             offset, _ = capability.wheel_for_role(roles.PRISM)
@@ -78,13 +73,3 @@ def generate_prism_spins(
         )
         scene_ids.append(function_id)
     return GeneratedPrismSpins(scene_ids=scene_ids)
-
-
-def _preset_value(capability, role: str, preset: str, fraction: float) -> int | None:
-    """Where along the range named by `preset` this look sits, or None."""
-    for _, ranges in capability.capabilities_for_role(role):
-        for item in ranges:
-            if (item.preset or "") == preset:
-                span = item.maximum - item.minimum
-                return item.minimum + round(span * fraction)
-    return None

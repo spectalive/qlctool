@@ -209,6 +209,23 @@ CONVERTED: tuple[str, ...] = (
     "generate/console_widgets.py",
     # 2026-09-27, batch 5: split out of smc_pad_device.py, which was converted.
     "generate/control_channel.py",
+    # 2026-09-27, batch 5: split out of the modules named alongside them below,
+    # all of which were already converted.
+    "generate/generated_builtins.py",
+    "generate/generated_probe.py",
+    "generate/generated_palette.py",
+    "generate/moment.py",
+    "generate/generated_rainbows.py",
+    "generate/generated_wheel.py",
+    "generate/fixture_val_pairs.py",
+    "generate/generated_gobo_shake.py",
+    "generate/spaced.py",
+    "generate/generated_prism_spins.py",
+    "generate/preset_value.py",
+    "generate/wheel_halves.py",
+    "generate/generated_stage.py",
+    "generate/unplaced_fixtures.py",
+    "generate/spread.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

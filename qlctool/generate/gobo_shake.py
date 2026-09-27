@@ -12,7 +12,6 @@ gobo: a shake with no gobo inserted shakes an open beam, which shows nothing.
 """
 
 from collections.abc import Sequence
-from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
@@ -20,16 +19,13 @@ from ..fixture_library import FixtureLibrary
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..workspace import Workspace
+from .generated_gobo_shake import GeneratedGoboShake
+from .spaced import spaced
 
 # Mid-speed on the jitter's 1-128 slow-to-fast run: visible tremble, not blur.
 SHAKE_VALUE = 64
 BURSTS = 3
 GOBO_POSITION_PRESET = "GoboMacro"
-
-
-@dataclass(frozen=True)
-class GeneratedGoboShake:
-    scene_ids: list[int] = field(default_factory=list)
 
 
 def generate_gobo_shake(
@@ -54,7 +50,7 @@ def generate_gobo_shake(
     ]
     if not patterns:
         return GeneratedGoboShake()
-    chosen = _spaced(patterns, BURSTS)
+    chosen = spaced(patterns, BURSTS)
 
     scene_ids: list[int] = []
     for position in chosen:
@@ -78,10 +74,3 @@ def generate_gobo_shake(
         )
         scene_ids.append(function_id)
     return GeneratedGoboShake(scene_ids=scene_ids)
-
-
-def _spaced(patterns: Sequence, count: int) -> list:
-    """`count` positions spread evenly across the wheel's patterns."""
-    if len(patterns) <= count:
-        return list(patterns)
-    return [patterns[round(i * (len(patterns) - 1) / (count - 1))] for i in range(count)]

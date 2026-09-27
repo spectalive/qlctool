@@ -22,6 +22,7 @@ from lxml import etree
 from ..constants import QLC_NS
 from ..workspace import Workspace
 from ..xmlutil import findall_local, localname
+from .fixture_val_pairs import fixture_val_pairs
 
 
 def park_work_light(workspace: Workspace, scene_id: int, source_ids: Sequence[int | None]) -> int:
@@ -32,7 +33,9 @@ def park_work_light(workspace: Workspace, scene_id: int, source_ids: Sequence[in
         if localname(f) == "Function" and f.attrib.get("ID")
     }
     target = by_id[scene_id]
-    values = {int(v.attrib["ID"]): _pairs(v) for v in findall_local(target, "FixtureVal")}
+    values = {
+        int(v.attrib["ID"]): fixture_val_pairs(v) for v in findall_local(target, "FixtureVal")
+    }
     added = 0
     for source_id in source_ids:
         source = by_id.get(source_id) if source_id is not None else None
@@ -41,7 +44,7 @@ def park_work_light(workspace: Workspace, scene_id: int, source_ids: Sequence[in
         for value in findall_local(source, "FixtureVal"):
             fixture_id = int(value.attrib["ID"])
             merged = values.setdefault(fixture_id, {})
-            for offset, level in _pairs(value).items():
+            for offset, level in fixture_val_pairs(value).items():
                 if offset not in merged:
                     merged[offset] = level
                     added += 1
@@ -54,8 +57,3 @@ def park_work_light(workspace: Workspace, scene_id: int, source_ids: Sequence[in
         if pairs:
             element.text = ",".join(f"{offset},{level}" for offset, level in pairs)
     return added
-
-
-def _pairs(value: etree._Element) -> dict[int, int]:
-    numbers = [int(n) for n in (value.text or "").split(",") if n != ""]
-    return dict(zip(numbers[0::2], numbers[1::2], strict=True))

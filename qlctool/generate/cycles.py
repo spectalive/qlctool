@@ -12,7 +12,6 @@ from lxml import etree
 from ..names.names import Names
 from ..names.template_affixes import template_affixes
 from .after_marker import after_marker
-from .builtin_effects import GeneratedBuiltins
 from .console_layout import (
     GAP,
     HEADER,
@@ -23,6 +22,7 @@ from .console_layout import (
     TITLE_FONT,
 )
 from .generated_bank import GeneratedBank
+from .generated_builtins import GeneratedBuiltins
 from .generated_matrices import GeneratedMatrices
 
 

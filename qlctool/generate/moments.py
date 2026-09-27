@@ -14,21 +14,13 @@ in exactly one state.
 """
 
 from collections.abc import Sequence
-from dataclasses import dataclass
 
 from ..functions.build_collection import build_collection
 from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
-
-
-@dataclass(frozen=True)
-class Moment:
-    """One room state: everything that runs while it is the state."""
-
-    name: str
-    members: Sequence[int | None]
+from .moment import Moment
 
 
 def generate_moments(

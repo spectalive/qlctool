@@ -17,15 +17,14 @@ one the first time the 2D view opens and then *converts every position it has*,
 which silently rewrites a layout that was already right.
 """
 
-from dataclasses import dataclass
-
 from ..band_of import BANDS, PARS, band_of
 from ..capabilities_of import capabilities_of
 from ..fixture import patched_fixtures
 from ..fixture_library import FixtureLibrary
 from ..monitor_node import MonitorItem, write_monitor
 from ..workspace import Workspace
-from ..xmlutil import find_local, findall_local
+from .generated_stage import GeneratedStage
+from .spread import spread
 
 # Grid in metres (width, height, depth): a small-venue stage with a truss over
 # it. QLC+ writes these as integers.
@@ -49,41 +48,6 @@ BAND_ROWS = {
 # half the mesh extents), so the margin has to cover the widest fixture or the
 # last one in a row hangs over the edge of the grid.
 SIDE_MARGIN = 0.10
-
-
-@dataclass(frozen=True)
-class GeneratedStage:
-    stage: tuple[int, int, int]
-    point_of_view: str
-    # band -> fixture IDs placed on that row, left to right
-    rows: dict[str, list[int]]
-
-    @property
-    def placed(self) -> int:
-        return sum(len(ids) for ids in self.rows.values())
-
-
-def unplaced_fixtures(workspace: Workspace) -> list[int]:
-    """Patched fixtures the Monitor has no position for - the ones QLC+ draws
-    at the origin, on top of each other.
-    """
-    monitor = find_local(workspace.engine, "Monitor")
-    placed = (
-        {int(item.attrib["ID"]) for item in findall_local(monitor, "FxItem")}
-        if monitor is not None
-        else set()
-    )
-    return [f.fixture_id for f in patched_fixtures(workspace.root) if f.fixture_id not in placed]
-
-
-def spread(count: int, span: float, margin: float) -> list[float]:
-    """`count` positions evenly across `span`, centred, clear of both ends."""
-    if count <= 0:
-        return []
-    if count == 1:
-        return [span / 2]
-    usable = span - 2 * margin
-    return [margin + usable * index / (count - 1) for index in range(count)]
 
 
 def generate_stage_layout(

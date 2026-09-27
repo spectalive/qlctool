@@ -9,12 +9,13 @@ from ..capabilities_of import capabilities_of
 from .beam_subsets import generate_beam_subsets
 from .generate_dealt_gobo_scenes import generate_dealt_gobo_scenes
 from .generate_rest_scene import generate_rest_scene
+from .generated_wheel import GeneratedWheel
 from .gobo_shake import generate_gobo_shake
 from .prism_choreography import prism_choreography
 from .prism_spins import generate_prism_spins
 from .rig_has_role import rig_has_role
 from .show_build import ShowBuild
-from .wheel_scenes import GeneratedWheel, generate_wheel_scenes
+from .wheel_scenes import generate_wheel_scenes
 
 
 def add_wheel_looks(build: ShowBuild) -> None:

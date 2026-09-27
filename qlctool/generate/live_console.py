@@ -40,23 +40,23 @@ from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
 from .audio_triggers_row import audio_triggers_row
 from .beam_subsets import GeneratedBeamSubsets
-from .builtin_effects import GeneratedBuiltins
 from .console_ids import ConsoleIds
 from .console_layout import CANVAS_HEIGHT, CANVAS_WIDTH, MIX_COLOURS, SHORT_COLOURS, TEMPO_BEAT_MS
 from .console_outer_frame import console_outer_frame
 from .console_widgets import console_widgets
 from .function_names import function_names
 from .generated_bank import GeneratedBank
+from .generated_builtins import GeneratedBuiltins
 from .generated_console import GeneratedConsole
 from .generated_matrices import GeneratedMatrices
 from .generated_play_wrappers import GeneratedPlayWrappers
+from .generated_wheel import GeneratedWheel
 from .page_control import page_control
 from .page_library import page_library
 from .page_show import page_show
 from .play_page_call import play_page_call
 from .root_frame import root_frame
 from .set_canvas import set_canvas
-from .wheel_scenes import GeneratedWheel
 
 
 def generate_live_console(

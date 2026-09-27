@@ -8,7 +8,8 @@ from .. import roles
 from ..wheel_blade_offsets import wheel_blade_offsets
 from .first_of import first_of
 from .flat_scene import flat_scene
-from .moments import Moment, generate_moments
+from .moment import Moment
+from .moments import generate_moments
 from .show_build import ShowBuild
 from .show_collection import show_collection
 from .wheel_only_fixture_ids import wheel_only_fixture_ids

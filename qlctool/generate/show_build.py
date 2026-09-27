@@ -23,17 +23,17 @@ from ..names.names import Names
 from ..vc.dial_function import DialFunction
 from ..workspace import Workspace
 from .beam_subsets import GeneratedBeamSubsets
-from .builtin_effects import GeneratedBuiltins
 from .dimmer_chases import GeneratedDimmers
 from .energy_intensity import GeneratedIntensity
 from .generated_bank import GeneratedBank
+from .generated_builtins import GeneratedBuiltins
+from .generated_gobo_shake import GeneratedGoboShake
 from .generated_matrices import GeneratedMatrices
 from .generated_play_wrappers import GeneratedPlayWrappers
-from .gobo_shake import GeneratedGoboShake
+from .generated_prism_spins import GeneratedPrismSpins
+from .generated_wheel import GeneratedWheel
 from .movement_families import GeneratedFamilies
-from .prism_spins import GeneratedPrismSpins
 from .unison_colors import GeneratedUnison
-from .wheel_scenes import GeneratedWheel
 
 
 @dataclass

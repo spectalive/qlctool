@@ -13,10 +13,9 @@ from rig_root import RIG_ROOT
 from qlctool.band_of import BARS, BEAMS, PARS, SMOKE, WASHES
 from qlctool.fixture import patched_fixtures
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.generate.stage_layout import (
-    generate_stage_layout,
-    spread,
-)
+from qlctool.generate.spread import spread
+from qlctool.generate.stage_layout import generate_stage_layout
+from qlctool.generate.unplaced_fixtures import unplaced_fixtures
 from qlctool.monitor_node import POINTS_OF_VIEW
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, findall_local
@@ -129,8 +128,6 @@ def test_spread_centres_a_single_fixture_and_clears_the_ends():
 
 
 def test_unplaced_fixtures_finds_the_gap():
-    from qlctool.generate.stage_layout import unplaced_fixtures
-
     ws = Workspace.load(SHOW)
     # The show as shipped: four positions written by hand, the rest missing.
     missing = unplaced_fixtures(ws)

@@ -8,20 +8,12 @@ check is "press play and write down what moves" instead of an evening of
 clicking.
 """
 
-from dataclasses import dataclass
-
 from ..fixture import patched_fixtures
 from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..workspace import Workspace
-
-
-@dataclass(frozen=True)
-class GeneratedProbe:
-    fixture_id: int
-    scene_ids: list[int]
-    chaser_id: int | None
+from .generated_probe import GeneratedProbe
 
 
 def generate_channel_probe(

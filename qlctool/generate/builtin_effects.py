@@ -14,7 +14,6 @@ should be given long enough to be seen.
 """
 
 from collections.abc import Sequence
-from dataclasses import dataclass, field
 
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
@@ -28,6 +27,7 @@ from ..shutter_open import shutter_open_pairs
 from ..strobe_off_pairs import strobe_off_pairs
 from ..workspace import Workspace
 from ..zoom_wide_pairs import zoom_wide_pairs
+from .generated_builtins import GeneratedBuiltins
 
 # Where the hand-built show ran these: its speed sequence stepped the panels'
 # channel between 160 and 255, so 128 - the blind mid-scale first guess - was
@@ -43,17 +43,6 @@ DEFAULT_SPEED = 200
 # 2026-08-28). Its scene still exists for the library page; a counter is a
 # thing to show somebody once, not a look for a party.
 EXCLUDED_FROM_CYCLE = (40,)
-
-
-@dataclass(frozen=True)
-class GeneratedBuiltins:
-    scene_ids: list[int] = field(default_factory=list)
-    chaser_id: int | None = None
-    fixture_ids: tuple[int, ...] = ()
-    # (fixture id, channel offset) of every speed channel the scenes set, so
-    # the console can put a live fader over them the way the hand-built show
-    # did ("Strobo LED Effect Speed").
-    speed_channels: tuple[tuple[int, int], ...] = ()
 
 
 def generate_builtin_effects(

@@ -10,8 +10,8 @@ from collections.abc import Callable
 from lxml import etree
 
 from ..names.names import Names
-from .builtin_effects import GeneratedBuiltins
 from .console_layout import HELP_FONT, LEFT_WIDTH, LEFT_X, LIBRARY_SEPARATOR, PAGE_LIBRARY
+from .generated_builtins import GeneratedBuiltins
 from .library_help_lines import library_help_lines
 
 

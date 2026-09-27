@@ -11,7 +11,6 @@ from lxml import etree
 
 from ..names.names import Names
 from .after_marker import after_marker
-from .builtin_effects import GeneratedBuiltins
 from .console_layout import (
     GAP,
     HEADER,
@@ -21,6 +20,7 @@ from .console_layout import (
     TINY_FONT,
     TITLE_FONT,
 )
+from .generated_builtins import GeneratedBuiltins
 from .panels_frame_caption import panels_frame_caption
 
 

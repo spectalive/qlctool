@@ -13,8 +13,6 @@ fixture ignores the red, green and blue an EFX writes while its programme
 runs, and its colour already has an owner.
 """
 
-from dataclasses import dataclass
-
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
@@ -24,6 +22,7 @@ from ..internal_program import internal_program
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..workspace import Workspace
+from .generated_rainbows import GeneratedRainbows
 from .movement_efx import spread_offsets
 
 MODE_RGB = 2  # EFXFixture::Mode - PanTilt, Dimmer, RGB
@@ -35,12 +34,6 @@ X_AXIS = EFXAxis(offset=127, frequency=2, phase=90)
 Y_AXIS = EFXAxis(offset=127, frequency=3, phase=0)
 SIMULTANEO = ("rainbow_together", 123, 24)
 PASOS = ("rainbow_steps", 127, 10)
-
-
-@dataclass(frozen=True)
-class GeneratedRainbows:
-    simultaneo_id: int | None = None
-    pasos_id: int | None = None
 
 
 def generate_rainbow_efx(

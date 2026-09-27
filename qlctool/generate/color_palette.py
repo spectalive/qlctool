@@ -6,8 +6,6 @@ functions get fresh unique IDs and are injected into the workspace in order.
 Returns the created scene IDs and the chaser ID (or None).
 """
 
-from dataclasses import dataclass
-
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
@@ -16,12 +14,7 @@ from ..ids import next_function_id
 from ..palette import PALETTE
 from ..workspace import Workspace
 from .color_scene_values import color_scene_values
-
-
-@dataclass(frozen=True)
-class GeneratedPalette:
-    scene_ids: list[int]
-    chaser_id: int | None
+from .generated_palette import GeneratedPalette
 
 
 def generate_color_palette(

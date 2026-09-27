@@ -8,7 +8,6 @@ own.
 """
 
 from collections.abc import Sequence
-from dataclasses import dataclass
 
 from .. import roles
 from ..capabilities_of import capabilities_of
@@ -22,12 +21,7 @@ from ..names.names import Names
 from ..shutter_open import shutter_open_pairs
 from ..workspace import Workspace
 from ..zoom_wide_pairs import zoom_wide_pairs
-
-
-@dataclass(frozen=True)
-class GeneratedWheel:
-    scene_ids: list[int]
-    chaser_id: int | None
+from .generated_wheel import GeneratedWheel
 
 
 def generate_wheel_scenes(

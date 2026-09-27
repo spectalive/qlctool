@@ -28,12 +28,12 @@ from .console_layout import (
 )
 from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
+from .generated_wheel import GeneratedWheel
 from .grand_master import grand_master
 from .intensity import intensity
 from .movement_dial import movement_dial
 from .page_control_title import page_control_title
 from .wheel_frame import wheel_frame
-from .wheel_scenes import GeneratedWheel
 
 
 def page_control(

@@ -22,7 +22,8 @@ from ..vibra.vibra_description import vibra_description
 from ..workspace import Workspace
 from .apply_stage_plot import apply_stage_plot
 from .show_build import ShowBuild
-from .stage_layout import generate_stage_layout, unplaced_fixtures
+from .stage_layout import generate_stage_layout
+from .unplaced_fixtures import unplaced_fixtures
 
 
 def start_show_build(
