@@ -15,7 +15,6 @@ from ..vc.level_slider import build_level_slider
 from ..vc.matrix_control import build_matrix_control
 from .after_marker import after_marker
 from .beam_subsets import GeneratedBeamSubsets
-from .before_marker import before_marker
 from .builtin_effects import GeneratedBuiltins
 from .console_ids import ConsoleIds
 from .console_layout import (
@@ -25,9 +24,6 @@ from .console_layout import (
     LEFT_WIDTH,
     LEFT_X,
     LIBRARY_SEPARATOR,
-    MATRIX_BUTTON_HEIGHT,
-    MATRIX_COLUMNS,
-    MATRIX_ROW_HEIGHT,
     MIDDLE_WIDTH,
     MIDDLE_X,
     OUTER_WIDTH,
@@ -38,12 +34,11 @@ from .console_layout import (
     TINY_FONT,
     TITLE_FONT,
 )
-from .first_of import first_of
 from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
 from .generated_matrices import GeneratedMatrices
 from .library_help_lines import library_help_lines
-from .matrices_frame_caption import matrices_frame_caption
+from .matrix_frame import matrix_frame
 from .mixes import mixes
 from .on_page import on_page
 from .panels_frame_caption import panels_frame_caption
@@ -102,50 +97,7 @@ def page_library(
         columns=8,
     )
 
-    # No matrix to press (a rig of two panels, 2026-09-26): no frame, and no
-    # caption promising patterns on them.
-    if any(generated.matrix_ids for generated in matrices):
-        matrix_frame = frame(
-            outer,
-            vocabulary.display(matrices_frame_caption(has_bars, has_panels)),
-            MIDDLE_X,
-            68,
-            MIDDLE_WIDTH,
-            300,
-            page=PAGE_LIBRARY,
-            solo=True,
-            pages=len(matrices) or 1,
-            font=TITLE_FONT,
-        )
-        for page, generated in enumerate(matrices):
-            first = first_of(generated.matrix_ids)
-            group = before_marker(names.get(first, "") if first is not None else "", " - ")
-            label(
-                matrix_frame,
-                vocabulary.render("group_label", group=group),
-                GAP,
-                HEADER,
-                400,
-                20,
-                page=page,
-                font=HELP_FONT,
-            )
-            step = (MIDDLE_WIDTH - GAP * 2) // MATRIX_COLUMNS
-            for index, function_id in enumerate(generated.matrix_ids):
-                column, row = index % MATRIX_COLUMNS, index // MATRIX_COLUMNS
-                on_page(
-                    button(
-                        matrix_frame,
-                        function_id,
-                        after_marker(names.get(function_id, ""), " - "),
-                        x=GAP + column * step,
-                        y=HEADER + 24 + row * MATRIX_ROW_HEIGHT,
-                        w=step - 6,
-                        h=MATRIX_BUTTON_HEIGHT,
-                        font=SMALL_FONT,
-                    ),
-                    page,
-                )
+    matrix_frame(outer, button, frame, label, names, matrices, has_bars, has_panels, vocabulary)
 
     # Each group's own colour wheel and its matrix cycle. Both start the looks
     # sitting in the solo frames above, so both live in a plain frame.
