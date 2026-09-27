@@ -5,7 +5,7 @@ from lxml import etree
 from .raises_light import raises_light
 from .show_graph import ShowGraph
 from .states_rig_colour import states_rig_colour
-from .strobe_written import strobe_capable_offsets
+from .strobe_capable_offsets import strobe_capable_offsets
 from .value_strobes import value_strobes
 
 

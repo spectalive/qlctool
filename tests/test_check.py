@@ -24,14 +24,14 @@ from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.build_show_graph import build_show_graph
 from qlctool.checks.check_workspace import check_workspace
-from qlctool.checks.console_states import room_states
 from qlctool.checks.display_name_of_rule import display_name_of_rule
 from qlctool.checks.group_fixtures import group_fixtures
 from qlctool.checks.lit import lit
 from qlctool.checks.reach import reach
+from qlctool.checks.room_states import room_states
 from qlctool.checks.rule_pick_darkens import check_pick_darkens
 from qlctool.checks.rule_undeclared_heads import check_undeclared_heads
-from qlctool.checks.strobe_written import strobe_capable_offsets
+from qlctool.checks.strobe_capable_offsets import strobe_capable_offsets
 from qlctool.cli import main
 from qlctool.fixture_group import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
@@ -2515,8 +2515,8 @@ def test_a_multi_family_state_chaser_is_not_a_play_hook(library, deluxe_show):
     """
     from qlctool.capabilities_of import capabilities_of
     from qlctool.checks.build_show_graph import build_show_graph
-    from qlctool.checks.console_states import room_states
     from qlctool.checks.group_fixtures import group_fixtures
+    from qlctool.checks.room_states import room_states
     from qlctool.checks.state_owners import state_owners
 
     workspace = deluxe_show
@@ -2557,8 +2557,8 @@ def test_the_talk_owners_have_one_family_each(library, deluxe_show):
     """
     from qlctool.capabilities_of import capabilities_of
     from qlctool.checks.build_show_graph import build_show_graph
-    from qlctool.checks.console_states import room_states
     from qlctool.checks.group_fixtures import group_fixtures
+    from qlctool.checks.room_states import room_states
     from qlctool.checks.state_owners import state_owners
 
     workspace = deluxe_show
@@ -3164,7 +3164,7 @@ def test_2026_09_25_a_single_family_energy_cycle_is_not_a_family_owner(library, 
 
     The club's energy cycle steps through level Collections that only move the
     heads - its pars have no pan/tilt and its dimmer levels sit inside the
-    steps - so it writes one family. `family_frames` counted a Chaser as a
+    steps - so it writes one family. `family_frame_problems` counted a Chaser as a
     structural cycle only when it wrote two or more families, took this one
     for the position family's owner, and reported "familia con dueño: <energy
     cycle>: no tiene su Toggle en el marco" and "capa pisada por el ciclo:

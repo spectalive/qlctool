@@ -10,14 +10,14 @@ QLC+ cannot make a chaser momentary - `Flash` buttons only really flash Scenes
 (`Scene::flash` is the one implementation) - so the correct shape for a strobe
 hit is a bounded burst: a SingleShot chaser that plays its pulses and stops on
 its own. The rule therefore reads the graph under every button: a function
-with a strobe's shape (see `strobe_shape`) that loops is a latched strobe
+with a strobe's shape (see `strobe_flash_rate`) that loops is a latched strobe
 wherever it hangs, chaser and button alike.
 """
 
 from ..xmlutil import find_local
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
-from .strobe_shape import strobe_flash_rate
+from .strobe_flash_rate import strobe_flash_rate
 
 RULE_ID = "latched_strobe"
 BOUNDED = "SingleShot"

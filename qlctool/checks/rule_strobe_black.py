@@ -23,7 +23,7 @@ from .all_dark_and_htp import all_dark_and_htp
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph
-from .strobe_shape import strobe_flash_rate
+from .strobe_flash_rate import strobe_flash_rate
 
 RULE_ID = "strobe_black"
 

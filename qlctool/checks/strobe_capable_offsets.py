@@ -1,6 +1,6 @@
 """Which of a fixture's channels can strobe, and whether a written value does.
 
-Shared by the strobe rules the way `strobe_shape` is shared by the rate rules:
+Shared by the strobe rules the way `strobe_flash_rate` is shared by the rate rules:
 one answer to "is this channel a strobe" and one to "does this value strobe
 it", both read off the definition's capabilities - never off a name.
 

@@ -2,7 +2,7 @@
 
 from .read_only_driven import ReadOnlyDriven
 from .show_graph import ShowGraph
-from .strobe_written import strobe_capable_offsets
+from .strobe_capable_offsets import strobe_capable_offsets
 from .value_strobes import value_strobes
 
 

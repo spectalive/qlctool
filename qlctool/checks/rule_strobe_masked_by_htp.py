@@ -10,7 +10,7 @@ the faders; the lower value is still dropped unless the writer forces LTP
 
 The rule reads the wiring, the channel groups and the graph, never a name: a
 Flash button without `ForceLTP` whose Scene writes a strobing value
-(`strobe_written`) on a channel QLC+ merges HTP (`htp_offsets`), where some
+(`strobe_capable_offsets`) on a channel QLC+ merges HTP (`htp_offsets`), where some
 room state reaches a higher definite value on the same channel, is a strobe
 that cannot show while that state runs.
 """
@@ -24,7 +24,7 @@ from .fixture_names_of import fixture_names_of
 from .htp_offsets import htp_offsets
 from .reach import reach
 from .show_graph import ShowGraph
-from .strobe_written import strobe_capable_offsets
+from .strobe_capable_offsets import strobe_capable_offsets
 from .value_strobes import value_strobes
 
 RULE_ID = "strobe_masked_by_htp"

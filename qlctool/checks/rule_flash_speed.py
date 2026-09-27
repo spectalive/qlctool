@@ -30,7 +30,7 @@ from .finding import ERROR, Finding
 from .hand_flash_scenes import hand_flash_scenes
 from .show_graph import ShowGraph
 from .speed_fraction import speed_fraction
-from .strobe_written import strobe_capable_offsets
+from .strobe_capable_offsets import strobe_capable_offsets
 from .value_strobes import value_strobes
 
 RULE_ID = "flash_speed"

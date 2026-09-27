@@ -21,7 +21,7 @@ hand while the state runs.
 from lxml import etree
 
 from .. import roles
-from .family_frames import family_frame_problems
+from .family_frame_problems import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph

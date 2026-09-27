@@ -9,7 +9,7 @@ lo hacia cuando le daba al espacio".
 
 The rule reads the wiring, not the name: every scene a `Flash`-action button
 drives must, on each fixture it writes that has a strobe-capable channel, put
-that channel into a value that actually strobes (`strobe_written`). A fixture
+that channel into a value that actually strobes (`strobe_capable_offsets`). A fixture
 the scene leaves out entirely is somebody else's business - the smoke burst is
 also a Flash button and touches nothing with a shutter - but writing a fixture
 while parking its shutter in "Open" or "No function" is exactly the shape of

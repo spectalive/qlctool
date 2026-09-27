@@ -23,7 +23,7 @@ from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .flash_lights import flash_lights
 from .show_graph import ShowGraph
-from .strobe_written import strobe_capable_offsets
+from .strobe_capable_offsets import strobe_capable_offsets
 
 RULE_ID = "flash_lit_smoke"
 

@@ -28,7 +28,7 @@ from .fixture_names_of import fixture_names_of
 from .htp_offsets import htp_offsets
 from .reach import reach
 from .show_graph import ShowGraph
-from .strobe_written import strobe_capable_offsets
+from .strobe_capable_offsets import strobe_capable_offsets
 from .value_shuts import value_shuts
 from .value_strobes import value_strobes
 

@@ -8,7 +8,7 @@ UK guidance for public performance caps effect lighting at four flashes per
 second. A generator can produce any rate with equal ease, so the cap has to be
 a rule, not a habit.
 
-The rate is read off the function's shape by `strobe_shape` - what it writes
+The rate is read off the function's shape by `strobe_flash_rate` - what it writes
 and how fast it alternates - never off its name, and the cap applies to every
 function in the file: a strobe nobody wired to a button today is one somebody
 wires tomorrow.
@@ -16,7 +16,7 @@ wires tomorrow.
 
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
-from .strobe_shape import strobe_flash_rate
+from .strobe_flash_rate import strobe_flash_rate
 
 RULE_ID = "strobe_rate"
 MAX_FLASH_HZ = 4.0

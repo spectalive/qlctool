@@ -22,7 +22,7 @@ that has a fix.
 from lxml import etree
 
 from .coloured_by_states import coloured_by_states
-from .family_frames import family_frame_problems
+from .family_frame_problems import family_frame_problems
 from .finding import ERROR, Finding
 from .fixture_states_colour import fixture_states_colour
 from .layer_buttons import layer_buttons

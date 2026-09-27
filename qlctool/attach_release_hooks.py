@@ -4,7 +4,7 @@ from typing import Any
 
 from lxml import etree
 
-from .checks.console_states import room_states
+from .checks.room_states import room_states
 from .checks.show_graph import ShowGraph
 from .desk_release_hooks import desk_release_hooks
 

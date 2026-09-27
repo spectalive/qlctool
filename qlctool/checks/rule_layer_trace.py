@@ -21,7 +21,7 @@ be released under any of them.
 
 from lxml import etree
 
-from .family_frames import family_frame_problems
+from .family_frame_problems import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph

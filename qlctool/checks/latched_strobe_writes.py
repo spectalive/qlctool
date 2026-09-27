@@ -5,7 +5,7 @@ from lxml import etree
 from .. import roles
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph
-from .strobe_written import strobe_capable_offsets
+from .strobe_capable_offsets import strobe_capable_offsets
 from .unowned_while_lit import unowned_while_lit
 from .value_strobes import value_strobes
 

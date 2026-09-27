@@ -21,7 +21,6 @@ from .applying_providers import applying_providers
 from .build_show_graph import build_show_graph
 from .canvas_of import canvas_of
 from .console_caption_findings import console_caption_findings
-from .console_states import room_states
 from .entry_points import entry_points
 from .family_frame_findings import family_frame_findings
 from .finding import Finding
@@ -31,6 +30,7 @@ from .group_fixtures import group_fixtures
 from .key_binding_findings import key_binding_findings
 from .movement_findings import movement_findings
 from .named_findings import named_findings
+from .room_states import room_states
 from .rule_accent_restore import check_accent_restore
 from .rule_collision import check_collisions
 from .rule_colour_animation_wheel import check_colour_animation_wheel

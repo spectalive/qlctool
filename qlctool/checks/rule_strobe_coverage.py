@@ -23,7 +23,7 @@ from .all_strobe_writes import all_strobe_writes
 from .any_strobing_write import any_strobing_write
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph
-from .strobe_written import strobe_capable_offsets
+from .strobe_capable_offsets import strobe_capable_offsets
 
 RULE_ID = "strobe_coverage"
 
