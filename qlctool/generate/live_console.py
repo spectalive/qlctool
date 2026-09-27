@@ -43,17 +43,7 @@ from .beam_subsets import GeneratedBeamSubsets
 from .builtin_effects import GeneratedBuiltins
 from .button_factory import button_factory
 from .console_ids import ConsoleIds
-from .console_layout import (
-    BIG_FONT,
-    CANVAS_HEIGHT,
-    CANVAS_WIDTH,
-    MIX_COLOURS,
-    PAGE_PLAY,
-    SHORT_COLOURS,
-    SMALL_FONT,
-    TEMPO_BEAT_MS,
-    TITLE_FONT,
-)
+from .console_layout import CANVAS_HEIGHT, CANVAS_WIDTH, MIX_COLOURS, SHORT_COLOURS, TEMPO_BEAT_MS
 from .console_outer_frame import console_outer_frame
 from .frame_factory import frame_factory
 from .function_names import function_names
@@ -66,7 +56,7 @@ from .master_button_factory import master_button_factory
 from .page_control import page_control
 from .page_library import page_library
 from .page_show import page_show
-from .play_page import build_play_page
+from .play_page_call import play_page_call
 from .root_frame import root_frame
 from .set_canvas import set_canvas
 from .wheel_scenes import GeneratedWheel
@@ -149,25 +139,20 @@ def generate_live_console(
         pad_bindings,
         vocabulary,
     )
-    if play_wrappers is not None:
-        build_play_page(
-            outer,
-            button,
-            master_button,
-            frame,
-            label,
-            names,
-            master,
-            play_wrappers,
-            colour_flash_ids or {},
-            flash_functions,
-            PAGE_PLAY,
-            TITLE_FONT,
-            BIG_FONT,
-            SMALL_FONT,
-            palette=colours,
-            vocabulary=vocabulary,
-        )
+    play_page_call(
+        outer,
+        button,
+        master_button,
+        frame,
+        label,
+        names,
+        master,
+        play_wrappers,
+        colour_flash_ids or {},
+        flash_functions,
+        colours,
+        vocabulary,
+    )
     page_control(
         outer,
         button,
