@@ -4082,3 +4082,34 @@ def test_2026_09_26_releasing_a_pick_leaves_the_beams_red(library):
     assert panels.severity == WARNING
     assert all(name.startswith("WX-60WPS-48PARTITION") for name in panels.fixtures)
     assert "Momento Charla" in panels.fields["states"]
+
+
+def test_2026_09_27_a_turned_figure_that_leaves_the_audience(library):
+    """2026-09-27, the en-sala DMX re-audit (item 2): every Diamante put the
+    7R at tilt 200-240 about 30% of the time, past the 207-234 window, and
+    Hoja about 7%, while `movement_window` passed them. It judged `offset +-
+    Height` on tilt, which is only the reach at Rotation 0: QLC+ scales and
+    turns the figure in one step, so a Diamond of Width 20 and Height 13
+    turned 90 degrees swings tilt by 20. Put that Diamond back on the beams
+    and the rule must name the tilt it draws; the same figure unturned must
+    pass; a Circle turned 45 degrees (`Cascada Beams`) must bite too.
+    """
+
+    def outside(algorithm, rotation):
+        workspace = _show()
+        efx = _functions(workspace)["Beam Circulo"]
+        find_local(efx, "Algorithm").text = algorithm
+        find_local(efx, "Width").text = "20"
+        find_local(efx, "Height").text = "13"
+        find_local(efx, "Rotation").text = str(rotation)
+        for axis in findall_local(efx, "Axis"):
+            find_local(axis, "Offset").text = "82" if axis.attrib["Name"] == "X" else "220"
+        return [
+            f.fields["outside"]
+            for f in check_workspace(workspace, library)
+            if f.rule_id == "movement_window" and f.function == "Beam Circulo"
+        ]
+
+    assert outside("Diamond", 90) == ["tilt 200..240"]
+    assert outside("Diamond", 0) == []
+    assert outside("Circle", 45) == ["tilt 203.1..236.9"]
