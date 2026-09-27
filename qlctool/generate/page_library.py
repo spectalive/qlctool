@@ -10,7 +10,6 @@ from collections.abc import Callable, Mapping, Sequence
 from lxml import etree
 
 from ..names.names import Names
-from ..vc.matrix_control import build_matrix_control
 from .beam_subsets import GeneratedBeamSubsets
 from .builtin_effects import GeneratedBuiltins
 from .console_ids import ConsoleIds
@@ -21,8 +20,6 @@ from .console_layout import (
     LIBRARY_SEPARATOR,
     OUTER_WIDTH,
     PAGE_LIBRARY,
-    RIGHT_WIDTH,
-    RIGHT_X,
     TITLE_FONT,
 )
 from .cycles import cycles
@@ -30,9 +27,9 @@ from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
 from .generated_matrices import GeneratedMatrices
 from .library_help_lines import library_help_lines
+from .live_matrix import live_matrix
 from .matrix_frame import matrix_frame
 from .mixes import mixes
-from .on_page import on_page
 from .panels import panels
 from .speed_fader import speed_fader
 from .wheel_frame import wheel_frame
@@ -98,21 +95,7 @@ def page_library(
 
     speed_fader(outer, master_button, label, ids, console, builtins, vocabulary)
 
-    if matrices and matrices[0].matrix_ids:
-        matrix_widget_id = ids.take()
-        control = build_matrix_control(
-            outer,
-            matrix_widget_id,
-            vocabulary.display("live_matrix"),
-            RIGHT_X,
-            68,
-            RIGHT_WIDTH,
-            200,
-            function_id=matrices[0].matrix_ids[0],
-            algorithms=list(matrix_algorithms),
-        )
-        on_page(control, PAGE_LIBRARY)
-        console.widget_ids.append(matrix_widget_id)
+    live_matrix(outer, ids, console, matrices, matrix_algorithms, vocabulary)
 
     lines = library_help_lines(
         bool(builtins.scene_ids),
