@@ -242,14 +242,6 @@
   `test_qlcplus_discovery.py`, `test_saved_io_patches.py` (29 tests) green
   three times in a row under `-n auto`, and the full suite (951 passed, 1
   skipped) once.
-- [ ] **No rule sees two patched fixtures sharing an ID (round G review,
-  2026-09-26).** The show graph keys capabilities by fixture ID, so a second
-  fixture with the same ID is silently one entry; `caption_promise` used to
-  go quiet on such a patch (fixed: it now looks each ID up, and
-  `tests/test_caption_promise_unresolved.py` holds it). QLC+ itself would
-  address both through one ID. Smallest next step: a `check` rule that
-  reports every fixture ID patched more than once, with a regression test
-  that duplicates one in a generated show.
 - [ ] **A lone fixture is refused instead of getting a smaller show (round G
   review, 2026-09-26).** The rig minimum became one fixture group of two or
   more fixtures because the sweep (`tests/test_every_single_model_rig.py`)
@@ -258,12 +250,6 @@
   four-head bar used to build a passing show and is now refused. Smallest next
   step: let the strobe and tap-dial generators degrade for a one-fixture group,
   then lower the minimum and let the sweep prove it.
-- [ ] **`wheel_only_fixture_ids` has no direct test (round G review,
-  2026-09-26).** The talk light's white on wheel-only, gobo-less fixtures is
-  exercised only end to end by the sweep's CLB2.4 2-channel case, and no
-  shipped rig carries such a fixture. Smallest next step: a unit test with
-  stand-in capabilities asserting the ids returned and that the talk scene
-  lands on the wheel's white.
 - [ ] **`check` cannot see whether page 4's help names the frames drawn
   (round G review, 2026-09-26).** `library_help_lines` picks the lines that
   name the two-colour mixes and the matrices from the frames `live_console`
@@ -279,9 +265,11 @@
   --preview --statistics`: D1 (public symbols without a docstring) 244,
   D205/D210 16, PLR0913/PLR0917 (too many parameters) 163, PLR0911/0912/0915
   19, PLR2004 (magic values: DMX channel numbers and QLC+ constants) 43,
-  ARG001 9, RUF005/RUF059 13, E402 1. Smallest next step: take one code whose
-  count is small (E402, ARG001), clear it and drop it from `ignore`, so the
-  list can only shrink.
+  RUF005/RUF059 13. E402 (1) and ARG001 (9) were cleared on 2026-09-27
+  (96988c0): the nine unused arguments were dropped from their signatures,
+  each with one caller, Vibra x3 identical. Smallest next step: take the next
+  small code (RUF005/RUF059), clear it and drop it from `ignore`, so the list
+  can only shrink.
 - [x] **Every `zip()` without `strict=` (B905), moved from vibra-lighting
   (2026-09-26).** 29 sites (12 in `qlctool/`, 17 in `tests/`), not the 13 the
   note counted. Every one pairs two lists built from the same source, so a
