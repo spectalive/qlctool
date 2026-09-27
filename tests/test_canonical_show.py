@@ -16,7 +16,7 @@ from qlctool.fixture_groups import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.patch_conflicts import patch_conflicts
+from qlctool.patch_conflicts_of import patch_conflicts
 from qlctool.patched_fixtures import patched_fixtures
 from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.validate_workspace import validate_workspace

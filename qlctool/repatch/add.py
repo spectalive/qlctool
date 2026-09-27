@@ -11,7 +11,7 @@ from ..constants import QLC_NS
 from ..find_local import find_local
 from ..findall_local import findall_local
 from ..fixture_library import FixtureLibrary
-from ..patch_conflicts import patch_conflicts
+from ..patch_conflicts_of import patch_conflicts
 from .child import child
 from .next_fixture_id import next_fixture_id
 

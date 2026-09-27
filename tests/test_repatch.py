@@ -11,7 +11,7 @@ from rig_root import RIG_ROOT
 from qlctool.capabilities_of import capabilities_of
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fixture_references import fixture_references
-from qlctool.patch_conflicts import patch_conflicts
+from qlctool.patch_conflicts_of import patch_conflicts
 from qlctool.patched_fixtures import patched_fixtures
 from qlctool.repatch.add import add_fixture
 from qlctool.repatch.patch_element import patch_element
