@@ -22,21 +22,23 @@ this rule was written for is an unowned mode channel; an owned one is the
 design working.
 """
 
-from .. import roles
-from ..internal_program import internal_program
-from .color_roles import COLOUR
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit, reach
+from .left_animating import left_animating
+from .mode_owned_fixtures import mode_owned_fixtures
+from .show_graph import ShowGraph
 
 RULE_ID = "internal_program"
 STATES_COLOUR = ("Scene", "Sequence")
 
 
 def check_internal_programs(
-    graph: ShowGraph, groups, entries, states: set[int] | None = None
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    entries: dict[int, str],
+    states: set[int] | None = None,
 ) -> list[Finding]:
     del entries
-    owned = _mode_owned_fixtures(graph, groups, states or set())
+    owned = mode_owned_fixtures(graph, groups, states or set())
     findings: list[Finding] = []
     for function_id, function in sorted(graph.functions.items()):
         if function.attrib.get("Type") not in STATES_COLOUR:
@@ -46,7 +48,7 @@ def check_internal_programs(
             {
                 graph.capabilities[fixture_id].fixture.name
                 for fixture_id, written in driven.items()
-                if fixture_id not in owned and _left_animating(graph, fixture_id, written)
+                if fixture_id not in owned and left_animating(graph, fixture_id, written)
             }
         )
         if stranded:
@@ -60,48 +62,3 @@ def check_internal_programs(
                 )
             )
     return findings
-
-
-def _mode_owned_fixtures(graph: ShowGraph, groups, states: set[int]) -> set[int]:
-    """Fixtures whose mode channel every lighting room state drives.
-
-    Owned means deterministic: whichever state is running, something in it is
-    writing the mode channel, so a colour scene's RGB reads or is ignored by
-    that state's decision - never by whatever ran before. A state that keeps
-    the fixture dark is excused the way `rule_accent_restore` excuses it. No
-    states, no owners: the rule then demands the mode-off write in the scene
-    itself, exactly as before.
-    """
-    if not states:
-        return set()
-    state_reach = [reach(graph, groups, state_id) for state_id in states]
-    owned: set[int] = set()
-    for fixture_id, capability in graph.capabilities.items():
-        program = internal_program(capability)
-        if program is None:
-            continue
-        dimmers = capability.offsets_for_role(roles.DIMMER)
-        lighting = [
-            driven
-            for driven in state_reach
-            if any(lit(driven.get(fixture_id, {}).get(offset, 0)) for offset in dimmers)
-        ]
-        if lighting and all(
-            program.mode_offset in driven.get(fixture_id, {}) for driven in lighting
-        ):
-            owned.add(fixture_id)
-    return owned
-
-
-def _left_animating(graph: ShowGraph, fixture_id: int, written) -> bool:
-    capability = graph.capabilities.get(fixture_id)
-    if capability is None or capability.is_smoke:
-        return False
-    program = internal_program(capability)
-    if program is None:
-        return False
-
-    coloured = {offset for role in COLOUR for offset in capability.offsets_for_role(role)}
-    if not any(lit(written[o]) for o in coloured if o in written):
-        return False
-    return written.get(program.mode_offset) != program.off_value
