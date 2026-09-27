@@ -5,7 +5,7 @@ functions are created in the order they always were.
 """
 
 from .. import roles
-from ..fixture_group import fixture_groups
+from ..fixture_groups import fixture_groups
 from ..rgb_cells import rgb_cells
 from ..rigged_fixture_ids import rigged_fixture_ids
 from .all_self_animating import all_self_animating

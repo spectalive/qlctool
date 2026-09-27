@@ -7,7 +7,7 @@ from lxml import etree
 
 from ...argb import RGB
 from ...curated_script import CuratedScript
-from ...fixture_group import fixture_groups
+from ...fixture_groups import fixture_groups
 from ...names.names import Names
 from .list_at import list_at
 from .read_matrix_script import read_matrix_script

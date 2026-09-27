@@ -3,8 +3,8 @@
 from collections.abc import Sequence
 
 from ..functions.build_collection import build_collection
-from ..ids import next_function_id
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 
 

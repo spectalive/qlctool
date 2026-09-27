@@ -18,12 +18,12 @@ from collections.abc import Sequence
 
 from ..argb import RGB
 from ..color_format_of import color_format_of
-from ..fixture_group import fixture_groups
+from ..fixture_groups import fixture_groups
 from ..functions.build_rgbmatrix import build_rgbmatrix
-from ..ids import next_function_id
 from ..matrix_step_count import matrix_step_count
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 
 # The wheel's own pace: `generate_unison_colors` holds each colour this long,

@@ -13,10 +13,10 @@ from ..color_format_of import color_format_of
 from ..constants import ALL_FIXTURES_GROUP
 from ..curated_script import CuratedScript
 from ..functions.build_chaser import build_chaser
-from ..ids import next_function_id
 from ..matrix_algorithms import SCRIPT_ALGORITHMS
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..palette import PALETTE
 from ..workspace import Workspace
 from .add_matrix import add_matrix

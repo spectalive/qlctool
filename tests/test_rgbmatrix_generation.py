@@ -16,7 +16,7 @@ from qlctool.curated_script import CuratedScript
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
 from qlctool.first_difference import first_difference
-from qlctool.fixture_group import fixture_groups
+from qlctool.fixture_groups import fixture_groups
 from qlctool.functions.build_rgbmatrix import build_rgbmatrix
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
 from qlctool.ids import existing_function_ids

@@ -5,7 +5,7 @@ from collections.abc import Mapping, Sequence
 from lxml import etree
 
 from ..functions.build_collection import build_collection
-from ..ids import next_function_id
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 
 

@@ -32,7 +32,7 @@ import itertools
 
 from lxml import etree
 
-from ..fixture_group import fixture_groups
+from ..fixture_groups import fixture_groups
 from ..stage_x_positions import stage_x_positions
 from .finding import WARNING, Finding
 from .group_rows import group_rows

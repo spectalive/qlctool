@@ -17,7 +17,7 @@ from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..functions.scene import build_scene
-from ..ids import next_function_id
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .generated_gobo_shake import GeneratedGoboShake
 from .spaced import spaced

@@ -5,7 +5,7 @@ functions are created in the order they always were.
 """
 
 from ..functions.build_chaser import build_chaser
-from ..ids import next_function_id
+from ..next_function_id import next_function_id
 from .generate_multicolor_scenes import generate_multicolor_scenes
 from .generate_quad_color_scenes import generate_quad_color_scenes
 from .generate_unison_colors import WHEEL_FADE, WHEEL_HOLD, generate_unison_colors

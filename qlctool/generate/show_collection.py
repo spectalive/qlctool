@@ -1,7 +1,7 @@
 """A collection the canonical show adds."""
 
 from ..functions.build_collection import build_collection
-from ..ids import next_function_id
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .show_path import SHOW_PATH
 

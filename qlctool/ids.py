@@ -26,8 +26,3 @@ def existing_function_ids(root: etree._Element) -> set[int]:
         for function in findall_local(engine, "Function")
         if "ID" in function.attrib
     }
-
-
-def next_function_id(root: etree._Element) -> int:
-    ids = existing_function_ids(root)
-    return max(ids) + 1 if ids else 0

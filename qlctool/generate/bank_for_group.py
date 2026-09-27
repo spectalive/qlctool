@@ -6,8 +6,8 @@ from ..argb import RGB
 from ..fixture_capabilities import FixtureCapabilities
 from ..fixture_group import DefinedFixtureGroup
 from ..functions.scene import build_scene
-from ..ids import next_function_id
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .bank_wheel import bank_wheel
 from .color_scene_values import color_scene_values

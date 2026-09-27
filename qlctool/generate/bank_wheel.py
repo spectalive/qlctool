@@ -1,7 +1,7 @@
 """The Random-order chaser that cycles one bank's scenes when nobody is at the console."""
 
 from ..functions.build_chaser import build_chaser
-from ..ids import next_function_id
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 
 

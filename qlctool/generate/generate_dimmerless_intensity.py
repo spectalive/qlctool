@@ -32,10 +32,10 @@ from ..color_wheel_pairs import WHEEL_NAMES
 from ..fixture_capabilities import FixtureCapabilities
 from ..fog_off_pairs import fog_off_pairs
 from ..functions.scene import build_scene
-from ..ids import next_function_id
 from ..mode_park_pairs import mode_park_pairs
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..outside_color_looks import outside_color_looks
 from ..shutter_open import shutter_open_pairs
 from ..stepped_dimmer_offsets import stepped_dimmer_offsets

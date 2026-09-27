@@ -16,9 +16,9 @@ from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..functions.scene import build_scene
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..rigged_fixture_ids import rigged_fixture_ids
 from ..workspace import Workspace
 from .movement_aim import WASH_PAN_AIM, WASH_TILT_AIM

@@ -4,9 +4,9 @@ from collections.abc import Mapping, Sequence
 
 from ..fixture_capabilities import FixtureCapabilities
 from ..functions.scene import build_scene
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..strobe_speed_pairs import strobe_speed_pairs
 from ..workspace import Workspace
 from .color_scene_values import color_scene_values

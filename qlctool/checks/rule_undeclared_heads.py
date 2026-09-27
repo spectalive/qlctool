@@ -30,7 +30,7 @@ channels, satisfy a count and leave the matrix exactly as broken as before.
 
 from lxml import etree
 
-from ..fixture_group import fixture_groups
+from ..fixture_groups import fixture_groups
 from .colour_heads import COLOUR_ROLES, colour_heads
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph

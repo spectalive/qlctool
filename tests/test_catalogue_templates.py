@@ -7,7 +7,7 @@ from qlctool import roles
 from qlctool.description.reading.read_names import read_names
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
-from qlctool.fixture_group import fixture_groups
+from qlctool.fixture_groups import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
 from qlctool.generate.generate_movement_families import generate_movement_families

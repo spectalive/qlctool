@@ -17,10 +17,10 @@ from ..functions.build_collection import build_collection
 from ..functions.build_efx import build_efx
 from ..functions.efx import EFXFixture
 from ..functions.efx_axis import EFXAxis
-from ..ids import next_function_id
 from ..keeps_16bit import PAN_TILT_PAIRS, keeps_16bit
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .generated_movements import GeneratedMovements
 from .moving_head_ids import moving_head_ids

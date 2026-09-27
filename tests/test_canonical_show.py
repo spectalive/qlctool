@@ -13,7 +13,7 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
 from qlctool.fixture import patched_fixtures
-from qlctool.fixture_group import fixture_groups
+from qlctool.fixture_groups import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show

@@ -11,7 +11,7 @@ of the 8x2 that reads like the rig.
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.fixture_group import fixture_groups
+from qlctool.fixture_groups import fixture_groups
 from qlctool.repatch.group_head_move import move_group_head
 from qlctool.repatch.group_size import set_group_size
 from qlctool.workspace import Workspace

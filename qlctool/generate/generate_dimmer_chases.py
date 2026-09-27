@@ -27,9 +27,9 @@ from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
 from ..functions.build_efx import build_efx
 from ..functions.efx import EFXFixture
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .fader_dimmed import fader_dimmed
 from .generated_dimmers import GeneratedDimmers

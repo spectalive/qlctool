@@ -23,9 +23,9 @@ from ..capabilities_of import capabilities_of
 from ..complementary_pairs import COMPLEMENTARY_PAIRS
 from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..palette import PALETTE, PRIMARY_COLORS
 from ..workspace import Workspace
 from .add_scene import add_scene

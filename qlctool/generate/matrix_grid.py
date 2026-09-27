@@ -1,6 +1,6 @@
 """The grid of the fixture group an RGBMatrix paints."""
 
-from ..fixture_group import fixture_groups
+from ..fixture_groups import fixture_groups
 from ..workspace import Workspace
 
 

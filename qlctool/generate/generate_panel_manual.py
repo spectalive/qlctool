@@ -13,10 +13,10 @@ from collections.abc import Sequence
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from ..functions.scene import build_scene
-from ..ids import next_function_id
 from ..internal_program import internal_program_off_pairs
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..shutter_open import shutter_open_pairs
 from ..strobe_off_pairs import strobe_off_pairs
 from ..workspace import Workspace

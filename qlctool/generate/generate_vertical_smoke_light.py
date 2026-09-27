@@ -22,9 +22,9 @@ from collections.abc import Sequence
 
 from ..fixture_capabilities import FixtureCapabilities
 from ..functions.build_chaser import build_chaser
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..vertical_smoke_columns import vertical_smoke_columns
 from ..workspace import Workspace
 

@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..fixture_group import fixture_groups
+from ..fixture_groups import fixture_groups
 
 
 def group_fixtures(root: etree._Element) -> dict[int, tuple[int, ...]]:

@@ -14,9 +14,9 @@ las maquinas de humo en blanco" (owner, 2026-09-26; `rule_flash_lit_smoke`).
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from ..functions.scene import build_scene
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..strobe_speed_pairs import strobe_speed_pairs
 from ..workspace import Workspace
 from ..zoom_wide_pairs import zoom_wide_pairs

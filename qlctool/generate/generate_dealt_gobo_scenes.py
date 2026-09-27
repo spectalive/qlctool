@@ -21,9 +21,9 @@ from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..functions.scene import build_scene
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 
 # How many deals to generate. Eight is two full turns of the four heads through

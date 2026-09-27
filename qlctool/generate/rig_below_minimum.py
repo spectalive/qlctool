@@ -32,7 +32,7 @@ The question is put to the patch, never to a model name.
 
 from lxml import etree
 
-from ..fixture_group import fixture_groups
+from ..fixture_groups import fixture_groups
 from ..names.names import Names
 
 

@@ -1,8 +1,8 @@
 """The hand-built prism dance as one chaser."""
 
 from ..functions.build_chaser import build_chaser
-from ..ids import next_function_id
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 
 # The hand-built `Prisma Animacion` (Chaser 373) was a choreography, not a

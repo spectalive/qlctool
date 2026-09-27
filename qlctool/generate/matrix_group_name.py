@@ -1,7 +1,7 @@
 """The name an RGBMatrix's fixture group goes by in the show."""
 
 from ..constants import ALL_FIXTURES_GROUP
-from ..fixture_group import fixture_groups
+from ..fixture_groups import fixture_groups
 from ..names.names import Names
 from ..workspace import Workspace
 

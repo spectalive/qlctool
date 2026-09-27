@@ -16,9 +16,9 @@ in exactly one state.
 from collections.abc import Sequence
 
 from ..functions.build_collection import build_collection
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .moment import Moment
 

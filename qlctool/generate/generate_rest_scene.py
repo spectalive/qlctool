@@ -3,7 +3,7 @@
 from copy import deepcopy
 
 from ..findall_local import findall_local
-from ..ids import next_function_id
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 
 

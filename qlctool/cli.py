@@ -24,7 +24,7 @@ from .description.description_names import description_names
 from .description.load_show_description import load_show_description
 from .efx_algorithms import EFX_ALGORITHMS
 from .fixture_dirs import fixture_dirs
-from .fixture_group import fixture_groups
+from .fixture_groups import fixture_groups
 from .generate.apply_stage_plot import apply_stage_plot
 from .generate.build_canonical_show import build_canonical_show
 from .generate.build_refusal_error import BuildRefusalError

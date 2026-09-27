@@ -35,7 +35,7 @@ from qlctool.checks.strobe_capable_offsets import strobe_capable_offsets
 from qlctool.cli import main
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
-from qlctool.fixture_group import fixture_groups
+from qlctool.fixture_groups import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
@@ -123,7 +123,7 @@ def _twin_scene(workspace, functions, source_name, twin_name):
     """A copy of a scene under a new id: the old burst chasers' white/black."""
     import copy
 
-    from qlctool.ids import next_function_id
+    from qlctool.next_function_id import next_function_id
 
     twin = copy.deepcopy(functions[source_name])
     twin.set("ID", str(next_function_id(workspace.root)))
@@ -172,7 +172,7 @@ def _burst_chaser(workspace, library, hold=125):
     """
 
     from qlctool.functions.build_chaser import build_chaser
-    from qlctool.ids import next_function_id
+    from qlctool.next_function_id import next_function_id
     from qlctool.vc.build_button import build_button
     from qlctool.vc.next_widget_id import next_widget_id
 
@@ -1993,7 +1993,7 @@ def _family_frame(workspace, function_names, *, caption="TEST FAMILY", solo=True
 def _wrapper_button(workspace, frame, source_name, wrapper_name):
     """Add a one-member Collection wrapper and its Toggle button."""
     from qlctool.functions.build_collection import build_collection
-    from qlctool.ids import next_function_id
+    from qlctool.next_function_id import next_function_id
     from qlctool.vc.build_button import build_button
     from qlctool.vc.next_widget_id import next_widget_id
 
@@ -2203,7 +2203,7 @@ def test_a_higher_pick_shutter_value_can_close_a_concurrent_state(library):
     from qlctool.constants import QLC_NS
     from qlctool.definition import Capability
     from qlctool.functions.scene import build_scene
-    from qlctool.ids import next_function_id
+    from qlctool.next_function_id import next_function_id
 
     workspace = _show("Vibra.qxw")
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
@@ -2468,7 +2468,7 @@ def test_a_state_started_movement_collection_is_its_own_required_hook(library, d
 
     from qlctool.constants import QLC_NS
     from qlctool.functions.build_collection import build_collection
-    from qlctool.ids import next_function_id
+    from qlctool.next_function_id import next_function_id
     from qlctool.vc.build_button import build_button
     from qlctool.vc.next_widget_id import next_widget_id
 
@@ -3372,7 +3372,7 @@ def test_2026_09_26_a_pastel_split_across_the_scenes_of_one_step(library):
     from qlctool.checks.rule_white_share_dropped import RULE_ID
     from qlctool.functions.build_chaser import build_chaser
     from qlctool.functions.build_collection import build_collection
-    from qlctool.ids import next_function_id
+    from qlctool.next_function_id import next_function_id
 
     workspace = _show()
     functions = _functions(workspace)

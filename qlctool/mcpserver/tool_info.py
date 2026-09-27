@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..capabilities_of import capabilities_of
-from ..fixture_group import fixture_groups
+from ..fixture_groups import fixture_groups
 from ..library_for import library_for
 from ..workspace import Workspace
 from .existing_path import existing_path

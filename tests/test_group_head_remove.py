@@ -3,7 +3,7 @@
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.fixture_group import fixture_groups
+from qlctool.fixture_groups import fixture_groups
 from qlctool.repatch.group_head_remove import remove_group_head
 from qlctool.workspace import Workspace
 

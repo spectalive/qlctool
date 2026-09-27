@@ -1,7 +1,7 @@
 """Build one Scene from fixture values and add it to the workspace."""
 
 from ..functions.scene import build_scene
-from ..ids import next_function_id
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 
 

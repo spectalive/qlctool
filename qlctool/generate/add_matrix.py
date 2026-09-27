@@ -2,7 +2,7 @@
 
 from ..argb import RGB
 from ..functions.build_rgbmatrix import build_rgbmatrix
-from ..ids import next_function_id
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .matrix_pace import matrix_pace
 

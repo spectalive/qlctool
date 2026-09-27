@@ -21,9 +21,9 @@ from ..fixture_library import FixtureLibrary
 from ..fog_offsets import fog_offsets
 from ..functions.build_chaser import build_chaser
 from ..functions.scene import build_scene
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
+from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .generated_smoke import GeneratedSmoke
 from .haze_machines import haze_machines
