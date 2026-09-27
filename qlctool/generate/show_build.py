@@ -31,9 +31,9 @@ from .generated_intensity import GeneratedIntensity
 from .generated_matrices import GeneratedMatrices
 from .generated_play_wrappers import GeneratedPlayWrappers
 from .generated_prism_spins import GeneratedPrismSpins
+from .generated_unison import GeneratedUnison
 from .generated_wheel import GeneratedWheel
 from .movement_families import GeneratedFamilies
-from .unison_colors import GeneratedUnison
 
 
 @dataclass

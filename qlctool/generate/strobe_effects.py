@@ -25,17 +25,14 @@ fixture with no strobe channel is not in them, because it cannot strobe.
 shutters going for a while.
 """
 
-from dataclasses import dataclass
-
-from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
-from ..functions.scene import build_scene
-from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
-from ..shutter_open import shutter_open_pairs
-from ..strobe_speed_pairs import strobe_speed_pairs
 from ..workspace import Workspace
+from .add_scene import add_scene
+from .generated_strobes import GeneratedStrobes
+from .held_values import held_values
+from .shutter_values import shutter_values
 
 # Where the held strobes sit on each channel's slow-to-fast run: the same two
 # points the flashes use - 0.97 is the owner's "246-248" on the PARs and
@@ -43,15 +40,6 @@ from ..workspace import Workspace
 # held strobe below 70% of the run. The latched `Strobo ON` keeps the midpoint.
 FAST_FRACTION = 0.97
 MEDIUM_FRACTION = 0.785
-ON_FRACTION = 0.5
-
-
-@dataclass(frozen=True)
-class GeneratedStrobes:
-    on_id: int | None
-    off_id: int | None
-    fast_id: int
-    medium_id: int
 
 
 def generate_strobe_effects(
@@ -63,75 +51,31 @@ def generate_strobe_effects(
     """The latched shutter pair plus the two held strobe scenes."""
     vocabulary = default_names() if names is None else names
     path = vocabulary.display("path_strobes") if path is None else path
-    shutter = _shutter_values(workspace, library)
+    shutter = shutter_values(workspace, library)
     on_id = off_id = None
     if shutter:
-        on_id = _scene(
+        on_id = add_scene(
             workspace,
             vocabulary.display("strobe_on"),
             {f: v for f, (v, _) in shutter.items()},
             path,
         )
-        off_id = _scene(
+        off_id = add_scene(
             workspace,
             vocabulary.display("strobe_off"),
             {f: v for f, (_, v) in shutter.items()},
             path,
         )
-    fast_id = _scene(
+    fast_id = add_scene(
         workspace,
         vocabulary.display("strobe_fast"),
-        _held_values(workspace, library, FAST_FRACTION),
+        held_values(workspace, library, FAST_FRACTION),
         path,
     )
-    medium_id = _scene(
+    medium_id = add_scene(
         workspace,
         vocabulary.display("strobe_medium"),
-        _held_values(workspace, library, MEDIUM_FRACTION),
+        held_values(workspace, library, MEDIUM_FRACTION),
         path,
     )
     return GeneratedStrobes(on_id=on_id, off_id=off_id, fast_id=fast_id, medium_id=medium_id)
-
-
-def _held_values(workspace: Workspace, library: FixtureLibrary, fraction: float):
-    """Fixture id -> every strobe channel at `fraction`, nothing else."""
-    values: dict[int, list[tuple[int, int]]] = {}
-    for capability in capabilities_of(workspace.root, library):
-        # A lit smoke machine strobes its LED like any PAR; the pump is not a
-        # strobe channel, so nothing here can fire it (ruling D3, 2026-09-26).
-        if capability.is_smoke and not capability.is_lit_smoke:
-            continue
-        strobing = strobe_speed_pairs(capability, fraction)
-        if strobing:
-            values[capability.fixture.fixture_id] = sorted(strobing)
-    return values
-
-
-def _shutter_values(workspace: Workspace, library: FixtureLibrary):
-    """Fixture id -> (values that strobe it, values that reopen it).
-
-    The strobing value through `strobe_speed_pairs`, which also covers the
-    channels whose whole job is the strobe and carry no labelled range at all
-    (the Vortex PC-64, the HYULIGHTS panels) - leaving those out is how
-    `Strobo ON` shipped strobing ten fixtures and skipping nine (found live,
-    2026-08-27). The reopen value through `shutter_open_pairs`, so a strobe
-    that stops and a scene that opens a shutter always agree on where "open"
-    is; a channel with no labelled open position reopens at 0, which is where
-    the untouched channel already sat.
-    """
-    result: dict[int, tuple[list[tuple[int, int]], list[tuple[int, int]]]] = {}
-    for capability in capabilities_of(workspace.root, library):
-        if capability.is_smoke and not capability.is_lit_smoke:
-            continue
-        reopen = dict(shutter_open_pairs(capability))
-        strobing = strobe_speed_pairs(capability, ON_FRACTION)
-        opening = [(offset, reopen.get(offset, 0)) for offset, _ in strobing]
-        if strobing:
-            result[capability.fixture.fixture_id] = (strobing, opening)
-    return result
-
-
-def _scene(workspace: Workspace, name: str, values, path: str) -> int:
-    function_id = next_function_id(workspace.root)
-    workspace.add_function(build_scene(function_id, name, values, path=path))
-    return function_id

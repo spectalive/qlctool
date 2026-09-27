@@ -247,6 +247,15 @@ CONVERTED: tuple[str, ...] = (
     "generate/generated_movements.py",
     "generate/moving_head_ids.py",
     "generate/spread_offsets.py",
+    # 2026-09-27, batch 5: split out of strobe_effects.py and unison_colors.py,
+    # which were converted; add_scene.py is shared by both.
+    "generate/add_scene.py",
+    "generate/generated_strobes.py",
+    "generate/held_values.py",
+    "generate/shutter_values.py",
+    "generate/generated_unison.py",
+    "generate/contrast_values.py",
+    "generate/wheel_step.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.

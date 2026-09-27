@@ -17,23 +17,23 @@ wheel carries instead of being left out.
 """
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field
 
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..complementary_pairs import COMPLEMENTARY_PAIRS
-from ..fixture_capabilities import FixtureCapabilities
 from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
-from ..functions.build_collection import build_collection
-from ..functions.scene import build_scene
 from ..ids import next_function_id
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..palette import PALETTE, PRIMARY_COLORS
 from ..workspace import Workspace
+from .add_scene import add_scene
 from .color_scene_values import color_scene_values
+from .contrast_values import contrast_values
+from .generated_unison import GeneratedUnison
 from .wheel_color_values import wheel_color_values
+from .wheel_step import wheel_step
 
 # The wheel's pace. Slower than a per-group wheel on purpose: a whole-room
 # colour change every 1,5 s reads as flicker, where one group changing that
@@ -50,18 +50,6 @@ WHEEL_FADE = 800
 CONTRAST_PAIRS: tuple[tuple[str, str], ...] = tuple(
     (pair.lead, pair.bed) for pair in COMPLEMENTARY_PAIRS
 )
-
-
-@dataclass(frozen=True)
-class GeneratedUnison:
-    scene_ids: list[int] = field(default_factory=list)
-    contrast_ids: list[int] = field(default_factory=list)
-    wheel_id: int | None = None
-    # What the wheel steps for each plain colour: the scene, or the Collection
-    # that starts it beside the pixel groups' matrix of the same colour. These
-    # are what a hand pick has to start, so the bars follow a picked colour the
-    # way they follow a stepped one.
-    solid_step_ids: list[int] = field(default_factory=list)
 
 
 def generate_unison_colors(
@@ -142,9 +130,9 @@ def generate_unison_colors(
         if not values:
             continue
         step_name = f"{scene_prefix} {name}"
-        scene_id = _scene(workspace, step_name, values, path)
+        scene_id = add_scene(workspace, step_name, values, path)
         scene_ids.append(scene_id)
-        step_id = _step(workspace, step_name, scene_id, extras.get(name), path, vocabulary)
+        step_id = wheel_step(workspace, step_name, scene_id, extras.get(name), path, vocabulary)
         solid_steps.append(step_id)
         steps.append(step_id)
 
@@ -159,7 +147,7 @@ def generate_unison_colors(
 
     contrast_ids: list[int] = []
     for heads_color, rest_color in contrasts:
-        values = _contrast_values(
+        values = contrast_values(
             caps, head_ids, rest_ids, heads_color, rest_color, excluded, values_of, vocabulary
         )
         values.update(
@@ -174,9 +162,11 @@ def generate_unison_colors(
         if len(values) < 2:
             continue
         name = vocabulary.render("contrast", heads=heads_color, rest=rest_color)
-        scene_id = _scene(workspace, name, values, path)
+        scene_id = add_scene(workspace, name, values, path)
         contrast_ids.append(scene_id)
-        steps.append(_step(workspace, name, scene_id, extras.get(rest_color), path, vocabulary))
+        steps.append(
+            wheel_step(workspace, name, scene_id, extras.get(rest_color), path, vocabulary)
+        )
 
     wheel_id: int | None = None
     if steps:
@@ -200,54 +190,3 @@ def generate_unison_colors(
         wheel_id=wheel_id,
         solid_step_ids=solid_steps,
     )
-
-
-def _contrast_values(
-    caps: list[FixtureCapabilities],
-    head_ids: Sequence[int],
-    rest_ids: Sequence[int],
-    heads_color: str,
-    rest_color: str,
-    excluded: set[int],
-    values_of: dict[str, tuple[int, int, int]],
-    vocabulary: Names,
-) -> dict[int, list[tuple[int, int]]]:
-    """The movers on one colour, everything else on the other.
-
-    Colour only, like the solid steps: intensity belongs to the levels.
-    """
-    lit_heads = [fid for fid in head_ids if fid not in excluded]
-    values = color_scene_values(
-        caps, values_of[heads_color], fixture_ids=lit_heads, dimmer_full=False
-    )
-    values.update(
-        color_scene_values(caps, values_of[rest_color], fixture_ids=rest_ids, dimmer_full=False)
-    )
-    for color, fixture_ids in ((heads_color, head_ids), (rest_color, rest_ids)):
-        values.update(
-            wheel_color_values(caps, color, fixture_ids=fixture_ids, dimmer=None, names=vocabulary)
-        )
-    return values
-
-
-def _scene(workspace: Workspace, name: str, values, path: str) -> int:
-    function_id = next_function_id(workspace.root)
-    workspace.add_function(build_scene(function_id, name, values, path=path))
-    return function_id
-
-
-def _step(
-    workspace: Workspace,
-    name: str,
-    scene_id: int,
-    extras: Sequence[int] | None,
-    path: str,
-    vocabulary: Names,
-) -> int:
-    """What the wheel actually steps: the scene, with its extras beside it."""
-    if not extras:
-        return scene_id
-    function_id = next_function_id(workspace.root)
-    step_name = vocabulary.render("with_pixels", name=name)
-    workspace.add_function(build_collection(function_id, step_name, [scene_id, *extras], path=path))
-    return function_id
