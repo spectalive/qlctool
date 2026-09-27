@@ -27,9 +27,9 @@ an explicit fixed duration instead: a viewing window we chose, not a
 measurement of anything the script does.
 """
 
+from .waves import waves
+
 PLAIN_STEPS = 1
-# waves.js: taillength 50 %, direction Right, orientation Horizontal.
-WAVES_TAIL = 0.5
 
 # marquee.js: algo.marqueeCount, left at its own default of 3 in the curated
 # recipe - rgbMapStepCount returns it verbatim.
@@ -59,7 +59,7 @@ def matrix_step_count(algorithm: str | None, width: int, height: int) -> int:
     if algorithm == "Strobe":
         return 2  # strobe.js: the default frequency
     if algorithm == "Waves":
-        return _waves(width)
+        return waves(width)
     if algorithm == "One By One":
         return width * height  # onebyone.js visits every cell
     if algorithm == "Sine Wave":
@@ -79,9 +79,3 @@ def matrix_step_count(algorithm: str | None, width: int, height: int) -> int:
     if algorithm == "Gradient":
         return GRADIENT_RAINBOW_STEPS
     return max(width, height)
-
-
-def _waves(span: int) -> int:
-    """waves.js: the sweep plus its tail, one frame shorter on an odd span."""
-    tail = max(1, round(span * WAVES_TAIL))
-    return span + tail - (0 if span % 2 == 0 else 1)
