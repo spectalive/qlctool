@@ -192,6 +192,7 @@ CONVERTED: tuple[str, ...] = (
     # 2026-09-27: page 4 cut along its frames, mixes first.
     "generate/mixes.py",
     "generate/matrix_frame.py",
+    "generate/cycles.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
