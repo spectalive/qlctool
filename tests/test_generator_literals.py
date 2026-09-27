@@ -180,6 +180,7 @@ CONVERTED: tuple[str, ...] = (
     # 2026-09-27: page 1 cut along its frames, room states first.
     "generate/room_states.py",
     "generate/hits.py",
+    "generate/panic.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
