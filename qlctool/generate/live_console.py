@@ -41,18 +41,15 @@ from ..workspace import Workspace
 from .audio_triggers_row import audio_triggers_row
 from .beam_subsets import GeneratedBeamSubsets
 from .builtin_effects import GeneratedBuiltins
-from .button_factory import button_factory
 from .console_ids import ConsoleIds
 from .console_layout import CANVAS_HEIGHT, CANVAS_WIDTH, MIX_COLOURS, SHORT_COLOURS, TEMPO_BEAT_MS
 from .console_outer_frame import console_outer_frame
-from .frame_factory import frame_factory
+from .console_widgets import console_widgets
 from .function_names import function_names
 from .generated_bank import GeneratedBank
 from .generated_console import GeneratedConsole
 from .generated_matrices import GeneratedMatrices
 from .generated_play_wrappers import GeneratedPlayWrappers
-from .label_factory import label_factory
-from .master_button_factory import master_button_factory
 from .page_control import page_control
 from .page_library import page_library
 from .page_show import page_show
@@ -115,11 +112,8 @@ def generate_live_console(
     flash = set(flash_functions)
 
     widget_of: dict[int, int] = {}
-    button = button_factory(ids, console, widget_of)
-    frame = frame_factory(ids, console)
-    label = label_factory(ids, console)
-    master_button = master_button_factory(
-        button, master, keys, flash, glyphs, pad_colors, pad_bindings
+    button, frame, label, master_button = console_widgets(
+        ids, console, widget_of, master, keys, flash, glyphs, pad_colors, pad_bindings
     )
 
     outer = console_outer_frame(console_root, frame, pad_bindings, vocabulary)

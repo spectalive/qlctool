@@ -205,6 +205,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/console_outer_frame.py",
     "generate/audio_triggers_row.py",
     "generate/play_page_call.py",
+    "generate/console_widgets.py",
 )
 
 # Ruling B6: modules that keep their literals, and why.
