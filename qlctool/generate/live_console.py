@@ -120,6 +120,7 @@ from .console_layout import (
 from .generated_console import GeneratedConsole
 from .library_help_lines import library_help_lines
 from .matrices_frame_caption import matrices_frame_caption
+from .mix_caption import mix_caption
 from .on_page import on_page
 from .page_control_title import page_control_title
 from .panels_frame_caption import panels_frame_caption
@@ -727,7 +728,7 @@ def _page_control(
             button(
                 element,
                 function_id,
-                _mix_caption(name, mix_code) if split else bank_caption(name, short_colour),
+                mix_caption(name, mix_code) if split else bank_caption(name, short_colour),
                 x=GAP + index * pitch,
                 y=HEADER,
                 w=pitch - 3,
@@ -981,7 +982,7 @@ def _page_library(
                     button(
                         mixes,
                         function_id,
-                        _mix_caption(name, mix_code),
+                        mix_caption(name, mix_code),
                         x=GAP + column * 51,
                         y=HEADER + 24 + row * 51,
                         w=48,
@@ -1295,20 +1296,6 @@ def _function_names(workspace: Workspace) -> dict[int, str]:
 
 def _first(ids):
     return ids[0] if ids else None
-
-
-def _mix_caption(name: str, mix_code: Mapping[str, str]) -> str:
-    """ "Rojo / Azul PAR" reads as "Ro/Az" on a 44px button.
-
-    Two letters, not one: Azul and Amarillo both start with an A, so a
-    one-letter code gave six pairs of buttons the same label.
-    """
-    parts = [p.strip() for p in name.split(" / ")]
-    if len(parts) < 2:
-        return ""
-    first = parts[0].split(" ")[0]
-    second = parts[1].split(" ")[0]
-    return f"{mix_code.get(first, first[:2])}/{mix_code.get(second, second[:2])}"
 
 
 def _after(name: str, marker: str) -> str:
