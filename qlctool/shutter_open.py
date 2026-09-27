@@ -13,12 +13,9 @@ by the range's own name. A fixture with no such range - every LED PAR here,
 whose shutter channel is only a strobe - is left alone.
 """
 
-from . import roles
-from .definition import Capability
 from .fixture_capabilities import FixtureCapabilities
+from .shutter_open_ranges import shutter_open_ranges
 from .shutter_open_value import shutter_open_value
-
-OPEN_PRESET = "ShutterOpen"
 
 
 def shutter_open_pairs(capabilities: FixtureCapabilities) -> list[tuple[int, int]]:
@@ -31,37 +28,3 @@ def shutter_open_pairs(capabilities: FixtureCapabilities) -> list[tuple[int, int
         (offset, shutter_open_value(opening))
         for offset, opening in shutter_open_ranges(capabilities)
     ]
-
-
-def shutter_open_ranges(
-    capabilities: FixtureCapabilities,
-) -> list[tuple[int, Capability]]:
-    """(offset, the range that counts as open) for every shutter it has.
-
-    The range, not just a value, because whether a fixture is open depends on
-    where its shutter *is*, not on whether anybody wrote to it. A CLB2.4 head
-    labels DMX 0 "no strobe", so an untouched channel is already open; a BEAM
-    230W 7R puts open near the top, so an untouched channel is shut. Only the
-    range can tell those apart, and getting it wrong is either a fixture
-    reported dark that is fine or a fixture dark that nobody warned about.
-    """
-    found: list[tuple[int, Capability]] = []
-    for offset, ranges in capabilities.capabilities_for_role(roles.STROBE):
-        opening = _open_range(ranges)
-        if opening is not None:
-            found.append((offset, opening))
-    return found
-
-
-def _open_range(ranges: tuple[Capability, ...]) -> Capability | None:
-    """The last open range on the channel.
-
-    Last, not first, because a shutter channel that has two of them puts one
-    just above "closed" at the bottom and one at the very top; the top one is
-    the one clear of the closed range, and the one the hand-built show used.
-    """
-    by_preset = [r for r in ranges if r.preset == OPEN_PRESET]
-    if by_preset:
-        return by_preset[-1]
-    by_name = [r for r in ranges if r.name.strip().lower() == "open"]
-    return by_name[-1] if by_name else None

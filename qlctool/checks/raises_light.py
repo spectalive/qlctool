@@ -10,7 +10,7 @@ from collections.abc import Mapping
 
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
-from ..shutter_open import shutter_open_ranges
+from ..shutter_open_ranges import shutter_open_ranges
 from .lit import lit
 
 

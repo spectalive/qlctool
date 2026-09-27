@@ -1,6 +1,6 @@
 """(fixture name, value written, the endpoint it should have written)."""
 
-from ..shutter_open import shutter_open_ranges
+from ..shutter_open_ranges import shutter_open_ranges
 from ..shutter_open_value import shutter_open_value
 from .show_graph import ShowGraph
 

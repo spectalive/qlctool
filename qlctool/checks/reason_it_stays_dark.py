@@ -2,7 +2,7 @@
 
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
-from ..shutter_open import shutter_open_ranges
+from ..shutter_open_ranges import shutter_open_ranges
 from ..strobe_range import strobe_range
 from .lit import lit
 from .shutter_off_range import shutter_off_range

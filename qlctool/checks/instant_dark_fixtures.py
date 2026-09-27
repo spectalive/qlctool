@@ -3,7 +3,7 @@
 from functools import partial
 
 from .. import roles
-from ..shutter_open import shutter_open_ranges
+from ..shutter_open_ranges import shutter_open_ranges
 from ..strobe_range import strobe_range
 from .color_roles import COLOUR
 from .driven_channels import Driven

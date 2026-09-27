@@ -12,7 +12,7 @@ bare speed channel (no labelled ranges) never shuts: 0 there is no strobe.
 """
 
 from ..fixture_capabilities import FixtureCapabilities
-from ..shutter_open import shutter_open_ranges
+from ..shutter_open_ranges import shutter_open_ranges
 from ..strobe_range import strobe_range
 
 OPEN_PRESETS = ("ShutterOpen", "LampOn")

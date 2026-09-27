@@ -2,7 +2,7 @@
 
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
-from ..shutter_open import shutter_open_ranges
+from ..shutter_open_ranges import shutter_open_ranges
 from ..wheel_blade_offsets import wheel_blade_offsets
 
 
