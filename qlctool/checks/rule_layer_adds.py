@@ -19,17 +19,14 @@ and say so on their frame; this rule is about Scenes, the only kind of layer
 that has a fix.
 """
 
-from collections.abc import Mapping
-
 from lxml import etree
 
-from .. import roles
-from ..fixture_capabilities import FixtureCapabilities
-from .color_roles import COLOUR
+from .coloured_by_states import coloured_by_states
 from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
+from .fixture_states_colour import fixture_states_colour
 from .layer_buttons import layer_buttons
-from .show_graph import ShowGraph, lit, reach
+from .show_graph import ShowGraph
 from .wrapper_scenes import wrapper_scenes
 
 RULE_ID = "layer_adds"
@@ -40,7 +37,7 @@ def check_layer_adds(
 ) -> list[Finding]:
     if not states:
         return []
-    coloured_by_state = _coloured_by_states(graph, groups, states)
+    coloured_by_state = coloured_by_states(graph, groups, states)
     findings: list[Finding] = []
     for button in layer_buttons(root, states):
         if family_frame_problems(graph, groups, states, button.widget) == ():
@@ -53,7 +50,7 @@ def check_layer_adds(
             for scene_id in scenes
             for fixture_id, written in graph.driven_of(graph.functions[scene_id], groups).items()
             if fixture_id in coloured_by_state
-            and _states_colour(graph.capabilities.get(fixture_id), written)
+            and fixture_states_colour(graph.capabilities.get(fixture_id), written)
         }
         if clashing:
             findings.append(
@@ -67,26 +64,3 @@ def check_layer_adds(
                 )
             )
     return findings
-
-
-def _coloured_by_states(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], states: set[int]
-) -> set[int]:
-    coloured: set[int] = set()
-    for state_id in states:
-        for fixture_id, written in reach(graph, groups, state_id).items():
-            if _states_colour(graph.capabilities.get(fixture_id), written):
-                coloured.add(fixture_id)
-    return coloured
-
-
-def _states_colour(
-    capability: FixtureCapabilities | None, written: Mapping[int, int | None]
-) -> bool:
-    if capability is None or (capability.is_smoke and not capability.is_lit_smoke):
-        return False
-    offsets = {offset for role in COLOUR for offset in capability.offsets_for_role(role)}
-    wheel = capability.wheel_for_role(roles.COLOR_MACRO)
-    if wheel is not None:
-        offsets.add(wheel[0])
-    return any(lit(written[offset]) for offset in offsets if offset in written)
