@@ -228,6 +228,8 @@ A workspace given on the command line as well must be the one `[rig]` names.
 - `generate/` - the mass generators (colour scene, colour palette, matrix
   effects, movement EFX, Virtual Console layout, channel probe)
 - `palette.py`, `ids.py`, `cli.py` - palette data, ID allocation, command line
+- `build_deskmap.py`, `cmd_deskmap.py`, `desk_release_hooks.py` - `qlctool deskmap`: the tablet
+  desk's map and its release-hook contract with dmxdesk ([`docs/desk-map.md`](docs/desk-map.md))
 - `mcpserver/` - `qlctool mcp`: the file tools and the live QLC+ tools an agent calls ([`docs/mcp.md`](docs/mcp.md))
 - `description/`, `names/`, `locales/`, `vibra/`, `controllers/` - the show description, its name catalogues, Vibra's values, and the optional controller profiles with their rule providers
 - `library/system/` - QLC+ system fixture defs the patch needs, bundled from the Mac
