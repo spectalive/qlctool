@@ -23,11 +23,8 @@ from dataclasses import dataclass, field
 from lxml import etree
 
 from ..fixture_capabilities import FixtureCapabilities
-from ..fixture_group import fixture_groups
-from ..xmlutil import find_local, findall_local, localname
 from .driven_channels import Driven, driven_channels
 from .freeze_driven import freeze_driven
-from .htp_offsets import htp_offsets
 from .read_only_driven import ReadOnlyDriven
 
 BRANCHING = ("Chaser", "Collection", "Sequence")
@@ -139,103 +136,3 @@ class ShowGraph:
     def collections(self, function_id: int) -> list[int]:
         """The Collections reachable from here - every point of simultaneity."""
         return [fid for fid in self.descendants(function_id) if self.kind(fid) == CONCURRENT]
-
-
-def build_show_graph(root: etree._Element, capabilities: list[FixtureCapabilities]) -> ShowGraph:
-    engine = find_local(root, "Engine")
-    functions: dict[int, etree._Element] = {}
-    members: dict[int, tuple[int, ...]] = {}
-    for element in engine if engine is not None else ():
-        if localname(element) != "Function" or "ID" not in element.attrib:
-            continue
-        function_id = int(element.attrib["ID"])
-        functions[function_id] = element
-        if element.attrib.get("Type") in BRANCHING:
-            members[function_id] = tuple(
-                int(step.text)
-                for step in findall_local(element, "Step")
-                if step.text and step.text.strip().isdigit()
-            )
-    by_id = {c.fixture.fixture_id: c for c in capabilities}
-    return ShowGraph(
-        functions=functions,
-        members=members,
-        capabilities=by_id,
-        htp=htp_offsets(root, by_id),
-        grids={group.group_id: (group.width, group.height) for group in fixture_groups(root)},
-    )
-
-
-def group_fixtures(root: etree._Element) -> dict[int, tuple[int, ...]]:
-    return {group.group_id: group.fixture_ids for group in fixture_groups(root)}
-
-
-def reach(
-    graph: ShowGraph,
-    groups: dict[int, tuple[int, ...]],
-    function_id: int,
-    kinds: tuple[str, ...] | None = None,
-) -> Driven:
-    """Every channel this function can drive, through anything it starts.
-
-    `kinds` restricts which leaf function types count - "what does this look
-    *state* about colour" is a question about its Scenes, since a matrix paints
-    a group's pixels and can say nothing about a fixture that has none.
-
-    Values merge by the highest, because DMX does: QLC+ mixes intensity
-    channels HTP, so what the room sees from two sources on one channel is the
-    louder of them. `None` - an effect driving a channel to a value nobody can
-    predict - beats any number, since it may be anything at any moment.
-
-    Memoised on the graph, and handed out as a copy so a caller may write into
-    it: the rules ask this of the same functions some sixteen thousand times
-    per pass (2026-09-22).
-    """
-    key = (function_id, kinds, graph.groups_key(groups))
-    cached = graph.reach_cache.get(key)
-    if cached is None:
-        cached = _reach(graph, groups, function_id, kinds)
-        graph.reach_cache[key] = cached
-    return {fixture_id: dict(pairs) for fixture_id, pairs in cached.items()}
-
-
-def _reach(
-    graph: ShowGraph,
-    groups: dict[int, tuple[int, ...]],
-    function_id: int,
-    kinds: tuple[str, ...] | None,
-) -> Driven:
-    merged: Driven = {}
-    for member in graph.descendants(function_id):
-        function = graph.functions.get(member)
-        if function is None:
-            continue
-        if kinds is not None and function.attrib.get("Type") not in kinds:
-            continue
-        for fixture_id, pairs in graph.driven(member, groups).items():
-            target = merged.setdefault(fixture_id, {})
-            for offset, value in pairs.items():
-                target[offset] = _higher(target.get(offset, 0), value)
-    return merged
-
-
-def merge(first: Driven, second: Driven) -> Driven:
-    """Two functions running at once, mixed the way the room mixes them."""
-    merged: Driven = {fixture: dict(pairs) for fixture, pairs in first.items()}
-    for fixture_id, pairs in second.items():
-        target = merged.setdefault(fixture_id, {})
-        for offset, value in pairs.items():
-            target[offset] = _higher(target.get(offset, 0), value)
-    return merged
-
-
-def _higher(current: int | None, incoming: int | None) -> int | None:
-    """HTP, with None - an unpredictable effect - above every number."""
-    if current is None or incoming is None:
-        return None
-    return max(current, incoming)
-
-
-def lit(value: int | None) -> bool:
-    """Whether a channel is doing something: unknown counts as doing something."""
-    return value is None or value > 0

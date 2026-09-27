@@ -13,8 +13,8 @@ import pytest
 from single_shape_rig import build_single_shape_patch
 
 from qlctool.capabilities_of import capabilities_of
+from qlctool.checks.build_show_graph import build_show_graph
 from qlctool.checks.rule_caption_promise import check_caption_promise
-from qlctool.checks.show_graph import build_show_graph
 from qlctool.cli import main
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.names.default_names import default_names

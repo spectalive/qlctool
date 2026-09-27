@@ -18,7 +18,8 @@ from lxml import etree
 
 from ..xmlutil import find_local, iter_local, localname
 from .function_of import function_of
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 from .startup_function import startup_function
 
 # A state frame drives at least this share of the rig between its buttons.

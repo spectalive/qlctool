@@ -4,7 +4,8 @@ from collections.abc import Mapping
 
 from ..internal_program import internal_program
 from .color_roles import COLOUR
-from .show_graph import ShowGraph, lit
+from .lit import lit
+from .show_graph import ShowGraph
 
 
 def left_animating(graph: ShowGraph, fixture_id: int, written: Mapping[int, int | None]) -> bool:

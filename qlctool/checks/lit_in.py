@@ -9,7 +9,7 @@ from collections.abc import Collection, Mapping
 
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
-from .show_graph import lit
+from .lit import lit
 
 
 def lit_in(

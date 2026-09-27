@@ -1,7 +1,8 @@
 """Fixture ids a set of states already leaves lit with a colour."""
 
 from .fixture_states_colour import fixture_states_colour
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 
 def coloured_by_states(

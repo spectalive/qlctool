@@ -1,7 +1,8 @@
 """(fixture, offset) one function can drive, restricted to what may fight."""
 
 from .color_roles import CONTESTED
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 
 def contested_channels(

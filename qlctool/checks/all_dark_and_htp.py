@@ -1,7 +1,9 @@
 """A step whose only claim to darkness is zeros on Intensity channels."""
 
 from .. import roles
-from .show_graph import ShowGraph, lit, reach
+from .lit import lit
+from .reach import reach
+from .show_graph import ShowGraph
 
 INTENSITY_GROUP = "Intensity"
 

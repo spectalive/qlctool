@@ -2,8 +2,9 @@
 
 from .concurrent_instants import concurrent_instants
 from .instant import Instant
+from .lit import lit
 from .read_only_driven import ReadOnlyDriven
-from .show_graph import ShowGraph, lit
+from .show_graph import ShowGraph
 
 
 class InstantEvaluator:

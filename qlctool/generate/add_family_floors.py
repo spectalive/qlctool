@@ -19,7 +19,8 @@ it never lights anything by itself (`static_floors`).
 Added after the console, so every function the console binds keeps its id.
 """
 
-from ..checks.show_graph import build_show_graph, group_fixtures
+from ..checks.build_show_graph import build_show_graph
+from ..checks.group_fixtures import group_fixtures
 from ..xmlutil import findall_local
 from .generate_rest_scene import generate_rest_scene
 from .prepend_collection_steps import prepend_collection_steps

@@ -5,7 +5,7 @@ from collections.abc import Mapping
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from .color_roles import COLOUR
-from .show_graph import lit
+from .lit import lit
 
 
 def fixture_states_colour(

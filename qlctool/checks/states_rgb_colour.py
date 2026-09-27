@@ -3,7 +3,8 @@
 from .. import roles
 from .color_roles import COLOUR
 from .driven_channels import Driven
-from .show_graph import ShowGraph, lit
+from .lit import lit
+from .show_graph import ShowGraph
 
 
 def states_rgb_colour(graph: ShowGraph, stated: Driven) -> bool:

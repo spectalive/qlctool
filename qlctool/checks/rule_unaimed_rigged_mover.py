@@ -26,7 +26,8 @@ from ..rigged_fixture_ids import rigged_fixture_ids
 from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
 from .position_frame_picks import position_frame_picks
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 from .unaimed_evaluator import UnaimedEvaluator
 
 RULE_ID = "unaimed_rigged_mover"

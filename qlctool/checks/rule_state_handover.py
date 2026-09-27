@@ -21,7 +21,8 @@ from .. import roles
 from .finding import ERROR, Finding
 from .fixture_lit_in_state import fixture_lit_in_state
 from .left_showing import left_showing
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 RULE_ID = "state_handover"
 INHERITED_ROLES = (

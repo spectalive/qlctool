@@ -8,7 +8,10 @@ from ..strobe_range import strobe_range
 from .color_roles import COLOUR
 from .driven_channels import Driven
 from .instant_evaluator import InstantEvaluator
-from .show_graph import ShowGraph, lit, merge, reach
+from .lit import lit
+from .merge import merge
+from .reach import reach
+from .show_graph import ShowGraph
 from .shutter_closed import shutter_closed
 from .shutter_closed_while_lit import shutter_closed_while_lit
 from .unowned_while_lit import unowned_while_lit

@@ -1,7 +1,9 @@
 """Fixture id -> the pump offsets this button raises that QLC+ will not clear."""
 
 from ..fog_offsets import fog_offsets
-from .show_graph import ShowGraph, lit, reach
+from .lit import lit
+from .reach import reach
+from .show_graph import ShowGraph
 
 # The one QLC+ zeroes every cycle. Everything else holds its last value.
 RESET_GROUP = "intensity"

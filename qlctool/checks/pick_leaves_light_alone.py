@@ -16,7 +16,8 @@ the rule reads, so a pick is never taken for neutral when it is not.
 
 from .. import roles
 from .color_roles import COLOUR
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 _LIGHT_ROLES = (*COLOUR, roles.DIMMER, roles.STROBE)
 

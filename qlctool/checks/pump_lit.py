@@ -3,7 +3,8 @@
 from collections.abc import Mapping
 
 from ..fog_offsets import fog_offsets
-from .show_graph import ShowGraph, lit
+from .lit import lit
+from .show_graph import ShowGraph
 
 
 def pump_lit(graph: ShowGraph, fixture_id: int, written: Mapping[int, int | None]) -> bool:

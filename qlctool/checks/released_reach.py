@@ -8,7 +8,8 @@ stopped with them. Values merge by the highest, as `reach` does.
 """
 
 from .driven_channels import Driven
-from .show_graph import ShowGraph, merge
+from .merge import merge
+from .show_graph import ShowGraph
 
 
 def released_reach(

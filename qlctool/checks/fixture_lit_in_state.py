@@ -3,7 +3,7 @@
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from .color_roles import COLOUR
-from .show_graph import lit
+from .lit import lit
 
 
 def fixture_lit_in_state(capability: FixtureCapabilities, written: dict[int, int | None]) -> bool:

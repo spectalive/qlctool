@@ -9,7 +9,8 @@ and the desk draws none rather than guessing.
 """
 
 from .checks.fixture_colour import fixture_colour
-from .checks.show_graph import ShowGraph, reach
+from .checks.reach import reach
+from .checks.show_graph import ShowGraph
 
 MAX_SWATCHES = 4
 

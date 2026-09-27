@@ -11,7 +11,7 @@ from collections.abc import Mapping
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from ..shutter_open import shutter_open_ranges
-from .show_graph import lit
+from .lit import lit
 
 
 def raises_light(capability: FixtureCapabilities, written: Mapping[int, int | None]) -> bool:

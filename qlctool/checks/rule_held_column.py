@@ -29,7 +29,9 @@ from ..fog_offsets import fog_offsets
 from ..vc.build_button import NO_FUNCTION
 from ..xmlutil import find_local, iter_local
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit, reach
+from .lit import lit
+from .reach import reach
+from .show_graph import ShowGraph
 
 RULE_ID = "held_column"
 

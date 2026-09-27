@@ -8,10 +8,11 @@ from rig_root import RIG_ROOT
 
 from qlctool.build_deskmap import build_deskmap
 from qlctool.capabilities_of import capabilities_of
+from qlctool.checks.build_show_graph import build_show_graph
+from qlctool.checks.group_fixtures import group_fixtures
 from qlctool.checks.rule_context import RuleContext
 from qlctool.checks.rule_desk_bursts import check_desk_bursts
 from qlctool.checks.rule_held_column import check_held_column
-from qlctool.checks.show_graph import build_show_graph, group_fixtures
 from qlctool.controllers.tablet_desk_bounded_latches import tablet_desk_bounded_latches
 from qlctool.desk_burst_buttons import desk_burst_buttons
 from qlctool.desk_burst_identifier import desk_burst_identifier
@@ -160,7 +161,7 @@ def test_2026_09_13_burst_corruption_fails_closed(generated, fault):
 
 def test_burst_map_keeps_source_captions_and_swatches(generated, tmp_path):
     workspace, library = generated
-    from qlctool.checks.show_graph import group_fixtures
+    from qlctool.checks.group_fixtures import group_fixtures
     from qlctool.desk_policy import split_caption
     from qlctool.leading_glyph import leading_glyph
     from qlctool.swatches import swatches

@@ -17,7 +17,8 @@ no such claim and is left alone.
 """
 
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 from .spinning_wheels import spinning_wheels
 from .states_rgb_colour import states_rgb_colour
 

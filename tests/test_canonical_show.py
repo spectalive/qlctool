@@ -348,7 +348,7 @@ def test_no_scene_but_the_smoke_ones_touches_the_smoke_pump(built):
     like a floor PAR, so ordinary scenes may write it - but a value above zero
     on any pump channel outside the smoke scenes is a tank emptying itself."""
 
-    from qlctool.checks.show_graph import build_show_graph
+    from qlctool.checks.build_show_graph import build_show_graph
     from qlctool.checks.valid_desk_bursts import valid_desk_bursts
 
     _show, out = built
@@ -404,7 +404,7 @@ def test_no_chaser_walks_itself_at_engine_speed(built):
     so PerStep is for differing steps or a verified desk burst with a fixed clock.
     """
     _, out = built
-    from qlctool.checks.show_graph import build_show_graph
+    from qlctool.checks.build_show_graph import build_show_graph
     from qlctool.checks.valid_desk_bursts import valid_desk_bursts
 
     root = Workspace.load(out).root

@@ -165,7 +165,7 @@ def test_2026_09_22_every_shape_button_moves_the_beams_and_the_washes(library):
     from qlctool import roles
     from qlctool.capabilities_of import capabilities_of
     from qlctool.checks.driven_channels import driven_channels
-    from qlctool.checks.show_graph import group_fixtures
+    from qlctool.checks.group_fixtures import group_fixtures
 
     ws = strip_to_skeleton(Workspace.load(SHOW))
     mirrored = house_right_fixture_ids(ws.root)

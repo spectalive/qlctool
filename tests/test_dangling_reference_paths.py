@@ -16,9 +16,9 @@ from pathlib import Path
 import pytest
 from lxml import etree
 
+from qlctool.checks.build_show_graph import build_show_graph
 from qlctool.checks.invalid_function_id import INVALID_ID
 from qlctool.checks.rule_dangling_reference import check_dangling_references
-from qlctool.checks.show_graph import build_show_graph
 from qlctool.constants import QLC_NS
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local

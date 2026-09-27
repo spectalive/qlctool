@@ -23,7 +23,9 @@ from .colour_takeover_fixtures import colour_takeover_fixtures
 from .finding import ERROR, Finding
 from .fixture_names_of import fixture_names_of
 from .forced_flash_triggers import forced_flash_triggers
-from .show_graph import ShowGraph, lit, reach
+from .lit import lit
+from .reach import reach
+from .show_graph import ShowGraph
 
 RULE_ID = "bank_key_coverage"
 RGB = (roles.RED, roles.GREEN, roles.BLUE)

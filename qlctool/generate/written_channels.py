@@ -1,6 +1,7 @@
 """Every (fixture, offset) a function can drive, through anything it starts."""
 
-from ..checks.show_graph import ShowGraph, reach
+from ..checks.reach import reach
+from ..checks.show_graph import ShowGraph
 
 
 def written_channels(

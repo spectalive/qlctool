@@ -15,7 +15,8 @@ from .driven_channels import Driven
 from .family_offsets import family_offsets
 from .lit_in import lit_in
 from .merged_htp import merged_htp
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 
 def latched_on_lit(

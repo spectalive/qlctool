@@ -5,7 +5,8 @@ position - which can be neither the lit nor the black half of a strobe.
 """
 
 from .. import roles
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 INTENSITY_ROLES = (
     roles.DIMMER,

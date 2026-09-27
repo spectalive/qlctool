@@ -22,17 +22,15 @@ from small_rig import build_small_rig_patch
 from qlctool import roles
 from qlctool.audience_window import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
+from qlctool.checks.build_show_graph import build_show_graph
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.checks.console_states import room_states
 from qlctool.checks.display_name_of_rule import display_name_of_rule
+from qlctool.checks.group_fixtures import group_fixtures
+from qlctool.checks.lit import lit
+from qlctool.checks.reach import reach
 from qlctool.checks.rule_pick_darkens import check_pick_darkens
 from qlctool.checks.rule_undeclared_heads import check_undeclared_heads
-from qlctool.checks.show_graph import (
-    build_show_graph,
-    group_fixtures,
-    lit,
-    reach,
-)
 from qlctool.checks.strobe_written import strobe_capable_offsets
 from qlctool.cli import main
 from qlctool.fixture_group import fixture_groups
@@ -2516,8 +2514,9 @@ def test_a_multi_family_state_chaser_is_not_a_play_hook(library, deluxe_show):
     frame must not demand it as a return hook for each one.
     """
     from qlctool.capabilities_of import capabilities_of
+    from qlctool.checks.build_show_graph import build_show_graph
     from qlctool.checks.console_states import room_states
-    from qlctool.checks.show_graph import build_show_graph, group_fixtures
+    from qlctool.checks.group_fixtures import group_fixtures
     from qlctool.checks.state_owners import state_owners
 
     workspace = deluxe_show
@@ -2557,8 +2556,9 @@ def test_the_talk_owners_have_one_family_each(library, deluxe_show):
     state owners, so a renamed frame cannot hide shared hook semantics.
     """
     from qlctool.capabilities_of import capabilities_of
+    from qlctool.checks.build_show_graph import build_show_graph
     from qlctool.checks.console_states import room_states
-    from qlctool.checks.show_graph import build_show_graph, group_fixtures
+    from qlctool.checks.group_fixtures import group_fixtures
     from qlctool.checks.state_owners import state_owners
 
     workspace = deluxe_show

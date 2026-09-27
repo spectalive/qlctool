@@ -1,8 +1,9 @@
 """Family name -> fixtures whose family-defining channels this look writes."""
 
 from .families import FAMILIES
+from .reach import reach
 from .sets_pixel_mode import sets_pixel_mode
-from .show_graph import ShowGraph, reach
+from .show_graph import ShowGraph
 
 
 def function_families(

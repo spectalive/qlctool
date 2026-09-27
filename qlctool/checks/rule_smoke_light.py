@@ -15,7 +15,8 @@ shows light when both are.
 from .. import roles
 from ..fog_offsets import fog_offsets
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit
+from .lit import lit
+from .show_graph import ShowGraph
 
 RULE_ID = "smoke_light"
 

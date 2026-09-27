@@ -19,7 +19,8 @@ not asked to.
 from .colours_any import colours_any
 from .finding import ERROR, Finding
 from .is_wheel_coloured import is_wheel_coloured
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 RULE_ID = "wheel_colour"
 STATES_COLOUR = ("Scene", "Sequence")

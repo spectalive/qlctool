@@ -2,7 +2,8 @@
 
 from .color_roles import COLOUR
 from .driven_channels import Driven
-from .show_graph import ShowGraph, lit
+from .lit import lit
+from .show_graph import ShowGraph
 
 
 def colours_any(graph: ShowGraph, stated: Driven, members: tuple[int, ...]) -> bool:

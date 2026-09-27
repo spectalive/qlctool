@@ -13,7 +13,8 @@ that promises light and does not deliver it.
 
 from .finding import ERROR, Finding
 from .intensity_dark_fixtures import intensity_dark_fixtures
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 RULE_ID = "intensity"
 # A Scene states a colour. A matrix paints one group's pixels and an EFX moves

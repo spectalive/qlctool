@@ -11,10 +11,11 @@ from rig_root import RIG_ROOT
 
 import qlctool.checks.rule_pick_darkens as rule_pick_darkens
 from qlctool.capabilities_of import capabilities_of
+from qlctool.checks.build_show_graph import build_show_graph
 from qlctool.checks.console_states import room_states
 from qlctool.checks.family_frame_picks import family_frame_picks
+from qlctool.checks.group_fixtures import group_fixtures
 from qlctool.checks.pick_leaves_light_alone import pick_leaves_light_alone
-from qlctool.checks.show_graph import build_show_graph, group_fixtures
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.workspace import Workspace
 from qlctool.xmlutil import find_local, iter_local

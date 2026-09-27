@@ -18,6 +18,7 @@ from ..fixture_library import FixtureLibrary
 from ..names.names import Names
 from ..workspace import Workspace
 from .applying_providers import applying_providers
+from .build_show_graph import build_show_graph
 from .canvas_of import canvas_of
 from .console_caption_findings import console_caption_findings
 from .console_states import room_states
@@ -26,6 +27,7 @@ from .family_frame_findings import family_frame_findings
 from .finding import Finding
 from .fixing_order import fixing_order
 from .flash_button_findings import flash_button_findings
+from .group_fixtures import group_fixtures
 from .key_binding_findings import key_binding_findings
 from .movement_findings import movement_findings
 from .named_findings import named_findings
@@ -84,7 +86,6 @@ from .rule_white_emitter import check_white_emitter
 from .rule_white_share_dropped import check_white_share_dropped
 from .rule_white_twice import check_white_twice
 from .rule_zoom_narrow import check_zoom_narrow
-from .show_graph import build_show_graph, group_fixtures
 
 
 def check_workspace(

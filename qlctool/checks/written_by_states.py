@@ -1,6 +1,7 @@
 """(fixture, offset) pairs written by at least one of a set of room states."""
 
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 
 def written_by_states(

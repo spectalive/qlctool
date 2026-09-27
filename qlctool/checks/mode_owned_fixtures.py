@@ -2,7 +2,9 @@
 
 from .. import roles
 from ..internal_program import internal_program
-from .show_graph import ShowGraph, lit, reach
+from .lit import lit
+from .reach import reach
+from .show_graph import ShowGraph
 
 
 def mode_owned_fixtures(

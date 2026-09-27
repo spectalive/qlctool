@@ -28,7 +28,8 @@ nobody sees, and `collision` must go on saying so.
 from collections.abc import Collection
 
 from .merged_htp import merged_htp
-from .show_graph import ShowGraph, reach
+from .reach import reach
+from .show_graph import ShowGraph
 
 
 def static_floors(

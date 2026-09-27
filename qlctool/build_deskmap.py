@@ -14,8 +14,9 @@ from typing import Any
 
 from .attach_release_hooks import attach_release_hooks
 from .capabilities_of import capabilities_of
+from .checks.build_show_graph import build_show_graph
+from .checks.group_fixtures import group_fixtures
 from .checks.rule_desk_bursts import check_desk_bursts
-from .checks.show_graph import build_show_graph, group_fixtures
 from .desk_burst_buttons import desk_burst_buttons
 from .desk_burst_identifier import desk_burst_identifier
 from .desk_burst_note import desk_burst_note
