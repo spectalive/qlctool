@@ -11,7 +11,7 @@ from .driven_channels import Driven
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph, lit, merge, reach
 from .shutter_closed_while_lit import shutter_closed_while_lit
-from .unowned_instant import unowned_while_lit
+from .unowned_while_lit import unowned_while_lit
 
 
 def instant_dark_fixtures(

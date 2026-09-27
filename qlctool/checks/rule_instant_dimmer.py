@@ -11,7 +11,7 @@ four columns and their dimmer - Intensity, zeroed every cycle - stayed at 0
 (cross-audit, 2026-09-02; the montage note of 2026-08-29 wants them to "subir
 y bajar con los niveles").
 
-So the question is asked per instant, the way `unowned_instant` asks it of the
+So the question is asked per instant, the way `unowned_while_lit` asks it of the
 strobe channels: is there a reachable instant of this state where the fixture
 is coloured and no member writes its dimmer? A fixture with no dimmer role is
 `intensidad`'s business (its shutter); a fixture whose dimmer is only ever

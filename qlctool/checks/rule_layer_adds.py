@@ -30,7 +30,7 @@ from .family_frames import family_frame_problems
 from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph, lit, reach
-from .wrapper_leaves import wrapper_scenes
+from .wrapper_scenes import wrapper_scenes
 
 RULE_ID = "layer_adds"
 

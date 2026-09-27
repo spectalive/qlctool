@@ -33,7 +33,7 @@ fight over a channel" is a question about a state's whole **reach** - everything
 it can drive at any step. "Is somebody owning this channel right now" is not:
 merge the steps and the one that parks a wheel parks it on behalf of every step
 that does not. The LTP restore rules therefore read a state one **instant** at a
-time (`unowned_instant.py`), which is answered without enumerating instants -
+time (`unowned_while_lit.py`), which is answered without enumerating instants -
 two booleans per node, `any` over a chaser's steps and `all` over a collection's
 members.
 

@@ -36,7 +36,7 @@ from .finding import ERROR, Finding
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph
 from .strobe_written import strobe_capable_offsets, value_strobes
-from .unowned_instant import unowned_while_lit
+from .unowned_while_lit import unowned_while_lit
 
 RULE_ID = "strobe_restore"
 

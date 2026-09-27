@@ -3865,7 +3865,7 @@ def test_2026_09_27_a_pick_with_the_washes_held_is_still_a_wrapper(library):
     `wrapper_scenes` - one member only - stopped seeing it, so the pick rules
     skipped it without a word. A Collection of Scenes is a wrapper too.
     """
-    from qlctool.checks.wrapper_leaves import wrapper_scenes
+    from qlctool.checks.wrapper_scenes import wrapper_scenes
 
     workspace = _show("Vibra.qxw")
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))

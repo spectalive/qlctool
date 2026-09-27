@@ -26,7 +26,7 @@ from .finding import ERROR, Finding
 from .layer_buttons import layer_buttons
 from .show_graph import ShowGraph
 from .stepped_leaves import stepped_leaves
-from .wrapper_leaves import wrapper_scenes
+from .wrapper_scenes import wrapper_scenes
 
 RULE_ID = "pick_overridden"
 PICK_ROLES = (

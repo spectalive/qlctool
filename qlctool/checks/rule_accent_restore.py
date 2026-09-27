@@ -23,7 +23,7 @@ from ..xmlutil import find_local, iter_local
 from .finding import WARNING, Finding
 from .instant_evaluator import InstantEvaluator
 from .show_graph import ShowGraph
-from .unowned_instant import unowned_while_lit
+from .unowned_while_lit import unowned_while_lit
 
 RULE_ID = "accent_restore"
 WHEEL_ROLES = (roles.COLOR_MACRO, roles.GOBO, roles.PRISM)
