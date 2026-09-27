@@ -3545,6 +3545,29 @@ def test_2026_09_26_a_bank_key_that_skips_the_front_pars(library):
     assert set(expected) <= set(findings[0].fixtures)
 
 
+def test_2026_09_26_forced_flash_triggers_is_deterministic_across_calls():
+    """2853e38: `forced` used to key its forced-LTP buttons by `id(button)`, a
+    transient object's identity - once the loop moved on, CPython was free to
+    reuse that address for the very next button, so a pad `Input` could match
+    the wrong function depending on garbage-collection timing rather than on
+    which widget it is actually bound to. On the shipped `Vibra.qxw`, keying
+    by `id()` picks up a handful of such phantom `("pad", ...)` triggers, and
+    which ones differs from call to call. Element identity carries no such
+    risk, so repeated calls against the same, unchanged workspace must always
+    return exactly the same mapping.
+    """
+    import gc
+
+    from qlctool.checks.forced_flash_triggers import forced_flash_triggers
+
+    workspace = _show("Vibra.qxw")
+    first = forced_flash_triggers(workspace.root)
+    assert first
+    for _ in range(20):
+        gc.collect()
+        assert forced_flash_triggers(workspace.root) == first
+
+
 def _lower_in_flash(workspace, library, pick, level):
     """Write `level` on the offsets `pick(capability)` gives, in `Flash 100%`."""
     scene = _functions(workspace)["Flash 100%"]
