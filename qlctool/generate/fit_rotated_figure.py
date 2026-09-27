@@ -26,6 +26,12 @@ def fit_rotated_figure(
     reach stays within +-pan_span on pan and +-tilt_span on tilt. Ties go to
     the wider figure. Cached: a search samples the figure a thousand times,
     and every show generated in a process asks the same few questions.
+
+    The search stops at the first height that fits under each width, which
+    is the largest only because the reach grows with each side: every term
+    of `rotateAndScale` scales with Width or Height, so shrinking a side
+    never pushes a point further out. That holds for every algorithm and
+    rotation, and was also checked by brute force over 10-350 degrees.
     """
 
     def fits(width: int, height: int) -> bool:
