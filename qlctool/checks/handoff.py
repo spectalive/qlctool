@@ -1,8 +1,10 @@
 """The buttons, Toggles, hooks, hook families and owners of one family frame."""
 
+from typing import TypeAlias
+
 from lxml import etree
 
-Handoff = tuple[
+Handoff: TypeAlias = tuple[
     dict[int, etree._Element],
     dict[int, etree._Element],
     set[int],
