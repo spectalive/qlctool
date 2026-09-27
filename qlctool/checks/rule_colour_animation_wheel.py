@@ -25,17 +25,13 @@ wheel ones too, by a rotation range or by more than one value across the look.
 A single static detent under a running rainbow is the bug, not the fix.
 """
 
-from lxml import etree
-
-from .. import roles
-from ..fixture_capabilities import FixtureCapabilities
-from ..xmlutil import find_local, iter_local
+from .animated_rgb_fixtures import animated_rgb_fixtures
 from .finding import ERROR, Finding
-from .show_graph import ShowGraph, lit
+from .show_graph import ShowGraph
+from .wheel_animated import wheel_animated
+from .wheel_coloured_fixture import wheel_coloured_fixture
 
 RULE_ID = "colour_animation_wheel"
-EFX_RGB_MODE = "2"  # EFXFixture::Mode - PanTilt, Dimmer, RGB
-ROTATION = "Rotation"
 
 
 def check_colour_animation_wheel(
@@ -43,7 +39,7 @@ def check_colour_animation_wheel(
 ) -> list[Finding]:
     findings: list[Finding] = []
     for function_id, caption in sorted(entries.items()):
-        animated = _animated_rgb_fixtures(graph, groups, function_id)
+        animated = animated_rgb_fixtures(graph, groups, function_id)
         if not animated:
             continue
         claimed: set[int] = set()
@@ -53,8 +49,8 @@ def check_colour_animation_wheel(
         stuck = sorted(
             graph.capabilities[fixture_id].fixture.name
             for fixture_id in claimed
-            if _wheel_coloured(graph, fixture_id)
-            and not _wheel_animated(graph, groups, function_id, fixture_id)
+            if wheel_coloured_fixture(graph, fixture_id)
+            and not wheel_animated(graph, groups, function_id, fixture_id)
         )
         if not stuck:
             continue
@@ -69,88 +65,3 @@ def check_colour_animation_wheel(
             )
         )
     return findings
-
-
-def _animated_rgb_fixtures(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int
-) -> set[int]:
-    """The fixtures whose red, green or blue this look *animates*."""
-    animated: set[int] = set()
-    for member in graph.descendants(function_id):
-        function = graph.functions.get(member)
-        if function is None or not _animates_colour(function):
-            continue
-        for fixture_id, pairs in graph.driven_of(function, groups).items():
-            capability = graph.capabilities.get(fixture_id)
-            if capability is None:
-                continue
-            rgb = [
-                offset
-                for role in (roles.RED, roles.GREEN, roles.BLUE)
-                for offset in capability.offsets_for_role(role)
-            ]
-            if any(offset in pairs for offset in rgb):
-                animated.add(fixture_id)
-    return animated
-
-
-def _animates_colour(function: etree._Element) -> bool:
-    """An EFX modulating red, green and blue - a hue that travels by itself.
-
-    Matrices are deliberately out, on the same judgment `rule_wheel_colour`
-    makes: a matrix paints the *pixels* of a group and can say nothing about a
-    member that has none, so a two-colour Alternate over Cabezas is a claim
-    about eight RGB heads and not about the four beams beside them. An EFX in
-    RGB mode is the opposite - it names its fixtures one by one, and the ones
-    it leaves out it leaves out silently.
-    """
-    if function.attrib.get("Type") != "EFX":
-        return False
-    # An EFX names its members `<Fixture>`, not `<EFXFixture>` - the class name
-    # is EFXFixture but the tag is not (`efxfixture.cpp::saveXML`).
-    for fixture in iter_local(function, "Fixture"):
-        mode = find_local(fixture, "Mode")
-        if mode is not None and (mode.text or "").strip() == EFX_RGB_MODE:
-            return True
-    return False
-
-
-def _wheel_coloured(graph: ShowGraph, fixture_id: int) -> bool:
-    capability = graph.capabilities.get(fixture_id)
-    if capability is None:
-        return False
-    return capability.has_role(roles.COLOR_MACRO) and not capability.has_role(roles.RED)
-
-
-def _is_lit(channels: dict[int, int | None]) -> bool:
-    return any(lit(value) for value in channels.values())
-
-
-def _wheel_animated(
-    graph: ShowGraph, groups: dict[int, tuple[int, ...]], function_id: int, fixture_id: int
-) -> bool:
-    """Either a rotation range, or more than one detent across the look."""
-    capability = graph.capabilities[fixture_id]
-    offsets = set(capability.offsets_for_role(roles.COLOR_MACRO))
-    seen: set[int] = set()
-    for member in graph.descendants(function_id):
-        function = graph.functions.get(member)
-        if function is None:
-            continue
-        pairs = graph.driven_of(function, groups).get(fixture_id, {})
-        for offset in offsets & set(pairs):
-            value = pairs[offset]
-            if value is None:  # an effect on the wheel itself: unpredictable, so moving
-                return True
-            if _in_rotation_range(capability, offset, value):
-                return True
-            seen.add(value)
-    return len(seen) > 1
-
-
-def _in_rotation_range(capability: FixtureCapabilities, offset: int, value: int) -> bool:
-    for ranges in [capability.capabilities_by_offset[offset]]:
-        for entry in ranges:
-            if entry.minimum <= value <= entry.maximum and entry.preset.startswith(ROTATION):
-                return True
-    return False
