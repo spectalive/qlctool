@@ -127,6 +127,7 @@ from .on_page import on_page
 from .page_control_title import page_control_title
 from .panels_frame_caption import panels_frame_caption
 from .play_page import build_play_page
+from .root_frame import root_frame
 from .smc_pad_colors import readable_foreground
 from .swatch import swatch
 from .tempo_close_line import tempo_close_line
@@ -179,7 +180,7 @@ def generate_live_console(
     short_colour = {vocabulary.display(c): vocabulary.display(f"{c}_short") for c in SHORT_COLOURS}
     mix_code = {vocabulary.display(c): vocabulary.display(f"{c}_code") for c in MIX_COLOURS}
     colours = PALETTE if palette is None else palette
-    root_frame = _root_frame(workspace.root)
+    console_root = root_frame(workspace.root)
     names = _function_names(workspace)
     ids = ConsoleIds(workspace.root)
     console = GeneratedConsole()
@@ -275,7 +276,7 @@ def generate_live_console(
         return element
 
     outer = frame(
-        root_frame,
+        console_root,
         "",
         OUTER_X,
         OUTER_Y,
@@ -1276,16 +1277,6 @@ def _wheel_frame(
             flash_override=True,
             font=TINY_FONT,
         )
-
-
-def _root_frame(root: etree._Element) -> etree._Element:
-    console = find_local(root, "VirtualConsole")
-    if console is None:
-        raise ValueError("workspace has no <VirtualConsole>")
-    frame = find_local(console, "Frame")
-    if frame is None:
-        raise ValueError("Virtual Console has no root <Frame>")
-    return frame
 
 
 def _function_names(workspace: Workspace) -> dict[int, str]:
