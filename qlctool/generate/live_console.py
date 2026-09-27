@@ -31,8 +31,6 @@ rig, which is what turned the room white - impossible to press.
 
 from collections.abc import Mapping, Sequence
 
-from lxml import etree
-
 from ..argb import argb_from_rgb
 from ..control_glyph import GLYPHS
 from ..names.default_names import default_names
@@ -57,7 +55,6 @@ from ..vc.matrix_control import build_matrix_control
 from ..vc.speed_dial import build_speed_dial
 from ..vc.xy_pad import build_xy_pad
 from ..workspace import Workspace
-from ..xmlutil import find_local
 from .after_marker import after_marker
 from .bank_caption import bank_caption
 from .before_marker import before_marker
@@ -129,6 +126,7 @@ from .page_control_title import page_control_title
 from .panels_frame_caption import panels_frame_caption
 from .play_page import build_play_page
 from .root_frame import root_frame
+from .set_canvas import set_canvas
 from .smc_pad_colors import readable_foreground
 from .swatch import swatch
 from .tempo_close_line import tempo_close_line
@@ -392,7 +390,7 @@ def generate_live_console(
     on_page(triggers, PAGE_CONTROL)
     console.widget_ids.append(triggers_id)
 
-    _set_canvas(workspace.root, canvas)
+    set_canvas(workspace.root, canvas)
     return console
 
 
@@ -1282,15 +1280,3 @@ def _wheel_frame(
 
 def _first(ids):
     return ids[0] if ids else None
-
-
-def _set_canvas(root: etree._Element, canvas: tuple[int, int]) -> None:
-    console = find_local(root, "VirtualConsole")
-    properties = find_local(console, "Properties")
-    if properties is None:
-        return
-    size = find_local(properties, "Size")
-    if size is None:
-        return
-    size.set("Width", str(canvas[0]))
-    size.set("Height", str(canvas[1]))
