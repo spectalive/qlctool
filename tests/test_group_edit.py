@@ -12,8 +12,8 @@ from rig_root import RIG_ROOT
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
 from qlctool.iter_local import iter_local
-from qlctool.repatch.group_head import add_group_head
-from qlctool.repatch.group_size import set_group_size
+from qlctool.repatch.add_group_head import add_group_head
+from qlctool.repatch.set_group_size import set_group_size
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT

@@ -4,7 +4,7 @@ import pytest
 from rig_root import RIG_ROOT
 
 from qlctool.fixture_groups import fixture_groups
-from qlctool.repatch.group_head_remove import remove_group_head
+from qlctool.repatch.remove_group_head import remove_group_head
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT
