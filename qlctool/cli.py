@@ -17,6 +17,7 @@ from .add_mcp_parser import add_mcp_parser
 from .add_movement_parser import add_movement_parser
 from .add_pad_palette_parser import add_pad_palette_parser
 from .add_palette_parser import add_palette_parser
+from .add_patch_parser import add_patch_parser
 from .apply_install import apply_install
 from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
@@ -41,164 +42,15 @@ from .library_for import library_for
 from .load_stage_plot import load_stage_plot
 from .mvr.write_mvr import write_mvr
 from .newshow_refusal import newshow_refusal
-from .patch_conflicts import patch_conflicts
 from .prop_item import POINTS_OF_VIEW
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
-from .repatch.add_fixture import add_fixture
-from .repatch.add_fixture_group import add_fixture_group
-from .repatch.add_group_head import add_group_head
-from .repatch.move_group_head import move_group_head
-from .repatch.remove_fixture import remove_fixture
-from .repatch.remove_group_head import remove_group_head
-from .repatch.rename_fixture import rename_fixture
-from .repatch.reshape_group import reshape_group
-from .repatch.set_fixture_address import set_fixture_address
-from .repatch.set_group_size import set_group_size
-from .repatch.sort_group_by_stage import sort_group_by_stage
 from .stage_size import stage_size
 from .toolkit_config_from import toolkit_config_from
 from .validate_workspace import validate_workspace
 from .vibra.vibra_description import vibra_description
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
-
-
-def cmd_patch(args: argparse.Namespace) -> int:
-    """Inspect or edit the patch. Addresses on the command line are 1-based,
-    the way QLC+ shows them; the file stores them 0-based.
-    """
-    src = Path(args.workspace)
-    ws = Workspace.load(src)
-
-    edits = (
-        args.add
-        or args.set_address
-        or args.rename
-        or args.remove
-        or args.group_size
-        or args.group_add
-        or args.group_remove
-        or args.group_move
-        or args.group_sort
-        or args.group_new
-        or args.group_reshape
-    )
-    if not edits:
-        conflicts = patch_conflicts(ws.root)
-        if not conflicts:
-            print(f"{src}: patch is clean, no address overlaps")
-            return 0
-        print(f"{src}: {len(conflicts)} address overlap(s)")
-        for conflict in conflicts:
-            print(f"  {conflict.describe()}")
-        return 1
-
-    library = library_for(args.fixtures, src)
-    warn_unresolved(ws.root, library)
-    for spec in args.add or []:
-        parts = spec.split("|")
-        if len(parts) not in (5, 6):
-            raise SystemExit("--add takes Manufacturer|Model|Mode|universe|address[|name]")
-        manufacturer, model, mode, universe, address = parts[:5]
-        name = parts[5] if len(parts) == 6 else None
-        fixture_id = add_fixture(
-            ws.root,
-            library,
-            manufacturer,
-            model,
-            mode,
-            universe=int(universe),
-            address=int(address) - 1,
-            name=name,
-        )
-        print(f"added [{fixture_id}] {manufacturer}/{model} <{mode}> at U{universe} @{address}")
-
-    for spec in args.set_address or []:
-        target, placement = spec.split("=", 1)
-        universe, address = placement.split(":", 1)
-        set_fixture_address(ws.root, int(target), int(address) - 1, universe=int(universe))
-        print(f"re-addressed [{target}] to U{universe} @{address}")
-
-    for spec in args.rename or []:
-        target, name = spec.split("=", 1)
-        previous = rename_fixture(ws.root, int(target), name)
-        print(f"renamed [{target}] {previous!r} -> {name!r}")
-
-    for target in args.remove or []:
-        cleared = remove_fixture(ws.root, target)
-        print(f"removed [{target}] and {cleared} reference(s) to it")
-
-    # Grid before members: a cell outside the declared size is a head no effect
-    # can reach, so add_group_head refuses it.
-    for spec in args.group_new or []:
-        name, size = spec.split("=", 1)
-        width, height = size.lower().split("x", 1)
-        new_id = add_fixture_group(ws.root, name, int(width), int(height))
-        print(f"fixture group {new_id} {name!r} created, {width}x{height}, empty")
-
-    for spec in args.group_size or []:
-        group, size = spec.split("=", 1)
-        width, height = size.lower().split("x", 1)
-        set_group_size(ws.root, int(group), int(width), int(height))
-        print(f"group {group} grid is now {width}x{height}")
-
-    for spec in args.group_add or []:
-        group, placement = spec.split("=", 1)
-        fixture, cell = placement.split("@", 1)
-        fixture, _, head = fixture.partition(":")
-        x, y = cell.split(",", 1)
-        add_group_head(
-            ws.root,
-            int(group),
-            int(fixture),
-            int(x),
-            int(y),
-            int(head or 0),
-        )
-        print(f"group {group} cell ({x},{y}) now holds fixture {fixture} head {head or 0}")
-
-    for spec in args.group_sort or []:
-        moved = sort_group_by_stage(ws.root, int(spec))
-        print(
-            f"group {spec} re-laid in stage order, {len(moved)} cell(s) moved"
-            if moved
-            else f"group {spec} was already in stage order"
-        )
-
-    for spec in args.group_move or []:
-        group, placement = spec.split("=", 1)
-        fixture, cell = placement.split("@", 1)
-        fixture, _, head = fixture.partition(":")
-        x, y = cell.split(",", 1)
-        was = move_group_head(
-            ws.root,
-            int(group),
-            int(fixture),
-            int(x),
-            int(y),
-            int(head or 0),
-        )
-        print(f"group {group}: fixture {fixture} head {head or 0} moved from {was} to ({x},{y})")
-
-    for spec in args.group_remove or []:
-        group, fixture = spec.split("=", 1)
-        removed = remove_group_head(ws.root, int(group), int(fixture))
-        print(f"group {group} lost {removed} head(s) of fixture {fixture}")
-
-    for spec in args.group_reshape or []:
-        group, size = spec.split("=", 1)
-        width, height = size.lower().split("x", 1)
-        reshape_group(ws.root, int(group), int(width), int(height))
-        print(f"group {group} re-laid into {width}x{height}, no holes")
-
-    remaining = patch_conflicts(ws.root)
-    for conflict in remaining:
-        print(f"WARNING overlap: {conflict.describe()}")
-
-    out = Path(args.out) if args.out else default_out(src)
-    ws.save(out)
-    return finish(out, args.validate)
 
 
 def cmd_newshow(args: argparse.Namespace) -> int:
@@ -447,94 +299,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_palette_parser(sub)
     add_matrix_parser(sub)
     add_movement_parser(sub)
-
-    p_patch = sub.add_parser(
-        "patch",
-        help="check the patch for address overlaps, or edit it (add/re-address/rename/remove)",
-    )
-    p_patch.add_argument("workspace")
-    p_patch.add_argument(
-        "--add",
-        action="append",
-        metavar="SPEC",
-        help="Manufacturer|Model|Mode|universe|address[|name], address 1-based",
-    )
-    p_patch.add_argument(
-        "--set-address",
-        action="append",
-        metavar="ID=U:A",
-        help="move fixture ID to universe U, address A (1-based)",
-    )
-    p_patch.add_argument("--rename", action="append", metavar="ID=NAME")
-    p_patch.add_argument(
-        "--remove",
-        action="append",
-        type=int,
-        metavar="ID",
-        help="unpatch fixture ID and clear every reference",
-    )
-    p_patch.add_argument(
-        "--group-new",
-        action="append",
-        metavar="NAME=WxH",
-        help="create an empty fixture group - two kinds of light in one group share one picture",
-    )
-    p_patch.add_argument(
-        "--group-reshape",
-        action="append",
-        metavar="GROUP=WxH",
-        help="re-place every head in reading order into a "
-        "grid with no holes; refuses a size that is not "
-        "exactly the group's own",
-    )
-    p_patch.add_argument(
-        "--group-size",
-        action="append",
-        metavar="GROUP=WxH",
-        help="resize a fixture group's grid; refuses a size "
-        "that would leave its own heads unreachable",
-    )
-    p_patch.add_argument(
-        "--group-add",
-        action="append",
-        metavar="GROUP=FIXTURE[:HEAD]@X,Y",
-        help="put a fixture's head in a group cell - without "
-        "it a fixture gets no colour bank and no matrix. "
-        "HEAD defaults to 0; name it for a bar, a panel "
-        "or a wash whose rings are all one fixture",
-    )
-    p_patch.add_argument(
-        "--group-sort",
-        action="append",
-        metavar="GROUP",
-        help="re-lay the group's cells in the order the "
-        "fixtures stand in the room, so a sweep across "
-        "the grid sweeps the stage",
-    )
-    p_patch.add_argument(
-        "--group-move",
-        action="append",
-        metavar="GROUP=FIXTURE[:HEAD]@X,Y",
-        help="move a head already in the group to another "
-        "cell; the target cell must be free. HEAD "
-        "defaults to 0 - name it for a bar or a panel, "
-        "whose heads are all one fixture",
-    )
-    p_patch.add_argument(
-        "--group-remove",
-        action="append",
-        metavar="GROUP=FIXTURE",
-        help="take a fixture out of a group - it then gets no "
-        "colour bank and no matrix from that group, and "
-        "the cells it held stay empty",
-    )
-    p_patch.add_argument("--out", help="output file (default: <name>-generado.qxw)")
-    p_patch.add_argument(
-        "--validate",
-        action="store_true",
-        help="load the result in headless QLC+ and fail on any problem it reports",
-    )
-    p_patch.set_defaults(func=cmd_patch)
+    add_patch_parser(sub)
 
     p_new = sub.add_parser(
         "newshow",
