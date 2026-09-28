@@ -13,7 +13,7 @@ from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..multicolor_off_pairs import multicolor_off_pairs
 from ..names.default_names import default_names
 from ..names.names import Names

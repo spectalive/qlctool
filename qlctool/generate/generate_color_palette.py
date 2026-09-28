@@ -9,7 +9,7 @@ Returns the created scene IDs and the chaser ID (or None).
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..next_function_id import next_function_id
 from ..palette import PALETTE
 from ..workspace import Workspace

@@ -15,8 +15,8 @@ from qlctool.findall_local import findall_local
 from qlctool.first_difference import first_difference
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.functions.build_efx import build_efx
-from qlctool.functions.efx import EFXFixture
 from qlctool.functions.efx_axis import EFXAxis
+from qlctool.functions.efx_fixture import EFXFixture
 from qlctool.generate.generate_movement_efx import generate_movement_efx
 from qlctool.generate.moving_head_ids import moving_head_ids
 from qlctool.generate.spread_offsets import spread_offsets

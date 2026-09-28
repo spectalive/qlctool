@@ -1,7 +1,7 @@
 """One MultiColor accent scene: the selected beams' half-colour channel at full."""
 
 from ..fixture_capabilities import FixtureCapabilities
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..next_function_id import next_function_id
 from ..workspace import Workspace
 

@@ -5,7 +5,7 @@ from collections.abc import Mapping, Sequence
 from ..argb_from_rgb import RGB
 from ..defined_fixture_group import DefinedFixtureGroup
 from ..fixture_capabilities import FixtureCapabilities
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..names.names import Names
 from ..next_function_id import next_function_id
 from ..workspace import Workspace

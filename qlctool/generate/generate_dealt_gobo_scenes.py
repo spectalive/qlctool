@@ -20,7 +20,7 @@ from collections.abc import Sequence
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..next_function_id import next_function_id

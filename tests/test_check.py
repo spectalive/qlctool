@@ -2202,7 +2202,7 @@ def test_a_higher_pick_shutter_value_can_close_a_concurrent_state(library):
 
     from qlctool.capability import Capability
     from qlctool.constants import QLC_NS
-    from qlctool.functions.scene import build_scene
+    from qlctool.functions.build_scene import build_scene
     from qlctool.next_function_id import next_function_id
 
     workspace = _show("Vibra.qxw")

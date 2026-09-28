@@ -31,7 +31,7 @@ from .. import roles
 from ..color_wheel_pairs import WHEEL_NAMES
 from ..fixture_capabilities import FixtureCapabilities
 from ..fog_off_pairs import fog_off_pairs
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..mode_park_pairs import mode_park_pairs
 from ..names.default_names import default_names
 from ..names.names import Names

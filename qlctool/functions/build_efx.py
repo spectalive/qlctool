@@ -13,8 +13,8 @@ from lxml import etree
 from ..constants import QLC_NS
 from .axis import axis
 from .child import child
-from .efx import EFXFixture
 from .efx_axis import EFXAxis
+from .efx_fixture import EFXFixture
 
 
 def build_efx(

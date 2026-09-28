@@ -4,7 +4,7 @@ from collections.abc import Sequence
 
 from ..fixture_capabilities import FixtureCapabilities
 from ..fog_off_pairs import fog_off_pairs
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..names.names import Names
 from ..next_function_id import next_function_id
 from ..strobe_speed_pairs import strobe_speed_pairs

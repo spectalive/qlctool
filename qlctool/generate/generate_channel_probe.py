@@ -9,7 +9,7 @@ clicking.
 """
 
 from ..functions.build_chaser import build_chaser
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..next_function_id import next_function_id
 from ..patched_fixtures import patched_fixtures
 from ..workspace import Workspace

@@ -12,7 +12,7 @@ from collections.abc import Sequence
 
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..internal_program_off_pairs import internal_program_off_pairs
 from ..names.default_names import default_names
 from ..names.names import Names

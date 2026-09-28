@@ -12,7 +12,7 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.existing_function_ids import existing_function_ids
 from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
-from qlctool.functions.scene import build_scene
+from qlctool.functions.build_scene import build_scene
 from qlctool.generate.color_scene_values import color_scene_values
 from qlctool.iter_local import iter_local
 from qlctool.next_function_id import next_function_id

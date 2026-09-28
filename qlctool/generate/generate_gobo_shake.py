@@ -16,7 +16,7 @@ from collections.abc import Sequence
 from .. import roles
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .generated_gobo_shake import GeneratedGoboShake

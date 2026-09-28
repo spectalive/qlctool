@@ -18,7 +18,7 @@ from collections.abc import Sequence
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from ..functions.build_chaser import build_chaser
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..internal_program_of import internal_program
 from ..names.default_names import default_names
 from ..names.names import Names

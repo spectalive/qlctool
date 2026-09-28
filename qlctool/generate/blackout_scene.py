@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
 from ..fog_off_pairs import fog_off_pairs
-from ..functions.scene import build_scene
+from ..functions.build_scene import build_scene
 from ..internal_program_off_pairs import internal_program_off_pairs
 from ..next_function_id import next_function_id
 from ..shutter_open_pairs import shutter_open_pairs

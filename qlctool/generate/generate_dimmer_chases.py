@@ -26,7 +26,7 @@ from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
 from ..functions.build_efx import build_efx
-from ..functions.efx import EFXFixture
+from ..functions.efx_fixture import EFXFixture
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..next_function_id import next_function_id
