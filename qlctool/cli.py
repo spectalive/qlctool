@@ -15,6 +15,7 @@ from .add_info_parser import add_info_parser
 from .add_matrix_parser import add_matrix_parser
 from .add_mcp_parser import add_mcp_parser
 from .add_movement_parser import add_movement_parser
+from .add_newshow_parser import add_newshow_parser
 from .add_pad_palette_parser import add_pad_palette_parser
 from .add_palette_parser import add_palette_parser
 from .add_patch_parser import add_patch_parser
@@ -24,14 +25,9 @@ from .capabilities_of import capabilities_of
 from .compose_workspace import compose_workspace
 from .decompose_workspace import decompose_workspace
 from .default_out import default_out
-from .description.described_files import described_files
-from .description.description_names import description_names
-from .description.load_show_description import load_show_description
 from .finish import finish
 from .fixture_dirs import fixture_dirs
 from .generate.apply_stage_plot import apply_stage_plot
-from .generate.build_canonical_show import build_canonical_show
-from .generate.build_refusal_error import BuildRefusalError
 from .generate.generate_channel_probe import generate_channel_probe
 from .generate.generate_stage_layout import DEFAULT_STAGE, generate_stage_layout
 from .generate.generate_vc_layout import generate_vc_layout
@@ -41,85 +37,14 @@ from .lay_out import lay_out
 from .library_for import library_for
 from .load_stage_plot import load_stage_plot
 from .mvr.write_mvr import write_mvr
-from .newshow_refusal import newshow_refusal
 from .prop_item import POINTS_OF_VIEW
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
 from .stage_size import stage_size
 from .toolkit_config_from import toolkit_config_from
 from .validate_workspace import validate_workspace
-from .vibra.vibra_description import vibra_description
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
-
-
-def cmd_newshow(args: argparse.Namespace) -> int:
-    if args.workspace is None and args.description is None:
-        raise SystemExit("newshow needs a workspace or --description")
-    try:
-        if args.description:
-            src, out = described_files(args.workspace, args.description, args.out)
-        else:
-            src = Path(args.workspace)
-            out = Path(args.out) if args.out else src.with_name("Vibra.qxw")
-        ws = Workspace.load(src)
-        description = load_show_description(args.description, ws.root) if args.description else None
-    except (ValueError, OSError) as error:
-        # A mistake in the file the user wrote, or a patch it names that is not
-        # there: say what and where, no traceback.
-        raise SystemExit(str(error)) from error
-    plot = args.plot
-    if plot is None and description is not None and description.rig.stage_plot is not None:
-        plot = str(description.rig.stage_plot)
-    shown = description or vibra_description()
-    beats = args.beats or shown.timing.beats
-    auto_key = shown.console.keys.get("auto")
-    auto_hint = f" (key {auto_key})" if auto_key else ""
-
-    library = library_for(args.fixtures, src, description.rig.fixtures if description else ())
-    vocabulary = description_names(shown)
-    warn_unresolved(ws.root, library, vocabulary)
-    refusal = newshow_refusal(ws.root, library, vocabulary)
-    if refusal is not None:
-        raise SystemExit(refusal)
-    try:
-        show = build_canonical_show(
-            ws,
-            library,
-            with_layout=not args.no_buttons,
-            plot_path=plot,
-            beats=args.beats,
-            bpm_tap=args.bpm_tap,
-            description=description,
-        )
-    except BuildRefusalError as refused:
-        raise SystemExit(str(refused)) from refused
-    ws.save(out)
-
-    colors = sum(len(b.scene_ids) + len(b.split_ids) for b in show.banks)
-    print(
-        f"Built a self-running show on the same patch: {show.function_count} "
-        f"functions ({colors} colour scenes across {len(show.banks)} groups, "
-        f"{len(show.matrix_ids)} matrices, {len(show.efx_ids)} movement EFX, "
-        f"{len(show.gobo_ids)} gobos, {len(show.prism_ids)} prism, plus "
-        f"dimmer chase, ping-pong and strobes), "
-        f"{len(show.button_ids)} console buttons on one "
-        f"{shown.console.canvas[0]}x{shown.console.canvas[1]} screen, "
-        f"{show.stage_placed} fixtures placed in the 2D/3D view. "
-        f"Press AUTO{auto_hint}."
-    )
-    if beats:
-        print(
-            "Chases are on Beats tempo and the beat generator is the audio "
-            "input: pick one under QLC+ Configuration, or nothing advances."
-        )
-    if args.bpm_tap:
-        print(
-            "Chases are on Beats tempo and page 1's tap dial sets the global "
-            "BPM. QLC+ 5.2.2 does NOT support that dial ('Unknown speed dial "
-            "tag: ControlBPM') - this build is for a newer QLC+."
-        )
-    return finish(out, args.validate)
 
 
 def cmd_probe(args: argparse.Namespace) -> int:
@@ -300,51 +225,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_matrix_parser(sub)
     add_movement_parser(sub)
     add_patch_parser(sub)
-
-    p_new = sub.add_parser(
-        "newshow",
-        help="build a fresh show on an existing patch: strip the functions, "
-        "generate palette + matrices + movement + console",
-    )
-    p_new.add_argument(
-        "workspace",
-        nargs="?",
-        help="the show to take the patch from (default: the description's [rig] workspace)",
-    )
-    p_new.add_argument(
-        "--description",
-        metavar="FILE",
-        help="a show description (.toml): palette, matrices, timing, console, controllers",
-    )
-    p_new.add_argument(
-        "--out",
-        help="output file (default: Vibra.qxw beside the workspace; with --description, "
-        "the description's [rig] output, and newshow refuses when neither is given)",
-    )
-    p_new.add_argument(
-        "--plot",
-        metavar="FILE",
-        help="stage plot to place the rig with, instead of the generated band layout",
-    )
-    p_new.add_argument("--no-buttons", action="store_true", help="skip the Virtual Console layout")
-    p_new.add_argument(
-        "--beats",
-        action="store_true",
-        help="run the chases on the music's beat: Beats tempo "
-        "plus the audio input as beat generator (needs an "
-        "audio input picked in QLC+, or nothing advances)",
-    )
-    p_new.add_argument(
-        "--bpm-tap",
-        action="store_true",
-        help="the build for a QLC+ newer than 5.2.2: chases in "
-        "Beats tempo and page 1's tap dial driving the "
-        "global BPM (ControlBPM), which 5.2.2 ignores",
-    )
-    p_new.add_argument(
-        "--validate", action="store_true", help="load the result in QLC+ and fail on any problem"
-    )
-    p_new.set_defaults(func=cmd_newshow)
+    add_newshow_parser(sub)
 
     p_prb = sub.add_parser(
         "probe",
