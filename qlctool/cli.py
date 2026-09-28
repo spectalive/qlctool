@@ -11,6 +11,7 @@ from pathlib import Path
 
 from .add_check_parser import add_check_parser
 from .add_deskmap_parser import add_deskmap_parser
+from .add_info_parser import add_info_parser
 from .add_mcp_parser import add_mcp_parser
 from .add_pad_palette_parser import add_pad_palette_parser
 from .apply_install import apply_install
@@ -26,7 +27,6 @@ from .description.load_show_description import load_show_description
 from .efx_algorithms import EFX_ALGORITHMS
 from .finish import finish
 from .fixture_dirs import fixture_dirs
-from .fixture_groups import fixture_groups
 from .generate.apply_stage_plot import apply_stage_plot
 from .generate.build_canonical_show import build_canonical_show
 from .generate.build_refusal_error import BuildRefusalError
@@ -65,26 +65,6 @@ from .validate_workspace import validate_workspace
 from .vibra.vibra_description import vibra_description
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
-
-
-def cmd_info(args: argparse.Namespace) -> int:
-    ws = Workspace.load(args.workspace)
-    library = library_for(args.fixtures, Path(args.workspace))
-    warn_unresolved(ws.root, library)
-    caps = capabilities_of(ws.root, library)
-    print(f"{args.workspace}: {len(caps)} fixtures with resolved capabilities")
-    for c in caps:
-        f = c.fixture
-        role_summary = ", ".join(sorted(c.roles)) or "(no driven roles)"
-        print(
-            f"  [{f.fixture_id:>3}] U{f.universe} @{f.address + 1:<4} "
-            f"{f.manufacturer}/{f.model} <{f.mode}>: {role_summary}"
-        )
-    groups = fixture_groups(ws.root)
-    print(f"{len(groups)} fixture groups (RGBMatrix targets):")
-    for g in groups:
-        print(f"  [{g.group_id}] {g.name}: {g.width}x{g.height} grid, {g.head_count} heads")
-    return 0
 
 
 def cmd_palette(args: argparse.Namespace) -> int:
@@ -543,9 +523,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_info = sub.add_parser("info", help="list patched fixtures and their roles")
-    p_info.add_argument("workspace")
-    p_info.set_defaults(func=cmd_info)
+    add_info_parser(sub)
 
     p_pal = sub.add_parser("palette", help="generate colour scenes + cycle chaser")
     p_pal.add_argument("workspace")
