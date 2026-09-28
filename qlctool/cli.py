@@ -12,28 +12,26 @@ from pathlib import Path
 from .add_check_parser import add_check_parser
 from .add_deskmap_parser import add_deskmap_parser
 from .add_info_parser import add_info_parser
+from .add_matrix_parser import add_matrix_parser
 from .add_mcp_parser import add_mcp_parser
+from .add_movement_parser import add_movement_parser
 from .add_pad_palette_parser import add_pad_palette_parser
+from .add_palette_parser import add_palette_parser
 from .apply_install import apply_install
 from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
 from .compose_workspace import compose_workspace
-from .constants import ALL_FIXTURES_GROUP
 from .decompose_workspace import decompose_workspace
 from .default_out import default_out
 from .description.described_files import described_files
 from .description.description_names import description_names
 from .description.load_show_description import load_show_description
-from .efx_algorithms import EFX_ALGORITHMS
 from .finish import finish
 from .fixture_dirs import fixture_dirs
 from .generate.apply_stage_plot import apply_stage_plot
 from .generate.build_canonical_show import build_canonical_show
 from .generate.build_refusal_error import BuildRefusalError
 from .generate.generate_channel_probe import generate_channel_probe
-from .generate.generate_color_palette import generate_color_palette
-from .generate.generate_matrix_effects import generate_matrix_effects
-from .generate.generate_movement_efx import generate_movement_efx
 from .generate.generate_stage_layout import DEFAULT_STAGE, generate_stage_layout
 from .generate.generate_vc_layout import generate_vc_layout
 from .generate.input_profile import build_input_profile
@@ -41,7 +39,6 @@ from .install_plan import install_plan
 from .lay_out import lay_out
 from .library_for import library_for
 from .load_stage_plot import load_stage_plot
-from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .mvr.write_mvr import write_mvr
 from .newshow_refusal import newshow_refusal
 from .patch_conflicts import patch_conflicts
@@ -65,83 +62,6 @@ from .validate_workspace import validate_workspace
 from .vibra.vibra_description import vibra_description
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
-
-
-def cmd_palette(args: argparse.Namespace) -> int:
-    src = Path(args.workspace)
-    out = Path(args.out) if args.out else default_out(src)
-
-    ws = Workspace.load(src)
-    library = library_for(args.fixtures, src)
-    warn_unresolved(ws.root, library)
-    result = generate_color_palette(ws, library, make_chaser=not args.no_chaser)
-    created = result.scene_ids + ([] if result.chaser_id is None else [result.chaser_id])
-    lay_out(ws, created, args.buttons)
-    ws.save(out)
-
-    print(
-        f"Generated {len(result.scene_ids)} colour scenes"
-        + ("" if result.chaser_id is None else " + 1 cycle chaser")
-    )
-    return finish(out, args.validate)
-
-
-def cmd_matrix(args: argparse.Namespace) -> int:
-    src = Path(args.workspace)
-    out = Path(args.out) if args.out else default_out(src)
-
-    algorithms: list[str | None] = (
-        [None if a.lower() == "solid" else a for a in args.algorithms.split(",") if a]
-        if args.algorithms
-        else list(SCRIPT_ALGORITHMS)
-    )
-    group_id = ALL_FIXTURES_GROUP if args.group.lower() == "all" else int(args.group)
-
-    ws = Workspace.load(src)
-    result = generate_matrix_effects(
-        ws,
-        group_id=group_id,
-        algorithms=algorithms,
-        make_chaser=not args.no_chaser,
-    )
-    created = result.matrix_ids + ([] if result.chaser_id is None else [result.chaser_id])
-    lay_out(ws, created, args.buttons)
-    ws.save(out)
-
-    print(
-        f"Generated {len(result.matrix_ids)} RGBMatrix functions"
-        + ("" if result.chaser_id is None else " + 1 cycle chaser")
-    )
-    return finish(out, args.validate)
-
-
-def cmd_movement(args: argparse.Namespace) -> int:
-    src = Path(args.workspace)
-    out = Path(args.out) if args.out else default_out(src)
-
-    algorithms = (
-        [a for a in args.algorithms.split(",") if a] if args.algorithms else list(EFX_ALGORITHMS)
-    )
-
-    ws = Workspace.load(src)
-    library = library_for(args.fixtures, src)
-    warn_unresolved(ws.root, library)
-    result = generate_movement_efx(
-        ws,
-        library,
-        algorithms=algorithms,
-        propagation_mode=args.propagation,
-        make_chaser=not args.no_chaser,
-    )
-    created = result.efx_ids + ([] if result.chaser_id is None else [result.chaser_id])
-    lay_out(ws, created, args.buttons)
-    ws.save(out)
-
-    print(
-        f"Generated {len(result.efx_ids)} movement EFX"
-        + ("" if result.chaser_id is None else " + 1 cycle chaser")
-    )
-    return finish(out, args.validate)
 
 
 def cmd_patch(args: argparse.Namespace) -> int:
@@ -524,72 +444,9 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     add_info_parser(sub)
-
-    p_pal = sub.add_parser("palette", help="generate colour scenes + cycle chaser")
-    p_pal.add_argument("workspace")
-    p_pal.add_argument("--out", help="output file (default: <name>-generado.qxw)")
-    p_pal.add_argument(
-        "--no-chaser", action="store_true", help="scenes only, skip the cycle chaser"
-    )
-    p_pal.add_argument(
-        "--buttons",
-        action="store_true",
-        help="also add Virtual Console buttons for what was generated",
-    )
-    p_pal.add_argument(
-        "--validate",
-        action="store_true",
-        help="load the result in headless QLC+ and fail on any problem it reports",
-    )
-    p_pal.set_defaults(func=cmd_palette)
-
-    p_mat = sub.add_parser("matrix", help="generate RGBMatrix effects (algorithm x colour)")
-    p_mat.add_argument("workspace")
-    p_mat.add_argument(
-        "--group", default="all", help="fixture group ID to paint, or 'all' (default)"
-    )
-    p_mat.add_argument(
-        "--algorithms",
-        help="comma-separated RGB script names, 'solid' for a "
-        "plain colour matrix (default: all known scripts)",
-    )
-    p_mat.add_argument("--out", help="output file (default: <name>-generado.qxw)")
-    p_mat.add_argument(
-        "--no-chaser", action="store_true", help="matrices only, skip the cycle chaser"
-    )
-    p_mat.add_argument(
-        "--buttons",
-        action="store_true",
-        help="also add Virtual Console buttons for what was generated",
-    )
-    p_mat.add_argument(
-        "--validate",
-        action="store_true",
-        help="load the result in headless QLC+ and fail on any problem it reports",
-    )
-    p_mat.set_defaults(func=cmd_matrix)
-
-    p_mov = sub.add_parser("movement", help="generate movement EFX across every moving head")
-    p_mov.add_argument("workspace")
-    p_mov.add_argument(
-        "--algorithms", help=f"comma-separated EFX algorithms (default: {','.join(EFX_ALGORITHMS)})"
-    )
-    p_mov.add_argument(
-        "--propagation", default="Parallel", choices=["Parallel", "Serial", "Asymmetric"]
-    )
-    p_mov.add_argument("--out", help="output file (default: <name>-generado.qxw)")
-    p_mov.add_argument("--no-chaser", action="store_true", help="EFX only, skip the cycle chaser")
-    p_mov.add_argument(
-        "--buttons",
-        action="store_true",
-        help="also add Virtual Console buttons for what was generated",
-    )
-    p_mov.add_argument(
-        "--validate",
-        action="store_true",
-        help="load the result in headless QLC+ and fail on any problem it reports",
-    )
-    p_mov.set_defaults(func=cmd_movement)
+    add_palette_parser(sub)
+    add_matrix_parser(sub)
+    add_movement_parser(sub)
 
     p_patch = sub.add_parser(
         "patch",
