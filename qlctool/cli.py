@@ -19,10 +19,12 @@ from .capabilities_of import capabilities_of
 from .compose_workspace import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
 from .decompose_workspace import decompose_workspace
+from .default_out import default_out
 from .description.described_files import described_files
 from .description.description_names import description_names
 from .description.load_show_description import load_show_description
 from .efx_algorithms import EFX_ALGORITHMS
+from .finish import finish
 from .fixture_dirs import fixture_dirs
 from .fixture_groups import fixture_groups
 from .generate.apply_stage_plot import apply_stage_plot
@@ -36,6 +38,7 @@ from .generate.generate_stage_layout import DEFAULT_STAGE, generate_stage_layout
 from .generate.generate_vc_layout import generate_vc_layout
 from .generate.input_profile import build_input_profile
 from .install_plan import install_plan
+from .lay_out import lay_out
 from .library_for import library_for
 from .load_stage_plot import load_stage_plot
 from .matrix_algorithms import SCRIPT_ALGORITHMS
@@ -56,53 +59,12 @@ from .repatch.reshape_group import reshape_group
 from .repatch.set_fixture_address import set_fixture_address
 from .repatch.set_group_size import set_group_size
 from .repatch.sort_group_by_stage import sort_group_by_stage
+from .stage_size import stage_size
 from .toolkit_config_from import toolkit_config_from
 from .validate_workspace import validate_workspace
 from .vibra.vibra_description import vibra_description
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
-
-
-def _default_out(src: Path) -> Path:
-    return src.with_name(f"{src.stem}-generado{src.suffix}")
-
-
-def _lay_out(ws: Workspace, function_ids: list[int], wanted: bool) -> None:
-    """Add Virtual Console buttons for functions we just created, on request."""
-    if not wanted or not function_ids:
-        return
-    layout = generate_vc_layout(ws, function_ids=function_ids)
-    print(
-        f"Laid out {len(layout.button_ids)} Virtual Console buttons "
-        f"in {len(layout.frame_ids)} frame(s)"
-    )
-
-
-def _finish(out: Path, validate: bool) -> int:
-    """Report where the file went and, on request, that QLC+ accepts it."""
-    print(f"Wrote {out}")
-    if not validate:
-        print("Open it in QLC+ to verify before using it in a show.")
-        return 0
-    result = validate_workspace(out)
-    if result.ok:
-        print("Validated: QLC+ loaded it with no complaints")
-        return 0
-    print("QLC+ reported problems loading it:")
-    for error in result.errors:
-        print(f"  {error}")
-    return 1
-
-
-def _stage_size(spec: str | None) -> tuple[int, int, int]:
-    """Parse a WxHxD stage in metres, e.g. '12x6x8'."""
-    if not spec:
-        return DEFAULT_STAGE
-    parts = spec.lower().split("x")
-    if len(parts) != 3:
-        raise SystemExit("--stage takes WIDTHxHEIGHTxDEPTH in metres, e.g. 12x6x8")
-    width, height, depth = (int(p) for p in parts)
-    return width, height, depth
 
 
 def cmd_info(args: argparse.Namespace) -> int:
@@ -127,26 +89,26 @@ def cmd_info(args: argparse.Namespace) -> int:
 
 def cmd_palette(args: argparse.Namespace) -> int:
     src = Path(args.workspace)
-    out = Path(args.out) if args.out else _default_out(src)
+    out = Path(args.out) if args.out else default_out(src)
 
     ws = Workspace.load(src)
     library = library_for(args.fixtures, src)
     warn_unresolved(ws.root, library)
     result = generate_color_palette(ws, library, make_chaser=not args.no_chaser)
     created = result.scene_ids + ([] if result.chaser_id is None else [result.chaser_id])
-    _lay_out(ws, created, args.buttons)
+    lay_out(ws, created, args.buttons)
     ws.save(out)
 
     print(
         f"Generated {len(result.scene_ids)} colour scenes"
         + ("" if result.chaser_id is None else " + 1 cycle chaser")
     )
-    return _finish(out, args.validate)
+    return finish(out, args.validate)
 
 
 def cmd_matrix(args: argparse.Namespace) -> int:
     src = Path(args.workspace)
-    out = Path(args.out) if args.out else _default_out(src)
+    out = Path(args.out) if args.out else default_out(src)
 
     algorithms: list[str | None] = (
         [None if a.lower() == "solid" else a for a in args.algorithms.split(",") if a]
@@ -163,19 +125,19 @@ def cmd_matrix(args: argparse.Namespace) -> int:
         make_chaser=not args.no_chaser,
     )
     created = result.matrix_ids + ([] if result.chaser_id is None else [result.chaser_id])
-    _lay_out(ws, created, args.buttons)
+    lay_out(ws, created, args.buttons)
     ws.save(out)
 
     print(
         f"Generated {len(result.matrix_ids)} RGBMatrix functions"
         + ("" if result.chaser_id is None else " + 1 cycle chaser")
     )
-    return _finish(out, args.validate)
+    return finish(out, args.validate)
 
 
 def cmd_movement(args: argparse.Namespace) -> int:
     src = Path(args.workspace)
-    out = Path(args.out) if args.out else _default_out(src)
+    out = Path(args.out) if args.out else default_out(src)
 
     algorithms = (
         [a for a in args.algorithms.split(",") if a] if args.algorithms else list(EFX_ALGORITHMS)
@@ -192,14 +154,14 @@ def cmd_movement(args: argparse.Namespace) -> int:
         make_chaser=not args.no_chaser,
     )
     created = result.efx_ids + ([] if result.chaser_id is None else [result.chaser_id])
-    _lay_out(ws, created, args.buttons)
+    lay_out(ws, created, args.buttons)
     ws.save(out)
 
     print(
         f"Generated {len(result.efx_ids)} movement EFX"
         + ("" if result.chaser_id is None else " + 1 cycle chaser")
     )
-    return _finish(out, args.validate)
+    return finish(out, args.validate)
 
 
 def cmd_patch(args: argparse.Namespace) -> int:
@@ -334,9 +296,9 @@ def cmd_patch(args: argparse.Namespace) -> int:
     for conflict in remaining:
         print(f"WARNING overlap: {conflict.describe()}")
 
-    out = Path(args.out) if args.out else _default_out(src)
+    out = Path(args.out) if args.out else default_out(src)
     ws.save(out)
-    return _finish(out, args.validate)
+    return finish(out, args.validate)
 
 
 def cmd_newshow(args: argparse.Namespace) -> int:
@@ -405,12 +367,12 @@ def cmd_newshow(args: argparse.Namespace) -> int:
             "BPM. QLC+ 5.2.2 does NOT support that dial ('Unknown speed dial "
             "tag: ControlBPM') - this build is for a newer QLC+."
         )
-    return _finish(out, args.validate)
+    return finish(out, args.validate)
 
 
 def cmd_probe(args: argparse.Namespace) -> int:
     src = Path(args.workspace)
-    out = Path(args.out) if args.out else _default_out(src)
+    out = Path(args.out) if args.out else default_out(src)
 
     base = {}
     for pair in (args.base or "").split(","):
@@ -423,30 +385,30 @@ def cmd_probe(args: argparse.Namespace) -> int:
     result = generate_channel_probe(
         ws, args.fixture, value=args.value, base_values=base, hold=args.hold
     )
-    _lay_out(ws, [*result.scene_ids, result.chaser_id], args.buttons)
+    lay_out(ws, [*result.scene_ids, result.chaser_id], args.buttons)
     ws.save(out)
 
     print(
         f"Generated {len(result.scene_ids)} probe scenes for fixture {args.fixture} + 1 walk chaser"
     )
-    return _finish(out, args.validate)
+    return finish(out, args.validate)
 
 
 def cmd_layout(args: argparse.Namespace) -> int:
     src = Path(args.workspace)
-    out = Path(args.out) if args.out else _default_out(src)
+    out = Path(args.out) if args.out else default_out(src)
 
     ws = Workspace.load(src)
     layout = generate_vc_layout(ws, columns=args.columns)
     ws.save(out)
 
     print(f"Laid out {len(layout.button_ids)} buttons in {len(layout.frame_ids)} frame(s)")
-    return _finish(out, args.validate)
+    return finish(out, args.validate)
 
 
 def cmd_stage(args: argparse.Namespace) -> int:
     src = Path(args.workspace)
-    out = Path(args.out) if args.out else _default_out(src)
+    out = Path(args.out) if args.out else default_out(src)
 
     ws = Workspace.load(src)
     library = library_for(args.fixtures, src)
@@ -469,12 +431,12 @@ def cmd_stage(args: argparse.Namespace) -> int:
             landing = beam_landing(item, caps[item.fixture_id])
             where = f"floor at z={landing.z:.0f}" if landing.z is not None else landing.reason
             print(f"  [{item.fixture_id:>2}] {plot.places[item.fixture_id]}\n       {where}")
-        return _finish(out, args.validate)
+        return finish(out, args.validate)
 
     stage = generate_stage_layout(
         ws,
         library,
-        stage=_stage_size(args.stage),
+        stage=stage_size(args.stage),
         point_of_view=args.pov,
     )
     ws.save(out)
@@ -486,7 +448,7 @@ def cmd_stage(args: argparse.Namespace) -> int:
     )
     for band, fixture_ids in stage.rows.items():
         print(f"  {band:<7} {len(fixture_ids)}: {fixture_ids}")
-    return _finish(out, args.validate)
+    return finish(out, args.validate)
 
 
 def cmd_mvr(args: argparse.Namespace) -> int:
@@ -568,7 +530,7 @@ def cmd_decompose(args: argparse.Namespace) -> int:
 def cmd_compose(args: argparse.Namespace) -> int:
     compose_workspace(args.src_dir, args.out)
     print(f"Composed {args.src_dir}/ -> {args.out}")
-    return _finish(Path(args.out), args.validate)
+    return finish(Path(args.out), args.validate)
 
 
 def build_parser() -> argparse.ArgumentParser:
