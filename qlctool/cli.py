@@ -6,9 +6,9 @@ copy. Never overwrites the input - it always writes a new file.
 """
 
 import argparse
-from pathlib import Path
 
 from .add_check_parser import add_check_parser
+from .add_compose_parser import add_compose_parser
 from .add_decompose_parser import add_decompose_parser
 from .add_deskmap_parser import add_deskmap_parser
 from .add_info_parser import add_info_parser
@@ -26,14 +26,6 @@ from .add_patch_parser import add_patch_parser
 from .add_probe_parser import add_probe_parser
 from .add_stage_parser import add_stage_parser
 from .add_validate_parser import add_validate_parser
-from .compose_workspace import compose_workspace
-from .finish import finish
-
-
-def cmd_compose(args: argparse.Namespace) -> int:
-    compose_workspace(args.src_dir, args.out)
-    print(f"Composed {args.src_dir}/ -> {args.out}")
-    return finish(Path(args.out), args.validate)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -65,16 +57,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_deskmap_parser(sub)
     add_pad_palette_parser(sub)
     add_mcp_parser(sub)
-
-    p_com = sub.add_parser("compose", help="rebuild a workspace from a fragment tree")
-    p_com.add_argument("src_dir")
-    p_com.add_argument("out")
-    p_com.add_argument(
-        "--validate",
-        action="store_true",
-        help="load the result in headless QLC+ and fail on any problem it reports",
-    )
-    p_com.set_defaults(func=cmd_compose)
+    add_compose_parser(sub)
 
     return parser
 
