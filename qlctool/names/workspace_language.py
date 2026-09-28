@@ -8,8 +8,8 @@ language every such workspace in this repository was built in.
 
 from lxml import etree
 
-from ..desk_widgets import FRAME_TAGS
-from ..desk_widgets_of import desk_widgets
+from ..desk_widget import FRAME_TAGS
+from ..desk_widgets import desk_widgets
 from .frame_caption_head import frame_caption_head
 from .load_catalogue import load_catalogue
 from .shipped_languages import shipped_languages

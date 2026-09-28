@@ -3,8 +3,8 @@
 from lxml import etree
 
 from .desk_frame_identifier import desk_frame_identifier
-from .desk_widgets import DeskWidget
-from .desk_widgets_of import desk_widgets
+from .desk_widget import DeskWidget
+from .desk_widgets import desk_widgets
 from .names.default_names import default_names
 from .names.names import Names
 from .slugify import slugify

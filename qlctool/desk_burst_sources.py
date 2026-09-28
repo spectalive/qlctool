@@ -2,8 +2,8 @@
 
 from lxml import etree
 
-from .desk_widgets import DeskWidget
-from .desk_widgets_of import desk_widgets
+from .desk_widget import DeskWidget
+from .desk_widgets import desk_widgets
 from .names.names import Names
 from .place import place
 from .slugify import slugify

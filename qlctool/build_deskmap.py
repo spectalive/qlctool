@@ -24,7 +24,7 @@ from .desk_burst_refusal import desk_burst_refusal
 from .desk_dial import desk_dial
 from .desk_pages import desk_pages
 from .desk_unique_key import desk_unique_key
-from .desk_widgets_of import desk_widgets
+from .desk_widgets import desk_widgets
 from .fixture_library import FixtureLibrary
 from .leading_glyph import leading_glyph
 from .names.names import Names

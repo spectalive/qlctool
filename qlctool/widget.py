@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from .desk_widgets import DeskWidget
+from .desk_widget import DeskWidget
 from .find_local import find_local
 from .vc.build_button import NO_FUNCTION
 

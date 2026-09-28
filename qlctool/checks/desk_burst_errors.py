@@ -6,7 +6,7 @@ the finding reads in the workspace's language.
 
 from lxml import etree
 
-from ..desk_widgets import DeskWidget
+from ..desk_widget import DeskWidget
 from ..find_local import find_local
 from ..findall_local import findall_local
 from ..generate.console_layout import PAGE_CONTROL

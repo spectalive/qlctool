@@ -4,7 +4,7 @@ from typing import Any
 
 from lxml import etree
 
-from .desk_widgets import DeskWidget
+from .desk_widget import DeskWidget
 from .find_local import find_local
 from .findall_local import findall_local
 from .multiplier import multiplier

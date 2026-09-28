@@ -1,7 +1,7 @@
 """How long a desk burst runs, from its source accent's identifier."""
 
 from .desk_burst_identifier import desk_burst_identifier
-from .desk_widgets import DeskWidget
+from .desk_widget import DeskWidget
 from .names.names import Names
 from .placement import BURST_MS
 
