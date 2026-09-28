@@ -66,6 +66,10 @@ data = [
   # The measured audience window's aim and half-span for beams and washes, so
   # a generated figure's window matches what the movement-window rule checks.
   "qlctool/generate/movement_aim.py",
+  # Per-family movement envelopes (sizes, durations, offsets) generate_movement_families reads.
+  "qlctool/generate/wash_envelopes.py",
+  "qlctool/generate/beam_envelopes.py",
+  "qlctool/generate/movement_crossfade_ms.py",
   # The XML namespace every QLC+ input profile element lives in.
   "qlctool/generate/profile_ns.py",
   # Shared placement numbers for the JUGAR page's frames and button grid.
