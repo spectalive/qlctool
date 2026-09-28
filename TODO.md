@@ -314,19 +314,22 @@
   annotate the smallest listed module and delete its section; a section is
   never added.
 - [ ] **The codeality structural baseline (moved from vibra-lighting,
-  2026-09-26).** `codeality-py check` gives 198 findings, all in the baseline
-  (`baseline check`: 0 new, 198 known): BPY001 116, BPY002 72, BPY004 10. The
-  ten oversize files, in code lines (cap 150, tests 300):
-  `generate/live_console.py` 1159, `cli.py` 794, `generate/play_page.py` 785,
-  `generate/movement_families.py` 574, `checks/family_frames.py` 272,
-  `checks/rule_console.py` 177, `generate/unison_colors.py` 163,
-  `tests/test_check.py` 2129, `tests/test_live_console.py` 677,
-  `tests/test_canonical_show.py` 504. Round G split `canonical_show.py`
-  (1061 code lines) into its stages (d555b53), Vibra x3 identical. Most of
-  the BPY001 mass is the rules in `checks/` keeping their private helpers
-  beside them. Smallest next step: split `live_console.py` the same way, one
-  file per commit with the three Vibra hashes unchanged, then
-  `codeality-py baseline update`. Constant tables are declared `[roles]
+  2026-09-26).** Batches since then split every oversize file the original
+  198 findings named. Batch 10 (2026-09-28) split the last three, the test
+  files over the 300 code-line cap: `test_check.py` 2699,
+  `test_live_console.py` 686, `test_canonical_show.py` 511, into
+  `tests/test_check_<topic>.py` (eighteen files),
+  `tests/test_live_console_<topic>.py` (four files) and
+  `tests/test_canonical_show_<topic>.py` (four files), plus their shared
+  helper modules. `codeality-py check` now gives 7 findings, all
+  in the baseline (`baseline check`: 0 new, 7 known): BPY001 1 (`cli.py`
+  `build_parser`), BPY002 6 (one function per file, still owed by
+  `audience_window.py`, `checks/is_a_step.py`, `generate/input_profile.py`,
+  `generate/live_console.py`, `generate/smc_pad_device.py`,
+  `stage_x_positions.py`). No BPY004 (oversize file) findings remain.
+  Smallest next step: give `build_parser` its own module, then repeat for
+  the six BPY002 functions, one per commit, then `codeality-py baseline
+  update`. Constant tables are declared `[roles]
   data` in `codeality-py.toml`, which is the convention, not debt.
 - [x] **A wheel whose only nameable detent is one no look asks for is not
   parked (2026-09-25).** `outside_color_looks` asked over every colour in
