@@ -19,7 +19,7 @@ from ..fixture_library import FixtureLibrary
 from ..functions.build_efx import build_efx
 from ..functions.efx_axis import EFXAxis
 from ..functions.efx_fixture import EFXFixture
-from ..internal_program_of import internal_program
+from ..internal_program import internal_program
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..next_function_id import next_function_id

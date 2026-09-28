@@ -1,40 +1,40 @@
-"""A fixture's self-running effects: how to switch them on and pick one.
+"""Resolve a fixture's own-program channels, if it has any."""
 
-Some fixtures are small lighting desks. The HYULIGHTS panels carry forty-two
-built-in effects, twelve colour ones and two sound-reactive modes, all of them
-reached through one **mode** channel that decides whether the fixture obeys DMX
-colour at all or runs its own show. Leave that channel where an untouched
-channel sits - zero, "No function" - and the fixture is four RGB cells and
-nothing else, which is how this rig used them for years: "estos cacharros
-tienen animaciones muy chulas que no estamos aprovechando" (owner, 2026-08-26).
-
-Two things follow, and both are traps.
-
-A fixture running its own program **ignores the red, green and blue** it is
-sent. So a colour wheel painting it is painting nothing, and something has to
-choose: the rig's colour, or the fixture's own animation.
-
-And the mode channel is sticky. Nothing resets it, so a look that wants direct
-colour has to say so - drive the mode back to off - or the panel keeps running
-last night's effect through a speech.
-"""
-
-from dataclasses import dataclass
-
-from .capability import Capability
+from . import roles
+from .fixture_capabilities import FixtureCapabilities
+from .internal_program_channels import InternalProgramChannels
+from .mode_channel import mode_channel
 
 
-@dataclass(frozen=True)
-class InternalProgram:
-    """A fixture's self-running effects: how to switch them on and pick one."""
+def internal_program(capabilities: FixtureCapabilities) -> InternalProgramChannels | None:
+    """Resolve the fixture's own-program channels, or None when it has none.
 
-    mode_offset: int
-    off_value: int
-    auto_value: int
-    effect_offset: int
-    effects: tuple[Capability, ...]
-    speed_offset: int | None
+    Recognised by shape, never by model: one effect channel whose ranges name a
+    mode - one of them "no function", another an automatic one - and a second
+    effect channel carrying the list of programs to choose from.
+    """
+    channels = capabilities.capabilities_for_role(roles.EFFECT)
+    if len(channels) < 2:
+        return None
 
-    @property
-    def count(self) -> int:
-        return len(self.effects)
+    mode = mode_channel(channels)
+    if mode is None:
+        return None
+    mode_offset, off_range, auto_range = mode
+
+    effects = max(
+        (item for item in channels if item[0] != mode_offset),
+        key=lambda item: len(item[1]),
+    )
+    if len(effects[1]) < 2:
+        return None
+
+    speed = capabilities.offsets_for_role(roles.SPEED)
+    return InternalProgramChannels(
+        mode_offset=mode_offset,
+        off_value=off_range.middle,
+        auto_value=auto_range.middle,
+        effect_offset=effects[0],
+        effects=effects[1],
+        speed_offset=speed[0] if speed else None,
+    )

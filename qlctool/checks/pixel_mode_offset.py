@@ -8,7 +8,7 @@ named internal programme is the pixel-mode family.
 """
 
 from ..fixture_capabilities import FixtureCapabilities
-from ..internal_program_of import internal_program
+from ..internal_program import internal_program
 from .is_pixel_fixture import is_pixel_fixture
 
 

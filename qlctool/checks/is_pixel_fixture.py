@@ -2,7 +2,7 @@
 
 from .. import roles
 from ..fixture_capabilities import FixtureCapabilities
-from ..internal_program_of import internal_program
+from ..internal_program import internal_program
 from .families import FAMILIES
 
 
