@@ -41,7 +41,7 @@ from .load_stage_plot import load_stage_plot
 from .matrix_algorithms import SCRIPT_ALGORITHMS
 from .mvr.write_mvr import write_mvr
 from .newshow_refusal import newshow_refusal
-from .patch_conflicts_of import patch_conflicts
+from .patch_conflicts import patch_conflicts
 from .prop_item import POINTS_OF_VIEW
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
