@@ -19,15 +19,13 @@ from ..names.names import Names
 from ..workspace import Workspace
 from .applying_providers import applying_providers
 from .build_show_graph import build_show_graph
-from .canvas_of import canvas_of
-from .console_caption_findings import console_caption_findings
+from .console_findings import console_findings
 from .entry_points import entry_points
 from .family_frame_findings import family_frame_findings
 from .finding import Finding
 from .fixing_order import fixing_order
 from .flash_button_findings import flash_button_findings
 from .group_fixtures import group_fixtures
-from .key_binding_findings import key_binding_findings
 from .movement_findings import movement_findings
 from .named_findings import named_findings
 from .room_states import room_states
@@ -35,14 +33,12 @@ from .rule_accent_restore import check_accent_restore
 from .rule_collision import check_collisions
 from .rule_colour_animation_wheel import check_colour_animation_wheel
 from .rule_colour_clocks import check_colour_clocks
-from .rule_console import check_console
 from .rule_context import RuleContext
 from .rule_dangling_reference import check_dangling_references
 from .rule_duplicate_fixture_id import check_duplicate_fixture_ids
 from .rule_grid_order import check_grid_order
 from .rule_group_grid import check_group_grids
 from .rule_held_column import check_held_column
-from .rule_help_names_frame import check_help_names_frame
 from .rule_instant_dimmer import check_instant_dimmer
 from .rule_intensity import check_intensity
 from .rule_internal_program import check_internal_programs
@@ -165,9 +161,6 @@ def check_workspace(
     findings += check_grid_order(root)
     findings += check_invisible_matrix(graph, root)
     findings += check_undeclared_heads(graph, root)
-    findings += check_console(graph, root, canvas or canvas_of(root))
-    findings += console_caption_findings(graph, root)
-    findings += check_help_names_frame(root)
-    findings += key_binding_findings(graph, groups, root, states)
+    findings += console_findings(graph, groups, root, states, canvas)
     findings += [finding for provider in applying for finding in provider.check(context)]
     return fixing_order(named_findings(findings, root, names))
