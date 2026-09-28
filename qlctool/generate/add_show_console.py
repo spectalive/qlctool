@@ -9,7 +9,7 @@ from ..is_panel import is_panel
 from ..is_smoke_machine import is_smoke_machine
 from ..names.localised_keys import localised_keys
 from .generate_desk_bursts import generate_desk_bursts
-from .live_console import generate_live_console
+from .generate_live_console import generate_live_console
 from .moving_head_ids import moving_head_ids
 from .show_build import ShowBuild
 

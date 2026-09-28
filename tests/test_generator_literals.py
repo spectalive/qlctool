@@ -122,7 +122,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/function_colors.py",
     "generate/readable_foreground.py",
     "generate/pad_note.py",
-    "generate/live_console.py",
+    "generate/generate_live_console.py",
     "generate/build_play_page.py",
     "generate/generate_desk_bursts.py",
     "placement.py",
