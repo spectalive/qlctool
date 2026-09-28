@@ -12,6 +12,7 @@ from pathlib import Path
 from .add_check_parser import add_check_parser
 from .add_deskmap_parser import add_deskmap_parser
 from .add_info_parser import add_info_parser
+from .add_layout_parser import add_layout_parser
 from .add_matrix_parser import add_matrix_parser
 from .add_mcp_parser import add_mcp_parser
 from .add_movement_parser import add_movement_parser
@@ -19,6 +20,7 @@ from .add_newshow_parser import add_newshow_parser
 from .add_pad_palette_parser import add_pad_palette_parser
 from .add_palette_parser import add_palette_parser
 from .add_patch_parser import add_patch_parser
+from .add_probe_parser import add_probe_parser
 from .apply_install import apply_install
 from .beam_landing import beam_landing
 from .capabilities_of import capabilities_of
@@ -28,12 +30,9 @@ from .default_out import default_out
 from .finish import finish
 from .fixture_dirs import fixture_dirs
 from .generate.apply_stage_plot import apply_stage_plot
-from .generate.generate_channel_probe import generate_channel_probe
 from .generate.generate_stage_layout import DEFAULT_STAGE, generate_stage_layout
-from .generate.generate_vc_layout import generate_vc_layout
 from .generate.input_profile import build_input_profile
 from .install_plan import install_plan
-from .lay_out import lay_out
 from .library_for import library_for
 from .load_stage_plot import load_stage_plot
 from .mvr.write_mvr import write_mvr
@@ -45,42 +44,6 @@ from .toolkit_config_from import toolkit_config_from
 from .validate_workspace import validate_workspace
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
-
-
-def cmd_probe(args: argparse.Namespace) -> int:
-    src = Path(args.workspace)
-    out = Path(args.out) if args.out else default_out(src)
-
-    base = {}
-    for pair in (args.base or "").split(","):
-        if not pair:
-            continue
-        channel, value = pair.split("=", 1)
-        base[int(channel) - 1] = int(value)
-
-    ws = Workspace.load(src)
-    result = generate_channel_probe(
-        ws, args.fixture, value=args.value, base_values=base, hold=args.hold
-    )
-    lay_out(ws, [*result.scene_ids, result.chaser_id], args.buttons)
-    ws.save(out)
-
-    print(
-        f"Generated {len(result.scene_ids)} probe scenes for fixture {args.fixture} + 1 walk chaser"
-    )
-    return finish(out, args.validate)
-
-
-def cmd_layout(args: argparse.Namespace) -> int:
-    src = Path(args.workspace)
-    out = Path(args.out) if args.out else default_out(src)
-
-    ws = Workspace.load(src)
-    layout = generate_vc_layout(ws, columns=args.columns)
-    ws.save(out)
-
-    print(f"Laid out {len(layout.button_ids)} buttons in {len(layout.frame_ids)} frame(s)")
-    return finish(out, args.validate)
 
 
 def cmd_stage(args: argparse.Namespace) -> int:
@@ -227,42 +190,8 @@ def build_parser() -> argparse.ArgumentParser:
     add_patch_parser(sub)
     add_newshow_parser(sub)
 
-    p_prb = sub.add_parser(
-        "probe",
-        help="one scene per DMX channel of a fixture, to find out on site what each channel does",
-    )
-    p_prb.add_argument("workspace")
-    p_prb.add_argument("fixture", type=int, help="fixture ID (see `qlctool info`)")
-    p_prb.add_argument(
-        "--value", type=int, default=255, help="value to drive the channel under test (default 255)"
-    )
-    p_prb.add_argument(
-        "--base",
-        metavar="CH=VAL,...",
-        help="channels to hold steady while probing, 1-based "
-        "(e.g. a dimmer that must be open: 7=255)",
-    )
-    p_prb.add_argument(
-        "--hold", type=int, default=3000, help="ms per step in the walk chaser (default 3000)"
-    )
-    p_prb.add_argument("--buttons", action="store_true", help="also add Virtual Console buttons")
-    p_prb.add_argument("--out", help="output file (default: <name>-generado.qxw)")
-    p_prb.add_argument(
-        "--validate", action="store_true", help="load the result in QLC+ and fail on any problem"
-    )
-    p_prb.set_defaults(func=cmd_probe)
-
-    p_lay = sub.add_parser(
-        "layout",
-        help="add Virtual Console buttons for every function that has a folder",
-    )
-    p_lay.add_argument("workspace")
-    p_lay.add_argument("--columns", type=int, default=6, help="buttons per row (default 6)")
-    p_lay.add_argument("--out", help="output file (default: <name>-generado.qxw)")
-    p_lay.add_argument(
-        "--validate", action="store_true", help="load the result in QLC+ and fail on any problem"
-    )
-    p_lay.set_defaults(func=cmd_layout)
+    add_probe_parser(sub)
+    add_layout_parser(sub)
 
     p_stage = sub.add_parser(
         "stage",
