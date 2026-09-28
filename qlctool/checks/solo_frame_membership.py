@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import localname
+from ..localname import localname
 from .console_widget_tags import WIDGETS
 
 

@@ -1,8 +1,8 @@
 """Ask the library about one patched fixture, once."""
 
 from .definition_outcome import DefinitionOutcome
-from .fixture import PatchedFixture
 from .fixture_library import FixtureLibrary
+from .patched_fixture import PatchedFixture
 
 
 def definition_outcome_of(fixture: PatchedFixture, library: FixtureLibrary) -> DefinitionOutcome:

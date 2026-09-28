@@ -18,11 +18,11 @@ from rig_root import RIG_ROOT
 
 from qlctool.cli import main
 from qlctool.dimensions import Dimensions
-from qlctool.fixture import PatchedFixture
 from qlctool.fixture_capabilities import FixtureCapabilities
 from qlctool.is_panel import is_panel
 from qlctool.load_definition import load_definition
 from qlctool.names.default_names import default_names
+from qlctool.patched_fixture import PatchedFixture
 
 # Upstream QLC+ library: Litecraft LED PAR 64 AT3 and Chauvet SlimPAR T6 USB.
 PAR_64_AT3 = Dimensions(width=274, height=268, depth=433)

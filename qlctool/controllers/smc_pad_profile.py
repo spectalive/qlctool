@@ -2,7 +2,7 @@
 
 from ..generate.function_colors import FUNCTION_COLORS
 from ..generate.smc_pad_bindings import SMC_PAD_BINDINGS
-from ..input_binding import pin_midi_input
+from ..pin_midi_input import pin_midi_input
 from .midi_pad_profile import MidiPadProfile
 
 SMC_PAD = MidiPadProfile(

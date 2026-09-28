@@ -2,8 +2,8 @@
 
 from lxml import etree
 
-from .fixture import PatchedFixture
 from .fixture_library import FixtureLibrary
+from .patched_fixture import PatchedFixture
 from .patched_fixtures import patched_fixtures
 from .resolved_definition import resolved_definition
 

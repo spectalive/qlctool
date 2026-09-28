@@ -1,6 +1,6 @@
 """The prism wheel's inserted position, by preset or by its name."""
 
-from ..definition import Capability
+from ..capability import Capability
 
 
 def inserted_prism(positions: tuple[Capability, ...]) -> Capability:

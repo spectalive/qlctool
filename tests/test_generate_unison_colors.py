@@ -15,9 +15,9 @@ from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_unison_colors import CONTRAST_PAIRS, generate_unison_colors
+from qlctool.localname import localname
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra.qxw"

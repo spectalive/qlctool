@@ -18,7 +18,7 @@ from ..fixture_capabilities import FixtureCapabilities
 from ..mode_park_pairs import mode_park_pairs
 from ..multicolor_off_pairs import multicolor_off_pairs
 from ..names.names import Names
-from ..shutter_open import shutter_open_pairs
+from ..shutter_open_pairs import shutter_open_pairs
 from ..wheel_blade_offsets import wheel_blade_offsets
 from ..zoom_wide_pairs import zoom_wide_pairs
 

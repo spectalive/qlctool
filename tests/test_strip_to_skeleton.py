@@ -5,13 +5,13 @@ from rig_root import RIG_ROOT
 
 from qlctool.find_local import find_local
 from qlctool.fixture_groups import fixture_groups
+from qlctool.localname import localname
 from qlctool.patch_conflicts_of import patch_conflicts
 from qlctool.patched_fixtures import patched_fixtures
 from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.strip_to_skeleton import strip_to_skeleton
 from qlctool.validate_workspace import validate_workspace
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

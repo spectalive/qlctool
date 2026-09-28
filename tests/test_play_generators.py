@@ -16,7 +16,7 @@ from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.rgbw_split import rgbw_split
 from qlctool.rigged_fixture_ids import rigged_fixture_ids
-from qlctool.shutter_open import shutter_open_pairs
+from qlctool.shutter_open_pairs import shutter_open_pairs
 from qlctool.strobe_speed_pairs import strobe_speed_pairs
 from qlctool.vibra.tuning import VIBRA_TUNING
 from qlctool.workspace import Workspace

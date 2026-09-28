@@ -37,7 +37,7 @@ from ..names.default_names import default_names
 from ..names.names import Names
 from ..next_function_id import next_function_id
 from ..outside_color_looks import outside_color_looks
-from ..shutter_open import shutter_open_pairs
+from ..shutter_open_pairs import shutter_open_pairs
 from ..stepped_dimmer_offsets import stepped_dimmer_offsets
 from ..strobe_off_pairs import strobe_off_pairs
 from ..wheel_blade_offsets import wheel_blade_offsets

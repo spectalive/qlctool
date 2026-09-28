@@ -43,8 +43,8 @@ from lxml import etree
 from .qlcplus_binary import qlcplus_binary
 from .refuse_saved_io import refuse_saved_io
 from .run_qlcplus import run_qlcplus
-from .validate import ValidationResult
 from .validation_copy import validation_copy
+from .validation_result import ValidationResult
 from .validation_verdict import validation_verdict
 
 

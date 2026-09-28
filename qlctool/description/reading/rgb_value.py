@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from ...argb import RGB
+from ...argb_from_rgb import RGB
 
 
 def rgb_value(value: Any, where: str) -> RGB:

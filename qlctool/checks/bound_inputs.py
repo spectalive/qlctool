@@ -3,7 +3,7 @@
 from lxml import etree
 
 from ..findall_local import findall_local
-from ..xmlutil import localname
+from ..localname import localname
 from .bound_widgets import BOUND_WIDGETS
 
 

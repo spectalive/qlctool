@@ -16,7 +16,7 @@ is an animation somebody designed, and the frame time is where that is said.
 
 from collections.abc import Sequence
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from ..color_format_of import color_format_of
 from ..fixture_groups import fixture_groups
 from ..functions.build_rgbmatrix import build_rgbmatrix

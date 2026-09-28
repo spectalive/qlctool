@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import localname
+from ..localname import localname
 from .function_of import function_of
 from .positioned_widgets import positioned_widgets
 from .show_graph import ShowGraph

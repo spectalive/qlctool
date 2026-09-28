@@ -5,7 +5,7 @@ from typing import Any
 
 from lxml import etree
 
-from ...argb import RGB
+from ...argb_from_rgb import RGB
 from ...curated_script import CuratedScript
 from ...fixture_groups import fixture_groups
 from ...names.names import Names

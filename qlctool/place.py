@@ -1,11 +1,11 @@
 """Where a console widget goes on the tablet desk, or None if it does not."""
 
 from .desk_frame_identifier import desk_frame_identifier
-from .desk_policy import FAMILY_PAGES, HELD_REASON, Placement
 from .desk_widgets import DeskWidget
 from .leading_glyph import leading_glyph
 from .names.default_names import default_names
 from .names.names import Names
+from .placement import FAMILY_PAGES, HELD_REASON, Placement
 
 
 def place(

@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..argb import argb_from_rgb
+from ..argb_from_rgb import argb_from_rgb
 from ..palette import PALETTE
 from ..vc.build_appearance import DEFAULT
 

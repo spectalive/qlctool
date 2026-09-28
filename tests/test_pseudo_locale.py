@@ -24,11 +24,11 @@ from qlctool.find_local import find_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.iter_local import iter_local
+from qlctool.localname import localname
 from qlctool.names.load_catalogue import load_catalogue
 from qlctool.names.template_fields import template_fields
 from qlctool.vibra.vibra_description import vibra_description
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 SETUPS = RIG_ROOT / "QLC+ Setups"
 WORD = r"[^\W\d_]{4,}"

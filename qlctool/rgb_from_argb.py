@@ -1,6 +1,6 @@
 """Convert a 32-bit ARGB int QLC+ stores back to plain 8-bit RGB."""
 
-from .argb import RGB
+from .argb_from_rgb import RGB
 
 
 def rgb_from_argb(value: int) -> RGB:

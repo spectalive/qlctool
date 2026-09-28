@@ -16,7 +16,7 @@ where the last one puts it; a group the deal already suits keeps its seats.
 
 from collections.abc import Mapping, Sequence
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from .opposite_split import opposite_split
 
 

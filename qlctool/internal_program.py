@@ -21,7 +21,7 @@ last night's effect through a speech.
 
 from dataclasses import dataclass
 
-from .definition import Capability
+from .capability import Capability
 
 
 @dataclass(frozen=True)

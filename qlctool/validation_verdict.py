@@ -1,6 +1,6 @@
 """Turn QLC+'s captured log output into a pass/fail verdict."""
 
-from .validate import ValidationResult
+from .validation_result import ValidationResult
 
 # Lines that mean the workspace itself is wrong.
 ERROR_MARKERS = (

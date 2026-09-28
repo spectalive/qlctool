@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import localname
+from ..localname import localname
 from .frame_memo import frame_memo
 from .handoff import Handoff
 from .raw_frame_handoff import raw_frame_handoff

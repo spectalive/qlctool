@@ -2,9 +2,9 @@
 
 from lxml import etree
 
+from .defined_fixture_group import DefinedFixtureGroup
 from .find_local import find_local
 from .findall_local import findall_local
-from .fixture_group import DefinedFixtureGroup
 from .iter_local import iter_local
 
 

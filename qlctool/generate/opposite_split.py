@@ -2,7 +2,7 @@
 
 from collections.abc import Sequence
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from ..complementary_from import COMPLEMENTARY_FROM
 from ..hue_distance import hue_distance
 

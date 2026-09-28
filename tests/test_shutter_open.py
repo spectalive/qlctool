@@ -19,9 +19,9 @@ from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.color_scene_values import color_scene_values
 from qlctool.generate.generate_wheel_scenes import generate_wheel_scenes
-from qlctool.shutter_open import shutter_open_pairs
+from qlctool.localname import localname
+from qlctool.shutter_open_pairs import shutter_open_pairs
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

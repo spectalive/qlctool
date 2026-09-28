@@ -1,6 +1,6 @@
 """The prism wheel's parked (out) position, by preset, by name, or its first."""
 
-from ..definition import Capability
+from ..capability import Capability
 
 
 def parked_prism(positions: tuple[Capability, ...]) -> Capability:

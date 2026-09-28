@@ -2,8 +2,8 @@
 
 from lxml import etree
 
+from ..localname import localname
 from ..pad_input_universe import pad_input_universe
-from ..xmlutil import localname
 from .bound_inputs import bound_inputs
 
 

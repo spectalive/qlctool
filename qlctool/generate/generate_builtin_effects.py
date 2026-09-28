@@ -23,7 +23,7 @@ from ..internal_program_of import internal_program
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..next_function_id import next_function_id
-from ..shutter_open import shutter_open_pairs
+from ..shutter_open_pairs import shutter_open_pairs
 from ..strobe_off_pairs import strobe_off_pairs
 from ..workspace import Workspace
 from ..zoom_wide_pairs import zoom_wide_pairs

@@ -40,7 +40,7 @@ from lxml import etree
 
 from ..find_local import find_local
 from ..iter_local import iter_local
-from ..xmlutil import localname
+from ..localname import localname
 from .console_widget_tags import WIDGETS
 from .finding import ERROR, Finding
 from .show_graph import ShowGraph

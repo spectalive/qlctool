@@ -18,7 +18,7 @@ from .beam_landing_of import beam_landing
 from .capabilities_of import capabilities_of
 from .compose_workspace import compose_workspace
 from .constants import ALL_FIXTURES_GROUP
-from .decompose import decompose_workspace
+from .decompose_workspace import decompose_workspace
 from .description.described_files import described_files
 from .description.description_names import description_names
 from .description.load_show_description import load_show_description
@@ -39,10 +39,10 @@ from .install_plan import install_plan
 from .library_for import library_for
 from .load_stage_plot import load_stage_plot
 from .matrix_algorithms import SCRIPT_ALGORITHMS
-from .monitor_node import POINTS_OF_VIEW
 from .mvr.write_mvr import write_mvr
 from .newshow_refusal import newshow_refusal
 from .patch_conflicts_of import patch_conflicts
+from .prop_item import POINTS_OF_VIEW
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
 from .repatch.add import add_fixture

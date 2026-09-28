@@ -8,8 +8,8 @@ shows, `--validate`; the rule-first convention: a check under
 changes), then `tools/qlctool/qlctool/generate/live_console.py` (the hits:
 Flash buttons with Override priority over Scenes in the `GOLPES` frame,
 w12..w18), `generate/build_play_page.py` (the ten colour hits, w53..w62),
-`deskmap.py` and `desk_policy.py` (the desk map, roles, `SAFETY_*`),
-`ids.py`, and `checks/rule_solo_handoff.py` as the model of a rule.
+`deskmap.py` and `placement.py` (the desk map, roles, `SAFETY_*`),
+`existing_function_ids.py`, and `checks/rule_solo_handoff.py` as the model of a rule.
 
 ## Why
 
@@ -43,7 +43,7 @@ For every hit the desk map carries as a held accent (LIVE: `flash`,
    control with `role: "burst"`, `burstMs`, `source: "<hit key>"`, the hit's
    caption and swatches, `function` the chaser id, `widget` the toggle.
 
-Durations in `desk_policy.py`, one table the owner can tune, with these
+Durations in `placement.py`, one table the owner can tune, with these
 first values and a comment that they are provisional: light flashes 8000,
 strobes 4000, fog 3000, colour hits 8000.
 

@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from .ids import existing_function_ids
+from .existing_function_ids import existing_function_ids
 
 
 def next_function_id(root: etree._Element) -> int:

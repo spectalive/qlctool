@@ -17,8 +17,8 @@ from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_stage_layout import generate_stage_layout
 from qlctool.generate.spread import spread
 from qlctool.generate.unplaced_fixtures import unplaced_fixtures
-from qlctool.monitor_node import POINTS_OF_VIEW
 from qlctool.patched_fixtures import patched_fixtures
+from qlctool.prop_item import POINTS_OF_VIEW
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT
@@ -98,7 +98,7 @@ def test_the_dmx_monitor_settings_survive(laid_out):
 
 def test_child_order_matches_what_qlcplus_writes(laid_out):
     ws, _ = laid_out
-    from qlctool.xmlutil import localname
+    from qlctool.localname import localname
 
     monitor = find_local(ws.engine, "Monitor")
     order = [localname(c) for c in monitor]

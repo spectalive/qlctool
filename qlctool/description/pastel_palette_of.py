@@ -1,6 +1,6 @@
 """The wheel palette taken towards white, for the pastel mode (`pastel_palette`)."""
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from ..pastel import pastel
 from .colour_settings import ColourSettings
 from .wheel_palette_of import wheel_palette_of

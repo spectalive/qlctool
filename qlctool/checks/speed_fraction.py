@@ -1,6 +1,6 @@
 """Where a strobing value sits on its channel's slow-to-fast run."""
 
-from ..definition import Capability
+from ..capability import Capability
 
 FAST_TO_SLOW_PRESET = "StrobeFastToSlow"
 

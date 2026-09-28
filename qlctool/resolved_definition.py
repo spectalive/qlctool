@@ -6,9 +6,9 @@ generators skip it and every rule is blind to it.
 """
 
 from .definition_outcome_of import definition_outcome_of
-from .fixture import PatchedFixture
 from .fixture_definition import FixtureDefinition
 from .fixture_library import FixtureLibrary
+from .patched_fixture import PatchedFixture
 
 
 def resolved_definition(

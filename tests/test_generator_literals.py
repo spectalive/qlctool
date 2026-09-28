@@ -103,7 +103,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/live_console.py",
     "generate/build_play_page.py",
     "generate/generate_desk_bursts.py",
-    "desk_policy.py",
+    "placement.py",
     "build_deskmap.py",
     # 2026-09-25: split out of deskmap.py (now build_deskmap.py), which was converted.
     "desk_burst_refusal.py",

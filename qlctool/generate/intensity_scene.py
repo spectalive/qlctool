@@ -6,7 +6,7 @@ from ..fog_off_pairs import fog_off_pairs
 from ..functions.scene import build_scene
 from ..mode_park_pairs import mode_park_pairs
 from ..next_function_id import next_function_id
-from ..shutter_open import shutter_open_pairs
+from ..shutter_open_pairs import shutter_open_pairs
 from ..stepped_dimmer_offsets import stepped_dimmer_offsets
 from ..strobe_off_pairs import strobe_off_pairs
 from ..wheel_blade_offsets import wheel_blade_offsets

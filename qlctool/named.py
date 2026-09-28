@@ -1,6 +1,6 @@
 """The first capability in a channel's ranges whose name starts with a wanted word."""
 
-from .definition import Capability
+from .capability import Capability
 
 
 def named(ranges: tuple[Capability, ...], wanted: tuple[str, ...]) -> Capability | None:

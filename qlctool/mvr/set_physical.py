@@ -2,7 +2,7 @@
 out of the beam, 1 for open or in, from the preset or the range's name.
 """
 
-from ..definition import Capability
+from ..capability import Capability
 
 
 def set_physical(target: str, capability: Capability) -> float:

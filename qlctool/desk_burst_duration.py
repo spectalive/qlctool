@@ -1,9 +1,9 @@
 """How long a desk burst runs, from its source accent's identifier."""
 
 from .desk_burst_identifier import desk_burst_identifier
-from .desk_policy import BURST_MS
 from .desk_widgets import DeskWidget
 from .names.names import Names
+from .placement import BURST_MS
 
 
 def desk_burst_duration(source: DeskWidget, names: Names) -> int | None:

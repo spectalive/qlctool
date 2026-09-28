@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from lxml import etree
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 
 
 @dataclass(frozen=True)

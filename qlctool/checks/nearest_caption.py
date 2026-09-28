@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import localname
+from ..localname import localname
 
 
 def nearest_caption(element: etree._Element) -> str:

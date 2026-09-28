@@ -3,8 +3,8 @@
 from lxml import etree
 
 from ..find_local import find_local
+from ..localname import localname
 from ..vc.build_button import NO_FUNCTION
-from ..xmlutil import localname
 from .solo_frame_of_or_self import solo_frame_of_or_self
 
 

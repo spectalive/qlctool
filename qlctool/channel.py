@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from .definition import Capability
+from .capability import Capability
 
 
 @dataclass(frozen=True)

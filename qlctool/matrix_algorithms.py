@@ -27,7 +27,7 @@ SCRIPT_ALGORITHMS: tuple[str, ...] = (
 # Read against `~/p/qlcplus/resources/rgbscripts/*.js` (QLC+ 5.2.2 line), one
 # script per file, `algo.name` for the exact `<Algorithm>` text and
 # `algo.acceptColors` for how many colours it actually reads. Grid shapes are
-# `BarrasLed` 8x2, `PAR` 15x1 (`fixture_group.py`).
+# `BarrasLed` 8x2, `PAR` 15x1 (`defined_fixture_group.py`).
 CURATED_MATRICES: tuple[CuratedScript, ...] = (
     # sinewave.js: apiVersion 2, acceptColors 2 - one colour fades into the
     # other across the sweep. Orientation is load-bearing for the step count

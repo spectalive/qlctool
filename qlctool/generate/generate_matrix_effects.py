@@ -8,7 +8,7 @@ this does the whole cross-product in one call, optionally chained into a chaser.
 
 from collections.abc import Mapping, Sequence
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from ..color_format_of import color_format_of
 from ..constants import ALL_FIXTURES_GROUP
 from ..curated_script import CuratedScript

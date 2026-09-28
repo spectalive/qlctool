@@ -8,7 +8,7 @@ edit.
 
 from dataclasses import dataclass
 
-from .fixture import PatchedFixture
+from .patched_fixture import PatchedFixture
 
 
 @dataclass(frozen=True)

@@ -14,7 +14,7 @@ middle stays the least-bad guess: as far as possible from the neighbours that
 mean something else, strobing above all.
 """
 
-from .definition import Capability
+from .capability import Capability
 
 CHANNEL_MIN = 0
 CHANNEL_MAX = 255

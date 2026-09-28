@@ -26,11 +26,11 @@ from qlctool.generate.console_layout import (
 )
 from qlctool.glyph import glyph
 from qlctool.leading_glyph import leading_glyph
+from qlctool.localname import localname
 from qlctool.names.default_names import default_names
 from qlctool.palette import PRIMARY_COLORS
 from qlctool.vibra.keys import KEYS
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

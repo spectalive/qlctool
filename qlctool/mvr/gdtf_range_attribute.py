@@ -8,7 +8,7 @@ a wheel is indexed or rotating. This reads the capability preset, the precise
 statement, before falling back to the range's name.
 """
 
-from ..definition import Capability
+from ..capability import Capability
 
 _ROTATION = "Rotation"
 

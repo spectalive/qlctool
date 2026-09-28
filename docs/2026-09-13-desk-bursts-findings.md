@@ -6,7 +6,7 @@ All 17 desk accents now have independent bounded cues: seven on LIVE and ten
 on COLOR. Each has a private Scene with the source's exact `FixtureVal`
 contents and a Forward, SingleShot Chaser with one step, zero fades and
 `SpeedModes FadeIn="Common" FadeOut="Common" Duration="PerStep"`.
-`BURST_MS` in `qlctool/desk_policy.py` is the single provisional duration table.
+`BURST_MS` in `qlctool/placement.py` is the single provisional duration table.
 
 The CONTROL page has a small `Ráfagas del desk` frame below tablet guidance,
 in the space above the colour banks. Each burst has one keyless Toggle there.

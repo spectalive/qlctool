@@ -12,10 +12,10 @@ from lxml import etree
 from rig_root import RIG_ROOT
 
 from qlctool.compose_workspace import compose_workspace
-from qlctool.decompose import FUNCTIONS_DIR, decompose_workspace
+from qlctool.decompose_workspace import FUNCTIONS_DIR, decompose_workspace
 from qlctool.first_difference import first_difference
+from qlctool.localname import localname
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 WORKSPACES = sorted((REPO / "QLC+ Setups").glob("*.qxw"))

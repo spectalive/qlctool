@@ -9,8 +9,8 @@ from pathlib import Path
 
 from lxml import etree
 
+from .capability import Capability
 from .channel import Channel
-from .definition import Capability
 from .dimensions import Dimensions
 from .find_local import find_local
 from .findall_local import findall_local

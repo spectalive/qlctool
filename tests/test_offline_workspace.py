@@ -4,8 +4,8 @@ from lxml import etree
 from rig_root import RIG_ROOT
 
 from qlctool.iter_local import iter_local
+from qlctool.localname import localname
 from qlctool.offline_workspace import offline_workspace
-from qlctool.xmlutil import localname
 
 VIBRA = RIG_ROOT / "QLC+ Setups" / "Vibra.qxw"
 IO = ("Input", "Output", "Feedback")

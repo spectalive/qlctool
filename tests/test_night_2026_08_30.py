@@ -31,9 +31,9 @@ from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.generate.generate_smoke_auto import SMOKE_INTERVALS_MIN
+from qlctool.localname import localname
 from qlctool.vibra.tuning import VIBRA_TUNING
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "Vibra-split.qxw"

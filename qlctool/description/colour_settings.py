@@ -3,7 +3,7 @@
 from collections.abc import Mapping
 from dataclasses import dataclass
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from ..color_pair import ColorPair
 
 

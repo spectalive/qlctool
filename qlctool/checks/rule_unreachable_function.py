@@ -15,7 +15,7 @@ function a widget reaches.
 from lxml import etree
 
 from ..find_local import find_local
-from ..xmlutil import localname
+from ..localname import localname
 from .console_reference import console_reference
 from .engine_reference import engine_reference
 from .finding import WARNING, Finding

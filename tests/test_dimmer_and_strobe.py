@@ -17,9 +17,9 @@ from qlctool.generate.generate_dimmer_chases import MODE_DIMMER, generate_dimmer
 from qlctool.generate.generate_dimmer_sequence import generate_dimmer_sequence
 from qlctool.generate.generate_energy_intensity import generate_energy_intensity
 from qlctool.generate.generate_strobe_effects import generate_strobe_effects
-from qlctool.shutter_open import shutter_open_pairs
+from qlctool.localname import localname
+from qlctool.shutter_open_pairs import shutter_open_pairs
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
@@ -297,7 +297,7 @@ def test_a_channel_that_labels_its_open_position_no_strobe_is_not_read_as_one(li
     matched the first one and sent `Strobo ON` a zero - the single value that
     guarantees no strobe at all.
     """
-    from qlctool.definition import Capability
+    from qlctool.capability import Capability
     from qlctool.strobe_range import strobe_range
 
     ranges = (

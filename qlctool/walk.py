@@ -3,8 +3,8 @@
 from lxml import etree
 
 from .desk_widgets import FRAME_TAGS, WIDGET_TAGS, DeskWidget
+from .localname import localname
 from .widget import widget as _widget
-from .xmlutil import localname
 
 
 def walk(

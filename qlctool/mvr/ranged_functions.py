@@ -7,8 +7,8 @@ point at the wheel `build_wheels` made and index its slots.
 
 from pygdtf import ChannelFunction, ChannelSet, DmxValue, NodeLink, PhysicalValue
 
+from ..capability import Capability
 from ..channel import Channel
-from ..definition import Capability
 from .channel_function import channel_function
 from .gdtf_name import gdtf_name
 from .gdtf_range_attribute import gdtf_range_attribute

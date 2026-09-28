@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import localname
+from ..localname import localname
 
 
 def solo_frame_ancestor(widget: etree._Element) -> etree._Element | None:

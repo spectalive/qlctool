@@ -4,7 +4,7 @@ from collections.abc import Callable, Mapping
 
 from lxml import etree
 
-from ..argb import argb_from_rgb
+from ..argb_from_rgb import argb_from_rgb
 from .grid_position import grid_position
 from .play_page_layout import SMALL_BUTTON_HEIGHT
 from .readable_foreground import readable_foreground

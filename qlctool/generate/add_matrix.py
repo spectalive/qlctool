@@ -1,6 +1,6 @@
 """Build one RGBMatrix into the workspace, paced for one full pass."""
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from ..functions.build_rgbmatrix import build_rgbmatrix
 from ..next_function_id import next_function_id
 from ..workspace import Workspace

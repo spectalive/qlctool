@@ -21,8 +21,8 @@ from lxml import etree
 
 from ..constants import QLC_NS
 from ..findall_local import findall_local
+from ..localname import localname
 from ..workspace import Workspace
-from ..xmlutil import localname
 from .fixture_val_pairs import fixture_val_pairs
 
 

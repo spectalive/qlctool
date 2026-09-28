@@ -7,7 +7,7 @@ guarantees no strobe at all. A preset is what the definition means; a name is
 what it happens to say.
 """
 
-from .definition import Capability
+from .capability import Capability
 
 # QLC+ names every strobing preset "Strobe..." - StrobeSlowToFast,
 # StrobeFastToSlow, StrobeRandom..., and so on.

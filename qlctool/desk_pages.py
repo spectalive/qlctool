@@ -2,8 +2,8 @@
 
 from typing import Any
 
-from .desk_policy import PAGES, SECTION_ORDER, SECTION_TITLES
 from .names.names import Names
+from .placement import PAGES, SECTION_ORDER, SECTION_TITLES
 
 
 def desk_pages(

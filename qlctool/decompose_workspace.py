@@ -10,9 +10,9 @@ import json
 from pathlib import Path
 
 from .function_filename import function_filename
+from .localname import localname
 from .workspace import Workspace
 from .write_fragment import write_fragment
-from .xmlutil import localname
 
 MANIFEST = "manifest.json"
 SKELETON = "skeleton.qxw"

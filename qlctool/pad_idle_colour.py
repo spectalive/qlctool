@@ -1,6 +1,6 @@
 """The colour a pad LED glows while its function is idle."""
 
-from .argb import RGB
+from .argb_from_rgb import RGB
 
 # The bridge's measured idle brightness: a sixth of the colour, whole numbers
 # (`DIM = 6` in the SMC-PAD LED bridge before its palette moved here).

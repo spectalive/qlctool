@@ -3,8 +3,8 @@
 from lxml import etree
 
 from .find_local import find_local
-from .fixture import PatchedFixture
 from .iter_local import iter_local
+from .patched_fixture import PatchedFixture
 
 
 def patched_fixtures(root: etree._Element) -> list[PatchedFixture]:

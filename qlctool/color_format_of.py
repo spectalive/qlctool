@@ -10,7 +10,7 @@ from lxml import etree
 
 from .find_local import find_local
 from .iter_local import iter_local
-from .xmlutil import localname
+from .localname import localname
 
 LEGACY = "legacy"  # <MonoColor> / <EndColor>
 INDEXED = "indexed"  # <Color Index="n">

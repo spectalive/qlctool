@@ -13,7 +13,7 @@ beam where a smoke machine is.
 from dataclasses import dataclass
 
 from .monitor_item import MonitorItem
-from .monitor_node import PropItem
+from .prop_item import PropItem
 
 
 @dataclass(frozen=True)

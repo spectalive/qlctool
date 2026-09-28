@@ -1,7 +1,7 @@
 """(offset, the open range) for every shutter a fixture has."""
 
 from . import roles
-from .definition import Capability
+from .capability import Capability
 from .fixture_capabilities import FixtureCapabilities
 from .open_range import open_range
 

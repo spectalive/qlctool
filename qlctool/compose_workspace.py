@@ -12,9 +12,9 @@ from pathlib import Path
 
 from lxml import etree
 
-from .decompose import FUNCTIONS_DIR, MANIFEST, SKELETON
+from .decompose_workspace import FUNCTIONS_DIR, MANIFEST, SKELETON
+from .localname import localname
 from .workspace import Workspace
-from .xmlutil import localname
 
 
 def compose_workspace(src_dir: str | Path, out: str | Path) -> None:

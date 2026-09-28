@@ -3,7 +3,7 @@
 from lxml import etree
 
 from ..iter_local import iter_local
-from ..xmlutil import localname
+from ..localname import localname
 
 
 def workspace_functions(root: etree._Element) -> dict[int, str]:

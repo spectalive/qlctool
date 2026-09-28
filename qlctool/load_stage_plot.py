@@ -6,8 +6,8 @@ from pathlib import Path
 from lxml import etree
 
 from .monitor_item import MonitorItem
-from .monitor_node import PropItem
 from .patched_fixtures import patched_fixtures
+from .prop_item import PropItem
 from .stage_plot import StagePlot
 
 

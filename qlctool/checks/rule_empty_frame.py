@@ -19,9 +19,9 @@ asked.
 from lxml import etree
 
 from ..find_local import find_local
+from ..localname import localname
 from ..names.shipped_names import shipped_names
 from ..names.workspace_language import workspace_language
-from ..xmlutil import localname
 from .finding import WARNING, Finding
 from .frame_holds_a_control import frame_holds_a_control
 from .rendered_value import rendered_value

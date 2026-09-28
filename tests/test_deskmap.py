@@ -69,9 +69,9 @@ def test_the_room_states_are_the_first_thing_on_live(deskmap):
 
 
 def test_2026_09_13_held_accents_are_replaced_by_bounded_bursts(deskmap):
-    from qlctool.desk_policy import BURST_MS
+    from qlctool.placement import BURST_MS
 
-    # Hard-coded, not derived from qlctool.desk_policy.BURST_MS: two accents
+    # Hard-coded, not derived from qlctool.placement.BURST_MS: two accents
     # trading durations must still fail this test even if production code
     # agrees with itself.
     expected_ms = {
@@ -216,7 +216,7 @@ def test_captions_split_into_name_and_explanation():
 
 
 def test_sections_put_the_held_hits_last():
-    from qlctool.desk_policy import SECTION_ORDER
+    from qlctool.placement import SECTION_ORDER
 
     assert SECTION_ORDER[-1] == "accents" and SECTION_ORDER[0] == "state"
 

@@ -3,7 +3,7 @@
 from lxml import etree
 
 from ..generate.input_profile import build_input_profile
-from ..xmlutil import localname
+from ..localname import localname
 
 
 def input_profile_channels() -> set[int]:

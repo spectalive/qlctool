@@ -14,8 +14,8 @@ from qlctool.capabilities_of import capabilities_of
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
+from qlctool.localname import localname
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 from qlctool.zoom_wide_pairs import zoom_wide_pairs
 
 REPO = RIG_ROOT
@@ -54,7 +54,7 @@ def test_a_zoom_that_does_not_say_which_end_is_wide_is_left_alone(caps):
     """A guess here is a wash driven to its narrowest, so there is no guess."""
     from dataclasses import replace
 
-    from qlctool.definition import Capability
+    from qlctool.capability import Capability
 
     wash = _by_model(caps, "MAC WASH 1915Z")
     silent = list(wash.capabilities_by_offset)

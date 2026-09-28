@@ -4,7 +4,7 @@ from collections.abc import Callable, Mapping
 
 from lxml import etree
 
-from ..argb import argb_from_rgb
+from ..argb_from_rgb import argb_from_rgb
 from ..names.names import Names
 from ..vc.build_button import FLASH
 from .play_page_layout import GAP, HEADER, LEFT, SMALL_BUTTON_HEIGHT, WIDTH

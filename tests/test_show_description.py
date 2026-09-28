@@ -4,7 +4,7 @@ from dataclasses import replace
 
 from rig_root import RIG_ROOT
 
-from qlctool.argb import argb_from_rgb
+from qlctool.argb_from_rgb import argb_from_rgb
 from qlctool.description.contrast_pairs_of import contrast_pairs_of
 from qlctool.description.pastel_palette_of import pastel_palette_of
 from qlctool.description.split_pairs_of import split_pairs_of

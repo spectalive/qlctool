@@ -14,9 +14,9 @@ from qlctool.find_local import find_local
 from qlctool.generate.input_profile import PROFILE_NAME, build_input_profile
 from qlctool.generate.smc_pad_bindings import SMC_PAD_BINDINGS
 from qlctool.generate.smc_pad_device import pad_channel
-from qlctool.input_binding import DEFAULT_LINE_NAME, pin_midi_input
+from qlctool.localname import localname
+from qlctool.pin_midi_input import DEFAULT_LINE_NAME, pin_midi_input
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHIPPED = REPO / "QLC+ InputProfiles" / "M-VAVE-SMC-PAD.qxi"

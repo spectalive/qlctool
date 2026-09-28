@@ -5,7 +5,7 @@ Moved verbatim out of `live_console` (2026-09-27 split).
 
 from collections.abc import Mapping
 
-from ..argb import argb_from_rgb
+from ..argb_from_rgb import argb_from_rgb
 from ..vc.build_appearance import DEFAULT
 
 

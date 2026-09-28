@@ -24,7 +24,7 @@ from lxml import etree
 
 from .force_vc_window import force_vc_window
 from .iter_local import iter_local
-from .xmlutil import localname
+from .localname import localname
 
 IO_PATCHES = ("Input", "Output", "Feedback")
 

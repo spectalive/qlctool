@@ -8,18 +8,18 @@ console already holds - and then has QLC+ itself load the result.
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.argb import argb_from_rgb
+from qlctool.argb_from_rgb import argb_from_rgb
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_color_palette import generate_color_palette
 from qlctool.generate.generate_movement_efx import generate_movement_efx
 from qlctool.generate.generate_vc_layout import generate_vc_layout
+from qlctool.localname import localname
 from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.validate_workspace import validate_workspace
 from qlctool.vc.widget_ids import existing_widget_ids
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

@@ -11,11 +11,11 @@ from collections.abc import Sequence
 
 from lxml import etree
 
+from ..localname import localname
 from ..vc.build_button import build_button
 from ..vc.build_frame import build_frame
 from ..vc.next_widget_id import next_widget_id
 from ..workspace import Workspace
-from ..xmlutil import localname
 from .background_for import background_for
 from .first_free_y import first_free_y
 from .generated_layout import GeneratedLayout

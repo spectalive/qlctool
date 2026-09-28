@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import localname
+from ..localname import localname
 
 # Every widget QLC+ loads into a frame (qmlui/virtualconsole/vcframe.cpp,
 # VCFrame::loadWidgetXML) that does something: a label only says something.

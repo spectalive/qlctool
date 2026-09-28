@@ -213,13 +213,13 @@ A workspace given on the command line as well must be the one `[rig]` names.
 
 ## Layout
 
-- `workspace.py`, `xmlsemantics.py`, `xmlutil.py` - load/save + the round-trip net
-- `validate.py` - headless QLC+ load, the second safety net
+- `workspace.py`, `semantic_equal.py`, `localname.py` - load/save + the round-trip net
+- `validation_result.py` - headless QLC+ load, the second safety net
 - `strip_to_skeleton.py` - strip a show back to its patch, for a fresh build
 - `vc/` - Virtual Console widget builders (button, solo frame, appearance)
-- `fixture_library.py`, `definition.py`, `roles.py` - fixture definitions and channel roles
-- `fixture.py`, `fixture_capabilities.py`, `capabilities_of.py` - the patch and its capabilities
-- `fixture_group.py`, `argb.py`, `matrix_algorithms.py` - RGBMatrix inputs
+- `fixture_library.py`, `capability.py`, `roles.py` - fixture definitions and channel roles
+- `patched_fixture.py`, `fixture_capabilities.py`, `capabilities_of.py` - the patch and its capabilities
+- `defined_fixture_group.py`, `argb_from_rgb.py`, `matrix_algorithms.py` - RGBMatrix inputs
 - `efx_algorithms.py` - EFX shapes and their Spanish show names
 - `patch_conflicts.py`, `fixture_references.py`, `repatch/` - the patch layer:
   overlap detection, every node that points at a fixture, and the add /
@@ -227,7 +227,7 @@ A workspace given on the command line as well must be the one `[rig]` names.
 - `functions/` - Scene, Chaser, RGBMatrix and EFX element builders
 - `generate/` - the mass generators (colour scene, colour palette, matrix
   effects, movement EFX, Virtual Console layout, channel probe)
-- `palette.py`, `ids.py`, `cli.py` - palette data, ID allocation, command line
+- `palette.py`, `existing_function_ids.py`, `cli.py` - palette data, ID allocation, command line
 - `build_deskmap.py`, `cmd_deskmap.py`, `desk_release_hooks.py` - `qlctool deskmap`: the tablet
   desk's map and its release-hook contract with dmxdesk ([`docs/desk-map.md`](docs/desk-map.md))
 - `mcpserver/` - `qlctool mcp`: the file tools and the live QLC+ tools an agent calls ([`docs/mcp.md`](docs/mcp.md))

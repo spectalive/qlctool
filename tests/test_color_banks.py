@@ -8,12 +8,12 @@ from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_color_banks import generate_color_banks
 from qlctool.key_split_pairs import KEY_SPLIT_PAIRS
+from qlctool.localname import localname
 from qlctool.palette import PALETTE, PRIMARY_COLORS
 from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.split_pairs import SPLIT_PAIRS
 from qlctool.validate_workspace import validate_workspace
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

@@ -8,10 +8,10 @@ from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.generate_wheel_scenes import generate_wheel_scenes
+from qlctool.localname import localname
 from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.validate_workspace import validate_workspace
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"
@@ -97,8 +97,8 @@ def test_a_wheel_scene_drives_the_wheel_and_not_its_neighbour():
     from qlctool.findall_local import findall_local
     from qlctool.fixture_library import FixtureLibrary
     from qlctool.generate.generate_wheel_scenes import generate_wheel_scenes
+    from qlctool.localname import localname
     from qlctool.workspace import Workspace
-    from qlctool.xmlutil import localname
 
     ws = Workspace.load(SHOW)
     library = FixtureLibrary.load()

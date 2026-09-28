@@ -16,10 +16,10 @@ from lxml import etree
 
 from .constants import QLC_NS
 from .find_local import find_local
+from .localname import localname
 from .names.default_names import default_names
 from .names.names import Names
 from .workspace import Workspace
-from .xmlutil import localname
 
 # Engine children that describe the rig rather than the show.
 KEPT_ENGINE_CHILDREN = (

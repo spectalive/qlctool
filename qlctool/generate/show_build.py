@@ -14,7 +14,7 @@ AttributeError, never a silent default.
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from ..controllers.midi_pad_profile import MidiPadProfile
 from ..description.show_description import ShowDescription
 from ..fixture_capabilities import FixtureCapabilities

@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from ..xmlutil import localname
+from ..localname import localname
 
 # Console tags whose text is a function id.
 CONSOLE_TEXT_TAGS = ("Chaser", "FuncID")

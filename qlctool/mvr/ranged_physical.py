@@ -2,7 +2,7 @@
 wheel spin in rpm, a shutter's open-or-closed.
 """
 
-from ..definition import Capability
+from ..capability import Capability
 from .physical_range import DEFAULT_STROBE_HZ
 from .set_physical import set_physical
 

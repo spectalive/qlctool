@@ -1,6 +1,6 @@
 """Whether a channel value strobes it, given the channel's strobing range."""
 
-from ..definition import Capability
+from ..capability import Capability
 
 
 def value_strobes(strobing: Capability | None, value: int) -> bool:

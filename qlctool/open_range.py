@@ -1,6 +1,6 @@
 """The last range on a channel that counts as its shutter open."""
 
-from .definition import Capability
+from .capability import Capability
 
 OPEN_PRESET = "ShutterOpen"
 

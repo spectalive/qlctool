@@ -40,9 +40,9 @@ from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
 from qlctool.iter_local import iter_local
+from qlctool.localname import localname
 from qlctool.wheel_blade_offsets import wheel_blade_offsets
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOWS = ("Vibra.qxw", "Vibra-beats.qxw", "Vibra-split.qxw")
@@ -2200,8 +2200,8 @@ def test_a_higher_pick_shutter_value_can_close_a_concurrent_state(library):
     """
     from lxml import etree
 
+    from qlctool.capability import Capability
     from qlctool.constants import QLC_NS
-    from qlctool.definition import Capability
     from qlctool.functions.scene import build_scene
     from qlctool.next_function_id import next_function_id
 

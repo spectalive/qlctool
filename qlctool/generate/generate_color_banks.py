@@ -9,7 +9,7 @@ per group, the two-colour splits, and a wheel for each.
 
 from collections.abc import Mapping, Sequence
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from ..capabilities_of import capabilities_of
 from ..fixture_groups import fixture_groups
 from ..fixture_library import FixtureLibrary

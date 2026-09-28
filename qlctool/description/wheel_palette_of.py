@@ -1,6 +1,6 @@
 """The palette a rotation may step by itself: all of it but white (`wheel_palette`)."""
 
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from .colour_settings import ColourSettings
 
 

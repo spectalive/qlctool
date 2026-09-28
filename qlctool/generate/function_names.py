@@ -3,8 +3,8 @@
 Moved verbatim out of `live_console` (2026-09-27 split).
 """
 
+from ..localname import localname
 from ..workspace import Workspace
-from ..xmlutil import localname
 
 
 def function_names(workspace: Workspace) -> dict[int, str]:

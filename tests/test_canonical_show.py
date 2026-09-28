@@ -16,13 +16,13 @@ from qlctool.fixture_groups import fixture_groups
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
+from qlctool.localname import localname
 from qlctool.patch_conflicts_of import patch_conflicts
 from qlctool.patched_fixtures import patched_fixtures
 from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.validate_workspace import validate_workspace
 from qlctool.vibra.keys import KEYS
 from qlctool.workspace import Workspace
-from qlctool.xmlutil import localname
 
 REPO = RIG_ROOT
 SHOW = REPO / "QLC+ Setups" / "DeluxeEventos2.qxw"

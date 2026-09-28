@@ -1,6 +1,6 @@
 """Find the channel whose ranges name an off mode and an auto mode, if any."""
 
-from .definition import Capability
+from .capability import Capability
 from .named import named
 
 OFF_NAMES = ("no function", "off", "no funcion")

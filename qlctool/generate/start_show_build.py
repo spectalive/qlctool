@@ -51,7 +51,7 @@ def start_show_build(
     # ...and, when the description names a pad profile, to the pad it is
     # driven from, so the console's <Input> bindings are live the moment the
     # file opens rather than after somebody builds the patch by hand in the
-    # Inputs/Outputs tab (input_binding.py, 2026-08-29). No pad, no input patch.
+    # Inputs/Outputs tab (pin_midi_input.py, 2026-08-29). No pad, no input patch.
     pad = midi_pad_named(described.controllers.midi_pad)
     if pad is not None:
         pad.pin_input(workspace.root)

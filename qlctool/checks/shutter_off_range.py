@@ -1,6 +1,6 @@
 """Whether the shutter is somewhere other than its open or strobing range."""
 
-from ..definition import Capability
+from ..capability import Capability
 
 
 def shutter_off_range(value: int | None, opening: Capability, strobing: Capability | None) -> bool:

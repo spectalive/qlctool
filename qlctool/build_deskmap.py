@@ -23,12 +23,6 @@ from .desk_burst_note import desk_burst_note
 from .desk_burst_refusal import desk_burst_refusal
 from .desk_dial import desk_dial
 from .desk_pages import desk_pages
-from .desk_policy import (
-    BURST_MS,
-    SAFETY_CAPTION_BY_FUNCTION,
-    SAFETY_DETAIL_BY_FUNCTION,
-    SAFETY_DETAIL_BY_ROLE,
-)
 from .desk_unique_key import desk_unique_key
 from .desk_widgets_of import desk_widgets
 from .fixture_library import FixtureLibrary
@@ -37,6 +31,12 @@ from .names.names import Names
 from .names.shipped_names import shipped_names
 from .names.workspace_language import workspace_language
 from .place import place
+from .placement import (
+    BURST_MS,
+    SAFETY_CAPTION_BY_FUNCTION,
+    SAFETY_DETAIL_BY_FUNCTION,
+    SAFETY_DETAIL_BY_ROLE,
+)
 from .slugify import slugify
 from .split_caption import split_caption
 from .swatches import swatches

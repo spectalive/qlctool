@@ -12,7 +12,7 @@ the untouched channel already sat.
 
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
-from ..shutter_open import shutter_open_pairs
+from ..shutter_open_pairs import shutter_open_pairs
 from ..strobe_speed_pairs import strobe_speed_pairs
 from ..workspace import Workspace
 

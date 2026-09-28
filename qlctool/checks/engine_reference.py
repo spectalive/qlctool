@@ -4,7 +4,7 @@ from collections.abc import Iterator
 
 from lxml import etree
 
-from ..xmlutil import localname
+from ..localname import localname
 from .invalid_function_id import INVALID_ID
 
 STEP_TYPES = ("Chaser", "Collection")

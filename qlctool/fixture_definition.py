@@ -2,8 +2,8 @@
 
 from dataclasses import dataclass, field
 
+from .capability import Capability
 from .channel import Channel
-from .definition import Capability
 from .dimensions import Dimensions
 from .optics import Optics
 

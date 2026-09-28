@@ -21,7 +21,7 @@ does - one clock, one owner, "de vez en cuando" by Random rotation.
 from collections.abc import Sequence
 
 from .. import roles
-from ..argb import RGB
+from ..argb_from_rgb import RGB
 from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..functions.scene import build_scene

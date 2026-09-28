@@ -10,7 +10,7 @@ from typing import Any
 
 from lxml import etree
 
-from ..argb import argb_from_rgb
+from ..argb_from_rgb import argb_from_rgb
 from ..vc.build_button import FLASH, TOGGLE
 from .bind_pad import bind_pad
 from .readable_foreground import readable_foreground

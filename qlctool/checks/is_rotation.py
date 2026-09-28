@@ -1,6 +1,6 @@
 """Whether the range holding a value spins the wheel rather than naming."""
 
-from ..definition import Capability
+from ..capability import Capability
 
 ROTATION_PRESET_PREFIX = "Rotation"
 

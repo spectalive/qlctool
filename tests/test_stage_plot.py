@@ -16,8 +16,8 @@ from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.generate.apply_stage_plot import apply_stage_plot
 from qlctool.load_stage_plot import load_stage_plot
-from qlctool.monitor_node import POINTS_OF_VIEW
 from qlctool.patched_fixtures import patched_fixtures
+from qlctool.prop_item import POINTS_OF_VIEW
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT

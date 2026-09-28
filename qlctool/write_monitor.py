@@ -5,7 +5,7 @@ from lxml import etree
 from .constants import QLC_NS
 from .find_local import find_local
 from .monitor_item import MonitorItem
-from .monitor_node import POINTS_OF_VIEW, PRIMITIVE_SIZE, PropItem
+from .prop_item import POINTS_OF_VIEW, PRIMITIVE_SIZE, PropItem
 from .workspace import Workspace
 
 _DEFAULTS = {

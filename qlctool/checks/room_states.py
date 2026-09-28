@@ -18,7 +18,7 @@ from lxml import etree
 
 from ..find_local import find_local
 from ..iter_local import iter_local
-from ..xmlutil import localname
+from ..localname import localname
 from .function_of import function_of
 from .reach import reach
 from .show_graph import ShowGraph

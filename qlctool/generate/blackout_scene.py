@@ -8,7 +8,7 @@ from ..fog_off_pairs import fog_off_pairs
 from ..functions.scene import build_scene
 from ..internal_program_off_pairs import internal_program_off_pairs
 from ..next_function_id import next_function_id
-from ..shutter_open import shutter_open_pairs
+from ..shutter_open_pairs import shutter_open_pairs
 from ..workspace import Workspace
 from .show_path import SHOW_PATH
 

@@ -9,17 +9,17 @@ generator injects the cross-product without touching anything that was there.
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.argb import argb_from_rgb
+from qlctool.argb_from_rgb import argb_from_rgb
 from qlctool.color_format_of import INDEXED, LEGACY, color_format_of
 from qlctool.constants import ALL_FIXTURES_GROUP
 from qlctool.curated_script import CuratedScript
+from qlctool.existing_function_ids import existing_function_ids
 from qlctool.find_local import find_local
 from qlctool.findall_local import findall_local
 from qlctool.first_difference import first_difference
 from qlctool.fixture_groups import fixture_groups
 from qlctool.functions.build_rgbmatrix import build_rgbmatrix
 from qlctool.generate.generate_matrix_effects import generate_matrix_effects
-from qlctool.ids import existing_function_ids
 from qlctool.iter_local import iter_local
 from qlctool.matrix_step_count import matrix_step_count
 from qlctool.palette import PALETTE
