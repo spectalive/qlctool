@@ -2,7 +2,7 @@
 
 from lxml import etree
 
-from .widget_ids import existing_widget_ids
+from .existing_widget_ids import existing_widget_ids
 
 
 def next_widget_id(root: etree._Element) -> int:

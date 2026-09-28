@@ -18,7 +18,7 @@ from qlctool.generate.generate_vc_layout import generate_vc_layout
 from qlctool.localname import localname
 from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.validate_workspace import validate_workspace
-from qlctool.vc.widget_ids import existing_widget_ids
+from qlctool.vc.existing_widget_ids import existing_widget_ids
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT
