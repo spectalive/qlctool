@@ -21,74 +21,22 @@ from .add_pad_palette_parser import add_pad_palette_parser
 from .add_palette_parser import add_palette_parser
 from .add_patch_parser import add_patch_parser
 from .add_probe_parser import add_probe_parser
+from .add_stage_parser import add_stage_parser
 from .apply_install import apply_install
-from .beam_landing import beam_landing
-from .capabilities_of import capabilities_of
 from .compose_workspace import compose_workspace
 from .decompose_workspace import decompose_workspace
-from .default_out import default_out
 from .finish import finish
 from .fixture_dirs import fixture_dirs
-from .generate.apply_stage_plot import apply_stage_plot
-from .generate.generate_stage_layout import DEFAULT_STAGE, generate_stage_layout
 from .generate.input_profile import build_input_profile
 from .install_plan import install_plan
 from .library_for import library_for
-from .load_stage_plot import load_stage_plot
 from .mvr.write_mvr import write_mvr
-from .prop_item import POINTS_OF_VIEW
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
-from .stage_size import stage_size
 from .toolkit_config_from import toolkit_config_from
 from .validate_workspace import validate_workspace
 from .warn_unresolved import warn_unresolved
 from .workspace import Workspace
-
-
-def cmd_stage(args: argparse.Namespace) -> int:
-    src = Path(args.workspace)
-    out = Path(args.out) if args.out else default_out(src)
-
-    ws = Workspace.load(src)
-    library = library_for(args.fixtures, src)
-    warn_unresolved(ws.root, library)
-    if args.plot:
-        plot = apply_stage_plot(ws, load_stage_plot(args.plot, ws.root))
-        ws.save(out)
-        print(
-            f"Applied {plot.name!r}: {len(plot.rigged)} fixtures rigged, "
-            f"{len(plot.spare)} spare and hidden, on a "
-            f"{plot.stage[0]}x{plot.stage[1]}x{plot.stage[2]} m stage seen "
-            f"from the {plot.point_of_view}."
-        )
-        # Where each beam ends up, because an angle that looks right in the
-        # preview can still be putting the light on the DJ's face.
-        caps = {c.fixture.fixture_id: c for c in capabilities_of(ws.root, library)}
-        for item in sorted(plot.items, key=lambda i: i.fixture_id):
-            if item.hidden or item.fixture_id not in caps:
-                continue
-            landing = beam_landing(item, caps[item.fixture_id])
-            where = f"floor at z={landing.z:.0f}" if landing.z is not None else landing.reason
-            print(f"  [{item.fixture_id:>2}] {plot.places[item.fixture_id]}\n       {where}")
-        return finish(out, args.validate)
-
-    stage = generate_stage_layout(
-        ws,
-        library,
-        stage=stage_size(args.stage),
-        point_of_view=args.pov,
-    )
-    ws.save(out)
-
-    print(
-        f"Placed {stage.placed} fixtures on a "
-        f"{stage.stage[0]}x{stage.stage[1]}x{stage.stage[2]} m stage, "
-        f"seen from the {stage.point_of_view}:"
-    )
-    for band, fixture_ids in stage.rows.items():
-        print(f"  {band:<7} {len(fixture_ids)}: {fixture_ids}")
-    return finish(out, args.validate)
 
 
 def cmd_mvr(args: argparse.Namespace) -> int:
@@ -192,35 +140,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     add_probe_parser(sub)
     add_layout_parser(sub)
-
-    p_stage = sub.add_parser(
-        "stage",
-        help="place every fixture in the 2D/3D view: a row per band, spread across the stage",
-    )
-    p_stage.add_argument("workspace")
-    p_stage.add_argument(
-        "--plot",
-        metavar="FILE",
-        help="a written stage plot to apply verbatim; without it the layout is "
-        "generated from what each fixture can do",
-    )
-    p_stage.add_argument(
-        "--stage",
-        metavar="WxHxD",
-        help="stage size in metres (default "
-        f"{DEFAULT_STAGE[0]}x{DEFAULT_STAGE[1]}x{DEFAULT_STAGE[2]})",
-    )
-    p_stage.add_argument(
-        "--pov",
-        default="front",
-        choices=sorted(POINTS_OF_VIEW),
-        help="point of view the 2D view opens in (default front)",
-    )
-    p_stage.add_argument("--out", help="output file (default: <name>-generado.qxw)")
-    p_stage.add_argument(
-        "--validate", action="store_true", help="load the result in QLC+ and fail on any problem"
-    )
-    p_stage.set_defaults(func=cmd_stage)
+    add_stage_parser(sub)
 
     p_mvr = sub.add_parser(
         "mvr",
