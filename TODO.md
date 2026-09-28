@@ -313,24 +313,22 @@
   remaining module has at least one error of its own. Smallest next step:
   annotate the smallest listed module and delete its section; a section is
   never added.
-- [ ] **The codeality structural baseline (moved from vibra-lighting,
-  2026-09-26).** Batches since then split every oversize file the original
-  198 findings named. Batch 10 (2026-09-28) split the last three, the test
-  files over the 300 code-line cap: `test_check.py` 2699,
-  `test_live_console.py` 686, `test_canonical_show.py` 511, into
-  `tests/test_check_<topic>.py` (eighteen files),
-  `tests/test_live_console_<topic>.py` (four files) and
-  `tests/test_canonical_show_<topic>.py` (four files), plus their shared
-  helper modules. `codeality-py check` now gives 7 findings, all
-  in the baseline (`baseline check`: 0 new, 7 known): BPY001 1 (`cli.py`
-  `build_parser`), BPY002 6 (one function per file, still owed by
-  `audience_window.py`, `checks/is_a_step.py`, `generate/input_profile.py`,
-  `generate/live_console.py`, `generate/smc_pad_device.py`,
-  `stage_x_positions.py`). No BPY004 (oversize file) findings remain.
-  Smallest next step: give `build_parser` its own module, then repeat for
-  the six BPY002 functions, one per commit, then `codeality-py baseline
-  update`. Constant tables are declared `[roles]
-  data` in `codeality-py.toml`, which is the convention, not debt.
+- [x] **The codeality structural baseline (moved from vibra-lighting,
+  2026-09-26).** Closed 2026-09-28 after ten batches: 202 findings -> 6,
+  every file one unit named after it, no module over its cap. Last steps:
+  `build_parser` got its own module (`qlctool --help` byte-identical) and
+  `live_console.py` became `generate_live_console.py`. The 6 left are
+  accepted, each for a reason the checker cannot see: `cli.py` keeps
+  `main` (the console entry point pyproject and vibra-lighting import);
+  `generate/input_profile.py` and `generate/smc_pad_device.py` are named in
+  the shipped SMC-PAD `.qxi` text and imported by vibra-lighting;
+  `stage_x_positions.py` and `checks/is_a_step.py` get a wrong proposed name
+  (the checker drops the underscore after a one-letter word:
+  `stage_xpositions`, `is_astep`); `audience_window.py` would become a
+  generic `window.py`. Constant tables are `[roles] data` in
+  `codeality-py.toml`, the convention, not debt. Module paths moved for
+  external callers: vibra-lighting's TODO lists the imports to fix at its
+  next pin.
 - [x] **A wheel whose only nameable detent is one no look asks for is not
   parked (2026-09-25).** `outside_color_looks` asked over every colour in
   `WHEEL_NAMES`; it now asks over the colours the looks request, the show's
