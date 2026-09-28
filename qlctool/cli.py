@@ -16,12 +16,14 @@ from .add_layout_parser import add_layout_parser
 from .add_matrix_parser import add_matrix_parser
 from .add_mcp_parser import add_mcp_parser
 from .add_movement_parser import add_movement_parser
+from .add_mvr_parser import add_mvr_parser
 from .add_newshow_parser import add_newshow_parser
 from .add_pad_palette_parser import add_pad_palette_parser
 from .add_palette_parser import add_palette_parser
 from .add_patch_parser import add_patch_parser
 from .add_probe_parser import add_probe_parser
 from .add_stage_parser import add_stage_parser
+from .add_validate_parser import add_validate_parser
 from .apply_install import apply_install
 from .compose_workspace import compose_workspace
 from .decompose_workspace import decompose_workspace
@@ -29,44 +31,9 @@ from .finish import finish
 from .fixture_dirs import fixture_dirs
 from .generate.input_profile import build_input_profile
 from .install_plan import install_plan
-from .library_for import library_for
-from .mvr.write_mvr import write_mvr
 from .qlc_gobo_dir import qlc_gobo_dir
 from .qlc_user_dir import qlc_user_dir
 from .toolkit_config_from import toolkit_config_from
-from .validate_workspace import validate_workspace
-from .warn_unresolved import warn_unresolved
-from .workspace import Workspace
-
-
-def cmd_mvr(args: argparse.Namespace) -> int:
-    src = Path(args.workspace)
-    out = Path(args.out) if args.out else src.with_suffix(".mvr")
-    gobos = Path(args.gobos) if args.gobos else src.parent / "Gobos"
-    ws = Workspace.load(src)
-    library = library_for(args.fixtures, src)
-    warn_unresolved(ws.root, library)
-    export = write_mvr(ws, library, out, gobos)
-    print(
-        f"Wrote {export.path}: {len(export.fixtures)} fixtures placed, "
-        f"{len(export.gdtf_files)} GDTF fixture types inside."
-    )
-    for name in export.gdtf_files:
-        print(f"  {name}")
-    for name, why in export.skipped.items():
-        print(f"  skipped {name}: {why}")
-    return 0
-
-
-def cmd_validate(args: argparse.Namespace) -> int:
-    result = validate_workspace(args.workspace)
-    if result.ok:
-        print(f"{args.workspace}: QLC+ loaded it with no complaints")
-        return 0
-    print(f"{args.workspace}: QLC+ reported {len(result.errors)} problem(s)")
-    for error in result.errors:
-        print(f"  {error}")
-    return 1
 
 
 def cmd_install(args: argparse.Namespace) -> int:
@@ -141,26 +108,8 @@ def build_parser() -> argparse.ArgumentParser:
     add_probe_parser(sub)
     add_layout_parser(sub)
     add_stage_parser(sub)
-
-    p_mvr = sub.add_parser(
-        "mvr",
-        help="export the placed rig as an MVR package with a GDTF per definition, "
-        "for BlenderDMX or any GDTF visualiser",
-    )
-    p_mvr.add_argument("workspace")
-    p_mvr.add_argument("--out", help="output file (default: <workspace>.mvr next to it)")
-    p_mvr.add_argument(
-        "--gobos",
-        metavar="DIR",
-        help="folder holding the gobo images the definitions name "
-        "(default: Gobos/ next to the workspace)",
-    )
-    p_mvr.set_defaults(func=cmd_mvr)
-
-    p_val = sub.add_parser("validate", help="load a workspace in headless QLC+ and report problems")
-    p_val.add_argument("workspace")
-    p_val.set_defaults(func=cmd_validate)
-
+    add_mvr_parser(sub)
+    add_validate_parser(sub)
     add_check_parser(sub)
 
     p_inst = sub.add_parser(
