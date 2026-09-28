@@ -10,10 +10,10 @@ import math
 import pytest
 from rig_root import RIG_ROOT
 
-from qlctool.beam_landing import HANGING, STANDING
-from qlctool.beam_landing_of import beam_landing
+from qlctool.beam_landing import beam_landing
 from qlctool.capabilities_of import capabilities_of
 from qlctool.fixture_library import FixtureLibrary
+from qlctool.landing import HANGING, STANDING
 from qlctool.load_stage_plot import load_stage_plot
 from qlctool.monitor_item import MonitorItem
 from qlctool.workspace import Workspace

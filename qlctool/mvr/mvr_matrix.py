@@ -24,8 +24,8 @@ millimetres.
 
 from pymvr import Matrix
 
-from ..beam_landing import UPWARD_TYPES
 from ..fixture_definition import FixtureDefinition
+from ..landing import UPWARD_TYPES
 from ..monitor_item import MonitorItem
 from .apply_rotation import apply_rotation
 from .clean_value import clean_value
