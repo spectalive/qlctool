@@ -5,7 +5,7 @@ circle on the floor, then pointed at the wall behind - because "which way is
 up" was being inferred from other fixtures' numbers instead of read off this
 one. The owner ended it by putting BEAM 230W 7R #1 on the desk and sending the
 corners: pan 62 to 103, tilt 207 to 234, "todo lo fuera de eso ya apunta a
-fuera" (`audience_window`).
+fuera" (`audience_windows`).
 
 With a window written down, the question stops being a matter of taste. An EFX
 draws a known shape of a known size, turned by a known angle, around a known

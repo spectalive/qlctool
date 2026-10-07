@@ -330,6 +330,16 @@
   next pin. 2026-10-07: codeality-py 0.2.5 keeps existing underscores, so
   `stage_x_positions.py` and `checks/is_a_step.py` no longer find a wrong name
   and left the baseline (6 -> 4).
+  2026-10-07: the 4 left are closed (4 -> 0, baseline empty). `Window` is
+  now `AudienceWindow` in `audience_window.py`, its two measured instances in
+  `audience_windows.py` (data role); `main` lives in `main.py`, `cli.py`
+  re-exports it (`qlctool.cli:main`, the pyproject script and vibra-lighting
+  keep working); `build_input_profile` and `pad_channel` got their own files
+  and `input_profile.py` / `smc_pad_device.py` re-export them with their
+  constants (the shipped `.qxi` text still names `smc_pad_device.py`). The
+  three re-export modules are `entrypoint` roles in `codeality-py.toml`.
+  `tests/test_published_import_paths.py` pins the identities. mypy ignore
+  sections: 0 before and after. Vibra byte identity green.
 - [x] **A wheel whose only nameable detent is one no look asks for is not
   parked (2026-09-25).** `outside_color_looks` asked over every colour in
   `WHEEL_NAMES`; it now asks over the colours the looks request, the show's

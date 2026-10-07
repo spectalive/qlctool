@@ -8,15 +8,16 @@ a raw pan or tilt value means nothing across models.
 from lxml import etree
 
 from .. import roles
-from ..audience_window import BEAM_WINDOW, WASH_WINDOW, Window
+from ..audience_window import AudienceWindow
+from ..audience_windows import BEAM_WINDOW, WASH_WINDOW
 from ..find_local import find_local
 from ..findall_local import findall_local
 from .efx_driven import EFX_PAN_TILT
 from .show_graph import ShowGraph
 
 
-def heads_by_family(graph: ShowGraph, function: etree._Element) -> dict[Window, set[str]]:
-    moved: dict[Window, set[str]] = {}
+def heads_by_family(graph: ShowGraph, function: etree._Element) -> dict[AudienceWindow, set[str]]:
+    moved: dict[AudienceWindow, set[str]] = {}
     for element in findall_local(function, "Fixture"):
         identifier = find_local(element, "ID")
         if identifier is None or not (identifier_text := (identifier.text or "").strip()).isdigit():

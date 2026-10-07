@@ -21,7 +21,7 @@ Each family gets its own envelope per tempo of the night:
 - **Rapido** (Peak): both families, twice the pace, sized to their optics.
 
 Every envelope is centred on its family's own measured audience window
-(`audience_window`) rather than on mid-travel, which is where QLC+ puts a
+(`audience_windows`) rather than on mid-travel, which is where QLC+ puts a
 figure nobody aims - the floor for the beams, the back wall for the washes -
 and sized so the whole figure fits inside that window.
 

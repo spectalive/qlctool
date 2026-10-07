@@ -11,7 +11,7 @@ from named_show import named_show as _show
 from rig_root import RIG_ROOT
 
 from qlctool import roles
-from qlctool.audience_window import BEAM_WINDOW
+from qlctool.audience_windows import BEAM_WINDOW
 from qlctool.capabilities_of import capabilities_of
 from qlctool.checks.check_workspace import check_workspace
 from qlctool.find_local import find_local

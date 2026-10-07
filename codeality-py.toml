@@ -21,6 +21,12 @@ test-max-file-lines = 300
 # Constant tables the show reads: a palette, a mode's colour list, the glyphs a
 # pick family marks its tiles with. They carry no unit by design.
 data = [
+  # The measured audience windows for beams and washes, split from AudienceWindow.
+  "qlctool/audience_windows.py",
+  # The SMC-PAD input profile's labels, control numbers and header text.
+  "qlctool/generate/input_profile_constants.py",
+  # The SMC-PAD measured numbers, re-exported by smc_pad_device.py.
+  "qlctool/generate/smc_pad_constants.py",
   "qlctool/analogous_pairs.py",
   "qlctool/complementary_pairs.py",
   "qlctool/efx_shape_identifiers.py",
@@ -128,7 +134,9 @@ registry = [
   "qlctool/controllers/smc_pad_rules.py",
   "qlctool/controllers/tablet_desk_rules.py",
 ]
-entrypoint = []
+# The published `qlctool.cli:main` import path (pyproject script, vibra-lighting),
+# re-exporting main from main.py, and the SMC-PAD writer and map published paths.
+entrypoint = ["qlctool/cli.py", "qlctool/generate/input_profile.py", "qlctool/generate/smc_pad_device.py"]
 generated = []
 namespace-init = []
 

@@ -265,6 +265,9 @@ CONVERTED: tuple[str, ...] = (
     "generate/pads_top_down.py",
     "generate/profile_channel.py",
     "generate/profile_ns.py",
+    # 2026-10-07: split out of smc_pad_device.py and input_profile.py (below).
+    "generate/pad_channel.py",
+    "generate/smc_pad_constants.py",
     # 2026-09-27, batch 5: split out of movement_efx.py (now generate_movement_efx.py),
     # which was converted.
     "generate/generated_movements.py",
@@ -325,6 +328,8 @@ CONVERTED: tuple[str, ...] = (
 # Ruling B6: modules that keep their literals, and why.
 EXCLUDED = {
     "generate/input_profile.py",  # the SMC-PAD device file, byte-tested against the .qxi
+    "generate/build_input_profile.py",  # the writer split out of input_profile.py
+    "generate/input_profile_constants.py",  # its Spanish labels, split out of input_profile.py
     "generate/generate_channel_probe.py",  # standalone `probe` command (B5)
     "generate/generate_color_palette.py",  # standalone `palette` command (B5)
     "generate/generate_vc_layout.py",  # standalone `layout` command (B5)

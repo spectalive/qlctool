@@ -28,10 +28,10 @@ crowd. They have a measured window of their own now, read off MAC WASH 1915Z
 #1: pan 76-108, tilt 212-230. Same treatment, same arithmetic, its own numbers.
 """
 
-from ..audience_window import BEAM_WINDOW, WASH_WINDOW
+from ..audience_windows import BEAM_WINDOW, WASH_WINDOW
 
 # The centre of the measured window, and the half-size of a figure drawn around
-# it. Both come off `audience_window` so the check and the generator cannot
+# it. Both come off `audience_windows` so the check and the generator cannot
 # drift apart - a figure sized here is a figure the rule will pass.
 BEAM_PAN_AIM = BEAM_WINDOW.pan_centre
 BEAM_PAN_SPAN = BEAM_WINDOW.pan_span

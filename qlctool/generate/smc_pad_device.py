@@ -46,23 +46,22 @@ a pad left on bank 2 fires the JUGAR/page-2 hooks where the show page expects
 its hits. `docs/show-operation.md` says so where an operator will read it.
 """
 
-# 1-based, the way both the pad's manual and QLC+'s own UI count MIDI channels.
-PAD_MIDI_CHANNEL = 10
-CONTROL_MIDI_CHANNEL = 1
+from .pad_channel import pad_channel
+from .smc_pad_constants import (
+    CONTROL_MIDI_CHANNEL,
+    FIRST_PAD_NOTE,
+    NOTE_OFFSET,
+    OMNI_CHANNEL_SHIFT,
+    PAD_MIDI_CHANNEL,
+    PADS,
+)
 
-# QLC+'s omni-mode input channel arithmetic (plugins/midi/src/common).
-OMNI_CHANNEL_SHIFT = 12
-NOTE_OFFSET = 128
-
-PADS = 16
-FIRST_PAD_NOTE = 36
-
-
-def pad_channel(pad: int, bank: int = 1) -> int:
-    """The QLC+ input channel for physical pad 1-16 on bank 1 or 2."""
-    if not 1 <= pad <= PADS:
-        raise ValueError(f"pad {pad} is not one of the device's 1-{PADS}")
-    if bank not in (1, 2):
-        raise ValueError(f"bank {bank}: the show only uses the pad's first two")
-    note = FIRST_PAD_NOTE + (bank - 1) * PADS + pad - 1
-    return ((PAD_MIDI_CHANNEL - 1) << OMNI_CHANNEL_SHIFT) + NOTE_OFFSET + note
+__all__ = [
+    "CONTROL_MIDI_CHANNEL",
+    "FIRST_PAD_NOTE",
+    "NOTE_OFFSET",
+    "OMNI_CHANNEL_SHIFT",
+    "PADS",
+    "PAD_MIDI_CHANNEL",
+    "pad_channel",
+]

@@ -11,7 +11,7 @@ an EFX figure goes is `movement_window`'s question.
 """
 
 from .. import roles
-from ..audience_window import BEAM_WINDOW, WASH_WINDOW
+from ..audience_windows import BEAM_WINDOW, WASH_WINDOW
 from .rule_unaimed_movement import MID_TRAVEL
 from .serial_waits import serial_waits
 from .show_graph import ShowGraph
