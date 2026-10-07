@@ -327,7 +327,9 @@
   generic `window.py`. Constant tables are `[roles] data` in
   `codeality-py.toml`, the convention, not debt. Module paths moved for
   external callers: vibra-lighting's TODO lists the imports to fix at its
-  next pin.
+  next pin. 2026-10-07: codeality-py 0.2.5 keeps existing underscores, so
+  `stage_x_positions.py` and `checks/is_a_step.py` no longer find a wrong name
+  and left the baseline (6 -> 4).
 - [x] **A wheel whose only nameable detent is one no look asks for is not
   parked (2026-09-25).** `outside_color_looks` asked over every colour in
   `WHEEL_NAMES`; it now asks over the colours the looks request, the show's
