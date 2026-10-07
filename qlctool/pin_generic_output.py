@@ -37,7 +37,7 @@ def pin_generic_output(root: etree._Element) -> None:
             continue
         output.set("Plugin", OUTPUT_PLUGIN)
         output.set("UID", GENERIC_UID)
-        output.attrib.pop("Name", None)
+        output.attrib.pop("Name", "")
         parameters = find_local(output, "PluginParameters")
         if parameters is not None and top_channel:
             parameters.set("UniverseChannels", str(top_channel))

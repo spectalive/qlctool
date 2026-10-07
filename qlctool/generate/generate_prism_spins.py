@@ -20,6 +20,7 @@ from ..functions.build_scene import build_scene
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..next_function_id import next_function_id
+from ..wheel_of import wheel_of
 from ..workspace import Workspace
 from .generated_prism_spins import GeneratedPrismSpins
 from .preset_value import preset_value
@@ -58,7 +59,7 @@ def generate_prism_spins(
             spin = preset_value(capability, roles.PRISM_ROTATION, preset, fraction)
             if inserted is None or spin is None:
                 continue
-            offset, _ = capability.wheel_for_role(roles.PRISM)
+            offset, _ = wheel_of(capability, roles.PRISM)
             pairs = [(offset, inserted)]
             pairs += [
                 (rotation_offset, spin)

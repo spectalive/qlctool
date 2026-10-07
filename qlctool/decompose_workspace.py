@@ -26,7 +26,7 @@ def decompose_workspace(src: str | Path, out_dir: str | Path) -> None:
     ws = Workspace.load(src)
     engine = ws.engine
 
-    engine_order: list[dict] = []
+    engine_order: list[dict[str, str]] = []
     for child in list(engine):
         if localname(child) == "Function":
             filename = function_filename(child)

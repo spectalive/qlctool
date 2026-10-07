@@ -10,7 +10,9 @@ It caught a Weight of 0 - the schema requires a positive number - on a
 definition that had looked fine for a year.
 """
 
+from collections.abc import Iterable
 from pathlib import Path
+from typing import Any, cast
 
 from lxml import etree
 
@@ -22,4 +24,5 @@ def definition_errors(path: str | Path) -> list[str]:
     schema = etree.XMLSchema(etree.parse(str(SCHEMA_PATH)))
     if schema.validate(etree.parse(str(path))):
         return []
-    return [f"line {e.line}: {e.message}" for e in schema.error_log]
+    # lxml-stubs declares _ErrorLog empty; at run time it iterates _LogEntry objects.
+    return [f"line {e.line}: {e.message}" for e in cast("Iterable[Any]", schema.error_log)]

@@ -24,6 +24,7 @@ from ..functions.build_scene import build_scene
 from ..names.default_names import default_names
 from ..names.names import Names
 from ..next_function_id import next_function_id
+from ..wheel_of import wheel_of
 from ..workspace import Workspace
 
 # How many deals to generate. Eight is two full turns of the four heads through
@@ -61,7 +62,7 @@ def generate_dealt_gobo_scenes(
     )
     if not beams:
         return []
-    _, positions = beams[0].wheel_for_role(roles.GOBO)
+    _, positions = wheel_of(beams[0], roles.GOBO)
     patterns = [
         position
         for position in positions
@@ -75,7 +76,7 @@ def generate_dealt_gobo_scenes(
     for deal in range(DEALS):
         values: dict[int, list[tuple[int, int]]] = {}
         for seat, capability in enumerate(beams):
-            offset, _ = capability.wheel_for_role(roles.GOBO)
+            offset, _ = wheel_of(capability, roles.GOBO)
             pattern = patterns[(deal * len(beams) + seat) % len(patterns)]
             pairs = [(offset, pattern.middle)]
             for role, value in companions:

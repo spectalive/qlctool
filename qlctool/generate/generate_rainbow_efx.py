@@ -59,7 +59,7 @@ def generate_rainbow_efx(
     if not heads:
         return GeneratedRainbows()
 
-    def _rainbow(name: str, width: int, height: int, offsets) -> int:
+    def _rainbow(name: str, width: int, height: int, offsets: list[int]) -> int:
         function_id = next_function_id(workspace.root)
         workspace.add_function(
             build_efx(

@@ -13,6 +13,8 @@ tuned for neither, and whichever family it was sized for, the other one is
 doing something nobody designed.
 """
 
+from typing import cast
+
 from .. import roles
 from ..find_local import find_local
 from ..findall_local import findall_local
@@ -42,7 +44,7 @@ def check_movement_families(graph: ShowGraph) -> list[Finding]:
             mode_value = int(mode.text) if mode is not None and mode.text else EFX_PAN_TILT
             if mode_value != EFX_PAN_TILT:
                 continue
-            capability = graph.capabilities.get(int(identifier.text))
+            capability = graph.capabilities.get(int(cast(str, identifier.text)))
             if capability is None:
                 continue
             side = beams if capability.has_role(roles.GOBO) else washes

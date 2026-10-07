@@ -13,6 +13,8 @@ QLC+ - and a fixture exactly on the centre line counts as house left, so a
 single centre fixture is not left alone in its own half.
 """
 
+from typing import cast
+
 from lxml import etree
 
 from .find_local import find_local
@@ -26,7 +28,7 @@ def house_right_fixture_ids(root: etree._Element) -> set[int]:
     positions means no sides, and mirroring a rig that has not been placed
     would be guesswork.
     """
-    monitor = find_local(find_local(root, "Engine"), "Monitor")
+    monitor = find_local(cast(etree._Element, find_local(root, "Engine")), "Monitor")
     if monitor is None:
         return set()
 
@@ -39,7 +41,7 @@ def house_right_fixture_ids(root: etree._Element) -> set[int]:
 
     centre = width_mm / 2
     return {
-        int(item.get("ID"))
+        int(cast(str, item.get("ID")))
         for item in iter_local(monitor, "FxItem")
         if item.get("Hidden") is None
         and item.get("ID") is not None

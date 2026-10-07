@@ -12,8 +12,8 @@ def difference_at(a: etree._Element, b: etree._Element, path: str) -> str | None
     if tag_localname(a.tag) != tag_localname(b.tag):
         return f"{here}: tag {tag_localname(a.tag)!r} != {tag_localname(b.tag)!r}"
 
-    if dict(a.attrib) != dict(b.attrib):
-        return f"{here}: attrs {dict(a.attrib)} != {dict(b.attrib)}"
+    if dict(a.attrib.items()) != dict(b.attrib.items()):
+        return f"{here}: attrs {dict(a.attrib.items())} != {dict(b.attrib.items())}"
 
     if stripped_text(a.text) != stripped_text(b.text):
         return f"{here}: text {stripped_text(a.text)!r} != {stripped_text(b.text)!r}"

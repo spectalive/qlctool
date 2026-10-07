@@ -302,17 +302,16 @@
   note counted. Every one pairs two lists built from the same source, so a
   length mismatch is a bug, not an intended cut: all 29 are `strict=True`
   and B905 left the `ignore` list (5965909). Vibra x3 identical.
-- [ ] **The mypy ratchet in `mypy.ini` (moved from vibra-lighting,
-  2026-09-26).** 67 modules carry `ignore_errors` (70 on 2026-09-26; with
-  every one of them switched off mypy found 226 errors in 70 files, nearly
-  all missing annotations; `lxml-stubs` is installed). Round G took
-  `generate/canonical_show` off the list (from 71 modules and 260 errors);
-  2026-09-27 took `xmlutil`, `vc/widget_ids` and `repatch/rename` off it
-  (`iter_local` typed, a comment's callable tag narrowed as `object`, a
-  fixture with no `<Name>` refused). No section passes on its own: every
-  remaining module has at least one error of its own. Smallest next step:
-  annotate the smallest listed module and delete its section; a section is
-  never added.
+- [x] **The mypy ratchet in `mypy.ini` (moved from vibra-lighting,
+  2026-09-26).** Closed 2026-10-07: the last 26 `ignore_errors` sections are
+  gone and `mypy qlctool` is clean in strict mode. Most were missing
+  annotations; the rest were lxml-stubs gaps (`attrib` values typed
+  `str | bytes`, an empty `_ErrorLog`, a `None` nsmap key) and lookups of
+  elements a valid workspace always has, narrowed with `cast` as
+  `grow_console` already did, so a malformed file still fails exactly as
+  before. `wheel_of` states that a fixture filtered on a role has its wheel.
+  Coverage floor 85 -> 95 (measured 95%). Evidence: `uv run codeality-py
+  gate` exit 0, 1008 passed.
 - [x] **The codeality structural baseline (moved from vibra-lighting,
   2026-09-26).** Closed 2026-09-28 after ten batches: 202 findings -> 6,
   every file one unit named after it, no module over its cap. Last steps:

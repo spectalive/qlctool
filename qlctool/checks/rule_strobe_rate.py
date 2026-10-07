@@ -22,7 +22,9 @@ RULE_ID = "strobe_rate"
 MAX_FLASH_HZ = 4.0
 
 
-def check_strobe_rate(graph: ShowGraph, groups, entries) -> list[Finding]:
+def check_strobe_rate(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], entries: dict[int, str]
+) -> list[Finding]:
     del entries
     findings: list[Finding] = []
     for function_id in sorted(graph.functions):

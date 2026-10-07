@@ -20,6 +20,8 @@ value to store for a detected source, which fills it in as soon as it hears
 something.
 """
 
+from typing import cast
+
 from lxml import etree
 
 from .constants import QLC_NS
@@ -33,7 +35,7 @@ def set_beat_generator(root: etree._Element, beat_type: str = "Audio", bpm: int 
     if beat_type not in BEAT_TYPES:
         raise ValueError(f"unknown beat generator {beat_type!r} (known: {', '.join(BEAT_TYPES)})")
 
-    io_map = find_local(find_local(root, "Engine"), "InputOutputMap")
+    io_map = find_local(cast(etree._Element, find_local(root, "Engine")), "InputOutputMap")
     if io_map is None:
         raise ValueError("workspace has no <InputOutputMap>")
 

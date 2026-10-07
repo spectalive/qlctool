@@ -5,6 +5,8 @@ same channels look fine in the file and wrong on stage - so the move is applied,
 then the whole patch is re-checked, and it is rolled back if it collides.
 """
 
+from typing import cast
+
 from lxml import etree
 
 from ..find_local import find_local
@@ -27,8 +29,8 @@ def set_fixture_address(
     allow_overlap says the caller means it (returning the conflicts instead).
     """
     element = patch_element(root, fixture_id)
-    address_element = find_local(element, "Address")
-    universe_element = find_local(element, "Universe")
+    address_element = cast(etree._Element, find_local(element, "Address"))
+    universe_element = cast(etree._Element, find_local(element, "Universe"))
 
     previous_address = address_element.text
     previous_universe = universe_element.text

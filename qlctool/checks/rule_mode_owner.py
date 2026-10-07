@@ -31,7 +31,9 @@ from .show_graph import ShowGraph
 RULE_ID = "mode_owner"
 
 
-def check_mode_owner(graph: ShowGraph, groups, entries) -> list[Finding]:
+def check_mode_owner(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], entries: dict[int, str]
+) -> list[Finding]:
     del entries
     written: dict[int, set[int]] = {}
     lighted: set[int] = set()

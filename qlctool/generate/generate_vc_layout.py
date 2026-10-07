@@ -8,6 +8,7 @@ never disturbed.
 """
 
 from collections.abc import Sequence
+from typing import cast
 
 from lxml import etree
 
@@ -58,7 +59,7 @@ def generate_vc_layout(
     groups: dict[str, list[etree._Element]] = {}
     for function in functions:
         key = function.attrib.get("Path") or function.attrib.get("Type", "Otros")
-        groups.setdefault(key, []).append(function)
+        groups.setdefault(cast(str, key), []).append(function)
 
     console_frame = root_frame(workspace.root)
     y = first_free_y(console_frame) + PADDING

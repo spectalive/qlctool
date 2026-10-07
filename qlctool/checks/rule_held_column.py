@@ -38,7 +38,10 @@ RULE_ID = "held_column"
 
 
 def check_held_column(
-    graph: ShowGraph, groups, root: etree._Element, bounded: frozenset[int] = frozenset()
+    graph: ShowGraph,
+    groups: dict[int, tuple[int, ...]],
+    root: etree._Element,
+    bounded: frozenset[int] = frozenset(),
 ) -> list[Finding]:
     console = find_local(root, "VirtualConsole")
     if console is None:

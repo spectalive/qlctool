@@ -62,7 +62,7 @@ HEADER_COMMENT = """
 
 def build_input_profile() -> bytes:
     """The .qxi file, ready to write, for the pad this show is driven from."""
-    root = etree.Element(f"{{{PROFILE_NS}}}InputProfile", nsmap={None: PROFILE_NS})
+    root = etree.Element(f"{{{PROFILE_NS}}}InputProfile", nsmap={None: PROFILE_NS})  # type: ignore[dict-item]  # lxml takes None as the default-namespace key; lxml-stubs types the map Mapping[str, str]
     creator = etree.SubElement(root, f"{{{PROFILE_NS}}}Creator")
     etree.SubElement(creator, f"{{{PROFILE_NS}}}Name").text = "qlctool"
     etree.SubElement(creator, f"{{{PROFILE_NS}}}Version").text = "5.2.2"

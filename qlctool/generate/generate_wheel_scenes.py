@@ -19,6 +19,7 @@ from ..names.default_names import default_names
 from ..names.names import Names
 from ..next_function_id import next_function_id
 from ..shutter_open_pairs import shutter_open_pairs
+from ..wheel_of import wheel_of
 from ..workspace import Workspace
 from ..zoom_wide_pairs import zoom_wide_pairs
 from .generated_wheel import GeneratedWheel
@@ -71,7 +72,7 @@ def generate_wheel_scenes(
 
     folder = path if path is not None else vocabulary.render("path_wheel_generated", label=label)
     # Position names come from the first fixture: they share the wheel.
-    _, positions = caps[0].wheel_for_role(role)
+    _, positions = wheel_of(caps[0], role)
 
     scene_ids: list[int] = []
     for index, position in enumerate(positions):
@@ -79,7 +80,7 @@ def generate_wheel_scenes(
         for capability in caps:
             # Only the wheel itself. Every other channel that happens to share
             # the role stays where it is - see wheel_for_role.
-            offset, _ = capability.wheel_for_role(role)
+            offset, _ = wheel_of(capability, role)
             pairs = [(offset, position.middle)]
             if role == roles.COLOR_MACRO:
                 # A colour is a whole detent: the half-colour channel beside

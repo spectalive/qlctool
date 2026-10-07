@@ -6,6 +6,8 @@ rig-wide scenes. A pixel panel patched but ungrouped sits dark while the panel
 next to it changes colour all night.
 """
 
+from typing import cast
+
 from lxml import etree
 
 from ..constants import QLC_NS
@@ -28,7 +30,7 @@ def add_group_head(
         raise ValueError(f"fixture {fixture_id} is not patched")
 
     group = group_of(root, group_id)
-    size = find_local(group, "Size")
+    size = cast(etree._Element, find_local(group, "Size"))
     width, height = int(size.attrib["X"]), int(size.attrib["Y"])
     if not (0 <= x < width and 0 <= y < height):
         raise ValueError(
@@ -40,13 +42,13 @@ def add_group_head(
         if (int(existing.attrib["X"]), int(existing.attrib["Y"])) == (x, y):
             raise ValueError(
                 f"cell ({x}, {y}) of group {group_id} already holds fixture "
-                f"{existing.attrib['Fixture']}"
+                f"{cast(str, existing.attrib['Fixture'])}"
             )
         if (int(existing.attrib["Fixture"]), int(existing.text or 0)) == (fixture_id, head):
             raise ValueError(
                 f"head {head} of fixture {fixture_id} is already in group "
-                f"{group_id} at ({existing.attrib['X']}, "
-                f"{existing.attrib['Y']}); a head in two cells is almost "
+                f"{group_id} at ({cast(str, existing.attrib['X'])}, "
+                f"{cast(str, existing.attrib['Y'])}); a head in two cells is almost "
                 "always a mistake"
             )
 

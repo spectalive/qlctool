@@ -21,7 +21,7 @@ from .show_graph import ShowGraph
 RULE_ID = "smoke_light"
 
 
-def check_smoke_light(graph: ShowGraph, groups) -> list[Finding]:
+def check_smoke_light(graph: ShowGraph, groups: dict[int, tuple[int, ...]]) -> list[Finding]:
     findings: list[Finding] = []
     for fixture_id, capability in sorted(graph.capabilities.items()):
         if not capability.is_smoke or not capability.has_role(roles.RED):

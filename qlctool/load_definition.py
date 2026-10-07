@@ -6,6 +6,7 @@ only records manufacturer/model/mode, so this is where channel roles come from.
 """
 
 from pathlib import Path
+from typing import cast
 
 from lxml import etree
 
@@ -70,8 +71,9 @@ def load_definition(path: str | Path) -> FixtureDefinition:
             ((int(c.attrib["Number"]), c.text) for c in findall_local(mode, "Channel")),
             key=lambda pair: pair[0],
         )
-        modes[mode.attrib["Name"]] = [name for _, name in ordered]
-        heads[mode.attrib["Name"]] = tuple(
+        mode_name = cast(str, mode.attrib["Name"])
+        modes[mode_name] = [cast(str, name) for _, name in ordered]
+        heads[mode_name] = tuple(
             tuple(
                 int(channel.text)
                 for channel in findall_local(head, "Channel")

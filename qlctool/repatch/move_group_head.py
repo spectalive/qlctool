@@ -13,6 +13,8 @@ The grid is not decoration: a matrix paints the cells the group declares, so
 where a head sits is where it appears in every pattern.
 """
 
+from typing import cast
+
 from lxml import etree
 
 from ..find_local import find_local
@@ -36,7 +38,7 @@ def move_group_head(
     placement.
     """
     group = group_of(root, group_id)
-    size = find_local(group, "Size")
+    size = cast(etree._Element, find_local(group, "Size"))
     width, height = int(size.attrib["X"]), int(size.attrib["Y"])
     if not (0 <= x < width and 0 <= y < height):
         raise ValueError(
@@ -52,7 +54,7 @@ def move_group_head(
         elif cell == (x, y):
             raise ValueError(
                 f"cell ({x}, {y}) of group {group_id} already holds fixture "
-                f"{existing.attrib['Fixture']}; move that one out first"
+                f"{cast(str, existing.attrib['Fixture'])}; move that one out first"
             )
 
     if moving is None:

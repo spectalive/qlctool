@@ -23,7 +23,9 @@ RULE_ID = "latched_strobe"
 BOUNDED = "SingleShot"
 
 
-def check_latched_strobe(graph: ShowGraph, groups, entries) -> list[Finding]:
+def check_latched_strobe(
+    graph: ShowGraph, groups: dict[int, tuple[int, ...]], entries: dict[int, str]
+) -> list[Finding]:
     findings: list[Finding] = []
     reported: set[int] = set()
     for entry_id, caption in sorted(entries.items()):

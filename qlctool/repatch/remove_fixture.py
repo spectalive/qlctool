@@ -6,6 +6,8 @@ at nothing, so they all go. Scenes keep working - they simply stop driving the
 fixture that is no longer there.
 """
 
+from typing import cast
+
 from lxml import etree
 
 from ..fixture_references import fixture_references
@@ -17,6 +19,6 @@ def remove_fixture(root: etree._Element, fixture_id: int) -> int:
     element = patch_element(root, fixture_id)
     references = fixture_references(root, fixture_id)
     for reference in references:
-        reference.getparent().remove(reference)
-    element.getparent().remove(element)
+        cast(etree._Element, reference.getparent()).remove(reference)
+    cast(etree._Element, element.getparent()).remove(element)
     return len(references)

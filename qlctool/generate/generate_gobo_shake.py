@@ -18,6 +18,7 @@ from ..capabilities_of import capabilities_of
 from ..fixture_library import FixtureLibrary
 from ..functions.build_scene import build_scene
 from ..next_function_id import next_function_id
+from ..wheel_of import wheel_of
 from ..workspace import Workspace
 from .generated_gobo_shake import GeneratedGoboShake
 from .spaced import spaced
@@ -44,7 +45,7 @@ def generate_gobo_shake(
         return GeneratedGoboShake()
 
     # Pattern positions come from the first fixture: they share the wheel.
-    _, positions = caps[0].wheel_for_role(roles.GOBO)
+    _, positions = wheel_of(caps[0], roles.GOBO)
     patterns = [
         p for p in positions if (p.preset or "") == GOBO_POSITION_PRESET and p is not positions[0]
     ]
@@ -56,7 +57,7 @@ def generate_gobo_shake(
     for position in chosen:
         values: dict[int, list[tuple[int, int]]] = {}
         for capability in caps:
-            offset, _ = capability.wheel_for_role(roles.GOBO)
+            offset, _ = wheel_of(capability, roles.GOBO)
             pairs = [(offset, position.middle)]
             pairs += [
                 (shake_offset, SHAKE_VALUE)

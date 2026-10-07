@@ -22,6 +22,7 @@ under a 255 can dip nothing: the fixture would ride along invisibly forever
 from collections.abc import Sequence
 
 from ..capabilities_of import capabilities_of
+from ..fixture_capabilities import FixtureCapabilities
 from ..fixture_library import FixtureLibrary
 from ..functions.build_chaser import build_chaser
 from ..functions.build_collection import build_collection
@@ -77,14 +78,14 @@ def generate_dimmer_chases(
     # adjacency question (see `keeps_16bit`) is answered per family instead of
     # splitting one - a family whose dimmer fine channel is not adjacent runs
     # 8 bit on its own without turning it off for the rest.
-    families: dict[tuple[str, str], list] = {}
+    families: dict[tuple[str, str], list[FixtureCapabilities]] = {}
     for capability in dimmable:
         fixture = capability.fixture
         families.setdefault((fixture.manufacturer, fixture.model), []).append(capability)
     parts = list(families.values())
     split = len(parts) > 1
 
-    def _efx(name: str, members: list, folder: str, direction: str) -> int:
+    def _efx(name: str, members: list[FixtureCapabilities], folder: str, direction: str) -> int:
         function_id = next_function_id(workspace.root)
         workspace.add_function(
             build_efx(
