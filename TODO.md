@@ -8,6 +8,16 @@
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
+- [ ] **`qlctool validate` fills the user's QLC+ recent-files list
+  (2026-10-19).** Each headless load adds its hidden copy
+  (`.<name>.qlctool-validate-<hex>.qxw`, then deleted) to
+  `workspace.recentN` in `defaults read "org.qlcplus.Q Light Controller
+  Plus"`: on the Mac mini 9 of 11 entries were such copies, which pushes the
+  real shows out of QLC+'s File > Recent menu (it keeps 10). qlc-launcher now
+  skips them when it opens the last show (qlc-launcher 8f2bed5), but QLC+'s
+  own menu still shows them. Smallest next step: check whether the headless
+  QLC+ can be given its own preferences scope (for example a separate
+  `HOME` or QSettings path) and, if so, use it in validate.
 - [ ] **Desk bursts on a combined HTP dimmer/strobe channel (C2b, measured
   2026-09-27).** The tablet's bursts are Chasers started with
   `setFunctionStatus`, so the button's ForceLTP never applies, and on the
