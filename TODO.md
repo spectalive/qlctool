@@ -81,6 +81,13 @@
   3.13, so the cuts did not reach CI and the leg was one slow runner from
   failing as over-budget. The CI budget was raised to 900 s the same day
   (the budget guards against a hang, not a slow leg); the local 120 s stays.
+  Two more tag runs read on 2026-10-19 (the pytest check's own
+  `duration_seconds` in `gh run view --log`, budget 900 s): v0.1.12 run
+  36333272097 548.2 s on 3.11 (61%; job 573 s wall with setup) and 443.7 s
+  on 3.13 (the run failed on codeality-py structural findings, not on a
+  test), v0.2.0 run 36371259619 522.4 s on 3.11 (58%; job 548 s) and 490.3 s
+  on 3.13 (job 519 s). Since 15ac3a1 only a tag, a pull request or a manual
+  run starts the 3.11 leg, so readings arrive one per release.
   Smallest next step: read the next CI runs' 3.11 leg against 900 s; close
   below 50% (450 s) on three runs in a row.
 - [ ] **The MiN Wash sit at full in Ambiente (ruling D2, en-sala audit
@@ -96,15 +103,6 @@
   value for that level, with a `check` rule that compares its brightness to
   the level's.
 - [ ] **The first bank's wheels colour the ungrouped fixtures too (ruling D9, accepted cost, 2026-09-26):** `Colores`/`Mezcla` of that bank step its keyed solids and splits, which carry the CLB2.4 PARs and fog LED columns, so while a wheel runs over the room wheel the six sum HTP; next step if it bites: point those wheels at extra-free copies appended after the last function.
-- [ ] **A wheel's desk tile shows the max of all its steps (en-sala round 1,
-  2026-09-26).** `desk_swatch.swatches` reads `reach`, which merges every step
-  of a chaser by the highest value, so a colour wheel's tile is no colour it
-  ever shows: `Pastel tenue` read #737373 before the white-share fix and
-  #ffffff after it, and the mix wheel gained #ff00ff when the ungrouped
-  fixtures joined the first bank (red on one, blue on the other). Smallest
-  next step: for a Chaser, take the swatches of its first step (or of each
-  step, deduplicated) instead of the merged reach, and rebuild
-  `Vibra.desk.json`.
 - [ ] **The ruff ratchet in `ruff.toml` (moved from vibra-lighting,
   2026-09-26).** `ruff check` and `ruff format --check` are clean, so what is
   left is the ignore list, counted with `ruff check . --select <codes>
@@ -113,6 +111,9 @@
   19, PLR2004 (magic values: DMX channel numbers and QLC+ constants) 43,
   RUF005/RUF059 13. E402 (1) and ARG001 (9) were cleared on 2026-09-27
   (96988c0): the nine unused arguments were dropped from their signatures,
-  each with one caller, Vibra x3 identical. Smallest next step: take the next
-  small code (RUF005/RUF059), clear it and drop it from `ignore`, so the list
-  can only shrink.
+  each with one caller, Vibra x3 identical. RUF005/RUF059 were cleared and
+  left `ignore` the same day (72bde18). Recounted on 2026-10-19 (ruff
+  0.16.5): D1 465 (D103 373, D101 54, D102 27, D105 5, D104 5, D100 1; D107
+  is a permanent ignore), D205/D210 29, PLR0913/PLR0917 223, PLR0911/0912/0915
+  22, PLR2004 45, RUF005/RUF059 0, PLW2901/SIM105 0. Smallest next step: drop
+  PLW2901 and SIM105 from `ignore` (0 findings), then take D205/D210.

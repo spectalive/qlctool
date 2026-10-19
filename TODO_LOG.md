@@ -407,3 +407,15 @@
   upstream modes it accepted, 6 remain: the Wash FX and Frost FX Bar W grids
   (three modes) and the KLS-180-6 and PartyBar2 light bars (three modes). Test `tests/test_par_is_not_a_panel.py`;
   Vibra identical x3.
+
+- [x] 2026-10-19 — **General:** **A wheel's desk tile shows the max of all its steps (en-sala round 1,
+  2026-09-26).** `desk_swatch.swatches` reads `reach`, which merges every step
+  of a chaser by the highest value, so a colour wheel's tile is no colour it
+  ever shows: `Pastel tenue` read #737373 before the white-share fix and
+  #ffffff after it, and the mix wheel gained #ff00ff when the ungrouped
+  fixtures joined the first bank (red on one, blue on the other). Smallest
+  next step: for a Chaser, take the swatches of its first step (or of each
+  step, deduplicated) instead of the merged reach, and rebuild
+  `Vibra.desk.json`.
+  - Result: swatches() reads a Chaser step by step (chaser_swatches.py), deduplicated in step order and capped at MAX_SWATCHES; the frozen rig's Vibra.desk.json changes only the four colour-wheel tiles (#ffffff -> four step colours each).
+  - Evidence: CODEALITY_PY_TEST_BUDGET_SECONDS=900 uv run --locked codeality-py gate --json: exit 0, every stage passed (pytest 231 s at load 130-180); tests/test_wheel_swatches.py fails with the old swatches.py restored (1 failed, 1 passed)

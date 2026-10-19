@@ -834,7 +834,10 @@
    "solo": 62,
    "key": "W",
    "swatches": [
-    "#ffffff"
+    "#ff0000",
+    "#ff1400",
+    "#ff7f00",
+    "#ffb700"
    ],
    "enabled": true,
    "reason": ""
@@ -851,7 +854,10 @@
    "solo": 62,
    "key": "C",
    "swatches": [
-    "#ffffff"
+    "#ff0000",
+    "#ffff00",
+    "#00ff00",
+    "#00ffff"
    ],
    "enabled": true,
    "reason": "",
@@ -875,7 +881,10 @@
    "solo": 62,
    "key": "L",
    "swatches": [
-    "#ffffff"
+    "#ff8c8c",
+    "#ff958c",
+    "#ffc58c",
+    "#ffdf8c"
    ],
    "enabled": true,
    "reason": "",
@@ -899,7 +908,10 @@
    "solo": 62,
    "key": "R",
    "swatches": [
-    "#ffffff"
+    "#ff0000",
+    "#ff1400",
+    "#ff7f00",
+    "#ffb700"
    ],
    "enabled": true,
    "reason": "",
