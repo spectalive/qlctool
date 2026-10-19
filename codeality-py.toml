@@ -95,7 +95,7 @@ data = [
   "qlctool/checks/invalid_function_id.py",
   "qlctool/checks/rule_group.py",
   "qlctool/desk_function_path.py",
-  # The most colours a desk tile shows, shared by a look's and a chaser's swatches.
+  # The most colours a desk tile shows, shared by a look's merged and step-by-step swatches.
   "qlctool/max_swatches.py",
   "qlctool/names/catalogue_dir.py",
   "qlctool/names/default_language.py",

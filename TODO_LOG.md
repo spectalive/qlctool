@@ -419,3 +419,7 @@
   `Vibra.desk.json`.
   - Result: swatches() reads a Chaser step by step (chaser_swatches.py), deduplicated in step order and capped at MAX_SWATCHES; the frozen rig's Vibra.desk.json changes only the four colour-wheel tiles (#ffffff -> four step colours each).
   - Evidence: CODEALITY_PY_TEST_BUDGET_SECONDS=900 uv run --locked codeality-py gate --json: exit 0, every stage passed (pytest 231 s at load 130-180); tests/test_wheel_swatches.py fails with the old swatches.py restored (1 failed, 1 passed)
+
+- [x] 2026-10-19 — **General:** **A Collection over colour wheels still drew the merged maximum (review of 10c41ed, 2026-10-19).** 10c41ed read only a Chaser (or a Chaser nested in one) step by step; `Rueda Mezcla`, a Collection of five wheels, kept ['#ffffff', '#ff00ff'] and the AUTO/tranquilo/fiesta/locura looks over `Rueda Colores` kept ['#ffffff'], although the closed item named the mix wheel. Next step: read any function that starts a Chaser member by member.
+  - Result: swatches() reads any function that starts a Chaser member by member (stepwise_swatches.py, starts_chaser.py); Vibra.desk.json changes only mezcla (#ffffff,#ff00ff -> #ff0000,#ffff00,#ffb700,#ff00ff) and auto/tranquilo/fiesta/locura (#ffffff -> #ff0000,#ff1400,#ff7f00,#ffb700).
+  - Evidence: pytest -q tests/test_wheel_swatches.py: 4 passed with the fix, 2 failed 2 passed with 10c41ed's swatches.py restored; CODEALITY_PY_TEST_BUDGET_SECONDS=900 uv run --locked codeality-py gate --json: exit 0, every stage passed (pytest 148.7 s at load 67-83)

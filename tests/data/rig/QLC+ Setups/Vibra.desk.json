@@ -327,7 +327,10 @@
    "solo": 3,
    "key": "Q",
    "swatches": [
-    "#ffffff"
+    "#ff0000",
+    "#ff1400",
+    "#ff7f00",
+    "#ffb700"
    ],
    "enabled": true,
    "reason": ""
@@ -361,7 +364,10 @@
    "solo": 3,
    "key": "F2",
    "swatches": [
-    "#ffffff"
+    "#ff0000",
+    "#ff1400",
+    "#ff7f00",
+    "#ffb700"
    ],
    "enabled": true,
    "reason": ""
@@ -378,7 +384,10 @@
    "solo": 3,
    "key": "F3",
    "swatches": [
-    "#ffffff"
+    "#ff0000",
+    "#ff1400",
+    "#ff7f00",
+    "#ffb700"
    ],
    "enabled": true,
    "reason": ""
@@ -395,7 +404,10 @@
    "solo": 3,
    "key": "F4",
    "swatches": [
-    "#ffffff"
+    "#ff0000",
+    "#ff1400",
+    "#ff7f00",
+    "#ffb700"
    ],
    "enabled": true,
    "reason": ""
@@ -935,7 +947,9 @@
    "solo": 62,
    "key": "E",
    "swatches": [
-    "#ffffff",
+    "#ff0000",
+    "#ffff00",
+    "#ffb700",
     "#ff00ff"
    ],
    "enabled": true,
