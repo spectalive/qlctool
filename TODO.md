@@ -51,6 +51,14 @@
   a running shutter chase, compare each burst to its held source, confirm
   release and timeout, then tune `BURST_MS` if needed. Evidence and the
   per-hit judgment: [desk burst findings](docs/2026-09-13-desk-bursts-findings.md).
+  2026-10-21: loopback Art-Net confirms this is a real controller output
+  mismatch, not only a torn web-channel read. The white tablet burst lost the
+  7R wheel to AUTO in 299/302 steady frames, while the held ForceLTP console
+  button stayed white in 794/794. A Toggle's Override attributes were ignored;
+  a direct Flash survived WebSocket disconnect and cannot replace the bounded
+  Chaser without a controller-host-owned expiry. Next: add that bounded
+  priority path for light bursts, retain the existing server-bounded pump
+  bursts, and prove both output and disconnect behavior before release.
 - [ ] **CI's 3.11 leg uses 55-83% of its test budget (2026-09-25).** 476.8 s
   of 600 s in run 36131008406, 447.0 s (3.13: 391.8 s) in 36136963884, 496.9 s
   (3.13: 398.2 s) in 36156626545 after the check suite shared its one repeated
