@@ -5,6 +5,7 @@ from collections.abc import Callable, Mapping
 from lxml import etree
 
 from ..names.names import Names
+from ..placement import BURST_MS
 from ..vc.build_button import FLASH, TOGGLE
 from .play_page_layout import GAP, HEADER, LEFT, SMALL_BUTTON_HEIGHT, WIDTH
 
@@ -94,5 +95,6 @@ def build_reset_strip(
             action=FLASH if is_flash else TOGGLE,
             flash_override=is_flash,
             flash_force_ltp=is_flash,
+            flash_max_hold_ms=BURST_MS["hit_flash"] if name == vocabulary.display("flash_full") else 0,
             font=small_font,
         )

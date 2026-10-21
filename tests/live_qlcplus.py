@@ -14,6 +14,9 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
 
+from lxml import etree
+
+from qlctool.iter_local import iter_local
 from qlctool.offline_workspace import offline_workspace
 from qlctool.qlcplus_binary import qlcplus_binary
 from qlctool.quiet_launch_environment import quiet_launch_environment
@@ -34,12 +37,20 @@ def free_port() -> int:
 
 
 @contextmanager
-def running_qlcplus(workspace: Path, folder: Path) -> Iterator[int]:
+def running_qlcplus(workspace: Path, folder: Path, loopback_artnet: bool = False) -> Iterator[int]:
     """Yield the web port of a QLC+ running an offline copy of `workspace`."""
     binary = qml_binary()
     assert binary is not None, "no QLC+ 5 to launch"
     refuse_saved_io()
     copy = offline_workspace(workspace, folder / "live.qxw")
+    if loopback_artnet:
+        tree = etree.parse(str(copy))
+        universe = next(iter_local(tree.getroot(), "Universe"))
+        etree.SubElement(
+            universe, "{http://www.qlcplus.org/Workspace}Output",
+            Plugin="ArtNet", UID="127.0.0.1", Line="0",
+        )
+        tree.write(str(copy), xml_declaration=True, encoding="UTF-8")
     port = free_port()
     assert port not in (9998, 9999)
     process = subprocess.Popen(

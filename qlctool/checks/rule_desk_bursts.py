@@ -3,12 +3,14 @@
 from lxml import etree
 
 from ..desk_burst_buttons import desk_burst_buttons
+from ..desk_burst_identifier import desk_burst_identifier
 from ..desk_burst_duration import desk_burst_duration
 from ..desk_burst_sources import desk_burst_sources
 from ..names.default_names import default_names
 from ..names.names import Names
 from .desk_burst_errors import desk_burst_errors
 from .finding import ERROR, Finding
+from .priority_flash_deadline import priority_flash_deadline
 from .show_graph import ShowGraph
 
 RULE_ID = "desk_burst_shape"
@@ -42,6 +44,17 @@ def check_desk_bursts(
                     function=key,
                     message_id=error.message_id,
                     fields=error.fields,
+                )
+            )
+        if not priority_flash_deadline(
+            root, sources[key].id, duration
+        ):
+            findings.append(
+                Finding(
+                    rule_id=RULE_ID,
+                    severity=ERROR,
+                    function=key,
+                    message_id="desk_burst_priority_timeout",
                 )
             )
     return findings

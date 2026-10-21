@@ -56,6 +56,25 @@ def test_bursts_preserve_sources_and_validate_without_function_names(generated):
         scene.set("Name", "renamed scene")
         assert sources[key].action == "Flash"
     assert not check_desk_bursts(graph, workspace.root)
+
+
+def test_2026_10_21_every_hit_rejects_an_unbounded_priority_button(generated):
+    workspace, library = generated
+    sources = desk_burst_sources(workspace.root, default_names())
+    assert len(sources) >= 25
+    graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
+    for source in sources.values():
+        button = next(
+            node for node in iter_local(workspace.root, "Button") if node.get("ID") == str(source.id)
+        )
+        action = find_local(button, "Action")
+        for attribute in ("MaxHold", "Override", "ForceLTP"):
+            saved = action.attrib.pop(attribute)
+            assert any(
+                finding.message_id == "desk_burst_priority_timeout"
+                for finding in check_desk_bursts(graph, workspace.root)
+            ), (source.caption, attribute)
+            action.set(attribute, saved)
     groups = group_fixtures(workspace.root)
     context = RuleContext(root=workspace.root, graph=graph, groups=groups, entries={}, states=set())
     bounded = tablet_desk_bounded_latches(context)

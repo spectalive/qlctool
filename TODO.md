@@ -18,9 +18,9 @@
   own menu still shows them. Smallest next step: check whether the headless
   QLC+ can be given its own preferences scope (for example a separate
   `HOME` or QSettings path) and, if so, use it in validate.
-- [ ] **Desk bursts on a combined HTP dimmer/strobe channel (C2b, measured
-  2026-09-27).** The tablet's bursts are Chasers started with
-  `setFunctionStatus`, so the button's ForceLTP never applies, and on the
+- [~] **Verify the combined HTP dimmer/strobe hit on the spare rig (C2b, measured
+  2026-09-27).** The tablet's bursts were Chasers started with
+  `setFunctionStatus`, so the button's ForceLTP did not apply, and on the
   MiN Wash (channel 5, dimmer and strobe in one HTP channel) the level's 255
   outbids every strobe value. Marking that channel `ForcedLTP` in the
   workspace `<Fixture>` is not sound. Measured on a :9995 copy of
@@ -33,7 +33,10 @@
   targets 0 only for Intensity channels (`GenericFader::setFadeOut`), and
   blackout outputs `m_blackoutValues`, which keep non-HTP values: the rig's
   one channel that neither fades, dims, blacks out nor goes dark when its
-  state stops. Smallest alternatives: (a) the levels write that channel at
+  state stops. On 2026-10-21 the tablet switched to bounded Flash buttons
+  with ForceLTP and Override; the 7R Art-Net and all-hit checks pass. Next:
+  measure this spare fixture's combined channel during a strobe hit, release,
+  and blackout on the physical rig. Earlier alternatives were: (a) the levels write that channel at
   its "100%" dimmer value (8 on the MiN) instead of 255, so under HTP every
   strobe value (135-239) outbids it - one generator change and one rule
   (a strobe that no running level can outbid); (b) bursts that reach a
@@ -45,7 +48,7 @@
   not the brighter; a grand master in Intensity mode scales 8 down into
   0-7 "Closed" instead of dimming; and a fade passes through "Closed" on
   its way to 100%.
-- [ ] **Verify desk bursts on the rig (2026-09-13).** Normal API priority
+- [~] **Verify desk bursts on the rig (2026-09-13).** Normal API priority
   cannot guarantee the Mac Flash's colour or shutter override. The generated
   map marks 15 cues with `burstNote`; durations are provisional. Over AUTO and
   a running shutter chase, compare each burst to its held source, confirm
@@ -55,10 +58,11 @@
   mismatch, not only a torn web-channel read. The white tablet burst lost the
   7R wheel to AUTO in 299/302 steady frames, while the held ForceLTP console
   button stayed white in 794/794. A Toggle's Override attributes were ignored;
-  a direct Flash survived WebSocket disconnect and cannot replace the bounded
-  Chaser without a controller-host-owned expiry. Next: add that bounded
-  priority path for light bursts, retain the existing server-bounded pump
-  bursts, and prove both output and disconnect behavior before release.
+  a direct Flash survived WebSocket disconnect. On 2026-10-21 the controller
+  gained a maximum Flash hold, all 25 desk hits gained priority, the three
+  shipped shows passed the checks, and loopback Art-Net kept all four 7R wheels
+  white during Fiesta's Flash before returning to colour after expiry. Next:
+  measure colour, shutter, smoke and expiry at the physical FT232R output.
 - [ ] **CI's 3.11 leg uses 55-83% of its test budget (2026-09-25).** 476.8 s
   of 600 s in run 36131008406, 447.0 s (3.13: 391.8 s) in 36136963884, 496.9 s
   (3.13: 398.2 s) in 36156626545 after the check suite shared its one repeated

@@ -10,6 +10,7 @@ from collections.abc import Callable, Mapping
 from lxml import etree
 
 from ..names.names import Names
+from ..placement import BURST_MS
 from .console_layout import BIG_FONT, GAP, HEADER, HITS, LEFT_X, OUTER_WIDTH, PAGE_SHOW, TITLE_FONT
 
 
@@ -35,9 +36,9 @@ def hits(
     # narrows the buttons instead of pushing the last one off the screen. A hit
     # the show has no function for (the haze, on a rig without a machine) takes
     # no place in the row.
-    present = [(f, c) for f, c in HITS if master.get(vocabulary.display(f)) is not None]
+    present = [(f, c, b) for f, c, b in HITS if master.get(vocabulary.display(f)) is not None]
     pitch = (OUTER_WIDTH - 16 - 2 * GAP - 4) // max(len(present), 1)
-    for index, (function, caption) in enumerate(present):
+    for index, (function, caption, burst) in enumerate(present):
         master_button(
             hits,
             vocabulary.display(function),
@@ -46,5 +47,6 @@ def hits(
             HEADER + 4,
             pitch - 6,
             118,
+            flash_max_hold_ms=BURST_MS[burst],
             font=BIG_FONT,
         )

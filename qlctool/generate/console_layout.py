@@ -99,14 +99,14 @@ ROOM_STATES: tuple[tuple[str, str, tuple[int, int, int, int], str], ...] = (
 
 # The hits: they add to whatever state is running instead of replacing it, so
 # they live in a plain frame. Six across one row. (function, caption) identifiers.
-HITS: tuple[tuple[str, str], ...] = (
-    ("flash_full", "hit_button_flash"),
-    ("flash_half", "hit_button_flash_slow"),
-    ("flash_colour", "hit_button_flash_colour"),
-    ("smoke_on", "hit_button_smoke_now"),
-    ("vertical_smoke_now", "hit_button_vertical_smoke_now"),
-    ("strobe_fast", "hit_button_strobe"),
-    ("strobe_medium", "hit_button_strobe_soft"),
+HITS: tuple[tuple[str, str, str], ...] = (
+    ("flash_full", "hit_button_flash", "hit_flash"),
+    ("flash_half", "hit_button_flash_slow", "hit_flash_slow"),
+    ("flash_colour", "hit_button_flash_colour", "hit_flash_colour"),
+    ("smoke_on", "hit_button_smoke_now", "hit_smoke_now"),
+    ("vertical_smoke_now", "hit_button_vertical_smoke_now", "hit_vertical_smoke_now"),
+    ("strobe_fast", "hit_button_strobe", "hit_strobe"),
+    ("strobe_medium", "hit_button_strobe_soft", "hit_strobe_soft"),
 )
 
 # What page 1 says about itself, because nobody reads a manual at a venue.

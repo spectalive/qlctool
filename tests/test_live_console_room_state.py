@@ -122,7 +122,7 @@ def test_every_button_on_the_show_page_says_its_own_key(console):
         assert " · " in caption, caption
     actual = [leading_glyph(c)[1] for c in _captions(_frame_named(frame, "GOLPES"))]
     names = default_names()
-    hits = [(names.display(name), names.display(caption)) for name, caption in HITS]
+    hits = [(names.display(name), names.display(caption)) for name, caption, _ in HITS]
     expected = [caption for name, caption in hits if name not in OPTIONAL_KEYS or caption in actual]
     assert expected == actual
 

@@ -5,7 +5,7 @@
  "show": {
   "key": "vibra",
   "workspace": "Vibra.qxw",
-  "sha256": "bdfc775ddfb8b94c8e5637c6ff353edf0f0f1e7aa75e781c37b94a3b0da765ed"
+  "sha256": "077cef28d99e4b1e47a66ba3eb738c2deb2027ad00c1b929fb23e0c6bc57b6e3"
  },
  "grandMaster": {
   "widget": 266
@@ -472,7 +472,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "flash",
-   "burstNote": "Luz a máxima intensidad; rueda de color y estrobo pueden ser pisados por el show."
+   "priorityWidget": 12,
+   "priorityFunction": 2,
+   "burstNote": "Flash prioritario con parada automatica en QLC+."
   },
   "flash-lento": {
    "widget": 575,
@@ -492,7 +494,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "flash-lento",
-   "burstNote": "Luz a máxima intensidad; rueda de color y estrobo pueden ser pisados por el show."
+   "priorityWidget": 13,
+   "priorityFunction": 3,
+   "burstNote": "Flash prioritario con parada automatica en QLC+."
   },
   "flash-color": {
    "widget": 576,
@@ -510,7 +514,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "flash-color",
-   "burstNote": "Conserva el color del show; otro barrido de shutter puede pisar el estrobo."
+   "priorityWidget": 14,
+   "priorityFunction": 4,
+   "burstNote": "Conserva el color del show; flash prioritario con parada automatica en QLC+."
   },
   "humo-ya": {
    "widget": 577,
@@ -527,7 +533,9 @@
    "enabled": true,
    "reason": "",
    "burstMs": 5000,
-   "source": "humo-ya"
+   "source": "humo-ya",
+   "priorityWidget": 15,
+   "priorityFunction": 637
   },
   "humo-vert": {
    "widget": 578,
@@ -544,7 +552,9 @@
    "enabled": true,
    "reason": "",
    "burstMs": 5000,
-   "source": "humo-vert"
+   "source": "humo-vert",
+   "priorityWidget": 16,
+   "priorityFunction": 643
   },
   "strobo": {
    "widget": 579,
@@ -562,7 +572,9 @@
    "reason": "",
    "burstMs": 4000,
    "source": "strobo",
-   "burstNote": "Sin prioridad Override: otro barrido de shutter puede pisar el estrobo."
+   "priorityWidget": 17,
+   "priorityFunction": 659,
+   "burstNote": "Estrobo prioritario con parada automatica en QLC+."
   },
   "strobo-suave": {
    "widget": 580,
@@ -580,7 +592,9 @@
    "reason": "",
    "burstMs": 4000,
    "source": "strobo-suave",
-   "burstNote": "Sin prioridad Override: otro barrido de shutter puede pisar el estrobo."
+   "priorityWidget": 18,
+   "priorityFunction": 660,
+   "burstNote": "Estrobo prioritario con parada automatica en QLC+."
   },
   "cada-1-min": {
    "widget": 29,
@@ -660,7 +674,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "rojo",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 52,
+   "priorityFunction": 5,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "rojo-fuego": {
    "widget": 582,
@@ -680,7 +696,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "rojo-fuego",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 53,
+   "priorityFunction": 6,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "naranja": {
    "widget": 583,
@@ -700,7 +718,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "naranja",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 54,
+   "priorityFunction": 7,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "ambar": {
    "widget": 584,
@@ -720,7 +740,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "ambar",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 55,
+   "priorityFunction": 8,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "amarillo": {
    "widget": 585,
@@ -740,7 +762,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "amarillo",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 56,
+   "priorityFunction": 9,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "verde": {
    "widget": 586,
@@ -760,7 +784,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "verde",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 57,
+   "priorityFunction": 10,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "verde-menta": {
    "widget": 587,
@@ -780,7 +806,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "verde-menta",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 58,
+   "priorityFunction": 11,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "cyan": {
    "widget": 588,
@@ -800,7 +828,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "cyan",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 59,
+   "priorityFunction": 12,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "celeste": {
    "widget": 589,
@@ -820,7 +850,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "celeste",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 60,
+   "priorityFunction": 13,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "azul-cielo": {
    "widget": 590,
@@ -840,7 +872,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "azul-cielo",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 61,
+   "priorityFunction": 14,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "azul": {
    "widget": 591,
@@ -860,7 +894,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "azul",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 62,
+   "priorityFunction": 15,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "azul-profundo": {
    "widget": 592,
@@ -880,7 +916,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "azul-profundo",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 63,
+   "priorityFunction": 16,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "morado": {
    "widget": 593,
@@ -900,7 +938,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "morado",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 64,
+   "priorityFunction": 17,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "ultravioleta": {
    "widget": 594,
@@ -920,7 +960,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "ultravioleta",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 65,
+   "priorityFunction": 18,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "magenta": {
    "widget": 595,
@@ -940,7 +982,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "magenta",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 66,
+   "priorityFunction": 19,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "fucsia": {
    "widget": 596,
@@ -960,7 +1004,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "fucsia",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 67,
+   "priorityFunction": 20,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "rosa": {
    "widget": 597,
@@ -980,7 +1026,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "rosa",
-   "burstNote": "Sin ForceLTP ni Override: el color se suma al show; rueda y estrobo pueden ser pisados."
+   "priorityWidget": 68,
+   "priorityFunction": 21,
+   "burstNote": "Color prioritario con parada automatica en QLC+."
   },
   "blanco": {
    "widget": 598,
@@ -1000,7 +1048,9 @@
    "reason": "",
    "burstMs": 8000,
    "source": "blanco",
-   "burstNote": "Luz a máxima intensidad; rueda de color y estrobo pueden ser pisados por el show."
+   "priorityWidget": 69,
+   "priorityFunction": 22,
+   "burstNote": "Flash prioritario con parada automatica en QLC+."
   },
   "colores-completos": {
    "widget": 72,

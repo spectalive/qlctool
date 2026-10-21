@@ -114,6 +114,10 @@ def test_2026_09_13_held_accents_are_replaced_by_bounded_bursts(deskmap):
         assert control["action"] == "toggle" and control["enabled"]
         assert control["reason"] == ""
         assert isinstance(control["widget"], int) and isinstance(control["function"], int)
+        assert isinstance(control["priorityWidget"], int)
+        assert isinstance(control["priorityFunction"], int)
+        assert control["priorityWidget"] != control["widget"]
+        assert control["priorityFunction"] != control["function"]
         assert control["solo"] is None and control["key"] is None
         assert control["caption"]
         if key not in ("humo-ya", "humo-vert"):

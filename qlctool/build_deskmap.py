@@ -129,6 +129,8 @@ def build_deskmap(
                     "reason": "",
                 }
             )
+            controls[key]["priorityWidget"] = widget.id
+            controls[key]["priorityFunction"] = widget.function
             note = desk_burst_note(identifier, vocabulary)
             if note is not None:
                 controls[key]["burstNote"] = note

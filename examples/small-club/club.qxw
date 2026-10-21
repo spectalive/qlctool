@@ -5731,7 +5731,7 @@
           <ExcludeMonitored>False</ExcludeMonitored>
           <Collapsed>False</Collapsed>
           <Disabled>False</Disabled>
-          <Button Caption="▶ AUTO — the show runs itself · Q" ID="3" Icon="">
+          <Button Caption="▶ AUTO — automatic sequence · Q" ID="3" Icon="">
             <WindowState Visible="True" X="8" Y="26" Width="690" Height="190"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -5745,7 +5745,7 @@
             <Key>Q</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="🎤 TALK — someone is speaking · F1" ID="4" Icon="">
+          <Button Caption="🎤 TALK — speech lighting · F1" ID="4" Icon="">
             <WindowState Visible="True" X="704" Y="26" Width="352" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -5759,7 +5759,7 @@
             <Key>F1</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="🌙 CALM — a lull · F2" ID="5" Icon="">
+          <Button Caption="🌙 CALM — soft ambience · F2" ID="5" Icon="">
             <WindowState Visible="True" X="1062" Y="26" Width="352" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -5773,7 +5773,7 @@
             <Key>F2</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="🎉 PARTY — the usual pace · F3" ID="6" Icon="">
+          <Button Caption="🎉 PARTY — medium energy · F3" ID="6" Icon="">
             <WindowState Visible="True" X="704" Y="124" Width="352" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -5787,7 +5787,7 @@
             <Key>F3</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="🔥 FRENZY — everything at once · F4" ID="7" Icon="">
+          <Button Caption="🔥 FRENZY — maximum energy · F4" ID="7" Icon="">
             <WindowState Visible="True" X="1062" Y="124" Width="352" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -5801,7 +5801,7 @@
             <Key>F4</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="💡 FULL WHITE — work light · X" ID="8" Icon="">
+          <Button Caption="💡 FULL WHITE — white lighting · X" ID="8" Icon="">
             <WindowState Visible="True" X="8" Y="222" Width="690" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -5815,7 +5815,7 @@
             <Key>X</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="⏹ ALL BLACK — lights off · º" ID="9" Icon="">
+          <Button Caption="⏹ ALL BLACK — dark scene · º" ID="9" Icon="">
             <WindowState Visible="True" X="704" Y="222" Width="710" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -5855,7 +5855,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="2"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key>Space</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -5869,7 +5869,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="3"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key>-</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -5883,7 +5883,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="4"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key>.</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -5897,7 +5897,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="282"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="4000">Flash</Action>
             <Key>F</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -5911,7 +5911,7 @@
               <Font>Sans Serif,15,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="283"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="4000">Flash</Action>
             <Key>T</Key>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6217,7 +6217,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="2"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6275,7 +6275,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="5"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6289,7 +6289,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="6"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6303,7 +6303,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="7"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6317,7 +6317,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="8"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6331,7 +6331,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="9"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6345,7 +6345,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="10"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6359,7 +6359,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="11"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6373,7 +6373,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="12"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6387,7 +6387,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="13"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6401,7 +6401,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="14"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6415,7 +6415,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="15"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6429,7 +6429,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="16"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6443,7 +6443,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="17"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6457,7 +6457,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="18"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6471,7 +6471,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="19"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6485,7 +6485,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="20"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6499,7 +6499,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="21"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
@@ -6513,7 +6513,7 @@
               <Font>Sans Serif,9,-1,5,75,0,0,0,0,0</Font>
             </Appearance>
             <Function ID="22"/>
-            <Action Override="1" ForceLTP="1">Flash</Action>
+            <Action Override="1" ForceLTP="1" MaxHold="8000">Flash</Action>
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>

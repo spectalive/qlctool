@@ -41,6 +41,7 @@ def build_button(
     stop_all_fade_ms: int = 0,
     flash_override: bool = False,
     flash_force_ltp: bool = False,
+    flash_max_hold_ms: int = 0,
 ) -> etree._Element:
     """Append a <Button> to parent and return it.
 
@@ -71,6 +72,8 @@ def build_button(
         action_element.set("Override", "1")
     if action == FLASH and flash_force_ltp:
         action_element.set("ForceLTP", "1")
+    if action == FLASH and flash_max_hold_ms > 0:
+        action_element.set("MaxHold", str(flash_max_hold_ms))
     action_element.text = action
     shortcut = etree.SubElement(button, f"{{{QLC_NS}}}Key")
     if key is not None:

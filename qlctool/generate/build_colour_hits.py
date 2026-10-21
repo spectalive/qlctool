@@ -6,6 +6,7 @@ from lxml import etree
 
 from ..argb_from_rgb import argb_from_rgb
 from ..names.names import Names
+from ..placement import BURST_MS
 from ..vc.build_button import FLASH
 from .play_page_layout import GAP, HEADER, LEFT, SMALL_BUTTON_HEIGHT, WIDTH
 from .readable_foreground import readable_foreground
@@ -46,6 +47,7 @@ def build_colour_hits(
             action=FLASH,
             flash_override=True,
             flash_force_ltp=True,
+            flash_max_hold_ms=BURST_MS[vocabulary.identify(colour_name, ("colors",))],
             background=str(argb_from_rgb(colour)),
             foreground=str(argb_from_rgb(readable_foreground(colour))),
             font=small_font,
