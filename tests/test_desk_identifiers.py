@@ -65,7 +65,7 @@ def test_the_desk_places_frames_named_in_any_shipped_language(generated, tmp_pat
         ("⚡ FLASH LENTO · -", 8000),
         ("ROJO", 8000),
         ("RED", 8000),
-        ("☁ HUMO YA", 3000),
+        ("☁ HUMO YA", 5000),
         ("✳ STROBE", 4000),
         ("Rig Rojo / Azul", None),
     ],

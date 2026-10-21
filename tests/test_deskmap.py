@@ -61,7 +61,7 @@ def test_the_room_states_are_the_first_thing_on_live(deskmap):
         "TODO NEGRO",
     ]
     auto = deskmap["controls"][state["controls"][0]]
-    assert auto["detail"] == "el show se lleva solo"
+    assert auto["detail"] == "secuencia automática"
     assert auto["role"] == "state" and auto["action"] == "toggle" and auto["enabled"]
     assert auto["functionType"] == "Collection"
     assert all(deskmap["controls"][k]["solo"] == state["solo"] for k in state["controls"])
@@ -80,8 +80,8 @@ def test_2026_09_13_held_accents_are_replaced_by_bounded_bursts(deskmap):
         "flash-color": 8000,
         "strobo": 4000,
         "strobo-suave": 4000,
-        "humo-ya": 3000,
-        "humo-vert": 3000,
+        "humo-ya": 5000,
+        "humo-vert": 5000,
         "rojo": 8000,
         "verde": 8000,
         "azul": 8000,
@@ -130,7 +130,7 @@ def test_2026_09_13_held_accents_are_replaced_by_bounded_bursts(deskmap):
 
 def test_safety_details_replace_words_that_would_mislead(deskmap):
     # "apaga las luces" reads as a stop; the tablet says what it is.
-    assert deskmap["controls"]["todo-negro"]["detail"] == "no es parar"
+    assert deskmap["controls"]["todo-negro"]["detail"] == "escena oscura"
     for control in deskmap["controls"].values():
         if control["role"] == "haze":
             assert control["detail"] == "dispara ya"

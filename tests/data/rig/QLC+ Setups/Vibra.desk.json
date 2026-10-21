@@ -5,7 +5,7 @@
  "show": {
   "key": "vibra",
   "workspace": "Vibra.qxw",
-  "sha256": "f3405f20e3296f9b05fb13e282038414f62742a6e5a80f20e4b348cc1f427617"
+  "sha256": "bdfc775ddfb8b94c8e5637c6ff353edf0f0f1e7aa75e781c37b94a3b0da765ed"
  },
  "grandMaster": {
   "widget": 266
@@ -330,7 +330,7 @@
    "action": "toggle",
    "caption": "AUTO",
    "icon": "▶",
-   "detail": "el show se lleva solo",
+   "detail": "secuencia automática",
    "role": "state",
    "solo": 3,
    "key": "Q",
@@ -350,7 +350,7 @@
    "action": "toggle",
    "caption": "CHARLA",
    "icon": "🎤",
-   "detail": "alguien habla",
+   "detail": "iluminación para voz",
    "role": "state",
    "solo": 3,
    "key": "F1",
@@ -367,7 +367,7 @@
    "action": "toggle",
    "caption": "TRANQUILO",
    "icon": "🌙",
-   "detail": "bajón",
+   "detail": "ambiente suave",
    "role": "state",
    "solo": 3,
    "key": "F2",
@@ -387,7 +387,7 @@
    "action": "toggle",
    "caption": "FIESTA",
    "icon": "🎉",
-   "detail": "marcha normal",
+   "detail": "energía media",
    "role": "state",
    "solo": 3,
    "key": "F3",
@@ -407,7 +407,7 @@
    "action": "toggle",
    "caption": "LOCURA",
    "icon": "🔥",
-   "detail": "todo a la vez",
+   "detail": "energía máxima",
    "role": "state",
    "solo": 3,
    "key": "F4",
@@ -427,7 +427,7 @@
    "action": "toggle",
    "caption": "BLANCO TOTAL",
    "icon": "💡",
-   "detail": "luz de trabajo",
+   "detail": "iluminación blanca",
    "role": "state",
    "solo": 3,
    "key": "X",
@@ -444,7 +444,7 @@
    "action": "toggle",
    "caption": "TODO NEGRO",
    "icon": "⏹",
-   "detail": "no es parar",
+   "detail": "escena oscura",
    "role": "state",
    "solo": 3,
    "key": "º",
@@ -526,7 +526,7 @@
    "swatches": [],
    "enabled": true,
    "reason": "",
-   "burstMs": 3000,
+   "burstMs": 5000,
    "source": "humo-ya"
   },
   "humo-vert": {
@@ -543,7 +543,7 @@
    "swatches": [],
    "enabled": true,
    "reason": "",
-   "burstMs": 3000,
+   "burstMs": 5000,
    "source": "humo-vert"
   },
   "strobo": {

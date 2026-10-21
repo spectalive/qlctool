@@ -15467,12 +15467,12 @@
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="17">0,255</FixtureVal>
     </Function>
-    <Function ID="891" Type="Chaser" Name="Desk · ☁ HUMO YA ráfaga 3 s" Path="Desk">
-      <Speed FadeIn="0" FadeOut="0" Duration="3000"/>
+    <Function ID="891" Type="Chaser" Name="Desk · ☁ HUMO YA ráfaga 5 s" Path="Desk">
+      <Speed FadeIn="0" FadeOut="0" Duration="5000"/>
       <Direction>Forward</Direction>
       <RunOrder>SingleShot</RunOrder>
       <SpeedModes FadeIn="Common" FadeOut="Common" Duration="PerStep"/>
-      <Step Number="0" FadeIn="0" Hold="3000" FadeOut="0">890</Step>
+      <Step Number="0" FadeIn="0" Hold="5000" FadeOut="0">890</Step>
     </Function>
     <Function ID="892" Type="Scene" Name="Desk · ⇧ HUMO VERT (ráfaga)" Path="Desk">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -15481,12 +15481,12 @@
       <FixtureVal ID="39">0,255,1,255,5,0,6,0</FixtureVal>
       <FixtureVal ID="40">0,255,1,255,5,0,6,0</FixtureVal>
     </Function>
-    <Function ID="893" Type="Chaser" Name="Desk · ⇧ HUMO VERT ráfaga 3 s" Path="Desk">
-      <Speed FadeIn="0" FadeOut="0" Duration="3000"/>
+    <Function ID="893" Type="Chaser" Name="Desk · ⇧ HUMO VERT ráfaga 5 s" Path="Desk">
+      <Speed FadeIn="0" FadeOut="0" Duration="5000"/>
       <Direction>Forward</Direction>
       <RunOrder>SingleShot</RunOrder>
       <SpeedModes FadeIn="Common" FadeOut="Common" Duration="PerStep"/>
-      <Step Number="0" FadeIn="0" Hold="3000" FadeOut="0">892</Step>
+      <Step Number="0" FadeIn="0" Hold="5000" FadeOut="0">892</Step>
     </Function>
     <Function ID="894" Type="Scene" Name="Desk · ✳ STROBO (ráfaga)" Path="Desk">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
@@ -16548,7 +16548,7 @@
           <ExcludeMonitored>False</ExcludeMonitored>
           <Collapsed>False</Collapsed>
           <Disabled>False</Disabled>
-          <Button Caption="▶ AUTO — el show se lleva solo · Q" ID="4" Icon="">
+          <Button Caption="▶ AUTO — secuencia automática · Q" ID="4" Icon="">
             <WindowState Visible="True" X="8" Y="26" Width="690" Height="190"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -16563,7 +16563,7 @@
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37032"/>
           </Button>
-          <Button Caption="🎤 CHARLA — alguien habla · F1" ID="5" Icon="">
+          <Button Caption="🎤 CHARLA — iluminación para voz · F1" ID="5" Icon="">
             <WindowState Visible="True" X="704" Y="26" Width="352" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -16578,7 +16578,7 @@
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37030"/>
           </Button>
-          <Button Caption="🌙 TRANQUILO — bajón · F2" ID="6" Icon="">
+          <Button Caption="🌙 TRANQUILO — ambiente suave · F2" ID="6" Icon="">
             <WindowState Visible="True" X="1062" Y="26" Width="352" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -16593,7 +16593,7 @@
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37035"/>
           </Button>
-          <Button Caption="🎉 FIESTA — marcha normal · F3" ID="7" Icon="">
+          <Button Caption="🎉 FIESTA — energía media · F3" ID="7" Icon="">
             <WindowState Visible="True" X="704" Y="124" Width="352" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -16608,7 +16608,7 @@
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37033"/>
           </Button>
-          <Button Caption="🔥 LOCURA — todo a la vez · F4" ID="8" Icon="">
+          <Button Caption="🔥 LOCURA — energía máxima · F4" ID="8" Icon="">
             <WindowState Visible="True" X="1062" Y="124" Width="352" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -16623,7 +16623,7 @@
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37034"/>
           </Button>
-          <Button Caption="💡 BLANCO TOTAL — luz de trabajo · X" ID="9" Icon="">
+          <Button Caption="💡 BLANCO TOTAL — iluminación blanca · X" ID="9" Icon="">
             <WindowState Visible="True" X="8" Y="222" Width="690" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -16638,7 +16638,7 @@
             <Intensity Adjust="False">100</Intensity>
             <Input ID="0" Universe="0" Channel="37028"/>
           </Button>
-          <Button Caption="⏹ TODO NEGRO — apaga las luces · º" ID="10" Icon="">
+          <Button Caption="⏹ TODO NEGRO — escena oscura · º" ID="10" Icon="">
             <WindowState Visible="True" X="704" Y="222" Width="710" Height="92"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
