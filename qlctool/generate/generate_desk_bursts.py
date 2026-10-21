@@ -52,6 +52,8 @@ def generate_desk_bursts(workspace: Workspace, names: Names | None = None) -> li
     )
     frame.set("Page", str(PAGE_CONTROL))
     button_ids = []
+    columns = 9
+    pitch = 512 // columns
     for index, (key, source) in enumerate(sources.items()):
         duration = desk_burst_duration(source, vocabulary)
         if duration is None or duration <= 0:
@@ -88,9 +90,9 @@ def generate_desk_bursts(workspace: Workspace, names: Names | None = None) -> li
             widget_id,
             caption,
             chaser_id,
-            6 + (index % 6) * 86,
-            26 + (index // 6) * 28,
-            82,
+            6 + (index % columns) * pitch,
+            26 + (index // columns) * 28,
+            pitch - 4,
             24,
             font=SMALL_FONT,
         )

@@ -33,6 +33,14 @@ BURST_MS = {
     "white": 8000,
     "orange": 8000,
     "pink": 8000,
+    "fire_red": 8000,
+    "amber": 8000,
+    "mint_green": 8000,
+    "light_blue": 8000,
+    "sky_blue": 8000,
+    "deep_blue": 8000,
+    "purple": 8000,
+    "fuchsia": 8000,
 }
 
 # Page and section titles are catalogue identifiers, displayed in the

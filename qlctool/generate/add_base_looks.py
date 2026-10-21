@@ -69,7 +69,7 @@ def add_base_looks(build: ShowBuild) -> None:
     color_flashes = generate_color_flashes(
         workspace,
         caps,
-        {name: colours.palette[name] for name in colours.primary},
+        colours.palette,
         described.tuning.strobe_fast,
         names=vocabulary,
     )

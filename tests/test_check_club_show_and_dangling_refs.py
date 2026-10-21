@@ -166,7 +166,7 @@ def test_2026_09_25_a_patched_fixture_with_no_definition(tmp_path, monkeypatch, 
     assert "buscado" not in printed
 
     assert main(["--fixtures", str(example / "fixtures"), "check", str(club)]) == 0
-    assert "199 buttons checked, no problems" in capsys.readouterr().out
+    assert "207 buttons checked, no problems" in capsys.readouterr().out
 
 
 def test_2026_09_25_a_known_model_patched_in_a_mode_its_definition_lacks(tmp_path, capsys):

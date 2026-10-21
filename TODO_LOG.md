@@ -8,6 +8,14 @@
 
 ### 2026-10
 
+- [x] 2026-10-21 — **Palette and bounded colour hits:** Extend the generated rig palette to pink and the other named colours, with matching desk bursts.
+  - Result: All 18 palette colours have generated hit functions; the tablet map offers 17 coloured rig swatches and 25 bounded hits across four colour banks.
+  - Evidence: `tests/test_deskmap.py`, `tests/test_check_colour_ownership.py`, `tests/test_english_vibra.py`, and `qlctool check` on all three Vibra workspaces.
+
+- [x] 2026-10-21 — **Shared AUTO movement clock:** Pair wash and beam figures in one ordered normal rotation and keep the cascade reachable.
+  - Result: The paired rotation replaces concurrent random family rotations; the movement dial follows its chaser and EFX. The checker reports independently running long movement rotations.
+  - Evidence: `tests/test_synced_auto_movements.py`, `tests/test_movement_clock_rule.py`, and zero findings from `qlctool check` on all three Vibra workspaces.
+
 #### Moved from TODO.md (2026-10-12)
 
 - [x] **qlctool follow-up:** **The live console's pages are each over the structural cap (2026-09-27).**

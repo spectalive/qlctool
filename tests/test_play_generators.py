@@ -13,7 +13,7 @@ from qlctool.findall_local import findall_local
 from qlctool.fixture_library import FixtureLibrary
 from qlctool.fog_offsets import fog_offsets
 from qlctool.generate.build_canonical_show import build_canonical_show
-from qlctool.palette import PALETTE, PRIMARY_COLORS
+from qlctool.palette import PALETTE
 from qlctool.rgbw_split import rgbw_split
 from qlctool.rigged_fixture_ids import rigged_fixture_ids
 from qlctool.shutter_open_pairs import shutter_open_pairs
@@ -309,8 +309,8 @@ def test_colour_hits_match_every_flash_100_fixture_and_strobe_write(built):
     flash_values = _values(names["Flash 100%"])
     expected_fixture_ids = set(flash_values)
 
-    assert set(show.colour_flash_ids) == set(PRIMARY_COLORS)
-    for color_name in PRIMARY_COLORS:
+    assert set(show.colour_flash_ids) == set(PALETTE)
+    for color_name in PALETTE:
         hit = names[f"Golpe {color_name}"]
         hit_values = _values(hit)
         assert hit.attrib["Type"] == "Scene"

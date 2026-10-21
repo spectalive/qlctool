@@ -92,6 +92,14 @@ def test_2026_09_13_held_accents_are_replaced_by_bounded_bursts(deskmap):
         "blanco": 8000,
         "naranja": 8000,
         "rosa": 8000,
+        "rojo-fuego": 8000,
+        "ambar": 8000,
+        "verde-menta": 8000,
+        "celeste": 8000,
+        "azul-cielo": 8000,
+        "azul-profundo": 8000,
+        "morado": 8000,
+        "fucsia": 8000,
     }
 
     controls = deskmap["controls"]
@@ -114,7 +122,7 @@ def test_2026_09_13_held_accents_are_replaced_by_bounded_bursts(deskmap):
     color = _section(deskmap, "color", "accents")["controls"]
     # Seven since COLOR BEAM went: a button that looked like an on/off and
     # actually stepped the wheel (owner, 2026-09-22).
-    assert len(live) == 7 and len(color) == 10
+    assert len(live) == 7 and len(color) == 18
     assert "color-beam" not in controls
     assert not any(c["role"] == "accent" for c in controls.values())
     assert bursts["rojo"]["swatches"][0] == "#ff0000"

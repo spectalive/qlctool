@@ -86,15 +86,14 @@ def test_a_beats_chaser_driving_millisecond_effects(library):
     crossfade reached each EFX as the raw number 10000 - and an EFX subtracts
     its override fade from its own millisecond duration
     (`EFX::loopDuration`), turning a 16 s sweep into a 6 s one. Reproduced by
-    putting Movimientos Washes back on Beats with its fade intact.
+    putting the shared head-movement cycle back on Beats with its fade intact.
 
-    Since 2026-09-02 every step of that chaser is a Collection of two EFX (the
-    wash figures split on `keeps_16bit`), and `Collection::write` hands the
-    chaser's override fade straight to both - so the rule has to look through
-    the Collection, and this test is what says it does.
+    Each step now pairs the beam and wash figures in a Collection, and the
+    family figures may themselves split into Collections. The rule must look
+    through both layers before treating a Beats chaser as safe.
     """
     workspace = _show()
-    chaser = _functions(workspace)["Movimientos Washes"]
+    chaser = _functions(workspace)["Ciclo Movimientos Cabezas"]
     ns = chaser.tag[: chaser.tag.index("}") + 1]
     tempo = chaser.makeelement(f"{ns}Tempo", {})
     tempo.text = "Beats"
@@ -104,7 +103,7 @@ def test_a_beats_chaser_driving_millisecond_effects(library):
         f for f in check_workspace(workspace, library) if f.rule == "unidades de tempo cruzadas"
     ]
     assert findings, "a beats chaser re-timing its EFX went unnoticed"
-    assert "Movimientos Washes" in {f.function for f in findings}
+    assert "Ciclo Movimientos Cabezas" in {f.function for f in findings}
 
 
 def test_a_collection_carrying_a_tempo_it_cannot_have(library):

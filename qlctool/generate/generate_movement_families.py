@@ -40,6 +40,7 @@ from ..next_function_id import next_function_id
 from ..workspace import Workspace
 from .assemble_beam_rotation import assemble_beam_rotation
 from .assemble_slow_rotation import assemble_slow_rotation
+from .assemble_synced_rotation import assemble_synced_rotation
 from .assemble_wash_rotation import assemble_wash_rotation
 from .generate_family_variants import generate_family_variants
 from .generate_rest_positions import generate_rest_positions
@@ -83,27 +84,43 @@ def generate_movement_families(
     slow_id = assemble_slow_rotation(
         workspace, variants.slow, variants.ola_suave, variants.slow_beam, vocabulary, rig.soft_path
     )
-    wash_id = assemble_wash_rotation(
+    synced_id = assemble_synced_rotation(
         workspace,
-        variants.wash,
         variants.wash_sim,
-        variants.ola_wash,
-        variants.unison_wash,
+        variants.beam_sim,
+        variants.cascada_beams,
         vocabulary,
         rig.movement_path,
     )
-    beam_id = assemble_beam_rotation(
-        workspace,
-        variants.beam,
-        variants.beam_sim,
-        variants.beam_shapes,
-        variants.cascada_beams,
-        variants.ola_beam,
-        variants.unison_beam,
-        rests.fan_id,
-        rests.cross_id,
-        vocabulary,
-        rig.movement_path,
+    wash_id = (
+        None
+        if synced_id is not None
+        else assemble_wash_rotation(
+            workspace,
+            variants.wash,
+            variants.wash_sim,
+            variants.ola_wash,
+            variants.unison_wash,
+            vocabulary,
+            rig.movement_path,
+        )
+    )
+    beam_id = (
+        None
+        if synced_id is not None
+        else assemble_beam_rotation(
+            workspace,
+            variants.beam,
+            variants.beam_sim,
+            variants.beam_shapes,
+            variants.cascada_beams,
+            variants.ola_beam,
+            variants.unison_beam,
+            rests.fan_id,
+            rests.cross_id,
+            vocabulary,
+            rig.movement_path,
+        )
     )
 
     efx_ids, play_pick_ids = movement_shape_buttons(
@@ -153,7 +170,8 @@ def generate_movement_families(
         fast_wash_id=fast_wash_id,
         fast_beam_id=fast_beam_id,
         fan_id=rests.fan_id,
-        cabezas_id=_both(display("head_movements"), wash_id, beam_id, rig.movement_path),
+        cabezas_id=synced_id
+        or _both(display("head_movements"), wash_id, beam_id, rig.movement_path),
         rapidos_id=_both(
             display("fast_movements"),
             fast_wash_id,

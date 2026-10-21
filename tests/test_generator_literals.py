@@ -53,6 +53,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/assemble_slow_rotation.py",
     "generate/assemble_wash_rotation.py",
     "generate/assemble_beam_rotation.py",
+    "generate/assemble_synced_rotation.py",
     "generate/movement_shape_buttons.py",
     "generate/movement_figure_buttons.py",
     "generate/generate_home_position.py",

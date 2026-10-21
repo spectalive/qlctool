@@ -27,10 +27,8 @@ BEAM_SLOW = Envelope(
 )
 BEAM = Envelope(
     ("Circle", "Eight", "Line"),
-    # Half the washes' figure, so the two families rhyme instead of drifting:
-    # one wash curve to two beam curves, the same 10 s hold under both ("hay
-    # que mirar la sincronizacion para que tengan sentido", owner, 2026-09-22).
-    WASH.duration // 2,
+    # The same figure duration as the washes keeps both optics on one clock.
+    WASH.duration,
     BEAM_PAN_SPAN,
     BEAM_TILT_SPAN,
     10000,

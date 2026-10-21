@@ -14,6 +14,7 @@ from lxml import etree
 
 from .finding import Finding
 from .rule_fan_order import check_fan_order
+from .rule_movement_clock import check_movement_clock
 from .rule_movement_families import check_movement_families
 from .rule_movement_window import check_movement_window
 from .rule_parked_movers import check_parked_movers
@@ -32,6 +33,7 @@ def movement_findings(
     """Every movement rule's findings."""
     return [
         *check_movement_families(graph),
+        *check_movement_clock(graph),
         *check_parked_movers(graph),
         *check_unaimed_movement(graph),
         *check_movement_window(graph),

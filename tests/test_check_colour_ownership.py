@@ -51,7 +51,7 @@ def test_2026_09_13_desk_link_loss_requires_bounded_hits():
             frame.getparent().remove(frame)
     graph = build_show_graph(workspace.root, [])
     findings = check_desk_bursts(graph, workspace.root)
-    assert len(findings) == 17
+    assert len(findings) == 25
     assert {f.function for f in findings} >= {"humo-ya", "humo-vert", "flash", "rojo"}
 
 

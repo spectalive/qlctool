@@ -21,7 +21,7 @@ from qlctool.generate.console_layout import GRAND_MASTER_LINES, PAGE_CONTROL
 from qlctool.leading_glyph import leading_glyph
 from qlctool.localname import localname
 from qlctool.names.default_names import default_names
-from qlctool.palette import PRIMARY_COLORS
+from qlctool.palette import PALETTE
 from qlctool.workspace import Workspace
 
 REPO = RIG_ROOT
@@ -167,7 +167,7 @@ def test_colour_hits_force_their_colour_over_the_running_state(console):
     hits = _frame_named(outer, "GOLPES DE COLOR")
     buttons = _buttons(hits)
     assert [functions[_function_id(button)].attrib["Name"] for button in buttons] == [
-        f"Golpe {name}" for name in PRIMARY_COLORS
+        f"Golpe {name}" for name in PALETTE
     ]
     for button in buttons:
         action = find_local(button, "Action")

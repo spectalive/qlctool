@@ -27,7 +27,13 @@ def movement_tempo_functions(
     """
     wanted = tuple(
         vocabulary.display(identifier)
-        for identifier in ("wash_movements", "beam_movements", "fast_washes", "fast_beams")
+        for identifier in (
+            "head_movements_cycle",
+            "wash_movements",
+            "beam_movements",
+            "fast_washes",
+            "fast_beams",
+        )
     )
     by_id = {f.attrib.get("ID"): f for f in workspace.engine if f.tag.endswith("}Function")}
     by_name = {f.attrib.get("Name"): f for f in workspace.engine if f.tag.endswith("}Function")}
@@ -47,15 +53,22 @@ def movement_tempo_functions(
             fade=beat_multiplier(fade, beat_ms) if fade else MULTIPLIER_NONE,
         )
         for step in findall_local(chaser, "Step"):
-            shape = by_id.get(step.text)
-            if shape is None or shape.attrib.get("Type") != "EFX":
-                continue
-            shape_speed = find_local(shape, "Speed")
-            if shape_speed is None:
-                continue
-            shape_id = int(shape.attrib["ID"])
-            functions[shape_id] = DialFunction(
-                function_id=shape_id,
-                duration=beat_multiplier(int(shape_speed.attrib.get("Duration", 0)), beat_ms),
-            )
+            pending = [step.text]
+            while pending:
+                shape = by_id.get(pending.pop())
+                if shape is None:
+                    continue
+                if shape.attrib.get("Type") == "Collection":
+                    pending.extend(member.text for member in findall_local(shape, "Step"))
+                    continue
+                if shape.attrib.get("Type") != "EFX":
+                    continue
+                shape_speed = find_local(shape, "Speed")
+                if shape_speed is None:
+                    continue
+                shape_id = int(shape.attrib["ID"])
+                functions[shape_id] = DialFunction(
+                    function_id=shape_id,
+                    duration=beat_multiplier(int(shape_speed.attrib.get("Duration", 0)), beat_ms),
+                )
     return [functions[key] for key in sorted(functions)]

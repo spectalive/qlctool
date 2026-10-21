@@ -152,7 +152,7 @@ def test_both_tap_dials_share_one_key_and_scale_by_layer(built):
         for f in findall_local(dials["Vel. Movimiento"], "Function")
     }
     assert any(functions_by_name(functions, name).attrib["Type"] == "EFX" for name in movement)
-    assert int(movement["Movimientos Washes"].attrib["FadeIn"]) > 0
+    assert int(movement["Ciclo Movimientos Cabezas"].attrib["FadeIn"]) > 0
 
 
 def functions_by_name(functions, name):

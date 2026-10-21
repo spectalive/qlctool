@@ -253,10 +253,14 @@ def test_movement_keeps_the_simultaneo_twins_and_the_crossfade(built):
         and f.attrib["Type"] == "EFX"
     }
     assert len(sims) >= 10  # seven wash shapes + three beam shapes
-    for name in ("Movimientos Washes", "Movimientos Beams"):
-        chaser = next(f for f in functions.values() if f.attrib.get("Name") == name)
-        speed = find_local(chaser, "Speed")
-        assert speed.attrib["FadeIn"] == "5000", name
-        assert speed.attrib["FadeOut"] == "5000", name
-        step_ids = {s.text for s in findall_local(chaser, "Step")}
-        assert any(functions[sid].attrib["Name"].endswith("Simultaneo") for sid in step_ids), name
+    chaser = next(
+        f for f in functions.values() if f.attrib.get("Name") == "Ciclo Movimientos Cabezas"
+    )
+    speed = find_local(chaser, "Speed")
+    assert speed.attrib["FadeIn"] == "5000"
+    assert speed.attrib["FadeOut"] == "5000"
+    for step in findall_local(chaser, "Step")[:7]:
+        pair = functions[step.text]
+        members = [functions[member.text] for member in findall_local(pair, "Step")]
+        assert len(members) == 2
+        assert all(member.attrib["Name"].endswith("Simultaneo") for member in members)

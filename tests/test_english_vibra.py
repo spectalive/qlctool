@@ -96,12 +96,12 @@ def test_a_frame_override_keeps_the_desk_bursts(english, hits):
     """2026-09-25, final review of Plan B (ruling F1): an override dropped the bursts.
 
     The desk bursts looked their frames up through the default vocabulary, so a
-    renamed `hits` frame built 20 Desk functions instead of 34. Reading refuses
+    renamed `hits` frame built too few Desk functions. Reading refuses
     a renamed head; the "head" case goes round reading to prove the generator
     itself follows the show's vocabulary.
     """
     workspace, _, _ = _build("en", {"en": {"hits": hits}})
-    assert _desk_functions(workspace) == _desk_functions(english[0]) == 34
+    assert _desk_functions(workspace) == _desk_functions(english[0]) == 50
 
 
 def test_the_desk_map_builds(english):
@@ -129,8 +129,8 @@ def test_the_play_page_keeps_every_button(english, spanish):
         language: [len(b) for b in _buttons_by_frame(show[0], PLAY_PAGE).values()]
         for language, show in (("en", english), ("es", spanish))
     }
-    assert counts["es"] == [11, 10, 25, 15, 30, 30, 11]
-    assert counts["en"] == [11, 10, 25, 15, 30, 30, 11]
+    assert counts["es"] == [11, 18, 25, 15, 30, 30, 11]
+    assert counts["en"] == [11, 18, 25, 15, 30, 30, 11]
 
 
 def test_the_library_page_writes_english_group_captions(english):
