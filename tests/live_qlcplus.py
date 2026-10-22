@@ -47,8 +47,11 @@ def running_qlcplus(workspace: Path, folder: Path, loopback_artnet: bool = False
         tree = etree.parse(str(copy))
         universe = next(iter_local(tree.getroot(), "Universe"))
         etree.SubElement(
-            universe, "{http://www.qlcplus.org/Workspace}Output",
-            Plugin="ArtNet", UID="127.0.0.1", Line="0",
+            universe,
+            "{http://www.qlcplus.org/Workspace}Output",
+            Plugin="ArtNet",
+            UID="127.0.0.1",
+            Line="0",
         )
         tree.write(str(copy), xml_declaration=True, encoding="UTF-8")
     port = free_port()

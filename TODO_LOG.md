@@ -8,6 +8,14 @@
 
 ### 2026-10
 
+- [x] 2026-10-22 — **Quality gate:** Restore the required quality gate within its unchanged runtime budget. Correct import/format findings and remove repeated desk-frame classification without weakening mutation checks, assertions, coverage or deadlines.
+  - Result: Build a fresh desk-frame identifier map per invocation and reuse it for eligible buttons. Preserve XML mutations, localized vocabulary changes, duplicate precedence and default placement callers. Correct six lint/format findings and add deterministic lookup-cost and freshness regressions.
+  - Evidence: Original lookup-cost regression fails before correction and focused 40 tests pass afterward. Source-identical mini execution passes 1008 tests with 20 existing skips; the final same-host codeality-py gate --json exits zero with all seven required stages, 95.04-percent coverage and pytest 81.790 seconds against the original 120-second budget (baseline 143.486). All 1323 source bytes/modes and 77 dependency identities retain parity; independent review finds no issues. No real QLC+ or hardware acceptance is claimed.
+
+- [x] 2026-10-22 — **General:** **Reconcile qlctool's editable lock version.** Observed 2026-10-22: `pyproject.toml` declares `project.version = "0.2.5"`, while the `qlctool` editable package in `uv.lock` remains `0.2.3`. Runtime and optional dependency declarations match. Next: confirm the intended release version and reconcile the editable lock metadata, preserving the accepted certifi record and all other dependency resolutions.
+  - Result: Align the editable lock root version with the declared source version 0.2.5; preserve every third-party record, dependency declaration and accepted certifi artifact.
+  - Evidence: Parsed whole-lock comparison changes only qlctool.version from 0.2.3 to 0.2.5 across 80 package records; uv lock --check passes. Final source-matched codeality-py gate --json passes all seven required stages.
+
 - [x] 2026-10-21 — **Palette and bounded colour hits:** Extend the generated rig palette to pink and the other named colours, with matching desk bursts.
   - Result: All 18 palette colours have generated hit functions; the tablet map offers 17 coloured rig swatches and 25 bounded hits across four colour banks.
   - Evidence: `tests/test_deskmap.py`, `tests/test_check_colour_ownership.py`, `tests/test_english_vibra.py`, and `qlctool check` on all three Vibra workspaces.

@@ -14,6 +14,7 @@ def place(
     function_name: str | None,
     function_kind: str = "",
     names: Names | None = None,
+    frame_identifiers: dict[int, str | None] | None = None,
 ) -> Placement | None:
     """Where a widget goes on the desk, or None when the desk does not show it."""
     vocabulary = default_names() if names is None else names
@@ -23,7 +24,9 @@ def place(
     if widget.action not in ("Toggle", "Flash"):
         return None
     within = {
-        desk_frame_identifier(frames[fid].caption, vocabulary)
+        frame_identifiers[fid]
+        if frame_identifiers is not None
+        else desk_frame_identifier(frames[fid].caption, vocabulary)
         for fid in widget.frames
         if fid in frames
     }

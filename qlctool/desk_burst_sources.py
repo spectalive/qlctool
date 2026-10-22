@@ -2,6 +2,7 @@
 
 from lxml import etree
 
+from .desk_frame_identifiers import desk_frame_identifiers
 from .desk_widget import DeskWidget
 from .desk_widgets import desk_widgets
 from .names.names import Names
@@ -19,10 +20,13 @@ def desk_burst_sources(root: etree._Element, names: Names) -> dict[str, DeskWidg
     """
     widgets = desk_widgets(root)
     frames = {w.id: w for w in widgets if w.kind in ("Frame", "SoloFrame")}
+    frame_identifiers = desk_frame_identifiers(frames, names)
     sources = {}
     for widget in widgets:
-        placement = place(widget, frames, None, names=names)
-        if placement is None or placement.role != "accent" or widget.action != "Flash":
+        if widget.action != "Flash":
+            continue
+        placement = place(widget, frames, None, names=names, frame_identifiers=frame_identifiers)
+        if placement is None or placement.role != "accent":
             continue
         key = slugify(split_caption(widget.caption)[0])
         if key in sources:

@@ -65,7 +65,9 @@ def test_2026_10_21_every_hit_rejects_an_unbounded_priority_button(generated):
     graph = build_show_graph(workspace.root, capabilities_of(workspace.root, library))
     for source in sources.values():
         button = next(
-            node for node in iter_local(workspace.root, "Button") if node.get("ID") == str(source.id)
+            node
+            for node in iter_local(workspace.root, "Button")
+            if node.get("ID") == str(source.id)
         )
         action = find_local(button, "Action")
         for attribute in ("MaxHold", "Override", "ForceLTP"):

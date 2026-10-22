@@ -43,14 +43,14 @@ def test_2026_10_21_artnet_keeps_all_7r_white_until_the_master_timeout(tmp_path)
                 while time.monotonic() < settle_until:
                     try:
                         receiver.recvfrom(2048)
-                    except socket.timeout:
+                    except TimeoutError:
                         pass
                 held = []
                 capture_until = time.monotonic() + 2
                 while time.monotonic() < capture_until:
                     try:
                         wheels = artnet_wheels(receiver.recvfrom(2048)[0])
-                    except socket.timeout:
+                    except TimeoutError:
                         continue
                     if wheels is not None:
                         held.append(wheels)
@@ -62,9 +62,11 @@ def test_2026_10_21_artnet_keeps_all_7r_white_until_the_master_timeout(tmp_path)
             while time.monotonic() < capture_until:
                 try:
                     wheels = artnet_wheels(receiver.recvfrom(2048)[0])
-                except socket.timeout:
+                except TimeoutError:
                     continue
                 if wheels is not None:
                     after.append((time.monotonic() - pressed_at, wheels))
             late = [wheels for elapsed, wheels in after if elapsed > 8.5]
-            assert len(late) >= 20 and sum(wheels != (4, 4, 4, 4) for wheels in late) > len(late) // 2
+            assert (
+                len(late) >= 20 and sum(wheels != (4, 4, 4, 4) for wheels in late) > len(late) // 2
+            )

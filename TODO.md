@@ -8,8 +8,6 @@
 > verified complete · `[-]` obsolete or superseded. Closed work moves to
 > `TODO_LOG.md`.
 
-- [ ] **Reconcile qlctool's editable lock version.** Observed 2026-10-22: `pyproject.toml` declares `project.version = "0.2.5"`, while the `qlctool` editable package in `uv.lock` remains `0.2.3`. Runtime and optional dependency declarations match. Next: confirm the intended release version and reconcile the editable lock metadata, preserving the accepted certifi record and all other dependency resolutions.
-
 - [ ] **`qlctool validate` fills the user's QLC+ recent-files list
   (2026-10-19).** Each headless load adds its hidden copy
   (`.<name>.qlctool-validate-<hex>.qxw`, then deleted) to
@@ -141,3 +139,5 @@
   is a permanent ignore), D205/D210 29, PLR0913/PLR0917 223, PLR0911/0912/0915
   22, PLR2004 45, RUF005/RUF059 0, PLW2901/SIM105 0. Smallest next step: drop
   PLW2901 and SIM105 from `ignore` (0 findings), then take D205/D210.
+
+## Quality gate

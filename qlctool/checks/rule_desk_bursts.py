@@ -3,7 +3,6 @@
 from lxml import etree
 
 from ..desk_burst_buttons import desk_burst_buttons
-from ..desk_burst_identifier import desk_burst_identifier
 from ..desk_burst_duration import desk_burst_duration
 from ..desk_burst_sources import desk_burst_sources
 from ..names.default_names import default_names
@@ -46,9 +45,7 @@ def check_desk_bursts(
                     fields=error.fields,
                 )
             )
-        if not priority_flash_deadline(
-            root, sources[key].id, duration
-        ):
+        if not priority_flash_deadline(root, sources[key].id, duration):
             findings.append(
                 Finding(
                     rule_id=RULE_ID,

@@ -27,12 +27,14 @@ def test_2026_10_21_priority_flash_stays_white_and_expires_on_the_master(tmp_pat
     workspace.save(show)
     controls = build_deskmap(workspace, library, show)["controls"]
     flash = controls["flash"]["priorityWidget"]
-    assert all(c["priorityWidget"] != c["widget"] for c in controls.values() if c["role"] == "burst")
+    assert all(
+        c["priorityWidget"] != c["widget"] for c in controls.values() if c["role"] == "burst"
+    )
 
     with running_qlcplus(show, tmp_path) as port:
         with urlopen(f"http://127.0.0.1:{port}/vc.json", timeout=5) as response:
             document = json.load(response)
-        if f'"flashMaxHoldMs":8000' not in json.dumps(document, separators=(",", ":")):
+        if '"flashMaxHoldMs":8000' not in json.dumps(document, separators=(",", ":")):
             pytest.skip("QLC+ does not expose the bounded priority Flash extension")
         settings = McpSettings(port=port, timeout=5.0)
         for mode in ("fiesta", "locura"):

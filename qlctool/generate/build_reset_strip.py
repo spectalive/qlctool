@@ -95,6 +95,8 @@ def build_reset_strip(
             action=FLASH if is_flash else TOGGLE,
             flash_override=is_flash,
             flash_force_ltp=is_flash,
-            flash_max_hold_ms=BURST_MS["hit_flash"] if name == vocabulary.display("flash_full") else 0,
+            flash_max_hold_ms=BURST_MS["hit_flash"]
+            if name == vocabulary.display("flash_full")
+            else 0,
             font=small_font,
         )
