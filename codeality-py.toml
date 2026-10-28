@@ -123,16 +123,22 @@ data = [
   "qlctool/constants.py",
   # The EFX movement algorithm strings QLC+ matches against verbatim.
   "qlctool/efx_algorithms.py",
+  # The OSC surface: the plugin's saved name, the widgets it drives and the
+  # speed dial's multiplier controls by factor.
+  "qlctool/osc_plugin.py",
+  "qlctool/controllers/osc_bound_widgets.py",
+  "qlctool/controllers/osc_dial_factor_inputs.py",
   # The show's colour palette and its screen-wide primary bank, mined from
   # DeluxeEventos2's real scenes and matrices.
   "qlctool/palette.py",
 ]
 # Instances other code finds by name: the MIDI pads a description can ask for,
-# the SMC-PAD's profile, and the two rule providers the `qlctool.rules` entry
+# the SMC-PAD's profile, and the three rule providers the `qlctool.rules` entry
 # points in pyproject.toml load.
 registry = [
   "qlctool/controllers/midi_pads.py",
   "qlctool/controllers/smc_pad_profile.py",
+  "qlctool/controllers/osc_rules.py",
   "qlctool/controllers/smc_pad_rules.py",
   "qlctool/controllers/tablet_desk_rules.py",
 ]

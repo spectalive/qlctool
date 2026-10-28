@@ -1,6 +1,6 @@
 [project]
 name = "qlctool"
-version = "0.2.5"
+version = "0.2.6"
 description = "Generate, check and validate QLC+ lighting shows from a patched workspace and a TOML description"
 readme = "README.md"
 license = "Apache-2.0"
@@ -20,6 +20,7 @@ mcp = ["mcp>=2.2,<3", "websockets>=14"]
 qlctool = "qlctool.cli:main"
 
 [project.entry-points."qlctool.rules"]
+osc = "qlctool.controllers.osc_rules:OSC_RULES"
 smc-pad = "qlctool.controllers.smc_pad_rules:SMC_PAD_RULES"
 tablet_desk = "qlctool.controllers.tablet_desk_rules:TABLET_DESK_RULES"
 

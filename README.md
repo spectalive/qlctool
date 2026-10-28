@@ -170,7 +170,13 @@ Engine's child order. Edit or add fragment files, then `compose` to rebuild.
 A show description (`examples/small-club/show.toml` is a worked example; the
 Vibra show's `QLC+ Setups/vibra.toml` in vibra-lighting is the full one) falls back
 to Vibra's values for anything it leaves out, except `[controllers]`: leaving
-that out means no MIDI pad and no tablet desk. What a stated key replaces:
+that out means no MIDI pad, no tablet desk and no OSC input. `osc = "/desk"`
+gives the show a universe of its own listening to QLC+'s OSC plugin (port 7700
+plus that universe's index, so 7701 beside one DMX universe) and binds every
+button, slider and speed dial to `/desk/<widget id>`, plus `/desk/<id>/x2` ...
+`/desk/<id>/x10` for a dial's multipliers - the addresses dmxdesk's OSC adapter
+sends. Where QLC+ sends feedback is the desk's address on the night, so it is
+set in the Inputs/Outputs tab, not by the generator. What a stated key replaces:
 
 - **Scalars merge key by key.** `[timing] bpm`, `beats`, `prism_step_s`,
   `matrix_beats`, every `[fixture_tuning]` key (and `strobe.fast` /

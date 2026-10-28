@@ -92,6 +92,7 @@ CONVERTED: tuple[str, ...] = (
     "generate/add_haze_dimmers_strobes.py",
     "generate/add_intensity_bases.py",
     "generate/add_moments.py",
+    "generate/add_osc_inputs.py",
     "generate/add_movement.py",
     "generate/add_panel_looks.py",
     "generate/add_pixel_layers.py",

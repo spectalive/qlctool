@@ -21,6 +21,8 @@ CONTROLLER_MODULES = {
     "desk_burst_errors",
     "pad_bindings",
     "rule_pad_input",
+    "osc_bindings",
+    "rule_osc_input",
 }
 
 
@@ -67,7 +69,7 @@ def test_checks_spell_no_provider_name():
 
 
 def test_the_declared_providers_are_the_installed_ones():
-    assert set(declared_rule_providers()) == {"smc-pad", "tablet_desk"}
+    assert set(declared_rule_providers()) == {"osc", "smc-pad", "tablet_desk"}
     assert set(declared_rule_providers()) <= {p.name for p in rule_providers()}
 
 

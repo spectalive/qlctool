@@ -27,6 +27,7 @@ from .add_haze_dimmers_strobes import add_haze_dimmers_strobes
 from .add_intensity_bases import add_intensity_bases
 from .add_moments import add_moments
 from .add_movement import add_movement
+from .add_osc_inputs import add_osc_inputs
 from .add_panel_looks import add_panel_looks
 from .add_pixel_layers import add_pixel_layers
 from .add_play_wrappers import add_play_wrappers
@@ -70,6 +71,7 @@ def build_canonical_show(
     apply_show_tempo(build)
     button_ids = add_show_console(build) if with_layout else []
     add_family_floors(build)
+    add_osc_inputs(build)
 
     functions = [f for f in workspace.engine if f.tag.endswith("}Function")]
     return CanonicalShow(
