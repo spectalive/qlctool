@@ -132,7 +132,7 @@ def test_one_wheel_step_cannot_switch_the_strobe_off_for_all_of_them(library):
     # The two states that are a Scene themselves keep theirs, so that under the
     # old merged reach every lit state still had an owner and the rule was
     # silent - which is what this test is here to break.
-    kept = {"Paneles - Effect 1", "Blanco Total", "Intensidad Charla Pixeles"}
+    kept = {"Paneles - Efecto 1", "Blanco Total", "Intensidad Charla Pixeles"}
     stripped = 0
     for name, function in _functions(workspace).items():
         if function.attrib.get("Type") != "Scene" or name in kept:

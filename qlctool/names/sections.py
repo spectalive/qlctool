@@ -7,6 +7,8 @@ SECTIONS: tuple[str, ...] = (
     "captions",
     "generated",
     "paths",
+    # A fixture capability preset ("PrismEffectOn") named in the show's language.
+    "presets",
     "console",
     "help",
     "abbreviations",

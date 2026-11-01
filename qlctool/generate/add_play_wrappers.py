@@ -41,7 +41,10 @@ def add_play_wrappers(build: ShowBuild) -> None:
             *([stage_aim_id] if stage_aim_id is not None else []),
         ],
         gobo_ids=[*gobos.scene_ids[1:-2], *dealt, *shake.scene_ids],
-        prism_ids=[*prisms.scene_ids[1:], *beam_subsets.prism_scene_ids, *spins.scene_ids],
+        # Beam numbers first, then the marks (all beams, the spins): the desk
+        # starts a row where the tile kind changes, so "all" first sat alone
+        # on its own row (owner, 2026-11-01).
+        prism_ids=[*beam_subsets.prism_scene_ids, *prisms.scene_ids[1:], *spins.scene_ids],
         names=vocabulary,
         companions=movement.pick_companions,
     )

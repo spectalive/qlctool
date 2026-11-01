@@ -203,6 +203,10 @@ path_haze = "Humo"
 path_strobes = "Strobos"
 path_moments = "Momentos"
 
+[presets]
+# QLC+ capability presets, named in the show's language.
+prism_effect_on = "Todos"
+
 [console]
 root_frame = "Página 1"
 grand_master = "Master General"

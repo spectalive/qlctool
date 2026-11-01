@@ -161,7 +161,7 @@ def test_a_renamed_frame_with_a_pixel_wrapper_requires_pixel_owners(library, del
     workspace = deluxe_show
     _family_frame(
         workspace,
-        ("Rueda Colores", "Rueda Mezcla", "Luz Charla", "Jugar · Paneles - Effect 1"),
+        ("Rueda Colores", "Rueda Mezcla", "Luz Charla", "Jugar · Paneles - Efecto 1"),
         caption="COLOR RENOMBRADO",
     )
 

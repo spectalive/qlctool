@@ -1571,294 +1571,294 @@
       <FixtureVal ID="22">5,255,6,255,7,4,8,0,11,0</FixtureVal>
       <FixtureVal ID="23">5,255,6,255,7,4,8,0,11,0</FixtureVal>
     </Function>
-    <Function ID="24" Type="Scene" Name="Paneles - Effect 1" Path="Efectos Propios">
+    <Function ID="24" Type="Scene" Name="Paneles - Efecto 1" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,2,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,2,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,2,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,2,7,200</FixtureVal>
     </Function>
-    <Function ID="25" Type="Scene" Name="Paneles - Effect 2" Path="Efectos Propios">
+    <Function ID="25" Type="Scene" Name="Paneles - Efecto 2" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,8,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,8,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,8,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,8,7,200</FixtureVal>
     </Function>
-    <Function ID="26" Type="Scene" Name="Paneles - Effect 3" Path="Efectos Propios">
+    <Function ID="26" Type="Scene" Name="Paneles - Efecto 3" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,14,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,14,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,14,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,14,7,200</FixtureVal>
     </Function>
-    <Function ID="27" Type="Scene" Name="Paneles - Effect 4" Path="Efectos Propios">
+    <Function ID="27" Type="Scene" Name="Paneles - Efecto 4" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,20,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,20,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,20,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,20,7,200</FixtureVal>
     </Function>
-    <Function ID="28" Type="Scene" Name="Paneles - Effect 5" Path="Efectos Propios">
+    <Function ID="28" Type="Scene" Name="Paneles - Efecto 5" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,26,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,26,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,26,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,26,7,200</FixtureVal>
     </Function>
-    <Function ID="29" Type="Scene" Name="Paneles - Effect 6" Path="Efectos Propios">
+    <Function ID="29" Type="Scene" Name="Paneles - Efecto 6" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,32,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,32,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,32,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,32,7,200</FixtureVal>
     </Function>
-    <Function ID="30" Type="Scene" Name="Paneles - Effect 7" Path="Efectos Propios">
+    <Function ID="30" Type="Scene" Name="Paneles - Efecto 7" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,38,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,38,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,38,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,38,7,200</FixtureVal>
     </Function>
-    <Function ID="31" Type="Scene" Name="Paneles - Effect 8" Path="Efectos Propios">
+    <Function ID="31" Type="Scene" Name="Paneles - Efecto 8" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,44,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,44,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,44,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,44,7,200</FixtureVal>
     </Function>
-    <Function ID="32" Type="Scene" Name="Paneles - Effect 9" Path="Efectos Propios">
+    <Function ID="32" Type="Scene" Name="Paneles - Efecto 9" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,50,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,50,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,50,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,50,7,200</FixtureVal>
     </Function>
-    <Function ID="33" Type="Scene" Name="Paneles - Effect 10" Path="Efectos Propios">
+    <Function ID="33" Type="Scene" Name="Paneles - Efecto 10" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,56,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,56,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,56,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,56,7,200</FixtureVal>
     </Function>
-    <Function ID="34" Type="Scene" Name="Paneles - Effect 11" Path="Efectos Propios">
+    <Function ID="34" Type="Scene" Name="Paneles - Efecto 11" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,62,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,62,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,62,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,62,7,200</FixtureVal>
     </Function>
-    <Function ID="35" Type="Scene" Name="Paneles - Effect 12" Path="Efectos Propios">
+    <Function ID="35" Type="Scene" Name="Paneles - Efecto 12" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,68,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,68,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,68,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,68,7,200</FixtureVal>
     </Function>
-    <Function ID="36" Type="Scene" Name="Paneles - Effect 13" Path="Efectos Propios">
+    <Function ID="36" Type="Scene" Name="Paneles - Efecto 13" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,74,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,74,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,74,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,74,7,200</FixtureVal>
     </Function>
-    <Function ID="37" Type="Scene" Name="Paneles - Effect 14" Path="Efectos Propios">
+    <Function ID="37" Type="Scene" Name="Paneles - Efecto 14" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,80,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,80,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,80,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,80,7,200</FixtureVal>
     </Function>
-    <Function ID="38" Type="Scene" Name="Paneles - Effect 15" Path="Efectos Propios">
+    <Function ID="38" Type="Scene" Name="Paneles - Efecto 15" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,86,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,86,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,86,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,86,7,200</FixtureVal>
     </Function>
-    <Function ID="39" Type="Scene" Name="Paneles - Effect 16" Path="Efectos Propios">
+    <Function ID="39" Type="Scene" Name="Paneles - Efecto 16" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,92,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,92,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,92,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,92,7,200</FixtureVal>
     </Function>
-    <Function ID="40" Type="Scene" Name="Paneles - Effect 17" Path="Efectos Propios">
+    <Function ID="40" Type="Scene" Name="Paneles - Efecto 17" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,98,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,98,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,98,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,98,7,200</FixtureVal>
     </Function>
-    <Function ID="41" Type="Scene" Name="Paneles - Effect 18" Path="Efectos Propios">
+    <Function ID="41" Type="Scene" Name="Paneles - Efecto 18" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,104,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,104,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,104,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,104,7,200</FixtureVal>
     </Function>
-    <Function ID="42" Type="Scene" Name="Paneles - Effect 19" Path="Efectos Propios">
+    <Function ID="42" Type="Scene" Name="Paneles - Efecto 19" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,110,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,110,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,110,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,110,7,200</FixtureVal>
     </Function>
-    <Function ID="43" Type="Scene" Name="Paneles - Effect 20" Path="Efectos Propios">
+    <Function ID="43" Type="Scene" Name="Paneles - Efecto 20" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,116,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,116,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,116,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,116,7,200</FixtureVal>
     </Function>
-    <Function ID="44" Type="Scene" Name="Paneles - Effect 21" Path="Efectos Propios">
+    <Function ID="44" Type="Scene" Name="Paneles - Efecto 21" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,122,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,122,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,122,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,122,7,200</FixtureVal>
     </Function>
-    <Function ID="45" Type="Scene" Name="Paneles - Effect 22" Path="Efectos Propios">
+    <Function ID="45" Type="Scene" Name="Paneles - Efecto 22" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,128,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,128,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,128,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,128,7,200</FixtureVal>
     </Function>
-    <Function ID="46" Type="Scene" Name="Paneles - Effect 23" Path="Efectos Propios">
+    <Function ID="46" Type="Scene" Name="Paneles - Efecto 23" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,134,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,134,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,134,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,134,7,200</FixtureVal>
     </Function>
-    <Function ID="47" Type="Scene" Name="Paneles - Effect 24" Path="Efectos Propios">
+    <Function ID="47" Type="Scene" Name="Paneles - Efecto 24" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,140,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,140,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,140,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,140,7,200</FixtureVal>
     </Function>
-    <Function ID="48" Type="Scene" Name="Paneles - Effect 25" Path="Efectos Propios">
+    <Function ID="48" Type="Scene" Name="Paneles - Efecto 25" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,146,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,146,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,146,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,146,7,200</FixtureVal>
     </Function>
-    <Function ID="49" Type="Scene" Name="Paneles - Effect 26" Path="Efectos Propios">
+    <Function ID="49" Type="Scene" Name="Paneles - Efecto 26" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,152,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,152,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,152,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,152,7,200</FixtureVal>
     </Function>
-    <Function ID="50" Type="Scene" Name="Paneles - Effect 27" Path="Efectos Propios">
+    <Function ID="50" Type="Scene" Name="Paneles - Efecto 27" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,158,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,158,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,158,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,158,7,200</FixtureVal>
     </Function>
-    <Function ID="51" Type="Scene" Name="Paneles - Effect 28" Path="Efectos Propios">
+    <Function ID="51" Type="Scene" Name="Paneles - Efecto 28" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,164,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,164,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,164,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,164,7,200</FixtureVal>
     </Function>
-    <Function ID="52" Type="Scene" Name="Paneles - Effect 29" Path="Efectos Propios">
+    <Function ID="52" Type="Scene" Name="Paneles - Efecto 29" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,170,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,170,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,170,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,170,7,200</FixtureVal>
     </Function>
-    <Function ID="53" Type="Scene" Name="Paneles - Effect 30" Path="Efectos Propios">
+    <Function ID="53" Type="Scene" Name="Paneles - Efecto 30" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,176,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,176,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,176,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,176,7,200</FixtureVal>
     </Function>
-    <Function ID="54" Type="Scene" Name="Paneles - Effect 31" Path="Efectos Propios">
+    <Function ID="54" Type="Scene" Name="Paneles - Efecto 31" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,182,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,182,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,182,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,182,7,200</FixtureVal>
     </Function>
-    <Function ID="55" Type="Scene" Name="Paneles - Effect 32" Path="Efectos Propios">
+    <Function ID="55" Type="Scene" Name="Paneles - Efecto 32" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,188,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,188,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,188,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,188,7,200</FixtureVal>
     </Function>
-    <Function ID="56" Type="Scene" Name="Paneles - Effect 33" Path="Efectos Propios">
+    <Function ID="56" Type="Scene" Name="Paneles - Efecto 33" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,194,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,194,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,194,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,194,7,200</FixtureVal>
     </Function>
-    <Function ID="57" Type="Scene" Name="Paneles - Effect 34" Path="Efectos Propios">
+    <Function ID="57" Type="Scene" Name="Paneles - Efecto 34" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,200,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,200,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,200,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,200,7,200</FixtureVal>
     </Function>
-    <Function ID="58" Type="Scene" Name="Paneles - Effect 35" Path="Efectos Propios">
+    <Function ID="58" Type="Scene" Name="Paneles - Efecto 35" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,206,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,206,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,206,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,206,7,200</FixtureVal>
     </Function>
-    <Function ID="59" Type="Scene" Name="Paneles - Effect 36" Path="Efectos Propios">
+    <Function ID="59" Type="Scene" Name="Paneles - Efecto 36" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,212,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,212,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,212,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,212,7,200</FixtureVal>
     </Function>
-    <Function ID="60" Type="Scene" Name="Paneles - Effect 37" Path="Efectos Propios">
+    <Function ID="60" Type="Scene" Name="Paneles - Efecto 37" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,218,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,218,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,218,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,218,7,200</FixtureVal>
     </Function>
-    <Function ID="61" Type="Scene" Name="Paneles - Effect 38" Path="Efectos Propios">
+    <Function ID="61" Type="Scene" Name="Paneles - Efecto 38" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,224,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,224,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,224,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,224,7,200</FixtureVal>
     </Function>
-    <Function ID="62" Type="Scene" Name="Paneles - Effect 39" Path="Efectos Propios">
+    <Function ID="62" Type="Scene" Name="Paneles - Efecto 39" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,230,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,230,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,230,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,230,7,200</FixtureVal>
     </Function>
-    <Function ID="63" Type="Scene" Name="Paneles - Effect 40" Path="Efectos Propios">
+    <Function ID="63" Type="Scene" Name="Paneles - Efecto 40" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,236,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,236,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,236,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,236,7,200</FixtureVal>
     </Function>
-    <Function ID="64" Type="Scene" Name="Paneles - Effect 41" Path="Efectos Propios">
+    <Function ID="64" Type="Scene" Name="Paneles - Efecto 41" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,242,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,242,7,200</FixtureVal>
       <FixtureVal ID="27">0,255,4,0,5,128,6,242,7,200</FixtureVal>
       <FixtureVal ID="28">0,255,4,0,5,128,6,242,7,200</FixtureVal>
     </Function>
-    <Function ID="65" Type="Scene" Name="Paneles - Effect 42" Path="Efectos Propios">
+    <Function ID="65" Type="Scene" Name="Paneles - Efecto 42" Path="Efectos Propios">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="24">0,255,4,0,5,128,6,250,7,200</FixtureVal>
       <FixtureVal ID="25">0,255,4,0,5,128,6,250,7,200</FixtureVal>
@@ -11046,7 +11046,7 @@
       <FixtureVal ID="22">13,63,14,0</FixtureVal>
       <FixtureVal ID="23">13,63,14,0</FixtureVal>
     </Function>
-    <Function ID="617" Type="Scene" Name="Prisma - Insert Prism" Path="Prisma">
+    <Function ID="617" Type="Scene" Name="Prisma - Todos" Path="Prisma">
       <Speed FadeIn="0" FadeOut="0" Duration="0"/>
       <FixtureVal ID="20">13,191,14,25</FixtureVal>
       <FixtureVal ID="21">13,191,14,25</FixtureVal>
@@ -15092,40 +15092,40 @@
     <Function ID="807" Type="Collection" Name="Jugar · Arcoiris Pasos" Path="Jugar/Color">
       <Step Number="0">771</Step>
     </Function>
-    <Function ID="808" Type="Collection" Name="Jugar · Paneles - Effect 1" Path="Jugar/Pixeles">
+    <Function ID="808" Type="Collection" Name="Jugar · Paneles - Efecto 1" Path="Jugar/Pixeles">
       <Step Number="0">24</Step>
     </Function>
-    <Function ID="809" Type="Collection" Name="Jugar · Paneles - Effect 5" Path="Jugar/Pixeles">
+    <Function ID="809" Type="Collection" Name="Jugar · Paneles - Efecto 5" Path="Jugar/Pixeles">
       <Step Number="0">28</Step>
     </Function>
-    <Function ID="810" Type="Collection" Name="Jugar · Paneles - Effect 8" Path="Jugar/Pixeles">
+    <Function ID="810" Type="Collection" Name="Jugar · Paneles - Efecto 8" Path="Jugar/Pixeles">
       <Step Number="0">31</Step>
     </Function>
-    <Function ID="811" Type="Collection" Name="Jugar · Paneles - Effect 12" Path="Jugar/Pixeles">
+    <Function ID="811" Type="Collection" Name="Jugar · Paneles - Efecto 12" Path="Jugar/Pixeles">
       <Step Number="0">35</Step>
     </Function>
-    <Function ID="812" Type="Collection" Name="Jugar · Paneles - Effect 16" Path="Jugar/Pixeles">
+    <Function ID="812" Type="Collection" Name="Jugar · Paneles - Efecto 16" Path="Jugar/Pixeles">
       <Step Number="0">39</Step>
     </Function>
-    <Function ID="813" Type="Collection" Name="Jugar · Paneles - Effect 20" Path="Jugar/Pixeles">
+    <Function ID="813" Type="Collection" Name="Jugar · Paneles - Efecto 20" Path="Jugar/Pixeles">
       <Step Number="0">43</Step>
     </Function>
-    <Function ID="814" Type="Collection" Name="Jugar · Paneles - Effect 23" Path="Jugar/Pixeles">
+    <Function ID="814" Type="Collection" Name="Jugar · Paneles - Efecto 23" Path="Jugar/Pixeles">
       <Step Number="0">46</Step>
     </Function>
-    <Function ID="815" Type="Collection" Name="Jugar · Paneles - Effect 27" Path="Jugar/Pixeles">
+    <Function ID="815" Type="Collection" Name="Jugar · Paneles - Efecto 27" Path="Jugar/Pixeles">
       <Step Number="0">50</Step>
     </Function>
-    <Function ID="816" Type="Collection" Name="Jugar · Paneles - Effect 31" Path="Jugar/Pixeles">
+    <Function ID="816" Type="Collection" Name="Jugar · Paneles - Efecto 31" Path="Jugar/Pixeles">
       <Step Number="0">54</Step>
     </Function>
-    <Function ID="817" Type="Collection" Name="Jugar · Paneles - Effect 35" Path="Jugar/Pixeles">
+    <Function ID="817" Type="Collection" Name="Jugar · Paneles - Efecto 35" Path="Jugar/Pixeles">
       <Step Number="0">58</Step>
     </Function>
-    <Function ID="818" Type="Collection" Name="Jugar · Paneles - Effect 38" Path="Jugar/Pixeles">
+    <Function ID="818" Type="Collection" Name="Jugar · Paneles - Efecto 38" Path="Jugar/Pixeles">
       <Step Number="0">61</Step>
     </Function>
-    <Function ID="819" Type="Collection" Name="Jugar · Paneles - Effect 42" Path="Jugar/Pixeles">
+    <Function ID="819" Type="Collection" Name="Jugar · Paneles - Efecto 42" Path="Jugar/Pixeles">
       <Step Number="0">65</Step>
     </Function>
     <Function ID="820" Type="Collection" Name="Jugar · Paneles Manual" Path="Jugar/Pixeles">
@@ -15295,26 +15295,26 @@
     <Function ID="874" Type="Collection" Name="Jugar · Gobo Shake - Gobo 17" Path="Jugar/Gobos">
       <Step Number="0">569</Step>
     </Function>
-    <Function ID="875" Type="Collection" Name="Jugar · Prisma - Insert Prism" Path="Jugar/Prisma">
-      <Step Number="0">617</Step>
-    </Function>
-    <Function ID="876" Type="Collection" Name="Jugar · Prisma - 1" Path="Jugar/Prisma">
+    <Function ID="875" Type="Collection" Name="Jugar · Prisma - 1" Path="Jugar/Prisma">
       <Step Number="0">620</Step>
     </Function>
-    <Function ID="877" Type="Collection" Name="Jugar · Prisma - 2" Path="Jugar/Prisma">
+    <Function ID="876" Type="Collection" Name="Jugar · Prisma - 2" Path="Jugar/Prisma">
       <Step Number="0">621</Step>
     </Function>
-    <Function ID="878" Type="Collection" Name="Jugar · Prisma - 3" Path="Jugar/Prisma">
+    <Function ID="877" Type="Collection" Name="Jugar · Prisma - 3" Path="Jugar/Prisma">
       <Step Number="0">622</Step>
     </Function>
-    <Function ID="879" Type="Collection" Name="Jugar · Prisma - 4" Path="Jugar/Prisma">
+    <Function ID="878" Type="Collection" Name="Jugar · Prisma - 4" Path="Jugar/Prisma">
       <Step Number="0">623</Step>
     </Function>
-    <Function ID="880" Type="Collection" Name="Jugar · Prisma - 1 y 3" Path="Jugar/Prisma">
+    <Function ID="879" Type="Collection" Name="Jugar · Prisma - 1 y 3" Path="Jugar/Prisma">
       <Step Number="0">624</Step>
     </Function>
-    <Function ID="881" Type="Collection" Name="Jugar · Prisma - 2 y 4" Path="Jugar/Prisma">
+    <Function ID="880" Type="Collection" Name="Jugar · Prisma - 2 y 4" Path="Jugar/Prisma">
       <Step Number="0">625</Step>
+    </Function>
+    <Function ID="881" Type="Collection" Name="Jugar · Prisma - Todos" Path="Jugar/Prisma">
+      <Step Number="0">617</Step>
     </Function>
     <Function ID="882" Type="Collection" Name="Jugar · Prisma Giro Rapido" Path="Jugar/Prisma">
       <Step Number="0">618</Step>
@@ -17915,7 +17915,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 1" ID="101" Icon="">
+          <Button Caption="▦ Efecto 1" ID="101" Icon="">
             <WindowState Visible="True" X="192" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -17929,7 +17929,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 5" ID="102" Icon="">
+          <Button Caption="▦ Efecto 5" ID="102" Icon="">
             <WindowState Visible="True" X="285" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -17943,7 +17943,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 8" ID="103" Icon="">
+          <Button Caption="▦ Efecto 8" ID="103" Icon="">
             <WindowState Visible="True" X="378" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -17957,7 +17957,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 12" ID="104" Icon="">
+          <Button Caption="▦ Efecto 12" ID="104" Icon="">
             <WindowState Visible="True" X="471" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -17971,7 +17971,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 16" ID="105" Icon="">
+          <Button Caption="▦ Efecto 16" ID="105" Icon="">
             <WindowState Visible="True" X="564" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -17985,7 +17985,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 20" ID="106" Icon="">
+          <Button Caption="▦ Efecto 20" ID="106" Icon="">
             <WindowState Visible="True" X="657" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -17999,7 +17999,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 23" ID="107" Icon="">
+          <Button Caption="▦ Efecto 23" ID="107" Icon="">
             <WindowState Visible="True" X="750" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -18013,7 +18013,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 27" ID="108" Icon="">
+          <Button Caption="▦ Efecto 27" ID="108" Icon="">
             <WindowState Visible="True" X="843" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -18027,7 +18027,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 31" ID="109" Icon="">
+          <Button Caption="▦ Efecto 31" ID="109" Icon="">
             <WindowState Visible="True" X="936" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -18041,7 +18041,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 35" ID="110" Icon="">
+          <Button Caption="▦ Efecto 35" ID="110" Icon="">
             <WindowState Visible="True" X="1029" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -18055,7 +18055,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 38" ID="111" Icon="">
+          <Button Caption="▦ Efecto 38" ID="111" Icon="">
             <WindowState Visible="True" X="1122" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -18069,7 +18069,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="▦ Effect 42" ID="112" Icon="">
+          <Button Caption="▦ Efecto 42" ID="112" Icon="">
             <WindowState Visible="True" X="1215" Y="46" Width="89" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -19070,7 +19070,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="✧ Insert Prism" ID="183" Icon="">
+          <Button Caption="✧ 1" ID="183" Icon="">
             <WindowState Visible="True" X="260" Y="46" Width="123" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -19084,7 +19084,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="✧ 1" ID="184" Icon="">
+          <Button Caption="✧ 2" ID="184" Icon="">
             <WindowState Visible="True" X="387" Y="46" Width="123" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -19098,7 +19098,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="✧ 2" ID="185" Icon="">
+          <Button Caption="✧ 3" ID="185" Icon="">
             <WindowState Visible="True" X="514" Y="46" Width="123" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -19112,7 +19112,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="✧ 3" ID="186" Icon="">
+          <Button Caption="✧ 4" ID="186" Icon="">
             <WindowState Visible="True" X="641" Y="46" Width="123" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -19126,7 +19126,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="✧ 4" ID="187" Icon="">
+          <Button Caption="✧ 1 y 3" ID="187" Icon="">
             <WindowState Visible="True" X="768" Y="46" Width="123" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -19140,7 +19140,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="✧ 1 y 3" ID="188" Icon="">
+          <Button Caption="✧ 2 y 4" ID="188" Icon="">
             <WindowState Visible="True" X="895" Y="46" Width="123" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -19154,7 +19154,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="✧ 2 y 4" ID="189" Icon="">
+          <Button Caption="✧ Todos" ID="189" Icon="">
             <WindowState Visible="True" X="1022" Y="46" Width="123" Height="44"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23737,7 +23737,7 @@
           <ExcludeMonitored>True</ExcludeMonitored>
           <Collapsed>False</Collapsed>
           <Disabled>False</Disabled>
-          <Button Caption="Effect 1" ID="513" Icon="">
+          <Button Caption="Efecto 1" ID="513" Icon="">
             <WindowState Visible="True" X="6" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23751,7 +23751,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 2" ID="514" Icon="">
+          <Button Caption="Efecto 2" ID="514" Icon="">
             <WindowState Visible="True" X="57" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23765,7 +23765,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 3" ID="515" Icon="">
+          <Button Caption="Efecto 3" ID="515" Icon="">
             <WindowState Visible="True" X="108" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23779,7 +23779,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 4" ID="516" Icon="">
+          <Button Caption="Efecto 4" ID="516" Icon="">
             <WindowState Visible="True" X="159" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23793,7 +23793,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 5" ID="517" Icon="">
+          <Button Caption="Efecto 5" ID="517" Icon="">
             <WindowState Visible="True" X="210" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23807,7 +23807,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 6" ID="518" Icon="">
+          <Button Caption="Efecto 6" ID="518" Icon="">
             <WindowState Visible="True" X="261" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23821,7 +23821,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 7" ID="519" Icon="">
+          <Button Caption="Efecto 7" ID="519" Icon="">
             <WindowState Visible="True" X="312" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23835,7 +23835,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 8" ID="520" Icon="">
+          <Button Caption="Efecto 8" ID="520" Icon="">
             <WindowState Visible="True" X="363" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23849,7 +23849,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 9" ID="521" Icon="">
+          <Button Caption="Efecto 9" ID="521" Icon="">
             <WindowState Visible="True" X="414" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23863,7 +23863,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 10" ID="522" Icon="">
+          <Button Caption="Efecto 10" ID="522" Icon="">
             <WindowState Visible="True" X="465" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23877,7 +23877,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 11" ID="523" Icon="">
+          <Button Caption="Efecto 11" ID="523" Icon="">
             <WindowState Visible="True" X="516" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23891,7 +23891,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 12" ID="524" Icon="">
+          <Button Caption="Efecto 12" ID="524" Icon="">
             <WindowState Visible="True" X="567" Y="26" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23905,7 +23905,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 13" ID="525" Icon="">
+          <Button Caption="Efecto 13" ID="525" Icon="">
             <WindowState Visible="True" X="6" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23919,7 +23919,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 14" ID="526" Icon="">
+          <Button Caption="Efecto 14" ID="526" Icon="">
             <WindowState Visible="True" X="57" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23933,7 +23933,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 15" ID="527" Icon="">
+          <Button Caption="Efecto 15" ID="527" Icon="">
             <WindowState Visible="True" X="108" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23947,7 +23947,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 16" ID="528" Icon="">
+          <Button Caption="Efecto 16" ID="528" Icon="">
             <WindowState Visible="True" X="159" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23961,7 +23961,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 17" ID="529" Icon="">
+          <Button Caption="Efecto 17" ID="529" Icon="">
             <WindowState Visible="True" X="210" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23975,7 +23975,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 18" ID="530" Icon="">
+          <Button Caption="Efecto 18" ID="530" Icon="">
             <WindowState Visible="True" X="261" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -23989,7 +23989,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 19" ID="531" Icon="">
+          <Button Caption="Efecto 19" ID="531" Icon="">
             <WindowState Visible="True" X="312" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24003,7 +24003,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 20" ID="532" Icon="">
+          <Button Caption="Efecto 20" ID="532" Icon="">
             <WindowState Visible="True" X="363" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24017,7 +24017,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 21" ID="533" Icon="">
+          <Button Caption="Efecto 21" ID="533" Icon="">
             <WindowState Visible="True" X="414" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24031,7 +24031,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 22" ID="534" Icon="">
+          <Button Caption="Efecto 22" ID="534" Icon="">
             <WindowState Visible="True" X="465" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24045,7 +24045,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 23" ID="535" Icon="">
+          <Button Caption="Efecto 23" ID="535" Icon="">
             <WindowState Visible="True" X="516" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24059,7 +24059,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 24" ID="536" Icon="">
+          <Button Caption="Efecto 24" ID="536" Icon="">
             <WindowState Visible="True" X="567" Y="78" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24073,7 +24073,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 25" ID="537" Icon="">
+          <Button Caption="Efecto 25" ID="537" Icon="">
             <WindowState Visible="True" X="6" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24087,7 +24087,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 26" ID="538" Icon="">
+          <Button Caption="Efecto 26" ID="538" Icon="">
             <WindowState Visible="True" X="57" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24101,7 +24101,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 27" ID="539" Icon="">
+          <Button Caption="Efecto 27" ID="539" Icon="">
             <WindowState Visible="True" X="108" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24115,7 +24115,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 28" ID="540" Icon="">
+          <Button Caption="Efecto 28" ID="540" Icon="">
             <WindowState Visible="True" X="159" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24129,7 +24129,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 29" ID="541" Icon="">
+          <Button Caption="Efecto 29" ID="541" Icon="">
             <WindowState Visible="True" X="210" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24143,7 +24143,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 30" ID="542" Icon="">
+          <Button Caption="Efecto 30" ID="542" Icon="">
             <WindowState Visible="True" X="261" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24157,7 +24157,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 31" ID="543" Icon="">
+          <Button Caption="Efecto 31" ID="543" Icon="">
             <WindowState Visible="True" X="312" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24171,7 +24171,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 32" ID="544" Icon="">
+          <Button Caption="Efecto 32" ID="544" Icon="">
             <WindowState Visible="True" X="363" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24185,7 +24185,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 33" ID="545" Icon="">
+          <Button Caption="Efecto 33" ID="545" Icon="">
             <WindowState Visible="True" X="414" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24199,7 +24199,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 34" ID="546" Icon="">
+          <Button Caption="Efecto 34" ID="546" Icon="">
             <WindowState Visible="True" X="465" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24213,7 +24213,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 35" ID="547" Icon="">
+          <Button Caption="Efecto 35" ID="547" Icon="">
             <WindowState Visible="True" X="516" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24227,7 +24227,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 36" ID="548" Icon="">
+          <Button Caption="Efecto 36" ID="548" Icon="">
             <WindowState Visible="True" X="567" Y="130" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24241,7 +24241,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 37" ID="549" Icon="">
+          <Button Caption="Efecto 37" ID="549" Icon="">
             <WindowState Visible="True" X="6" Y="182" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24255,7 +24255,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 38" ID="550" Icon="">
+          <Button Caption="Efecto 38" ID="550" Icon="">
             <WindowState Visible="True" X="57" Y="182" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24269,7 +24269,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 39" ID="551" Icon="">
+          <Button Caption="Efecto 39" ID="551" Icon="">
             <WindowState Visible="True" X="108" Y="182" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24283,7 +24283,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 40" ID="552" Icon="">
+          <Button Caption="Efecto 40" ID="552" Icon="">
             <WindowState Visible="True" X="159" Y="182" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24297,7 +24297,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 41" ID="553" Icon="">
+          <Button Caption="Efecto 41" ID="553" Icon="">
             <WindowState Visible="True" X="210" Y="182" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>
@@ -24311,7 +24311,7 @@
             <Key/>
             <Intensity Adjust="False">100</Intensity>
           </Button>
-          <Button Caption="Effect 42" ID="554" Icon="">
+          <Button Caption="Efecto 42" ID="554" Icon="">
             <WindowState Visible="True" X="261" Y="182" Width="47" Height="46"/>
             <Appearance>
               <FrameStyle>None</FrameStyle>

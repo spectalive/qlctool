@@ -184,7 +184,7 @@ def test_the_prism_turns_more_than_one_way_and_runs_in_the_party(built, library)
     assert {"Prisma Giro Rapido", "Prisma Giro Inverso"} <= danced
 
     spins = set()
-    for name in ("Prisma - Insert Prism", "Prisma Giro Rapido", "Prisma Giro Inverso"):
+    for name in ("Prisma - Todos", "Prisma Giro Rapido", "Prisma Giro Inverso"):
         for capability in _fixtures_with(built, library, roles.PRISM_ROTATION):
             written = _values(functions[name], capability.fixture.fixture_id)
             spins.update(

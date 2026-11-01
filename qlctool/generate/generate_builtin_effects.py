@@ -27,6 +27,7 @@ from ..shutter_open_pairs import shutter_open_pairs
 from ..strobe_off_pairs import strobe_off_pairs
 from ..workspace import Workspace
 from ..zoom_wide_pairs import zoom_wide_pairs
+from .effect_name import effect_name
 from .generated_builtins import GeneratedBuiltins
 
 # Where the hand-built show ran these: its speed sequence stepped the panels'
@@ -94,9 +95,7 @@ def generate_builtin_effects(
             values[capability.fixture.fixture_id] = pairs
 
         function_id = next_function_id(workspace.root)
-        name = programmed[0][1].effects[index].name.strip() or vocabulary.render(
-            "panel_effect", number=index + 1
-        )
+        name = effect_name(programmed[0][1].effects[index].name, index + 1, vocabulary)
         workspace.add_function(build_scene(function_id, f"{label} - {name}", values, path=path))
         scene_ids.append(function_id)
 

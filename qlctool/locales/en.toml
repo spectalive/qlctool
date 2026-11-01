@@ -201,6 +201,10 @@ path_haze = "Haze"
 path_strobes = "Strobes"
 path_moments = "Moments"
 
+[presets]
+# QLC+ capability presets, named in the show's language.
+prism_effect_on = "All"
+
 [console]
 root_frame = "Page 1"
 grand_master = "Grand Master"

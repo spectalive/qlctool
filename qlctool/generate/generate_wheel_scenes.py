@@ -23,6 +23,7 @@ from ..wheel_of import wheel_of
 from ..workspace import Workspace
 from ..zoom_wide_pairs import zoom_wide_pairs
 from .generated_wheel import GeneratedWheel
+from .wheel_position_name import wheel_position_name
 
 
 def generate_wheel_scenes(
@@ -99,7 +100,7 @@ def generate_wheel_scenes(
             values[capability.fixture.fixture_id] = pairs
 
         function_id = next_function_id(workspace.root)
-        name = position.name or f"{label} {index}"
+        name = wheel_position_name(position, label, index, vocabulary)
         workspace.add_function(build_scene(function_id, f"{label} - {name}", values, path=folder))
         scene_ids.append(function_id)
 

@@ -272,13 +272,14 @@ def test_play_wrappers_are_single_member_collections_in_their_families(built):
         source.attrib["Name"]
         for source in _wrapper_sources(show.play_wrappers.prism_ids, functions)
     ] == [
-        "Prisma - Insert Prism",
         "Prisma - 1",
         "Prisma - 2",
         "Prisma - 3",
         "Prisma - 4",
         "Prisma - 1 y 3",
         "Prisma - 2 y 4",
+        # After the numbers since 2026-11-01, so the desk lays them as a row.
+        "Prisma - Todos",
         "Prisma Giro Rapido",
         "Prisma Giro Inverso",
     ]
@@ -290,7 +291,7 @@ def test_play_wrappers_are_single_member_collections_in_their_families(built):
     effect_numbers = [
         int(name.rsplit(" ", 1)[1])
         for name in panel_sources
-        if name.startswith("Paneles - Effect ")
+        if name.startswith("Paneles - Efecto ")
     ]
     assert effect_numbers[0] == 1
     assert effect_numbers[-1] == 42

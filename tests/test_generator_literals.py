@@ -61,6 +61,8 @@ CONVERTED: tuple[str, ...] = (
     "generate/generate_fan_position.py",
     "generate/generate_stage_aim.py",
     "generate/generate_wheel_scenes.py",
+    "generate/wheel_position_name.py",
+    "generate/effect_name.py",
     "generate/without_wheel_blades.py",
     "generate/add_family_floors.py",
     "generate/prepend_collection_steps.py",

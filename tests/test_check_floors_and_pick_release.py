@@ -235,7 +235,7 @@ def test_2026_09_26_releasing_a_pick_leaves_the_beams_red(library):
     assert (spin.severity, spin.fixtures) == (WARNING, names)
     assert "Momento Fiesta" in spin.fields["states"]
     # The panels kept a released pick's programme under CHARLA (review I-1).
-    panels = found["Jugar · Paneles - Effect 1"]
+    panels = found["Jugar · Paneles - Efecto 1"]
     assert panels.severity == WARNING
     assert all(name.startswith("WX-60WPS-48PARTITION") for name in panels.fixtures)
     assert "Momento Charla" in panels.fields["states"]
