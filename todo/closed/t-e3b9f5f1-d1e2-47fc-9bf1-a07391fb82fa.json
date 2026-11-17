@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-e3b9f5f1-d1e2-47fc-9bf1-a07391fb82fa",
+  "title": "Pair wash and beam figures in one ordered normal rotation and keep the cascade reachable",
+  "state": "done",
+  "category": "shared-auto-movement-clock",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-21",
+  "result": "The paired rotation replaces concurrent random family rotations; the movement dial follows its chaser and EFX. The checker reports independently running long movement rotations.",
+  "evidence": [
+    "`tests/test_synced_auto_movements.py`, `tests/test_movement_clock_rule.py`, and zero findings from `qlctool check` on all three Vibra workspaces."
+  ]
+}

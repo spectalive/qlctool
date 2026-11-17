@@ -1,0 +1,28 @@
+{
+  "tadu": 2,
+  "id": "t-95d76f35-bf82-48e6-8791-87e2bbb8efe0",
+  "title": "**`newshow`'s refusal blames the folder when every fixture is in a",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "missing mode (2026-09-25).** `newshow_refusal` rendered",
+    "`rig_without_definitions` (\"found no fixture definition ... pass",
+    "--fixtures\") whenever nothing patched resolved, also when every definition",
+    "was found and only the modes were wrong. It now renders",
+    "`rig_without_definitions` only when no patched model is known, else",
+    "`rig_without_modes` (en and es), which sends the user to the per-model",
+    "warnings and asks for the repatch. The missing-model / missing-mode",
+    "distinction lives once in `definition_outcome_of` (`DefinitionOutcome`),",
+    "shared by `resolved_definition`, `warn_unresolved`,",
+    "`rule_missing_definition` and the refusal. Closed by `fix(newshow): the",
+    "refusal asks for a repatch when only the modes are missing`, test",
+    "`tests/test_rig_minimum.py` (fails without the fix)."
+  ],
+  "closed": "2026-11-17",
+  "result": "**`newshow`'s refusal blames the folder when every fixture is in a",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-2b3e8f99-09be-4362-985d-9045e4a70e67",
+  "title": "**Every `zip()` without `strict=` (B905), moved from vibra-lighting",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(2026-09-26).** 29 sites (12 in `qlctool/`, 17 in `tests/`), not the 13 the",
+    "note counted. Every one pairs two lists built from the same source, so a",
+    "length mismatch is a bug, not an intended cut: all 29 are `strict=True`",
+    "and B905 left the `ignore` list (5965909). Vibra x3 identical."
+  ],
+  "closed": "2026-11-17",
+  "result": "**Every `zip()` without `strict=` (B905), moved from vibra-lighting",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

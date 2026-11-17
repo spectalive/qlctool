@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-4c847848-b075-4c7f-91bb-b3172ed70fb9",
+  "title": "**The MiN Wash sit at full in Ambiente (ruling D2, en-sala audit",
+  "state": "pending",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "2026-09-26).** Their one Dimmer/Strobe channel is in the Intensity group",
+    "and inverted (8 = 100 %, 134 = 0 %), and the levels hold it at 255 \"Open\"",
+    "through `shutter_open_pairs`, so they are at full while every other fixture",
+    "sits at 110 in Ambiente. Only the strobe was fixed (ForceLTP on the flash",
+    "and strobe buttons, `rule_strobe_masked_by_htp`); the dim was left on",
+    "purpose because both MiN Wash are spares, hidden in the stage plot. Cost if",
+    "they are ever rigged: two washes too bright in every quiet level. Smallest",
+    "next step, when one is rigged: a level that dims a fixture whose only",
+    "intensity path is a combined dimmer/strobe channel writes the dimmer range",
+    "value for that level, with a `check` rule that compares its brightness to",
+    "the level's."
+  ]
+}

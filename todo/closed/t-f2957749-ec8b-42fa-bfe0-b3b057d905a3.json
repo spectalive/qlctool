@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-f2957749-ec8b-42fa-bfe0-b3b057d905a3",
+  "title": "**Show `[names]` overrides do not reach the finding text (review of B10",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "round 2, 2026-09-26).** Closed 2026-09-26 (round D1). A saved workspace",
+    "records its language but not the words its description renamed, so the",
+    "description is handed in: `check_workspace(..., names=)`,",
+    "`named_findings(..., names)` and `qlctool check --description`, as",
+    "`deskmap` already did. Without it nothing changes (Vibra's check output is",
+    "identical). Test `tests/test_show_names_in_findings.py`: a renamed",
+    "`full_white` in `wheel_white`'s message, and the club checked end to end",
+    "with an override."
+  ],
+  "closed": "2026-11-17",
+  "result": "**Show `[names]` overrides do not reach the finding text (review of B10",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

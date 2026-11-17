@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-bb2f69aa-1e55-497c-9345-aa397f65391a",
+  "title": "A Collection over colour wheels still drew the merged maximum (review of 10c41ed, 2026-10-19)",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "10c41ed read only a Chaser (or a Chaser nested in one) step by step; `Rueda Mezcla`, a Collection of five wheels, kept ['#ffffff', '#ff00ff'] and the AUTO/tranquilo/fiesta/locura looks over `Rueda Colores` kept ['#ffffff'], although the closed item named the mix wheel. Next step: read any function that starts a Chaser member by member."
+  ],
+  "closed": "2026-10-19",
+  "result": "swatches() reads any function that starts a Chaser member by member (stepwise_swatches.py, starts_chaser.py); Vibra.desk.json changes only mezcla (#ffffff,#ff00ff -> #ff0000,#ffff00,#ffb700,#ff00ff) and auto/tranquilo/fiesta/locura (#ffffff -> #ff0000,#ff1400,#ff7f00,#ffb700).",
+  "evidence": [
+    "pytest -q tests/test_wheel_swatches.py: 4 passed with the fix, 2 failed 2 passed with 10c41ed's swatches.py restored; CODEALITY_PY_TEST_BUDGET_SECONDS=900 uv run --locked codeality-py gate --json: exit 0, every stage passed (pytest 148.7 s at load 67-83)"
+  ]
+}

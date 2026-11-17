@@ -1,0 +1,25 @@
+{
+  "tadu": 2,
+  "id": "t-11bb0394-9c49-43e4-9065-d53e536a0358",
+  "title": "**The mypy ratchet in `mypy.ini` (moved from vibra-lighting,",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "2026-09-26).** Closed 2026-10-07: the last 26 `ignore_errors` sections are",
+    "gone and `mypy qlctool` is clean in strict mode. Most were missing",
+    "annotations; the rest were lxml-stubs gaps (`attrib` values typed",
+    "`str | bytes`, an empty `_ErrorLog`, a `None` nsmap key) and lookups of",
+    "elements a valid workspace always has, narrowed with `cast` as",
+    "`grow_console` already did, so a malformed file still fails exactly as",
+    "before. `wheel_of` states that a fixture filtered on a role has its wheel.",
+    "Coverage floor 85 -> 95 (measured 95%). Evidence: `uv run codeality-py",
+    "gate` exit 0, 1008 passed."
+  ],
+  "closed": "2026-11-17",
+  "result": "**The mypy ratchet in `mypy.ini` (moved from vibra-lighting,",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

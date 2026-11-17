@@ -1,0 +1,28 @@
+{
+  "tadu": 2,
+  "id": "t-daafc81d-0e43-4fb7-a298-1a7afac9c8de",
+  "title": "Three long modules sit in the codeality baseline (2026-09-25)",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "The gate was red on them beside mypy, and the fix that turned it green was",
+    "told not to restructure modules, so they were recorded as debt instead:",
+    "`checks/run.py` 160 code lines, `generate/color_banks.py` 167 and",
+    "`generate/matrix_effects.py` 155 (cap 150, BPY004). Closed by 415ff26",
+    "(`canvas_of`, `default_canvas`, `applying_providers`), a3e5ac6",
+    "(`bank_for_group`, `bank_wheel`, `GeneratedBank`) and 557a0d3",
+    "(`add_matrix`, `matrix_pace`, `matrix_grid`,",
+    "`matrix_group_name`, `GeneratedMatrices`), bodies moved verbatim; `baseline",
+    "update` dropped the three BPY004 entries and the three modules' BPY001",
+    "entries (more than one unit per module), and recorded three new BPY002",
+    "entries, one per module, whose file name no longer matches its only unit",
+    "(209 -> 206). Vibra identical x3."
+  ],
+  "closed": "2026-11-17",
+  "result": "Three long modules sit in the codeality baseline (2026-09-25)",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

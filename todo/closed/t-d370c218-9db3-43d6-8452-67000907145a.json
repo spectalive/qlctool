@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-d370c218-9db3-43d6-8452-67000907145a",
+  "title": "**`deskmap`'s refusal of an invalid desk burst reads in Spanish",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(2026-09-25).** Closed by 0c8f7c4: `desk_burst_refusal` renders each",
+    "finding's `message_id` with the vocabulary `build_deskmap` holds.",
+    "`deskmap.py` is `build_deskmap.py`, and its two helpers and page assembly",
+    "moved out verbatim (`desk_unique_key`, `desk_dial`, `desk_pages`), so it is",
+    "under the cap (baseline 203 -> 201). Test",
+    "`tests/test_english_desk_burst_refusal.py`."
+  ],
+  "closed": "2026-11-17",
+  "result": "**`deskmap`'s refusal of an invalid desk burst reads in Spanish",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

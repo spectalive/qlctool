@@ -1,0 +1,27 @@
+{
+  "tadu": 2,
+  "id": "t-ded224c4-95f6-4fc8-8696-d17253e38bb0",
+  "title": "**`check` cannot see whether page 4's help names the frames drawn",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(round G review, 2026-09-26).** Closed 2026-09-27 (ea9f01f): rule",
+    "`help_names_frame` reads the console (Frame and SoloFrame captions on the",
+    "label's page, any shipped language); `tests/test_help_names_frame.py`",
+    "deletes the mixes and the matrices frame of Vibra-split. `library_help_lines` picks the lines that",
+    "name the two-colour mixes and the matrices from the frames `live_console`",
+    "draws (`has_mixes`, `has_matrices`), and their `CAPTION_PROMISES` entries",
+    "promise nothing, because no fixture capability shows either frame. A",
+    "hand-edited console that keeps \"the mixes\" in its help after deleting the",
+    "frame passes `check`. Smallest next step: a rule that reads the console",
+    "itself - a help line naming a frame whose caption is not on the same page",
+    "- with a regression test that deletes the mixes frame from a generated show."
+  ],
+  "closed": "2026-11-17",
+  "result": "**`check` cannot see whether page 4's help names the frames drawn",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

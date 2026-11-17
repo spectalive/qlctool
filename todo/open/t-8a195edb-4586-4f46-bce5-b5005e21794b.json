@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-8a195edb-4586-4f46-bce5-b5005e21794b",
+  "title": "**The ruff ratchet in `ruff.toml` (moved from vibra-lighting,",
+  "state": "pending",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "2026-09-26).** `ruff check` and `ruff format --check` are clean, so what is",
+    "left is the ignore list, counted with `ruff check . --select <codes>",
+    "--preview --statistics`: D1 (public symbols without a docstring) 244,",
+    "D205/D210 16, PLR0913/PLR0917 (too many parameters) 163, PLR0911/0912/0915",
+    "19, PLR2004 (magic values: DMX channel numbers and QLC+ constants) 43,",
+    "RUF005/RUF059 13. E402 (1) and ARG001 (9) were cleared on 2026-09-27",
+    "(96988c0): the nine unused arguments were dropped from their signatures,",
+    "each with one caller, Vibra x3 identical. RUF005/RUF059 were cleared and",
+    "left `ignore` the same day (72bde18). Recounted on 2026-10-19 (ruff",
+    "0.16.5): D1 465 (D103 373, D101 54, D102 27, D105 5, D104 5, D100 1; D107",
+    "is a permanent ignore), D205/D210 29, PLR0913/PLR0917 223, PLR0911/0912/0915",
+    "22, PLR2004 45, RUF005/RUF059 0, PLW2901/SIM105 0. Smallest next step: drop",
+    "PLW2901 and SIM105 from `ignore` (0 findings), then take D205/D210."
+  ]
+}

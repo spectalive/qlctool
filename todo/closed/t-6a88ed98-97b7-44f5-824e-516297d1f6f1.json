@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-6a88ed98-97b7-44f5-824e-516297d1f6f1",
+  "title": "**Most of `function_references`' paths have no test (Task 2a review,",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "2026-09-25; moved from vibra-lighting).** Closed 2026-09-26 (round D1):",
+    "`tests/test_dangling_reference_paths.py` breaks a clock `<Schedule",
+    "Function>`, an XY pad `<FuncID>`, a cue list `<Chaser>`, a Show's",
+    "`ShowFunction` and `Track SceneID`, and a Sequence's `BoundScene` one at a",
+    "time; the rule bites on every one, so it needed no fix."
+  ],
+  "closed": "2026-11-17",
+  "result": "**Most of `function_references`' paths have no test (Task 2a review,",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-68928d9a-778e-4a75-9968-9beda5d57f5b",
+  "title": "`pick_release_orphans` does not judge the pixel frame (2026-09-27)",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Closed by `30a72c4 fix: a released panel pick is judged and falls back on",
+    "a panels floor`: the rule reads the panel's programme mode channel as the",
+    "pixel-mode family (`family_offsets`); it bit 13 panel picks under CHARLA",
+    "until every state that plays the panels started `Paneles Suelo`.",
+    "Re-injected in `test_2026_09_26_releasing_a_pick_leaves_the_beams_red`."
+  ],
+  "closed": "2026-11-17",
+  "result": "`pick_release_orphans` does not judge the pixel frame (2026-09-27)",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

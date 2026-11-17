@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-e514e2ea-8376-4c84-9766-2c2a1635a32b",
+  "title": "**`is_panel` calls a plain PAR with a built-in programme a panel",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(review of 4b50144..655b97d, 2026-09-25).** Closed by f195b2a: a one-cell",
+    "fixture is a panel only with a panel's body (`has_panel_face`: a",
+    "`<Dimensions>` face half again as wide as tall, and shallower than tall).",
+    "Vibra's WX-60WPS is 250 x 130 x 70; the LED PAR 64 AT3 (274 x 268 x 433),",
+    "the SlimPAR T6 (84 x 226 x 181) and every other PAR fail it. Of the 32",
+    "upstream modes it accepted, 6 remain: the Wash FX and Frost FX Bar W grids",
+    "(three modes) and the KLS-180-6 and PartyBar2 light bars (three modes). Test `tests/test_par_is_not_a_panel.py`;",
+    "Vibra identical x3."
+  ],
+  "closed": "2026-11-17",
+  "result": "**`is_panel` calls a plain PAR with a built-in programme a panel",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

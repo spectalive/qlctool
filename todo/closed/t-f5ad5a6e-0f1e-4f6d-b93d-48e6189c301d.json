@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-f5ad5a6e-0f1e-4f6d-b93d-48e6189c301d",
+  "title": "Reconcile qlctool's editable lock version",
+  "state": "done",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Observed 2026-10-22: `pyproject.toml` declares `project.version = \"0.2.5\"`, while the `qlctool` editable package in `uv.lock` remains `0.2.3`. Runtime and optional dependency declarations match. Next: confirm the intended release version and reconcile the editable lock metadata, preserving the accepted certifi record and all other dependency resolutions."
+  ],
+  "closed": "2026-10-22",
+  "result": "Align the editable lock root version with the declared source version 0.2.5; preserve every third-party record, dependency declaration and accepted certifi artifact.",
+  "evidence": [
+    "Parsed whole-lock comparison changes only qlctool.version from 0.2.3 to 0.2.5 across 80 package records; uv lock --check passes. Final source-matched codeality-py gate --json passes all seven required stages."
+  ]
+}

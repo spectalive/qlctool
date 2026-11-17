@@ -1,0 +1,19 @@
+{
+  "tadu": 2,
+  "id": "t-cd04c9df-e9e3-4b74-9c86-9c1e1a315365",
+  "title": "**`qlctool check` still lives in `cli.py` (review of round D1,",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "2026-09-26).** Closed in round G: `cmd_check` and its parser moved to",
+    "`cmd_check.py` and `add_check_parser.py`, the `pad-palette` shape; `cli.py`",
+    "only wires them (945 -> 917 lines)."
+  ],
+  "closed": "2026-11-17",
+  "result": "**`qlctool check` still lives in `cli.py` (review of round D1,",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

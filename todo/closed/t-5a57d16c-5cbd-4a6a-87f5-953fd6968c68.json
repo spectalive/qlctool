@@ -1,0 +1,27 @@
+{
+  "tadu": 2,
+  "id": "t-5a57d16c-5cbd-4a6a-87f5-953fd6968c68",
+  "title": "**`newshow` builds no show for a rig without movement or a dimmer",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(Plan C final review, 2026-09-25).** Closed in round G (2026-09-26):",
+    "`generate_movement_families` returns empty families and",
+    "`generate_dimmer_chases` returns None when the rig has nothing to move or",
+    "chase, and every caller leaves them out; the heads frame, the aiming pad",
+    "and the intensity frame are not drawn empty; the tempo lines and page 3's",
+    "title choose a variant without heads or dimmer, and `rule_caption_promise`",
+    "now holds those captions to a head (pan and tilt) and a fader dimmer.",
+    "`rig_below_minimum` asks only for a fixture group (README, docs and both",
+    "catalogues follow). Tests `tests/test_small_rig.py` (pars only, washes",
+    "only, RGB-only heads: build, `check` clean, QLC+ loads, and the rule bites",
+    "on a heads title put back); Vibra x3 and the club identical."
+  ],
+  "closed": "2026-11-17",
+  "result": "**`newshow` builds no show for a rig without movement or a dimmer",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

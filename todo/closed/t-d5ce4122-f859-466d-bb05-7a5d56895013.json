@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-d5ce4122-f859-466d-bb05-7a5d56895013",
+  "title": "**An override that breaks ruling B7 crashes the build instead of being",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "refused (final review of Plan B, 2026-09-25; moved from vibra-lighting).**",
+    "`hit_button_flash = \"BANG · Space\"` failed in the desk bursts with \"burst",
+    "duration must be positive: bang\". Closed 2026-09-26 (round D1):",
+    "`reject_hit_button_heads` beside `reject_frame_head_renames` refuses an",
+    "override after which the desk's own lookup (`desk_burst_identifier` over",
+    "the show's names) no longer finds a `hit_button_*`'s own `hit_*`, naming",
+    "the description. After the D1 review it asks exactly the desk's question:",
+    "`hit_flash = \"Red\"` with its button refused (Red is also a colour), a",
+    "leading glyph accepted, and a hit renamed with its button builds its desk",
+    "burst. Tests `tests/test_hit_button_heads.py`."
+  ],
+  "closed": "2026-11-17",
+  "result": "**An override that breaks ruling B7 crashes the build instead of being",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

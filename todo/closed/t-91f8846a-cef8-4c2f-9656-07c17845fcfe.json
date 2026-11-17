@@ -1,0 +1,35 @@
+{
+  "tadu": 2,
+  "id": "t-91f8846a-cef8-4c2f-9656-07c17845fcfe",
+  "title": "An English show's `check` reads in Spanish (ruling B10, 2026-09-25)",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "The controller decided (the owner delegated it) that the check side follows",
+    "the spec's \"Multilingual\" section: every rule has an English identifier and",
+    "a display name per language. Round 1 (026fca4, 64a10de): `Finding.rule_id`,",
+    "a `[checks]` section in `es.toml` and `en.toml`, the rules named in",
+    "`workspace_language` in one place, and the summary lines from `[messages]`.",
+    "Round 2: every finding message is a `[findings]` entry (`message_id` and",
+    "`fields`, with `Phrase` and `Joined` for catalogue words and lists), rendered",
+    "in the workspace's language by `checks/named_findings.py`; the helper",
+    "builders (`desk_burst_errors`, `family_frames`) return phrases, the promise",
+    "words are catalogue entries, and the intensity plural is two entries.",
+    "`named_in_order` is split into `named_findings` and `fixing_order`,",
+    "`rule_display_name` is `display_name_of_rule`, no `Finding` passes its rule",
+    "positionally, and `docs/checks.md` describes all 67 rules in one table.",
+    "Evidence: Vibra's check output `cmp`-identical on the frozen Vibra and on",
+    "the injected-bug copy (29 findings in 5 rules); every one of the 2296",
+    "distinct findings the suite built before round 2 is rebuilt with the same",
+    "Spanish message; the club without `--fixtures` reads English end to end.",
+    "Tests `tests/test_check_finding_catalogue.py` (drift) and",
+    "`tests/test_english_check_names.py` (dated)."
+  ],
+  "closed": "2026-11-17",
+  "result": "An English show's `check` reads in Spanish (ruling B10, 2026-09-25)",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

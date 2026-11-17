@@ -1,0 +1,24 @@
+{
+  "tadu": 2,
+  "id": "t-0f74628d-8e8a-4d76-ac7b-2f8e5fe3faa4",
+  "title": "Three modules are not named after their unit (2026-09-25)",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "BPY002",
+    "",
+    "since the split above. Closed by e941b10: `checks/run.py` is",
+    "`checks/check_workspace.py`, `generate/color_banks.py` is",
+    "`generate/generate_color_banks.py` and `generate/matrix_effects.py` is",
+    "`generate/generate_matrix_effects.py`; every importer in `qlctool/` and",
+    "`tests/` (the controller-reach test starts from `check_workspace`) follows,",
+    "and `baseline update` dropped the three entries (206 -> 203)."
+  ],
+  "closed": "2026-11-17",
+  "result": "Three modules are not named after their unit (2026-09-25)",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

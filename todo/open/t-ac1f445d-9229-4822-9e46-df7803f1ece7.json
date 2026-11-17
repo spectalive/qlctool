@@ -1,0 +1,27 @@
+{
+  "tadu": 2,
+  "id": "t-ac1f445d-9229-4822-9e46-df7803f1ece7",
+  "title": "Verify desk bursts on the rig (2026-09-13)",
+  "state": "in_progress",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Normal API priority",
+    "",
+    "cannot guarantee the Mac Flash's colour or shutter override. The generated",
+    "map marks 15 cues with `burstNote`; durations are provisional. Over AUTO and",
+    "a running shutter chase, compare each burst to its held source, confirm",
+    "release and timeout, then tune `BURST_MS` if needed. Evidence and the",
+    "per-hit judgment: [desk burst findings](docs/2026-09-13-desk-bursts-findings.md).",
+    "2026-10-21: loopback Art-Net confirms this is a real controller output",
+    "mismatch, not only a torn web-channel read. The white tablet burst lost the",
+    "7R wheel to AUTO in 299/302 steady frames, while the held ForceLTP console",
+    "button stayed white in 794/794. A Toggle's Override attributes were ignored;",
+    "a direct Flash survived WebSocket disconnect. On 2026-10-21 the controller",
+    "gained a maximum Flash hold, all 25 desk hits gained priority, the three",
+    "shipped shows passed the checks, and loopback Art-Net kept all four 7R wheels",
+    "white during Fiesta's Flash before returning to colour after expiry. Next:",
+    "measure colour, shutter, smoke and expiry at the physical FT232R output."
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "tadu": 2,
+  "id": "t-e3a12395-618e-4048-99cc-98a9adda9c51",
+  "title": "**The vertical-smoke light chaser is built where nothing starts it",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(2026-09-25).** Vibra without its smoke machines (fixtures 17, 29-32)",
+    "carried the panels' `Humo Vertical` chaser with no button to start it.",
+    "Decision (the owner delegated it, 2026-09-25): the light is built only where",
+    "a vertical column is. Closed by `fix(generate): the vertical-smoke light is",
+    "built only where a column is patched`: `vertical_smoke_columns` (a smoke",
+    "machine with a red channel, `is_lit_smoke`) is the one answer both",
+    "`vertical_smoke_burst` and `vertical_smoke_light` ask, so they cannot drift.",
+    "Tests `tests/test_vertical_smoke_columns.py` (the no-smoke build has one",
+    "function fewer than the same build with the light forced; fails without the",
+    "fix) and `tests/test_lit_smoke_wash.py` (the columns' LEDs stay a wash in",
+    "every room colour, their LED master at full in the levels and their pump at",
+    "zero, on Vibra and on Vibra without its fog-only machine). Vibra identical x3.",
+    "- [x] A `check` rule for a built function that no button, chaser,",
+    "  collection or input binding reaches would have seen this. Closed",
+    "  2026-09-27 (ea9f01f): `unreachable_function`, a warning; an input",
+    "  profile binds widgets, never functions, so the pad reaches nothing a",
+    "  widget does not. Over the sweep it found two more of the class, fixed at",
+    "  the cause: the beams' rainbow spin with no rainbow EFX (beams-only rig)",
+    "  and the wheel step matrices on an all-pixel rig."
+  ],
+  "closed": "2026-11-17",
+  "result": "**The vertical-smoke light chaser is built where nothing starts it",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

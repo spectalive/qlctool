@@ -1,0 +1,22 @@
+{
+  "tadu": 2,
+  "id": "t-95b698d2-f409-4c22-bf09-b3a7e6c4ab4e",
+  "title": "**A wheel whose only nameable detent is one no look asks for is not",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "parked (2026-09-25).** `outside_color_looks` asked over every colour in",
+    "`WHEEL_NAMES`; it now asks over the colours the looks request, the show's",
+    "palette, which `build_canonical_show` hands both intensity generators.",
+    "Closed by 3a34043, test `tests/test_unrequested_detent_park.py` (a BEAM 230W",
+    "7R whose wheel names only UV, on a palette without purple or ultraviolet:",
+    "`modo sin dueño` before, nothing after). Vibra identical x3."
+  ],
+  "closed": "2026-11-17",
+  "result": "**A wheel whose only nameable detent is one no look asks for is not",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "tadu": 2,
+  "id": "t-3ea99f29-5dca-40ae-9b12-909edeb0d883",
+  "title": "**No `check` rule sees a caption that promises a missing function",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(2026-09-25).** The club's console named gobos, prism and panels it lacks;",
+    "tests now cover the captions, but `qlctool check` had no rule for \"a caption",
+    "on a page or frame promises a function the show did not build\". Closed by",
+    "`rotulo que promete lo que no hay` (`checks/rule_caption_promise.py`):",
+    "`checks/caption_promises.py` maps every identifier the four caption",
+    "selectors can choose to what its text promises (gobo, prism, haze, beam",
+    "wheel, pixel group, built-in effects); the rule finds a caption's identifier",
+    "by matching it against every shipped catalogue and asks the patch through",
+    "`promise_kept`. Two dated tests in `tests/test_check.py` put `tempo_2`, and",
+    "the English `matrices_frame` and `library_2`, back on the club and the rule",
+    "bites; Vibra (which matches seven promising captions) and the club stay",
+    "clean. Limit: a `[names]` override of those captions is not judged."
+  ],
+  "closed": "2026-11-17",
+  "result": "**No `check` rule sees a caption that promises a missing function",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

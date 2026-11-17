@@ -1,0 +1,17 @@
+{
+  "tadu": 2,
+  "id": "t-def7db7c-8999-4ce3-8ca8-e32b1006c4e6",
+  "title": "Restore the required quality gate within its unchanged runtime budget",
+  "state": "done",
+  "category": "quality-gate",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Correct import/format findings and remove repeated desk-frame classification without weakening mutation checks, assertions, coverage or deadlines."
+  ],
+  "closed": "2026-10-22",
+  "result": "Build a fresh desk-frame identifier map per invocation and reuse it for eligible buttons. Preserve XML mutations, localized vocabulary changes, duplicate precedence and default placement callers. Correct six lint/format findings and add deterministic lookup-cost and freshness regressions.",
+  "evidence": [
+    "Original lookup-cost regression fails before correction and focused 40 tests pass afterward. Source-identical mini execution passes 1008 tests with 20 existing skips; the final same-host codeality-py gate --json exits zero with all seven required stages, 95.04-percent coverage and pytest 81.790 seconds against the original 120-second budget (baseline 143.486). All 1323 source bytes/modes and 77 dependency identities retain parity; independent review finds no issues. No real QLC+ or hardware acceptance is claimed."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "tadu": 2,
+  "id": "t-fdae385f-8a57-40d4-874a-c58fe123c0df",
+  "title": "**`Flash Color` leaves the lit smoke machines out of the strobe",
+  "state": "cancelled",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(2026-09-25).** Superseded by the owner's answer on 2026-09-26 (\"Si, el",
+    "flash enciende las maquinas de humo en blanco\"): the columns go white, not",
+    "strobing. Done in `7740c73` and `a6c6647` (v0.1.5); releasing the flash",
+    "leaves nothing latched, measured in a live QLC+ 5.2.2 (vibra-lighting",
+    "`TODO_LOG.md`, 2026-09-26)."
+  ],
+  "closed": "2026-11-17",
+  "resolution": "legacy item migrated to format 2 without a recorded resolution"
+}

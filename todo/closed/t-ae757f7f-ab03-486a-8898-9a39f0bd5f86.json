@@ -1,0 +1,21 @@
+{
+  "tadu": 2,
+  "id": "t-ae757f7f-ab03-486a-8898-9a39f0bd5f86",
+  "title": "**The deskmap refusal's frame stays English on a Spanish show (review",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "of round C, 2026-09-26).** Closed 2026-09-26 (round D1): the frame is",
+    "`[messages] desk_bursts_invalid` and the accent refusal",
+    "`desk_burst_no_accent`, both locales, rendered with `build_deskmap`'s",
+    "vocabulary. Test `test_2026_09_26_the_refusal_frame_reads_in_the_show_language_too`",
+    "(`tests/test_english_desk_burst_refusal.py`), Spanish and English."
+  ],
+  "closed": "2026-11-17",
+  "result": "**The deskmap refusal's frame stays English on a Spanish show (review",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

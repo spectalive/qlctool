@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-227932b2-3cf1-4003-9fb6-9991a21985d6",
+  "title": "The SMC-PAD notes still point at `tools/smc-pad/` (2026-09-26)",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "Closed in round G: `generate/input_profile.py` (and so the generated",
+    "`M-VAVE-SMC-PAD.qxi`), `generate/smc_pad_device.py` and",
+    "`generate/smc_pad_colors.py` name `spectalive/smc-pad` (`midicap.swift`,",
+    "`qlc_led_bridge.swift`). The profile now writes only what was measured, as",
+    "QLC+ PR #2168 did by hand: the channel-aftertouch channel 37376 (never in",
+    "the 2026-08-29 capture, bound by no show) is gone, and CC 28 carries the",
+    "manual's name, `Stop (PARAR TODO)`; the console caption stays Pausa. The",
+    "rig copy is rebaselined; Vibra x3 identical (the workspaces carry only the",
+    "profile's name). Test",
+    "`test_2026_09_26_the_profile_declares_only_what_was_measured`."
+  ],
+  "closed": "2026-11-17",
+  "result": "The SMC-PAD notes still point at `tools/smc-pad/` (2026-09-26)",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

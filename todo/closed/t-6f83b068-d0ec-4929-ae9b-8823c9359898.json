@@ -1,0 +1,25 @@
+{
+  "tadu": 2,
+  "id": "t-6f83b068-d0ec-4929-ae9b-8823c9359898",
+  "title": "**A known model in a mode its definition lacks is warned as \"no fixture",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "definition\" (2026-09-25).** `warn_unresolved` now tells the two cases",
+    "apart from the same `resolved_definition` check as `rule_missing_definition`:",
+    "unknown models keep the `--fixtures` advice (catalogue key",
+    "`unresolved_models`), a known model in a missing mode is told to repatch in",
+    "a mode the definition has, naming the model, the mode and the modes it has",
+    "(`unresolved_mode`, en and es). `newshow` warns in the show's language.",
+    "Closed by `fix(newshow): a known model in a missing mode is told to",
+    "repatch, not to pass --fixtures`, test",
+    "`tests/test_mode_mismatch_warning.py`; Vibra and the club warn nothing."
+  ],
+  "closed": "2026-11-17",
+  "result": "**A known model in a mode its definition lacks is warned as \"no fixture",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

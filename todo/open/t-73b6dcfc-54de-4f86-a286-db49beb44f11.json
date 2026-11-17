@@ -1,0 +1,20 @@
+{
+  "tadu": 2,
+  "id": "t-73b6dcfc-54de-4f86-a286-db49beb44f11",
+  "title": "**`qlctool validate` fills the user's QLC+ recent-files list",
+  "state": "pending",
+  "category": "general",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(2026-10-19).** Each headless load adds its hidden copy",
+    "(`.<name>.qlctool-validate-<hex>.qxw`, then deleted) to",
+    "`workspace.recentN` in `defaults read \"org.qlcplus.Q Light Controller",
+    "Plus\"`: on the Mac mini 9 of 11 entries were such copies, which pushes the",
+    "real shows out of QLC+'s File > Recent menu (it keeps 10). qlc-launcher now",
+    "skips them when it opens the last show (qlc-launcher 8f2bed5), but QLC+'s",
+    "own menu still shows them. Smallest next step: check whether the headless",
+    "QLC+ can be given its own preferences scope (for example a separate",
+    "`HOME` or QSettings path) and, if so, use it in validate."
+  ]
+}

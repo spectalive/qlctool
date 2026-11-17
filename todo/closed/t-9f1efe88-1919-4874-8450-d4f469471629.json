@@ -1,0 +1,23 @@
+{
+  "tadu": 2,
+  "id": "t-9f1efe88-1919-4874-8450-d4f469471629",
+  "title": "**A lone fixture is refused instead of getting a smaller show (round G",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "review, 2026-09-26).** Closed 2026-09-27 (e58dca8): the minimum is one",
+    "fixture group with a fixture in it; the odd/even ping-pong is built only",
+    "where two fixtures dim, the together movement twins only where two heads",
+    "are rigged, and `tap_dial` reads the listed functions' own durations (one",
+    "multiplier over layers of one length flattens nothing;",
+    "`tests/test_tap_dial_equal_layers.py`). The sweep builds and checks one of",
+    "every model and mode; Vibra x3 identical."
+  ],
+  "closed": "2026-11-17",
+  "result": "**A lone fixture is refused instead of getting a smaller show (round G",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

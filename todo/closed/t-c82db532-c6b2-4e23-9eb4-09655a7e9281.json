@@ -1,0 +1,31 @@
+{
+  "tadu": 2,
+  "id": "t-c82db532-c6b2-4e23-9eb4-09655a7e9281",
+  "title": "**Page 4's matrices caption says \"bars and panels\" by proxy",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "(2026-09-25).** `matrices_frame` was chosen for any rig with pixel groups",
+    "and built-in effects, and the panels frame and library help said \"panels\"",
+    "on any rig with built-in effects. Decision (the owner delegated it,",
+    "2026-09-25): the nouns come from the fixtures' definitions, and Vibra's rig",
+    "yields its current words. Closed by `fix(console): page 4 names bars and",
+    "panels only where the rig has them`: `is_bar` (more than one pixel head,",
+    "the `<Layout>` one row or one column holding exactly those heads) and",
+    "`is_panel` (an internal programme, no pan or tilt, one cell or a grid of",
+    "heads); `matrices_frame_caption`, `panels_frame_caption` and",
+    "`library_help_lines` choose \"bars and panels\", the bars, the panels or the",
+    "generic words; `caption_promises` promises a bar and a panel instead of a",
+    "pixel group. Tests in `tests/test_caption_variants.py` (Vibra cut to both,",
+    "bars only, panels only, neither; a club with CLB2.4 bars built end to end",
+    "and checked clean; the club keeps its words) and",
+    "`tests/test_mixed_rig_captions.py` (panels and no bars). Vibra identical x3."
+  ],
+  "closed": "2026-11-17",
+  "result": "**Page 4's matrices caption says \"bars and panels\" by proxy",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

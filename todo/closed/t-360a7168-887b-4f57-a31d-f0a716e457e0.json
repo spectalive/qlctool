@@ -1,0 +1,43 @@
+{
+  "tadu": 2,
+  "id": "t-360a7168-887b-4f57-a31d-f0a716e457e0",
+  "title": "**The codeality structural baseline (moved from vibra-lighting,",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "2026-09-26).** Closed 2026-09-28 after ten batches: 202 findings -> 6,",
+    "every file one unit named after it, no module over its cap. Last steps:",
+    "`build_parser` got its own module (`qlctool --help` byte-identical) and",
+    "`live_console.py` became `generate_live_console.py`. The 6 left are",
+    "accepted, each for a reason the checker cannot see: `cli.py` keeps",
+    "`main` (the console entry point pyproject and vibra-lighting import);",
+    "`generate/input_profile.py` and `generate/smc_pad_device.py` are named in",
+    "the shipped SMC-PAD `.qxi` text and imported by vibra-lighting;",
+    "`stage_x_positions.py` and `checks/is_a_step.py` get a wrong proposed name",
+    "(the checker drops the underscore after a one-letter word:",
+    "`stage_xpositions`, `is_astep`); `audience_window.py` would become a",
+    "generic `window.py`. Constant tables are `[roles] data` in",
+    "`codeality-py.toml`, the convention, not debt. Module paths moved for",
+    "external callers: vibra-lighting's TODO lists the imports to fix at its",
+    "next pin. 2026-10-07: codeality-py 0.2.5 keeps existing underscores, so",
+    "`stage_x_positions.py` and `checks/is_a_step.py` no longer find a wrong name",
+    "and left the baseline (6 -> 4).",
+    "2026-10-07: the 4 left are closed (4 -> 0, baseline empty). `Window` is",
+    "now `AudienceWindow` in `audience_window.py`, its two measured instances in",
+    "`audience_windows.py` (data role); `main` lives in `main.py`, `cli.py`",
+    "re-exports it (`qlctool.cli:main`, the pyproject script and vibra-lighting",
+    "keep working); `build_input_profile` and `pad_channel` got their own files",
+    "and `input_profile.py` / `smc_pad_device.py` re-export them with their",
+    "constants (the shipped `.qxi` text still names `smc_pad_device.py`). The",
+    "three re-export modules are `entrypoint` roles in `codeality-py.toml`.",
+    "`tests/test_published_import_paths.py` pins the identities. mypy ignore",
+    "sections: 0 before and after. Vibra byte identity green."
+  ],
+  "closed": "2026-11-17",
+  "result": "**The codeality structural baseline (moved from vibra-lighting,",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

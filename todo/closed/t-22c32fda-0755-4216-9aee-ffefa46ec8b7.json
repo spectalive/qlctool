@@ -1,0 +1,14 @@
+{
+  "tadu": 2,
+  "id": "t-22c32fda-0755-4216-9aee-ffefa46ec8b7",
+  "title": "Extend the generated rig palette to pink and the other named colours, with matching desk bursts",
+  "state": "done",
+  "category": "palette-and-bounded-colour-hits",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "closed": "2026-10-21",
+  "result": "All 18 palette colours have generated hit functions; the tablet map offers 17 coloured rig swatches and 25 bounded hits across four colour banks.",
+  "evidence": [
+    "`tests/test_deskmap.py`, `tests/test_check_colour_ownership.py`, `tests/test_english_vibra.py`, and `qlctool check` on all three Vibra workspaces."
+  ]
+}

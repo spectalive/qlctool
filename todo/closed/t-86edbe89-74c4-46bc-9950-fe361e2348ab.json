@@ -1,0 +1,25 @@
+{
+  "tadu": 2,
+  "id": "t-86edbe89-74c4-46bc-9950-fe361e2348ab",
+  "title": "CI's suite cannot meet the 120 s test budget (2026-09-25)",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "The",
+    "",
+    "gate on GitHub failed its pytest stage as `over-budget` on the four-core",
+    "runners, where branch coverage falls back to the C tracer below 3.14: 286 s",
+    "(run 36122117743), then 446 s on 3.11 and 397 s on 3.13 (run 36127233331).",
+    "Solved by codeality-py 0.2.4's `CODEALITY_PY_TEST_BUDGET_SECONDS`, set to",
+    "600 on the workflow's gate step; the local budget in `codeality-py.toml`",
+    "stays 120 s. Closed by the green run 36131008406: 476.8 s on 3.11 and",
+    "359.9 s on 3.13, under the 600 s budget."
+  ],
+  "closed": "2026-11-17",
+  "result": "CI's suite cannot meet the 120 s test budget (2026-09-25)",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}

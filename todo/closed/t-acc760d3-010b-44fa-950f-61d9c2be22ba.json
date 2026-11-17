@@ -1,0 +1,26 @@
+{
+  "tadu": 2,
+  "id": "t-acc760d3-010b-44fa-950f-61d9c2be22ba",
+  "title": "`releaseTo` is one hook per frame (2026-09-27)",
+  "state": "done",
+  "category": "qlctool-follow-up",
+  "type": "untriaged",
+  "priority": "untriaged",
+  "notes": [
+    "One hook per",
+    "",
+    "frame pressed the wrong one in most states (CHARLA's colour, FIESTA's and",
+    "LOCURA's heads, CHARLA's and TRANQUILO's gobo and prism, CHARLA's",
+    "panels). Closed by `c4b45c6 feat(deskmap): releaseTo names the hook per",
+    "room state` (ruling R3a): an object keyed by the state control's widget,",
+    "one entry per state that starts exactly one of the frame's hooks; the",
+    "contract for dmxdesk is in `docs/desk-map.md`. Tests in",
+    "`tests/test_deskmap.py` (2026-09-27), including the re-injection that takes",
+    "Luz Charla out of Momento Charla."
+  ],
+  "closed": "2026-11-17",
+  "result": "`releaseTo` is one hook per frame (2026-09-27)",
+  "evidence": [
+    "legacy item migrated to format 2 without a recorded evidence"
+  ]
+}
